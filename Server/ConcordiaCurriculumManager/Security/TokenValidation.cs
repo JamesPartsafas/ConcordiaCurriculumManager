@@ -14,7 +14,7 @@ public class TokenValidation : JwtBearerEvents
             return Task.CompletedTask;
         }
 
-        var authorizationService = context.HttpContext.RequestServices.GetRequiredService<IUserAuthorizationService>();
+        var authorizationService = context.HttpContext.RequestServices.GetRequiredService<IUserAuthenticationService>();
         var isBlackListedToken = authorizationService.IsBlacklistedToken(accessToken.RawData);
 
         if (isBlackListedToken)

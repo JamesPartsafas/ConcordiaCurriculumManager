@@ -144,7 +144,7 @@ public class Program
         services.AddSingleton<IInputHasherService, InputHasherService>();
         services.AddSingleton<ICacheService<string>, CacheService<string>>();
 
-        services.AddScoped<IUserAuthorizationService, UserAuthorizationService>();
+        services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
         services.AddScoped<IUserRepository, UserRepository>();
     }
 }

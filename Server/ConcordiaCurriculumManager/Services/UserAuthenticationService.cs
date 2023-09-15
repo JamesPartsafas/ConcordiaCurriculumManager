@@ -10,7 +10,7 @@ using System.Text;
 
 namespace ConcordiaCurriculumManager.Services;
 
-public interface IUserAuthorizationService
+public interface IUserAuthenticationService
 {
     bool IsBlacklistedToken(string accessToken);
     Task<string> CreateUserAsync(User user);
@@ -18,16 +18,16 @@ public interface IUserAuthorizationService
     Task SignoutUser();
 }
 
-public class UserAuthorizationService : IUserAuthorizationService
+public class UserAuthenticationService : IUserAuthenticationService
 {
-    private readonly ILogger<UserAuthorizationService> _logger;
+    private readonly ILogger<UserAuthenticationService> _logger;
     private readonly IUserRepository _userRepository;
     private readonly IdentitySettings _identitySettings;
     private readonly IInputHasherService _inputHasher;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ICacheService<string> _cacheService;
 
-    public UserAuthorizationService(ILogger<UserAuthorizationService> logger,
+    public UserAuthenticationService(ILogger<UserAuthenticationService> logger,
                                 IUserRepository userRepository,
                                 IOptions<IdentitySettings> options,
                                 IInputHasherService inputHasher,

@@ -17,18 +17,18 @@ public class UserAuthorizationServiceTests
 {
     private Mock<IUserRepository> userRepository = null!;
     private Mock<IInputHasherService> inputHasher = null!;
-    private Mock<ILogger<UserAuthorizationService>> logger = null!;
+    private Mock<ILogger<UserAuthenticationService>> logger = null!;
     private Mock<ICacheService<string>> cacheService = null!;
     private Mock<IHttpContextAccessor> httpContextAccessor = null!;
     private IOptions<IdentitySettings> options = null!;
-    private UserAuthorizationService userService = null!;
+    private UserAuthenticationService userService = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
         userRepository = new Mock<IUserRepository>();
         inputHasher = new Mock<IInputHasherService>();
-        logger = new Mock<ILogger<UserAuthorizationService>>();
+        logger = new Mock<ILogger<UserAuthenticationService>>();
         cacheService = new Mock<ICacheService<string>>();
         httpContextAccessor = new Mock<IHttpContextAccessor>();
 
@@ -42,7 +42,7 @@ public class UserAuthorizationServiceTests
 
         options = Options.Create(identitySettings);
 
-        userService = new UserAuthorizationService(
+        userService = new UserAuthenticationService(
             logger.Object,
             userRepository.Object,
             options,
@@ -172,7 +172,7 @@ public class UserAuthorizationServiceTests
 
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
         HttpContextUtil.MockHttpContextGetToken(httpContextAccessor, token);
-        var newUserService = new UserAuthorizationService(
+        var newUserService = new UserAuthenticationService(
             logger.Object,
             userRepository.Object,
             options,
@@ -206,7 +206,7 @@ public class UserAuthorizationServiceTests
     {
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
         HttpContextUtil.MockHttpContextGetToken(httpContextAccessor, null!);
-        var newUserService = new UserAuthorizationService(
+        var newUserService = new UserAuthenticationService(
             logger.Object,
             userRepository.Object,
             options,

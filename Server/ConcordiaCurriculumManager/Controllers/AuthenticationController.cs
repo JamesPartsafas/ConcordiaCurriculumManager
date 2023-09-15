@@ -13,13 +13,13 @@ namespace ConcordiaCurriculumManager.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthorizationController : Controller
+public class AuthenticationController : Controller
 {
     private readonly IMapper _mapper;
-    private readonly ILogger<AuthorizationController> _logger;
-    private readonly IUserAuthorizationService _userAuthorizationService;
+    private readonly ILogger<AuthenticationController> _logger;
+    private readonly IUserAuthenticationService _userAuthorizationService;
 
-    public AuthorizationController(IMapper mapper, ILogger<AuthorizationController> logger, IUserAuthorizationService authorizationService)
+    public AuthenticationController(IMapper mapper, ILogger<AuthenticationController> logger, IUserAuthenticationService authorizationService)
     {
         _mapper = mapper;
         _logger = logger;
