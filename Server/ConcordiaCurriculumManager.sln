@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConcordiaCurriculumManager", "ConcordiaCurriculumManager\ConcordiaCurriculumManager.csproj", "{11D3E984-CE91-4C30-A43E-AC5473555BDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConcordiaCurriculumManagerTest", "ConcordiaCurriculumManagerTest\ConcordiaCurriculumManagerTest.csproj", "{3DCB7F21-5BE6-417F-8795-CEAF556CE9CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{11D3E984-CE91-4C30-A43E-AC5473555BDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11D3E984-CE91-4C30-A43E-AC5473555BDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11D3E984-CE91-4C30-A43E-AC5473555BDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11D3E984-CE91-4C30-A43E-AC5473555BDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DCB7F21-5BE6-417F-8795-CEAF556CE9CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DCB7F21-5BE6-417F-8795-CEAF556CE9CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DCB7F21-5BE6-417F-8795-CEAF556CE9CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DCB7F21-5BE6-417F-8795-CEAF556CE9CB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C1F07F25-F1A5-4908-8255-38D8652CB1F8}
+	EndGlobalSection
+EndGlobal
