@@ -17,13 +17,13 @@ public class AuthenticationController : Controller
 {
     private readonly IMapper _mapper;
     private readonly ILogger<AuthenticationController> _logger;
-    private readonly IUserAuthenticationService _userAuthorizationService;
+    private readonly IUserAuthenticationService _userAuthenticationService;
 
-    public AuthenticationController(IMapper mapper, ILogger<AuthenticationController> logger, IUserAuthenticationService authorizationService)
+    public AuthenticationController(IMapper mapper, ILogger<AuthenticationController> logger, IUserAuthenticationService authenticationService)
     {
         _mapper = mapper;
         _logger = logger;
-        _userAuthorizationService = authorizationService;
+        _userAuthenticationService = authenticationService;
     }
 
     [HttpPost(nameof(Register))]
@@ -42,7 +42,7 @@ public class AuthenticationController : Controller
             }
 
             var parsedUserInput = _mapper.Map<User>(parameter);
-            var accessToken = await _userAuthorizationService.CreateUserAsync(parsedUserInput);
+            var accessToken = await _userAuthenticationService.CreateUserAsync(parsedUserInput);
             var response = new AuthenticationResponse() { AccessToken = accessToken };
 
             return Created($"/{nameof(Register)}", response);
@@ -79,7 +79,7 @@ public class AuthenticationController : Controller
                 throw new ArgumentException("Cannot use example values");
             }
 
-            var accessToken = await _userAuthorizationService.SigninUser(parameter.Email, parameter.Password);
+            var accessToken = await _userAuthenticationService.SigninUser(parameter.Email, parameter.Password);
             var response = new AuthenticationResponse() { AccessToken = accessToken };
 
             return Ok(response);
@@ -110,7 +110,7 @@ public class AuthenticationController : Controller
     {
         try
         {
-            await _userAuthorizationService.SignoutUser();
+            await _userAuthenticationService.SignoutUser();
             return Ok();
         }
         catch (Exception e)

@@ -15,7 +15,7 @@ namespace ConcordiaCurriculumManager.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:role_enum", "Initiator,Admin,FacultyMemeber");
+                .Annotation("Npgsql:Enum:role_enum", "Initiator,Admin,FacultyMember");
 
             migrationBuilder.CreateTable(
                 name: "Roles",
@@ -77,9 +77,27 @@ namespace ConcordiaCurriculumManager.Migrations
                 columns: new[] { "Id", "CreatedDate", "ModifiedDate", "UserRole" },
                 values: new object[,]
                 {
-                    { new Guid("5f7794f2-b3ee-4b7b-a3c7-dc6aa518de8d"), new DateTime(2023, 9, 15, 18, 13, 9, 413, DateTimeKind.Utc).AddTicks(6151), new DateTime(2023, 9, 15, 18, 13, 9, 413, DateTimeKind.Utc).AddTicks(6155), RoleEnum.Initiator },
-                    { new Guid("a8904e1e-1fa8-4c02-a8c1-4e1643efd608"), new DateTime(2023, 9, 15, 18, 13, 9, 413, DateTimeKind.Utc).AddTicks(6170), new DateTime(2023, 9, 15, 18, 13, 9, 413, DateTimeKind.Utc).AddTicks(6170), RoleEnum.Admin },
-                    { new Guid("e7530308-e5e9-49f0-b8ea-b4aa716f8a33"), new DateTime(2023, 9, 15, 18, 13, 9, 413, DateTimeKind.Utc).AddTicks(6173), new DateTime(2023, 9, 15, 18, 13, 9, 413, DateTimeKind.Utc).AddTicks(6173), RoleEnum.FacultyMemeber }
+                    { new Guid("10165e67-fe83-4d81-88d8-65f026485768"), new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2413), new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2414), RoleEnum.Admin },
+                    { new Guid("6631d19c-4946-455f-a407-93856911349b"), new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2401), new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2406), RoleEnum.Initiator },
+                    { new Guid("e92ecb44-418a-48a4-b4df-82e1f35e0689"), new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2418), new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2419), RoleEnum.FacultyMember }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "CreatedDate", "Email", "FirstName", "LastName", "ModifiedDate", "Password" },
+                values: new object[,]
+                {
+                    { new Guid("37581d9d-713f-475c-9668-23971b0e64d0"), new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2555), "admin@ccm.ca", "Super", "User", new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2556), "9767718E8A58C097D48ED8986E632368F71F71740C6DCE113AE75ED90176DA49:FE06FEFB87C75014327930CFB3373565" },
+                    { new Guid("8c55b0c3-b4cf-4948-a730-dad3fa37c69a"), new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2789), "joe.user@ccm.ca", "Joe", "User", new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2790), "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "RoleUser",
+                columns: new[] { "RolesId", "UsersId" },
+                values: new object[,]
+                {
+                    { new Guid("10165e67-fe83-4d81-88d8-65f026485768"), new Guid("37581d9d-713f-475c-9668-23971b0e64d0") },
+                    { new Guid("6631d19c-4946-455f-a407-93856911349b"), new Guid("8c55b0c3-b4cf-4948-a730-dad3fa37c69a") }
                 });
 
             migrationBuilder.CreateIndex(

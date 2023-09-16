@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConcordiaCurriculumManager.Migrations
 {
     [DbContext(typeof(CCMDbContext))]
-    [Migration("20230915181309_InitMigration")]
+    [Migration("20230916042207_InitMigration")]
     partial class InitMigration
     {
         /// <inheritdoc />
@@ -24,7 +24,7 @@ namespace ConcordiaCurriculumManager.Migrations
                 .HasAnnotation("ProductVersion", "7.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "role_enum", new[] { "Initiator", "Admin", "FacultyMemeber" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "role_enum", new[] { "Initiator", "Admin", "FacultyMember" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Role", b =>
@@ -49,24 +49,24 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5f7794f2-b3ee-4b7b-a3c7-dc6aa518de8d"),
-                            CreatedDate = new DateTime(2023, 9, 15, 18, 13, 9, 413, DateTimeKind.Utc).AddTicks(6151),
-                            ModifiedDate = new DateTime(2023, 9, 15, 18, 13, 9, 413, DateTimeKind.Utc).AddTicks(6155),
+                            Id = new Guid("6631d19c-4946-455f-a407-93856911349b"),
+                            CreatedDate = new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2401),
+                            ModifiedDate = new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2406),
                             UserRole = RoleEnum.Initiator
                         },
                         new
                         {
-                            Id = new Guid("a8904e1e-1fa8-4c02-a8c1-4e1643efd608"),
-                            CreatedDate = new DateTime(2023, 9, 15, 18, 13, 9, 413, DateTimeKind.Utc).AddTicks(6170),
-                            ModifiedDate = new DateTime(2023, 9, 15, 18, 13, 9, 413, DateTimeKind.Utc).AddTicks(6170),
+                            Id = new Guid("10165e67-fe83-4d81-88d8-65f026485768"),
+                            CreatedDate = new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2413),
+                            ModifiedDate = new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2414),
                             UserRole = RoleEnum.Admin
                         },
                         new
                         {
-                            Id = new Guid("e7530308-e5e9-49f0-b8ea-b4aa716f8a33"),
-                            CreatedDate = new DateTime(2023, 9, 15, 18, 13, 9, 413, DateTimeKind.Utc).AddTicks(6173),
-                            ModifiedDate = new DateTime(2023, 9, 15, 18, 13, 9, 413, DateTimeKind.Utc).AddTicks(6173),
-                            UserRole = RoleEnum.FacultyMemeber
+                            Id = new Guid("e92ecb44-418a-48a4-b4df-82e1f35e0689"),
+                            CreatedDate = new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2418),
+                            ModifiedDate = new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2419),
+                            UserRole = RoleEnum.FacultyMember
                         });
                 });
 
@@ -101,6 +101,28 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("37581d9d-713f-475c-9668-23971b0e64d0"),
+                            CreatedDate = new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2555),
+                            Email = "admin@ccm.ca",
+                            FirstName = "Super",
+                            LastName = "User",
+                            ModifiedDate = new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2556),
+                            Password = "9767718E8A58C097D48ED8986E632368F71F71740C6DCE113AE75ED90176DA49:FE06FEFB87C75014327930CFB3373565"
+                        },
+                        new
+                        {
+                            Id = new Guid("8c55b0c3-b4cf-4948-a730-dad3fa37c69a"),
+                            CreatedDate = new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2789),
+                            Email = "joe.user@ccm.ca",
+                            FirstName = "Joe",
+                            LastName = "User",
+                            ModifiedDate = new DateTime(2023, 9, 16, 4, 22, 7, 802, DateTimeKind.Utc).AddTicks(2790),
+                            Password = "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788"
+                        });
                 });
 
             modelBuilder.Entity("RoleUser", b =>
@@ -116,6 +138,18 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("RoleUser");
+
+                    b.HasData(
+                        new
+                        {
+                            RolesId = new Guid("10165e67-fe83-4d81-88d8-65f026485768"),
+                            UsersId = new Guid("37581d9d-713f-475c-9668-23971b0e64d0")
+                        },
+                        new
+                        {
+                            RolesId = new Guid("6631d19c-4946-455f-a407-93856911349b"),
+                            UsersId = new Guid("8c55b0c3-b4cf-4948-a730-dad3fa37c69a")
+                        });
                 });
 
             modelBuilder.Entity("RoleUser", b =>

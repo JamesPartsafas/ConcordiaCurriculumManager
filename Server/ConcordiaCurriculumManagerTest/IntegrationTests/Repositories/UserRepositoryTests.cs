@@ -2,6 +2,8 @@
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using ConcordiaCurriculumManager.Repositories;
 using Microsoft.EntityFrameworkCore;
+using ConcordiaCurriculumManager.Settings;
+using Microsoft.Extensions.Options;
 
 namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories;
 
@@ -12,13 +14,13 @@ public class UserRepositoryTests
     private IUserRepository userRepository = null!;
 
     [ClassInitialize]
-    public static void ClassInitialize(TestContext context)
+    public static void ClassInitialize(TestContext _)
     {
         var options = new DbContextOptionsBuilder<CCMDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
-        dbContext = new CCMDbContext(options);
+        dbContext = new CCMDbContext(options, Options.Create(new SeedDatabase()));
     }
 
     [TestInitialize]

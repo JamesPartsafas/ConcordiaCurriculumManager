@@ -72,6 +72,10 @@ public class Program
             options.UseNpgsql(dataSourceBuilder.Build());
         });
 
+        builder.Services.AddOptions<SeedDatabase>()
+                        .Bind(builder.Configuration.GetSection(SeedDatabase.SectionName))
+                        .Validate(seedDatabase => seedDatabase.Users is not null);
+
         AddServices(builder.Services);
 
         builder.Services.AddMemoryCache();

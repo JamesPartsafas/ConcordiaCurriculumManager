@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
 
 [TestClass]
-public class UserAuthorizationServiceTests
+public class UserAuthenticationServiceTests
 {
     private Mock<IUserRepository> userRepository = null!;
     private Mock<IInputHasherService> inputHasher = null!;
