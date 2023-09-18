@@ -1,11 +1,14 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum;
+﻿using ConcordiaCurriculumManager.DTO;
+using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Repositories;
 
 namespace ConcordiaCurriculumManager.Services;
 
 public interface ICourseService
 {
-    public Task<IEnumerable<CourseComponent>> GetCourseComponents();
+    public IEnumerable<string> GetAllCourseCareers();
+    public IEnumerable<CourseComponentDTO> GetAllCourseComponents();
+    public Task<IEnumerable<string>> GetAllCourseSubjects();
 }
 
 public class CourseService : ICourseService
@@ -19,8 +22,24 @@ public class CourseService : ICourseService
         _courseRepository = courseRepository;
     }
 
-    public async Task<IEnumerable<CourseComponent>> GetCourseComponents()
+    public IEnumerable<string> GetAllCourseCareers()
     {
-        return await _courseRepository.GetAllCourseComponents();
+        return Enum.GetNames(typeof(CourseCareerEnum));
+    }
+
+    public IEnumerable<CourseComponentDTO> GetAllCourseComponents()
+    {
+        var componentsList = new List<CourseComponentDTO>();
+        foreach (var mapping in ComponentCodeMapping.GetComponentCodeMapping().ToList())
+        {
+            componentsList.Add(new CourseComponentDTO { ComponentCode = mapping.Key, ComponentName = mapping.Value });
+        }
+
+        return componentsList;
+    }
+
+    public async Task<IEnumerable<string>> GetAllCourseSubjects()
+    {
+        return await _courseRepository.GetUniqueCourseSubjects();
     }
 }

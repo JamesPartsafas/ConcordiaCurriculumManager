@@ -6,7 +6,7 @@ namespace ConcordiaCurriculumManager.Repositories;
 
 public interface ICourseRepository
 {
-    public Task<List<CourseComponent>> GetAllCourseComponents();
+    public Task<List<string>> GetUniqueCourseSubjects();
 }
 
 public class CourseRepository : ICourseRepository
@@ -18,5 +18,5 @@ public class CourseRepository : ICourseRepository
         _dbContext = dbContext;
     }
 
-    public Task<List<CourseComponent>> GetAllCourseComponents() => _dbContext.CourseComponents.ToListAsync();
+    public Task<List<string>> GetUniqueCourseSubjects() => _dbContext.Courses.Select(course => course.Subject).Distinct().ToListAsync();
 }

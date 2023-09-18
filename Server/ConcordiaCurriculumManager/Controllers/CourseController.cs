@@ -25,21 +25,29 @@ public class CourseController : Controller
         _courseService = courseService;
     }
 
-    [HttpGet(nameof(GetAllCourseComponents))]
-    [SwaggerResponse(StatusCodes.Status200OK, "Course components retrieved")]
+    [HttpGet(nameof(GetAllCourseSettings))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course settings retrieved")]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
-    public async Task<ActionResult> GetAllCourseComponents()
+    public async Task<ActionResult> GetAllCourseSettings()
     {
         try
         {
-            var courseComponents = await _courseService.GetCourseComponents();
-            var response = courseComponents.Select(_mapper.Map<CourseComponentDTO>);
+            var courseComponents = _courseService.GetAllCourseComponents();
+            var courseCareers = _courseService.GetAllCourseCareers();
+            var courseSubjects = await _courseService.GetAllCourseSubjects();
+
+            var response = new CourseSettingsDTO 
+            {
+                CourseCareers = courseCareers,
+                CourseComponents = courseComponents,
+                CourseSubjects = courseSubjects
+            };
             return Ok(response);
         }
         catch (Exception e)
         {
-            var message = "Unexpected error occured while retrieving course components";
+            var message = "Unexpected error occured while retrieving course settings";
             _logger.LogWarning($"${message}: {e.Message}");
             return Problem(
                 title: message,
