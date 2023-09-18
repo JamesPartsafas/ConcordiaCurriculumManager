@@ -98,10 +98,18 @@ public class UserAuthenticationService : IUserAuthenticationService
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_identitySettings.Key));
         var credentials = new SigningCredentials(securityKey, _identitySettings.SecurityAlgorithms);
-        var claims = user.Roles.Select(role => new Claim("role", role.UserRole.ToString())).ToList();
-        claims.Add(new Claim("email", user.Email));
-        claims.Add(new Claim("fName", user.FirstName));
-        claims.Add(new Claim("lName", user.LastName));
+
+        var claims = new List<Claim>
+        {
+            new Claim("email", user.Email),
+            new Claim("fName", user.FirstName),
+            new Claim("lName", user.LastName)
+        };
+
+        foreach (Role role in user.Roles)
+        {
+            claims.Add(new Claim("roles", role.UserRole.ToString()));
+        }
 
         var time = DateTime.UtcNow - new DateTime(1970, 1, 1);
         var epoch = Convert.ToInt64(time.TotalSeconds);
