@@ -1,4 +1,4 @@
-﻿using ConcordiaCurriculumManager.Models;
+﻿using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Settings;
 using Microsoft.AspNetCore.Authentication;

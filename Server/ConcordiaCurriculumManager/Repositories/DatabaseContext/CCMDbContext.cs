@@ -1,9 +1,9 @@
-﻿using ConcordiaCurriculumManager.Models;
+﻿using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Users;
+using ConcordiaCurriculumManager.Repositories.DatabaseContext.Seeding;
 using ConcordiaCurriculumManager.Settings;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Options;
-using System.Reflection.Emit;
 
 namespace ConcordiaCurriculumManager.Repositories.DatabaseContext;
 
@@ -20,11 +20,16 @@ public class CCMDbContext : DbContext
 
     public DbSet<Role> Roles { get; set; }
 
+    public DbSet<Course> Courses { get; set; }
+
+    public DbSet<CourseComponent> CourseComponents { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         ConfigureUserRoleRelationship(modelBuilder);
         PreseedUsersAndRolesInDatabase(modelBuilder);
+        PreseedCoursesAndCourseComponentsInDatabase(modelBuilder);
     }
 
     private static void ConfigureUserRoleRelationship(ModelBuilder modelBuilder)
@@ -91,5 +96,43 @@ public class CCMDbContext : DbContext
             .HasMany(user => user.Roles)
             .WithMany(role => role.Users)
             .UsingEntity(j => j.HasData(userRoles.Select(ur => new { ur.UsersId, ur.RolesId })));
+    }
+
+    private void PreseedCoursesAndCourseComponentsInDatabase(ModelBuilder modelBuilder)
+    {
+        var courseComponents = new List<CourseComponent>();
+
+        foreach (KeyValuePair<ComponentCodeEnum, string> mapping in ComponentCodeMapping.GetComponentCodeMapping())
+        {
+            courseComponents.Add(new()
+            {
+                Id = Guid.NewGuid(),
+                ComponentCode = mapping.Key,
+                ComponentName = mapping.Value,
+                CreatedDate = DateTime.UtcNow,
+                ModifiedDate = DateTime.UtcNow
+            });
+        }
+
+        modelBuilder.Entity<CourseComponent>()
+            .HasData(courseComponents);
+
+        if (_seedDatabase.SkipCourseDatabaseSeed)
+        {
+            return;
+        }
+
+        var courses = new List<Course>();
+        var courseCourseComponents = new List<(Guid CoursesId, Guid CourseComponentsId)>();
+
+        new CourseSeeder().SeedCourseData(courses, courseCourseComponents, courseComponents);
+
+        modelBuilder.Entity<Course>()
+            .HasData(courses);
+
+        modelBuilder.Entity<Course>()
+            .HasMany(course => course.CourseComponents)
+            .WithMany(courseComponent => courseComponent.Courses)
+            .UsingEntity(j => j.HasData(courseCourseComponents.Select(ccc => new { ccc.CoursesId, ccc.CourseComponentsId })));
     }
 }
