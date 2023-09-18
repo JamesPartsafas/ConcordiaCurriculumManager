@@ -134,10 +134,15 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAuthentication();
+        app.UseRouting();
         app.UseAuthorization();
 
-        app.UsePathBase("/api");
-        app.MapControllers();
+        // Must use app.UseEndpoints for authorization middleware to run
+        app.UseEndpoints(endpoints =>
+        {
+            // app.UsePathBase("/api"); //TODO: Using an api prefix in URL breaks authorization middleware
+            endpoints.MapControllers();
+        });
 
         app.Run();
     }
@@ -149,6 +154,9 @@ public class Program
         services.AddSingleton<ICacheService<string>, CacheService<string>>();
 
         services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
+        services.AddScoped<ICourseService, CourseService>();
+
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ICourseRepository, CourseRepository>();
     }
 }
