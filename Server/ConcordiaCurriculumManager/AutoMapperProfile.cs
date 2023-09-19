@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO;
+using ConcordiaCurriculumManager.DTO.Courses;
+using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Users;
 
@@ -11,6 +13,7 @@ public class AutoMapper : Profile
     {
         CreateMap<User, RegisterDTO>().ReverseMap();
         CreateMap<CourseComponent, CourseComponentDTO>().ReverseMap();
+        CreateMap<Course, CourseCreationInitiationDTO>().ReverseMap();
     }
 
 }

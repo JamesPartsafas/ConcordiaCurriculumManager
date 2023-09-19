@@ -1,4 +1,6 @@
-﻿namespace ConcordiaCurriculumManager.Models.Users;
+﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
+
+namespace ConcordiaCurriculumManager.Models.Users;
 
 public class User : BaseModel
 {
@@ -11,4 +13,6 @@ public class User : BaseModel
     public required string Password { get; set; }
 
     public List<Role> Roles { get; set; } = new();
+
+    public List<CourseCreationDossier> CourseCreationDossiers { get; set; } = new();
 }

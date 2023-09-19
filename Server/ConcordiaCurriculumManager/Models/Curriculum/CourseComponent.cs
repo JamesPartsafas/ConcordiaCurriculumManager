@@ -103,4 +103,17 @@ public static class ComponentCodeMapping
     {
         return GetComponentCodeMapping()[code];
     }
+
+    public static IEnumerable<CourseComponent> GetComponentCodeMapping(IEnumerable<ComponentCodeEnum> codes)
+    {
+        var subset = new List<CourseComponent>();
+        var mappings = GetComponentCodeMapping();
+
+        foreach (var code in codes)
+        {
+            subset.Add(new CourseComponent { ComponentCode = code, ComponentName = mappings[code] });
+        }
+
+        return subset;
+    }
 }

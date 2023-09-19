@@ -26,6 +26,7 @@ public class UserRepository : IUserRepository
         .Where(user => string.Equals(user.Email.ToLower(), email.ToLower()))
         .Select(user => new User
         { 
+            Id = user.Id,
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email,

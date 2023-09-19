@@ -1,5 +1,6 @@
 ﻿using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
+using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Settings;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
@@ -16,6 +17,7 @@ public interface IUserAuthenticationService
     Task<string> CreateUserAsync(User user);
     Task<string> SigninUser(string email, string password);
     Task SignoutUser();
+    Task<User> GetCurrentUser();
 }
 
 public class UserAuthenticationService : IUserAuthenticationService
@@ -92,6 +94,25 @@ public class UserAuthenticationService : IUserAuthenticationService
         });
     }
 
+    public async Task<User> GetCurrentUser()
+    {
+        if (_httpContextAccessor.HttpContext == null)
+        {
+            throw new NullReferenceException("HttpContext is null");
+        }
+
+        string email = _httpContextAccessor.HttpContext.User.Claims.First(i => i.Type == ClaimTypes.Email).Value;
+
+        User? user = await _userRepository.GetUserByEmail(email);
+
+        if (user == null)
+        {
+            throw new NullReferenceException($"User with email {email} could not be found");
+        }
+
+        return user;
+    }
+
     public bool IsBlacklistedToken(string accessToken) => _cacheService.Exists(accessToken);
 
     private string GenerateAccessToken(User user)
@@ -101,14 +122,14 @@ public class UserAuthenticationService : IUserAuthenticationService
 
         var claims = new List<Claim>
         {
-            new Claim("email", user.Email),
-            new Claim("fName", user.FirstName),
-            new Claim("lName", user.LastName)
+            new Claim(Claims.Email, user.Email),
+            new Claim(Claims.FirstName, user.FirstName),
+            new Claim(Claims.LastName, user.LastName)
         };
 
         foreach (Role role in user.Roles)
         {
-            claims.Add(new Claim("roles", role.UserRole.ToString()));
+            claims.Add(new Claim(Claims.Roles, role.UserRole.ToString()));
         }
 
         var time = DateTime.UtcNow - new DateTime(1970, 1, 1);

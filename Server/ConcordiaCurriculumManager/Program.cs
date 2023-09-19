@@ -158,5 +158,6 @@ public class Program
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICourseRepository, CourseRepository>();
+        services.AddScoped<IDossierRepository, DossierRepository>();
     }
 }

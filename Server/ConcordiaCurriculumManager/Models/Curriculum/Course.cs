@@ -1,4 +1,5 @@
-﻿using NpgsqlTypes;
+﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
+using NpgsqlTypes;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum;
 
@@ -29,6 +30,8 @@ public class Course : BaseModel
     public required bool Published { get; set; }
 
     public List<CourseComponent> CourseComponents { get; set; } = new();
+
+    public CourseCreationDossier? CourseCreationDossier { get; set; }
 }
 
 public enum CourseCareerEnum

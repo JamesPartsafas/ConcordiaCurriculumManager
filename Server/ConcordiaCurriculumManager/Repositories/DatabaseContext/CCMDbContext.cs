@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext.Seeding;
 using ConcordiaCurriculumManager.Settings;
@@ -24,12 +25,15 @@ public class CCMDbContext : DbContext
 
     public DbSet<CourseComponent> CourseComponents { get; set; }
 
+    public DbSet<CourseCreationDossier> CourseCreationDossiers { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         ConfigureUserRoleRelationship(modelBuilder);
         PreseedUsersAndRolesInDatabase(modelBuilder);
         PreseedCoursesAndCourseComponentsInDatabase(modelBuilder);
+        ConfigureDossiersRelationship(modelBuilder);
     }
 
     private static void ConfigureUserRoleRelationship(ModelBuilder modelBuilder)
@@ -39,6 +43,19 @@ public class CCMDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasMany(user => user.Roles)
             .WithMany(role => role.Users);
+    }
+
+    private static void ConfigureDossiersRelationship(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+            .HasMany(user => user.CourseCreationDossiers)
+            .WithOne(dossier => dossier.Initiator)
+            .HasForeignKey(dossier => dossier.InitiatorId);
+
+        modelBuilder.Entity<Course>()
+            .HasOne(course => course.CourseCreationDossier)
+            .WithOne(dossier => dossier.NewCourse)
+            .HasForeignKey<CourseCreationDossier>(dossier => dossier.NewCourseId);
     }
 
     private void PreseedUsersAndRolesInDatabase(ModelBuilder modelBuilder)
@@ -125,7 +142,7 @@ public class CCMDbContext : DbContext
         var courses = new List<Course>();
         var courseCourseComponents = new List<(Guid CoursesId, Guid CourseComponentsId)>();
 
-        new CourseSeeder().SeedCourseData(courses, courseCourseComponents, courseComponents);
+        //new CourseSeeder().SeedCourseData(courses, courseCourseComponents, courseComponents); // TODO: Figure out how to run seeder without flooding migration script
 
         modelBuilder.Entity<Course>()
             .HasData(courses);
