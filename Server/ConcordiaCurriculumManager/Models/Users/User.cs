@@ -1,8 +1,8 @@
-﻿using System.Text.Json;
+﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
 
-namespace ConcordiaCurriculumManager.Models;
+namespace ConcordiaCurriculumManager.Models.Users;
 
-public class User: BaseModel
+public class User : BaseModel
 {
     public required string FirstName { get; set; }
 
@@ -14,8 +14,5 @@ public class User: BaseModel
 
     public List<Role> Roles { get; set; } = new();
 
-    public override string ToString()
-    {
-        return JsonSerializer.Serialize(this);
-    }
+    public List<CourseCreationDossier> CourseCreationDossiers { get; set; } = new();
 }
