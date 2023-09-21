@@ -7,7 +7,6 @@ on:
   pull_request:
     paths:
       - 'App/**'
-      - 'CourseAdmin/**'
       - 'Server/**'
 
 jobs:
@@ -45,40 +44,6 @@ jobs:
       run: npm install --prefix App
 
     - name: Run ESLint
-      run: npm run lint --prefix App
-
-    - name: Run frontend tests
-      run: npm test --prefix App
-
-  all-tests:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    # Backend steps
-    - name: Setup .NET for backend
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '7.0.x'
-
-    - name: Restore dependencies for backend
-      run: dotnet restore Server/ConcordiaCurriculumManager/ConcordiaCurriculumManager.csproj
-
-    - name: Run backend tests
-      run: dotnet test Server/ConcordiaCurriculumManagerTest/ConcordiaCurriculumManagerTest.csproj
-
-    # Frontend steps
-    - name: Setup Node.js for frontend
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-
-    - name: Install dependencies for frontend
-      run: npm install --prefix App
-
-    - name: Run ESLint for frontend
       run: npm run lint --prefix App
 
     - name: Run frontend tests
