@@ -16,7 +16,7 @@ import {
 import logo from "../assets/logo.png";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { LoginDTO } from "../services/auth";
+import { AuthenticationResponse, login, LoginDTO } from "../services/auth";
 
 export default function Login() {
     const { register, handleSubmit } = useForm<LoginDTO>();
@@ -26,8 +26,20 @@ export default function Login() {
         setShowPassword(!showPassword);
     }
 
-    function onSubmit(data: unknown) {
-        console.log(data);
+    function onSubmit(data: LoginDTO) {
+        login(data)
+            .then(
+                (res: AuthenticationResponse) => {
+                    console.log(res);
+                    //deal with the access token here
+                },
+                (rej) => {
+                    console.log(rej);
+                }
+            )
+            .catch((err) => {
+                console.log(err);
+            });
     }
     return (
         <>
