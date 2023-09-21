@@ -4,7 +4,8 @@ const config = {
     tabWidth: 4,
     semi: true,
     singleQuote: false,
-    endOfLine: "auto"
+    endOfLine: "auto",
+    nextLine: false,
   };
   
   module.exports = config;
