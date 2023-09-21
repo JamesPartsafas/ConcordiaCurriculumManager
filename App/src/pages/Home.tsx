@@ -1,3 +1,10 @@
+import Header from "../shared/Header";
+
 export default function Home() {
-    return <h1>Hello World</h1>;
+    return (
+        <>
+            <Header></Header>
+            <h1>Hello World</h1>
+        </>
+    );
 }
