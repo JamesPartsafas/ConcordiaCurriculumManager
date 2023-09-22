@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Npgsql;
 using Swashbuckle.AspNetCore.Filters;
+using System;
 using System.Reflection;
 using System.Text;
 
@@ -119,6 +120,13 @@ public class Program
             });
         }
 
+        var corsSettings = builder.Configuration.GetSection(CorsSettings.SectionName).Get<CorsSettings>();
+
+        if (corsSettings is null || !Uri.IsWellFormedUriString(corsSettings.AllowedWebsite, UriKind.Absolute))
+        {
+            throw new ArgumentException("Invalid Allowed Website url");
+        }
+
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
@@ -132,9 +140,15 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseRouting();
+
+        app.UseCors(policy => policy.SetIsOriginAllowed(origin => origin.StartsWith(corsSettings.AllowedWebsite, StringComparison.OrdinalIgnoreCase))
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader()
+                                    .AllowCredentials()
+                                    .Build());
 
         app.UseAuthentication();
-        app.UseRouting();
         app.UseAuthorization();
 
         // Must use app.UseEndpoints for authorization middleware to run
