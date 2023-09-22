@@ -1,13 +1,12 @@
 ﻿using NpgsqlTypes;
-using System.Text.Json;
 
-namespace ConcordiaCurriculumManager.Models;
+namespace ConcordiaCurriculumManager.Models.Users;
 
 public enum RoleEnum
 {
     [PgName(nameof(Initiator))]
     Initiator,
-    
+
     [PgName(nameof(Admin))]
     Admin,
 
@@ -15,14 +14,9 @@ public enum RoleEnum
     FacultyMember
 }
 
-public class Role: BaseModel
+public class Role : BaseModel
 {
     public required RoleEnum UserRole { get; set; }
 
     public List<User> Users { get; set; } = new();
-
-    public override string ToString()
-    {
-        return JsonSerializer.Serialize(this);
-    }
 }

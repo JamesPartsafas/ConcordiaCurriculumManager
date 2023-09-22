@@ -1,5 +1,5 @@
 ﻿using System;
-using ConcordiaCurriculumManager.Models;
+using ConcordiaCurriculumManager.Models.Users;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
