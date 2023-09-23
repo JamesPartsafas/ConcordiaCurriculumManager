@@ -4,6 +4,7 @@ import {
     Checkbox,
     Container,
     FormControl,
+    Text,
     FormLabel,
     Heading,
     HStack,
@@ -14,14 +15,33 @@ import {
     Stack,
 } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AuthenticationResponse, login, LoginDTO } from "../services/auth";
 import jwt_decode from "jwt-decode";
+import { User } from "../services/user";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-export default function Login() {
+interface LoginProps {
+    setUser: (user: User | null) => void;
+}
+
+interface DecodedToken {
+    fName: string;
+    lName: string;
+    email: string;
+    roles: string[];
+    iat: number;
+    exp: number;
+    iss: string;
+    aud: string;
+}
+
+export default function Login({ setUser }: LoginProps) {
+    const navigate = useNavigate();
     const { register, handleSubmit } = useForm<LoginDTO>();
     const [showPassword, setShowPassword] = useState(false);
+    const [showError, setShowError] = useState(false);
 
     function toggleShowPassword() {
         setShowPassword(!showPassword);
@@ -34,16 +54,30 @@ export default function Login() {
                     console.log(res.data.accessToken);
                     //decode access token
                     //save access token in local storage
+                    //save user in context
                     //redirect to home page
                     //code:
                     if (res.data.accessToken != null) {
-                        const decodedToken = jwt_decode(res.data.accessToken);
+                        const decodedToken = jwt_decode<DecodedToken>(res.data.accessToken);
                         console.log(decodedToken);
                         localStorage.setItem("token", res.data.accessToken);
+                        const user: User = {
+                            firstName: decodedToken.fName,
+                            lastName: decodedToken.lName,
+                            email: decodedToken.email,
+                            roles: decodedToken.roles,
+                            issuedAtTimestamp: decodedToken.iat,
+                            expiresAtTimestamp: decodedToken.exp,
+                            issuer: decodedToken.iss,
+                            audience: decodedToken.aud,
+                        };
+                        setUser(user);
+                        navigate("/");
                     }
                 },
                 (rej) => {
                     console.log(rej);
+                    setShowError(true);
                 }
             )
             .catch((err) => {
@@ -71,6 +105,7 @@ export default function Login() {
                         >
                             <Stack spacing="6">
                                 <Stack spacing="5">
+                                    {showError && <Text color="red">Incorrect Credentials</Text>}
                                     <FormControl>
                                         <FormLabel htmlFor="email">Email</FormLabel>
                                         <Input
