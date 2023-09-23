@@ -17,6 +17,7 @@ import logo from "../assets/logo.png";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AuthenticationResponse, login, LoginDTO } from "../services/auth";
+import jwt_decode from "jwt-decode";
 
 export default function Login() {
     const { register, handleSubmit } = useForm<LoginDTO>();
@@ -30,8 +31,16 @@ export default function Login() {
         login(data)
             .then(
                 (res: AuthenticationResponse) => {
-                    console.log(res);
-                    //deal with the access token here
+                    console.log(res.data.accessToken);
+                    //decode access token
+                    //save access token in local storage
+                    //redirect to home page
+                    //code:
+                    if (res.data.accessToken != null) {
+                        const decodedToken = jwt_decode(res.data.accessToken);
+                        console.log(decodedToken);
+                        localStorage.setItem("token", res.data.accessToken);
+                    }
                 },
                 (rej) => {
                     console.log(rej);
@@ -41,22 +50,14 @@ export default function Login() {
                 console.log(err);
             });
     }
+
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Container
-                    maxW="lg"
-                    py={{ base: "12", md: "24" }}
-                    px={{ base: "0", sm: "8" }}
-                >
+                <Container maxW="lg" py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>
                     <Stack spacing="8">
                         <Stack spacing="6">
-                            <Image
-                                src={logo}
-                                width="50px"
-                                height="50px"
-                                margin="auto"
-                            />
+                            <Image src={logo} width="50px" height="50px" margin="auto" />
                             <Heading textAlign="center" size="lg">
                                 Log in to your account
                             </Heading>
@@ -71,29 +72,20 @@ export default function Login() {
                             <Stack spacing="6">
                                 <Stack spacing="5">
                                     <FormControl>
-                                        <FormLabel htmlFor="email">
-                                            Email
-                                        </FormLabel>
+                                        <FormLabel htmlFor="email">Email</FormLabel>
                                         <Input
                                             id="email"
                                             type="email"
                                             {...register("email", {
                                                 required: true,
-                                                pattern:
-                                                    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                                pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                                             })}
                                         />
-                                        <FormLabel htmlFor="password">
-                                            Password
-                                        </FormLabel>
+                                        <FormLabel htmlFor="password">Password</FormLabel>
                                         <InputGroup>
                                             <Input
                                                 id="password"
-                                                type={
-                                                    showPassword
-                                                        ? "text"
-                                                        : "password"
-                                                }
+                                                type={showPassword ? "text" : "password"}
                                                 {...register("password", {
                                                     required: true,
                                                 })}
@@ -104,18 +96,14 @@ export default function Login() {
                                                     size="sm"
                                                     onClick={toggleShowPassword}
                                                 >
-                                                    {showPassword
-                                                        ? "Hide"
-                                                        : "Show"}
+                                                    {showPassword ? "Hide" : "Show"}
                                                 </Button>
                                             </InputRightElement>
                                         </InputGroup>
                                     </FormControl>
                                 </Stack>
                                 <HStack justify="space-between">
-                                    <Checkbox defaultChecked>
-                                        Remember me
-                                    </Checkbox>
+                                    <Checkbox defaultChecked>Remember me</Checkbox>
                                     <Button variant="text" size="sm">
                                         Forgot password?
                                     </Button>
