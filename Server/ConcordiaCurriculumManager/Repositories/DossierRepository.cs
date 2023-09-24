@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ namespace ConcordiaCurriculumManager.Repositories;
 public interface IDossierRepository
 {
     Task<bool> SaveCourseCreationDossier(CourseCreationDossier dossier);
+    Task<List<Dossier>> GetDossiersByID(Guid userId);
 }
 
 public class DossierRepository : IDossierRepository
@@ -25,4 +27,13 @@ public class DossierRepository : IDossierRepository
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
+
+    public async Task<List<Dossier>> GetDossiersByID(Guid userId) {
+        var dbDossiers = await _dbContext.Dossiers
+            .Where(d => d.InitiatorId.Equals(userId))
+            .ToListAsync();
+        return dbDossiers;
+            
+    }
+
 }
