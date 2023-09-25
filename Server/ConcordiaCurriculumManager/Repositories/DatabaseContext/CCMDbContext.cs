@@ -1,5 +1,6 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext.Seeding;
 using ConcordiaCurriculumManager.Settings;
@@ -26,6 +27,8 @@ public class CCMDbContext : DbContext
     public DbSet<CourseComponent> CourseComponents { get; set; }
 
     public DbSet<CourseCreationDossier> CourseCreationDossiers { get; set; }
+
+    public DbSet<Dossier> Dossiers { get; set; }
 
     public DbSet<CourseReference> CourseReferences { get; set; }
 
@@ -67,6 +70,11 @@ public class CCMDbContext : DbContext
             .HasOne(course => course.CourseCreationDossier)
             .WithOne(dossier => dossier.NewCourse)
             .HasForeignKey<CourseCreationDossier>(dossier => dossier.NewCourseId);
+
+        modelBuilder.Entity<User>()
+          .HasMany(user => user.Dossiers)
+          .WithOne(dossier => dossier.Initiator)
+          .HasForeignKey(dossier => dossier.InitiatorId);
     }
 
     private void PreseedUsersAndRolesInDatabase(ModelBuilder modelBuilder)
