@@ -27,6 +27,8 @@ public class CCMDbContext : DbContext
 
     public DbSet<CourseCreationDossier> CourseCreationDossiers { get; set; }
 
+    public DbSet<CourseReference> CourseReferences { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -34,6 +36,15 @@ public class CCMDbContext : DbContext
         PreseedUsersAndRolesInDatabase(modelBuilder);
         PreseedCoursesAndCourseComponentsInDatabase(modelBuilder);
         ConfigureDossiersRelationship(modelBuilder);
+        ConfigureCourseReferencesRelationship(modelBuilder);
+    }
+
+    private static void ConfigureCourseReferencesRelationship(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<CourseReference>()
+            .HasMany(c => c.CourseReferenced)
+            .WithOne(c => c.CourseReference)
+            .HasForeignKey(c => c.CourseID);
     }
 
     private static void ConfigureUserRoleRelationship(ModelBuilder modelBuilder)

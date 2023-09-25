@@ -32,6 +32,8 @@ public class Course : BaseModel
     public List<CourseComponent> CourseComponents { get; set; } = new();
 
     public CourseCreationDossier? CourseCreationDossier { get; set; }
+
+    public CourseReference CourseReference { get; set; }
 }
 
 public enum CourseCareerEnum
