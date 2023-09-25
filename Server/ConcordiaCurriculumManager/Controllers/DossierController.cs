@@ -1,16 +1,10 @@
 ﻿using AutoMapper;
-using ConcordiaCurriculumManager.DTO;
-using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
-using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Services;
-using ConcordiaCurriculumManager.Swagger;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.Filters;
-using System.ComponentModel.DataAnnotations;
+
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -44,6 +38,7 @@ public class DossierController : Controller
             Guid userId = (await _userService.GetCurrentUser()).Id;
             var dossiers = await _dossierService.GetDossiersByID(userId);
             var dossiersDTOs = _mapper.Map<List<DossierDTO>>(dossiers);
+            _logger.LogInformation(string.Join(",", dossiersDTOs));
             return Ok(dossiersDTOs);
         }
         catch (Exception e)
