@@ -9,16 +9,6 @@ export interface AuthenticationResponse {
     };
 }
 
-export interface DecodedToken {
-    fName: string;
-    lName: string;
-    email: string;
-    roles: string[];
-    iat: number;
-    exp: number;
-    iss: string;
-    aud: string;
-}
 
 export interface LoginProps {
     setUser: (user: User | null) => void;

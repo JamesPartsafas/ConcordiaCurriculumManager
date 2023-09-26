@@ -20,13 +20,7 @@ import jwt_decode from "jwt-decode";
 import { User } from "../services/user";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import {
-    AuthenticationResponse,
-    DecodedToken,
-    LoginProps,
-    RegisterDTO,
-    registeration,
-} from "../services/auth";
+import { AuthenticationResponse, LoginProps, RegisterDTO, registeration } from "../services/auth";
 
 export default function Register({ setUser }: LoginProps) {
     const navigate = useNavigate();
@@ -49,18 +43,18 @@ export default function Register({ setUser }: LoginProps) {
                     //redirect to home page
                     //code:
                     if (res.data.accessToken != null) {
-                        const decodedToken = jwt_decode<DecodedToken>(res.data.accessToken);
+                        const decodedToken = jwt_decode<User>(res.data.accessToken);
                         console.log(decodedToken);
                         localStorage.setItem("token", res.data.accessToken);
                         const user: User = {
-                            firstName: decodedToken.fName,
-                            lastName: decodedToken.lName,
+                            firstName: decodedToken.firstName,
+                            lastName: decodedToken.lastName,
                             email: decodedToken.email,
                             roles: decodedToken.roles,
-                            issuedAtTimestamp: decodedToken.iat,
-                            expiresAtTimestamp: decodedToken.exp,
-                            issuer: decodedToken.iss,
-                            audience: decodedToken.aud,
+                            issuedAtTimestamp: decodedToken.issuedAtTimestamp,
+                            expiresAtTimestamp: decodedToken.expiresAtTimestamp,
+                            issuer: decodedToken.issuer,
+                            audience: decodedToken.audience,
                         };
                         setUser(user);
                         navigate("/");
