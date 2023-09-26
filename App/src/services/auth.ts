@@ -3,7 +3,9 @@ import axios from "axios";
 
 //types
 export interface AuthenticationResponse {
-    accessToken: string | null;
+    data: {
+        accessToken: string | null;
+    };
 }
 
 export interface LoginDTO {

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace ConcordiaCurriculumManager.Models;
 
@@ -44,5 +45,10 @@ public class BaseModel
 
             _modifiedDate = value;
         }
+    }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this);
     }
 }

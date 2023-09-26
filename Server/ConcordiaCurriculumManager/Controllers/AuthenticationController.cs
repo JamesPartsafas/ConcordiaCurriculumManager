@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO;
-using ConcordiaCurriculumManager.Models;
+using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManager.Swagger;
 using Microsoft.AspNetCore.Authorization;

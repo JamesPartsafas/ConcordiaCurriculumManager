@@ -1,4 +1,4 @@
-﻿using ConcordiaCurriculumManager.Models;
+﻿using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using ConcordiaCurriculumManager.Repositories;
 using Microsoft.EntityFrameworkCore;
