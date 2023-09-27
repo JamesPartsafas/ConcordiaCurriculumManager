@@ -1,0 +1,50 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'App/**'
+      - 'Server/**'
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'backend') || github.ref == 'refs/heads/main'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore Server/ConcordiaCurriculumManager/ConcordiaCurriculumManager.csproj
+
+    - name: Run backend tests
+      run: dotnet test Server/ConcordiaCurriculumManagerTest/ConcordiaCurriculumManagerTest.csproj
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'frontend') || github.ref == 'refs/heads/main'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install --prefix App
+
+    - name: Run ESLint
+      run: npm run lint --prefix App
+
+    - name: Run frontend tests
+      run: npm test --prefix App
