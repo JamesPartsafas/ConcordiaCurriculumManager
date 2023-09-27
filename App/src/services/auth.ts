@@ -42,7 +42,7 @@ export function login(dto: LoginDTO): Promise<AuthenticationResponse> {
 }
 
 export function RegisterUser(dto: RegisterDTO): Promise<AuthenticationResponse> {
-    return axios.post("/Authentication/Register", dto);
+    return axios.post("/Authentication/Register", dto,  { headers: { 'Content-Type': 'application/x.ccm.authentication.create+json;v=1' } });
 }
 
 export function logout(): Promise<void> {
