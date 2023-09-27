@@ -14,6 +14,8 @@ public class User: BaseModel
 
     public List<Role> Roles { get; set; } = new();
 
+    public List<Group> Groups { get; set; } = new();
+
     public override string ToString()
     {
         return JsonSerializer.Serialize(this);

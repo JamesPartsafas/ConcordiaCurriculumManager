@@ -20,6 +20,8 @@ public class CCMDbContext : DbContext
 
     public DbSet<Role> Roles { get; set; }
 
+    public DbSet<Group> Groups { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -87,9 +89,29 @@ public class CCMDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasData(users);
 
+        var groups = new List<Group>();
+        var userGroups = new List<(Guid UsersId, Guid GroupsId)>();
+        foreach(var group in _seedDatabase.Groups)
+        {
+            groups.Add(new()
+            {
+                Id = group.Id,
+                Name = group.Name,
+                Members = users.Where(user => group.Members.Contains(user)).ToList()
+            });
+        }
+
+        modelBuilder.Entity<Group>()
+            .HasData(groups);
+
         modelBuilder.Entity<User>()
             .HasMany(user => user.Roles)
             .WithMany(role => role.Users)
             .UsingEntity(j => j.HasData(userRoles.Select(ur => new { ur.UsersId, ur.RolesId })));
+
+        modelBuilder.Entity<User>()
+            .HasMany(user => user.Groups)
+            .WithMany(group => group.Members)
+            .UsingEntity(j => j.HasData(userGroups.Select(ug => new { UserId = ug.UsersId, GroupId = ug.GroupsId })));
     }
 }

@@ -9,4 +9,6 @@ public class SeedDatabase
     public bool SkipUserDatabaseSeed { get; set; } = true;
 
     public List<User> Users { get; set; } = new();
+
+    public List<Group> Groups { get; set; } = new();
 }
