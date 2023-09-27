@@ -9,7 +9,6 @@ export interface AuthenticationResponse {
     };
 }
 
-
 export interface LoginProps {
     setUser: (user: User | null) => void;
 }
@@ -31,7 +30,7 @@ export function login(dto: LoginDTO): Promise<AuthenticationResponse> {
     return axios.post("/Authentication/Login", dto);
 }
 
-export function registeration(dto: RegisterDTO): Promise<AuthenticationResponse> {
+export function RegisterUser(dto: RegisterDTO): Promise<AuthenticationResponse> {
     return axios.post("/Authentication/Register", dto);
 }
 

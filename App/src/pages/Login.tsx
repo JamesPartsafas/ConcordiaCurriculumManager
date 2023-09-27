@@ -16,12 +16,7 @@ import {
 } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
-import {
-    AuthenticationResponse,
-    login,
-    LoginDTO,
-    LoginProps,
-} from "../services/auth";
+import { AuthenticationResponse, login, LoginDTO, LoginProps } from "../services/auth";
 import jwt_decode from "jwt-decode";
 import { User } from "../services/user";
 import { Link, useNavigate } from "react-router-dom";

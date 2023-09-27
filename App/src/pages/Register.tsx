@@ -20,7 +20,7 @@ import jwt_decode from "jwt-decode";
 import { User } from "../services/user";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { AuthenticationResponse, LoginProps, RegisterDTO, registeration } from "../services/auth";
+import { AuthenticationResponse, LoginProps, RegisterDTO, RegisterUser } from "../services/auth";
 
 export default function Register({ setUser }: LoginProps) {
     const navigate = useNavigate();
@@ -33,7 +33,7 @@ export default function Register({ setUser }: LoginProps) {
     }
 
     function onSubmit(data: RegisterDTO) {
-        registeration(data)
+        RegisterUser(data)
             .then(
                 (res: AuthenticationResponse) => {
                     console.log(res.data.accessToken);
