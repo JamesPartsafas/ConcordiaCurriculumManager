@@ -16,21 +16,21 @@ import {
 } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
-import {
-    AuthenticationResponse,
-    DecodedToken,
-    login,
-    LoginDTO,
-    LoginProps,
-} from "../services/auth";
 import jwt_decode from "jwt-decode";
 import { User } from "../services/user";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import {
+    AuthenticationResponse,
+    DecodedToken,
+    LoginProps,
+    RegisterDTO,
+    RegisterUser,
+} from "../services/auth";
 
-export default function Login({ setUser }: LoginProps) {
+export default function Register({ setUser }: LoginProps) {
     const navigate = useNavigate();
-    const { register, handleSubmit } = useForm<LoginDTO>();
+    const { register, handleSubmit } = useForm<RegisterDTO>();
     const [showPassword, setShowPassword] = useState(false);
     const [showError, setShowError] = useState(false);
 
@@ -38,8 +38,8 @@ export default function Login({ setUser }: LoginProps) {
         setShowPassword(!showPassword);
     }
 
-    function onSubmit(data: LoginDTO) {
-        login(data)
+    function onSubmit(data: RegisterDTO) {
+        RegisterUser(data)
             .then(
                 (res: AuthenticationResponse) => {
                     console.log(res.data.accessToken);
@@ -84,7 +84,7 @@ export default function Login({ setUser }: LoginProps) {
                         <Stack spacing="6">
                             <Image src={logo} width="50px" height="50px" margin="auto" />
                             <Heading textAlign="center" size="lg">
-                                Log in to your account
+                                Register New Account
                             </Heading>
                         </Stack>
                         <Box
@@ -96,8 +96,24 @@ export default function Login({ setUser }: LoginProps) {
                         >
                             <Stack spacing="6">
                                 <Stack spacing="5">
-                                    {showError && <Text color="red">Incorrect Credentials</Text>}
+                                    {showError && <Text color="red">Invalid Credentials</Text>}
                                     <FormControl>
+                                        <FormLabel htmlFor="firstName">First Name</FormLabel>
+                                        <Input
+                                            id="firstName"
+                                            type="firstName"
+                                            {...register("firstName", {
+                                                required: true,
+                                            })}
+                                        />
+                                        <FormLabel htmlFor="lastName">Last Name</FormLabel>
+                                        <Input
+                                            id="lastName"
+                                            type="lastName"
+                                            {...register("lastName", {
+                                                required: true,
+                                            })}
+                                        />
                                         <FormLabel htmlFor="email">Email</FormLabel>
                                         <Input
                                             id="email"
@@ -130,9 +146,11 @@ export default function Login({ setUser }: LoginProps) {
                                 </Stack>
                                 <HStack justify="space-between">
                                     <Checkbox defaultChecked>Remember me</Checkbox>
-                                    <Button variant="text" size="sm">
-                                        Forgot password?
-                                    </Button>
+                                    <Link to="/login">
+                                        <Button variant="text" size="sm">
+                                            Back to sign in
+                                        </Button>
+                                    </Link>
                                 </HStack>
                                 <Stack spacing="6">
                                     <Button
@@ -141,20 +159,8 @@ export default function Login({ setUser }: LoginProps) {
                                         _hover={{ bg: "#7A1D2E" }}
                                         type="submit"
                                     >
-                                        Sign in
+                                        Create Account
                                     </Button>
-                                </Stack>
-                                <Stack spacing="6">
-                                    <Link to="/register">
-                                        <Button
-                                            backgroundColor="#932439"
-                                            color="white"
-                                            _hover={{ bg: "#7A1D2E" }}
-                                            type="submit"
-                                        >
-                                            Register New Account
-                                        </Button>
-                                    </Link>
                                 </Stack>
                             </Stack>
                         </Box>
