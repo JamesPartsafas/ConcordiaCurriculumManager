@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { User } from "./services/user";
 import { createContext, useState } from "react";
+import AddCourse from "./pages/AddCourse";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -19,6 +20,7 @@ export function App() {
             <UserContext.Provider value={user}>
                 <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/add-course" element={<AddCourse />} />
                     <Route
                         path="/login"
                         element={<Login setUser={setUser} />}
