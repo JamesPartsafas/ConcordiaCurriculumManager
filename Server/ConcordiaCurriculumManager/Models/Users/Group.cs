@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace ConcordiaCurriculumManager.Models;
+namespace ConcordiaCurriculumManager.Models.Users;
 
 public class Group : BaseModel
 {
