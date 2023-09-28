@@ -51,7 +51,6 @@ export default function Register({ setUser }: LoginProps) {
                     if (res.data.accessToken != null) {
                         const decodedToken = jwt_decode<DecodedToken>(res.data.accessToken);
                         console.log(decodedToken);
-                        localStorage.setItem("token", res.data.accessToken);
                         const user: User = {
                             firstName: decodedToken.fName,
                             lastName: decodedToken.lName,

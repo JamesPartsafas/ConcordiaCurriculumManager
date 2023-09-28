@@ -44,7 +44,6 @@ export default function Login({ setUser }: LoginProps) {
                 (res: AuthenticationResponse) => {
                     console.log(res.data.accessToken);
                     //decode access token
-                    //save access token in local storage
                     //save user in context
                     //redirect to home page
                     //code:

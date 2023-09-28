@@ -13,7 +13,7 @@ export interface LoginProps {
     setUser: (user: User | null) => void;
 }
 
-export interface DecodedToken{
+export interface DecodedToken {
     fName: string;
     lName: string;
     email: string;
@@ -46,7 +46,14 @@ export function login(dto: LoginDTO): Promise<AuthenticationResponse> {
 }
 
 export function RegisterUser(dto: RegisterDTO): Promise<AuthenticationResponse> {
-    return axios.post("/Authentication/Register", dto,  { headers: { 'Content-Type': 'application/x.ccm.authentication.create+json;v=1' } });
+    return axios
+        .post("/Authentication/Register", dto, {
+            headers: { "Content-Type": "application/x.ccm.authentication.create+json;v=1" },
+        })
+        .then((response) => {
+            localStorage.setItem("token", response.data.accessToken);
+            return response;
+        });
 }
 
 export function logout(): Promise<void> {
