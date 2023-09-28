@@ -1,5 +1,6 @@
 //this file is to define user related types and apis
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 import { User } from "./user";
 
 //types
@@ -61,4 +62,20 @@ export function logout(): Promise<void> {
         //remove token from local storage
         localStorage.removeItem("token");
     });
+}
+
+export function decodeTokenToUser(accessToken: string) {
+    const decodedToken = jwt_decode<DecodedToken>(accessToken);
+    const user: User = {
+        firstName: decodedToken.fName,
+        lastName: decodedToken.lName,
+        email: decodedToken.email,
+        roles: decodedToken.roles,
+        issuedAtTimestamp: decodedToken.iat,
+        expiresAtTimestamp: decodedToken.exp,
+        issuer: decodedToken.iss,
+        audience: decodedToken.aud,
+    };
+
+    return user;
 }

@@ -9,8 +9,7 @@ import Login from "./pages/Login";
 import { User } from "./services/user";
 import { createContext, useEffect, useState } from "react";
 import Register from "./pages/Register";
-import { DecodedToken } from "./services/auth";
-import jwt_decode from "jwt-decode";
+import { decodeTokenToUser } from "./services/auth";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -22,18 +21,7 @@ export function App() {
         const token = localStorage.getItem("token");
 
         if (token != null) {
-            const decodedToken = jwt_decode<DecodedToken>(token);
-
-            const user: User = {
-                firstName: decodedToken.fName,
-                lastName: decodedToken.lName,
-                email: decodedToken.email,
-                roles: decodedToken.roles,
-                issuedAtTimestamp: decodedToken.iat,
-                expiresAtTimestamp: decodedToken.exp,
-                issuer: decodedToken.iss,
-                audience: decodedToken.aud,
-            };
+            const user: User = decodeTokenToUser(token);
             setUser(user);
         }
     }, []);
