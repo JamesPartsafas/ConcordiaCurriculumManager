@@ -150,7 +150,6 @@ export default function Login({ setUser }: LoginProps) {
                                             backgroundColor="#932439"
                                             color="white"
                                             _hover={{ bg: "#7A1D2E" }}
-                                            type="submit"
                                         >
                                             Register New Account
                                         </Button>
