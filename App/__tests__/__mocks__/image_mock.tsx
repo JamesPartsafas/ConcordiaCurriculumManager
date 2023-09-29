@@ -1,3 +1,3 @@
 module.exports = {
-  default: 'image-stub',
+    default: "image-stub",
 };
