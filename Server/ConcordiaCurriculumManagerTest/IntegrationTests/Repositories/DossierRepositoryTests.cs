@@ -46,7 +46,10 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
             {
                 Initiator = user,
                 InitiatorId = Guid.NewGuid(),
-                Title = "test"
+                Title = "test title",
+                Description = "test description",
+                Published = false
+
             };
 
             dbContext.Users.Add(user);

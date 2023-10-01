@@ -1,8 +1,10 @@
-﻿using ConcordiaCurriculumManager.Models.Users;
+﻿using Castle.Core.Logging;
+using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Services;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using Moq;
 using System;
 namespace ConcordiaCurriculumManagerTest.UnitTests.Services
@@ -11,14 +13,16 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
     public class DossierServiceTest
     {
         private Mock<IDossierRepository> dossierRepository = null!;
+        private Mock<ILogger<DossierService>> logger = null!;
         private DossierService dossierService = null!;
 
         [TestInitialize]
         public void TestInitialize()
         {
+            logger = new Mock<ILogger<DossierService>>();
             dossierRepository = new Mock<IDossierRepository>();
 
-            dossierService = new DossierService(dossierRepository.Object);
+            dossierService = new DossierService(logger.Object, dossierRepository.Object);
         }
 
         [TestMethod]
