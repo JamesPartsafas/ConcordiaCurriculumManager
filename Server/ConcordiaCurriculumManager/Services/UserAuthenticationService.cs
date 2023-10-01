@@ -68,8 +68,8 @@ public class UserAuthenticationService : IUserAuthenticationService
         var hashedPassword = _inputHasher.Hash(user.Password);
         user.Password = hashedPassword;
 
-        var visitorRole = new Role() { UserRole = RoleEnum.FacultyMember };
-        user.Roles.Add(visitorRole);
+        user.Roles.Add(new Role() { UserRole = RoleEnum.FacultyMember });
+        user.Roles.Add(new Role() { UserRole = RoleEnum.Initiator });
 
         var savedUser = await _userRepository.SaveUser(user);
 
