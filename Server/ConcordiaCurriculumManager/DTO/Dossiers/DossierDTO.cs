@@ -10,7 +10,11 @@ public class DossierDTO
 
     public required Guid InitiatorId { get; set; }
 
-    public required String Title { get; set; }
+    public required string Title { get; set; }
+
+    public required string Description { get; set; }
+
+    public required bool Published { get; set; }
 }
 
 
