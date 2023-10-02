@@ -10,6 +10,7 @@ public interface IDossierRepository
 {
     Task<bool> SaveCourseCreationDossier(CourseCreationDossier dossier);
     Task<List<Dossier>> GetDossiersByID(Guid userId);
+    Task<bool> SaveDossier(Dossier dossier);
 }
 
 public class DossierRepository : IDossierRepository
@@ -34,6 +35,12 @@ public class DossierRepository : IDossierRepository
             .ToListAsync();
         return dbDossiers;
             
+    }
+
+    public async Task<bool> SaveDossier(Dossier dossier) {
+        await _dbContext.Dossiers.AddAsync(dossier);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
     }
 
 }
