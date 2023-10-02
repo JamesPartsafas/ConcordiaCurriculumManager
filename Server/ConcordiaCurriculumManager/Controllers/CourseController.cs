@@ -64,7 +64,7 @@ public class CourseController : Controller
 
     [HttpPost(nameof(InitiateCourseCreation))]
     [Consumes("application/json")]
-    [Authorize] ////////// TODO: Add role check
+    [Authorize(Roles = RoleNames.Initiator)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status201Created, "Course creation dossier created successfully", typeof(Guid))]

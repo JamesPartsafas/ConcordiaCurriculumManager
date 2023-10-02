@@ -46,7 +46,10 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
             {
                 Initiator = user,
                 InitiatorId = Guid.NewGuid(),
-                Title = "test"
+                Title = "test title",
+                Description = "test description",
+                Published = false
+
             };
 
             dbContext.Users.Add(user);
@@ -57,6 +60,21 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
             Assert.IsNotNull(result);
             Assert.AreEqual(result.Count(), 1);
             Assert.AreEqual(user.Id, dossier.InitiatorId);
+        }
+
+        [TestMethod]
+        public async Task SaveDossier_ReturnsTrue() {
+            var dossier = new Dossier
+            {
+                InitiatorId = Guid.NewGuid(),
+                Title = "test title",
+                Description = "test description",
+                Published = false
+            };
+
+            var result = await dossierRepository.SaveDossier(dossier);
+
+            Assert.IsTrue(result);
         }
     }
 }

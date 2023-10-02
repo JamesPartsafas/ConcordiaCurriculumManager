@@ -6,13 +6,16 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
     public class Dossier : BaseModel
     {
-        public required User Initiator { get; set; }
+        public User? Initiator { get; set; }
 
         public required Guid InitiatorId { get; set; }
 
-        public required String Title { get; set; }
+        public required string Title { get; set; }
 
-        public List<CourseCreationRequest> CourseCreationRequests { get; set; } = new List<CourseCreationRequest>();
+        public required string Description { get; set; }
+
+        public required bool Published { get; set; }
+
     }
 }
 

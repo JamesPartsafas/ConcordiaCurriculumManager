@@ -4,6 +4,7 @@ using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConcordiaCurriculumManager.Migrations
 {
     [DbContext(typeof(CCMDbContext))]
-    partial class CCMDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231002012431_AddFieldsToDossiers")]
+    partial class AddFieldsToDossiers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -288,7 +291,7 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.ToTable("CourseReferences");
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.CourseCreationRequest", b =>
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossier.CourseCreationDossier", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -296,9 +299,6 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("DossierId")
-                        .HasColumnType("uuid");
 
                     b.Property<Guid>("InitiatorId")
                         .HasColumnType("uuid");
@@ -311,14 +311,12 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DossierId");
-
                     b.HasIndex("InitiatorId");
 
                     b.HasIndex("NewCourseId")
                         .IsUnique();
 
-                    b.ToTable("CourseCreationRequests");
+                    b.ToTable("CourseCreationDossiers");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.Dossier", b =>
@@ -518,27 +516,19 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Navigation("CourseReferencing");
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.CourseCreationRequest", b =>
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossier.CourseCreationDossier", b =>
                 {
-                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.Dossier", "Dossier")
-                        .WithMany()
-                        .HasForeignKey("DossierId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ConcordiaCurriculumManager.Models.Users.User", "Initiator")
-                        .WithMany("CourseCreationRequests")
+                        .WithMany("CourseCreationDossiers")
                         .HasForeignKey("InitiatorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Course", "NewCourse")
-                        .WithOne("CourseCreationRequest")
-                        .HasForeignKey("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.CourseCreationRequest", "NewCourseId")
+                        .WithOne("CourseCreationDossier")
+                        .HasForeignKey("ConcordiaCurriculumManager.Models.Curriculum.Dossier.CourseCreationDossier", "NewCourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Dossier");
 
                     b.Navigation("Initiator");
 
@@ -597,7 +587,7 @@ namespace ConcordiaCurriculumManager.Migrations
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Users.User", b =>
                 {
-                    b.Navigation("CourseCreationRequests");
+                    b.Navigation("CourseCreationDossiers");
 
                     b.Navigation("Dossiers");
                 });

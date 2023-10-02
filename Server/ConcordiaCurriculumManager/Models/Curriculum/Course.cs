@@ -21,7 +21,7 @@ public class Course : BaseModel
 
     public required CourseCareerEnum Career { get; set; }
 
-    public string EquivalentCourses { get; set; }
+    public string? EquivalentCourses { get; set; }
 
     public required CourseStateEnum CourseState { get; set; }
 
@@ -33,7 +33,10 @@ public class Course : BaseModel
 
     public CourseCreationRequest? CourseCreationRequest { get; set; }
 
-    public CourseReference CourseReference { get; set; }
+    // Self-reference related fields
+    public ICollection<CourseReference>? CourseReferenced { get; set; }
+
+    public ICollection<CourseReference>? CourseReferencing { get; set; }
 }
 
 public enum CourseCareerEnum
