@@ -6,8 +6,6 @@ public class CourseCreationRequest : BaseModel
 {
     public Guid InitiatorId { get; set; }
 
-    public User Initiator { get; set; }
-
     public Guid NewCourseId { get; set; }
 
     public Course NewCourse { get; set; }

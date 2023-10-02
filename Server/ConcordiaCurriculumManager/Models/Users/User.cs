@@ -14,7 +14,5 @@ public class User : BaseModel
 
     public List<Role> Roles { get; set; } = new();
 
-    public List<CourseCreationRequest> CourseCreationRequests { get; set; } = new();
-
     public List<Dossier> Dossiers { get; set; } = new();
 }

@@ -60,11 +60,6 @@ public class CCMDbContext : DbContext
 
     private static void ConfigureDossiersRelationship(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
-            .HasMany(user => user.CourseCreationRequests)
-            .WithOne(dossier => dossier.Initiator)
-            .HasForeignKey(dossier => dossier.InitiatorId);
-
         modelBuilder.Entity<Course>()
             .HasOne(course => course.CourseCreationRequest)
             .WithOne(dossier => dossier.NewCourse)
