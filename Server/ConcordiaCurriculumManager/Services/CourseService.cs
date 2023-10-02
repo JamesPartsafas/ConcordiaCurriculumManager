@@ -12,7 +12,7 @@ public interface ICourseService
     public IEnumerable<CourseCareerDTO> GetAllCourseCareers();
     public IEnumerable<CourseComponentDTO> GetAllCourseComponents();
     public Task<IEnumerable<string>> GetAllCourseSubjects();
-    public Task<CourseCreationRequest> InitiateCourseCreation(CourseCreationInitiationDTO initiation, User user);
+    public Task<CourseCreationRequest> InitiateCourseCreation(CourseCreationInitiationDTO initiation, Guid userId);
 }
 
 public class CourseService : ICourseService
@@ -56,7 +56,7 @@ public class CourseService : ICourseService
         return await _courseRepository.GetUniqueCourseSubjects();
     }
 
-    public async Task<CourseCreationRequest> InitiateCourseCreation(CourseCreationInitiationDTO initiation, User user)
+    public async Task<CourseCreationRequest> InitiateCourseCreation(CourseCreationInitiationDTO initiation, Guid userId)
     {
         var exists = await _courseRepository.GetCourseBySubjectAndCatalog(initiation.Subject, initiation.Catalog) is not null;
         if (exists)
@@ -71,9 +71,9 @@ public class CourseService : ICourseService
             _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${dossier?.Id}: does not exist");
             throw new Exception("Error retrieving the dossier: does not exist");
         }
-        else if (dossier.InitiatorId != user.Id)
+        else if (dossier.InitiatorId != userId)
         {
-            _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${dossier.Id}: does not belong to user ${typeof(User)} ${user.Id}");
+            _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${dossier.Id}: does not belong to user ${typeof(User)} ${userId}");
             throw new Exception("Error retrieving the dossier: does not belong to the user");
         }
 
@@ -100,10 +100,10 @@ public class CourseService : ICourseService
         bool courseCreated = await _courseRepository.SaveCourse(course);
         if (!courseCreated)
         {
-            _logger.LogWarning($"Error inserting ${typeof(Course)} ${course.Id} by {typeof(User)} ${user.Id}");
+            _logger.LogWarning($"Error inserting ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
             throw new Exception("Error registering the course");
         }
-        _logger.LogInformation($"Inserted ${typeof(Course)} ${course.Id} by {typeof(User)} ${user.Id}");
+        _logger.LogInformation($"Inserted ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
 
         var courseCreationRequest = new CourseCreationRequest { Id = Guid.NewGuid(), NewCourseId = course.Id, DossierId = dossier.Id, NewCourse = course, Dossier = dossier };
         bool requestCreated = await _dossierRepository.SaveCourseCreationRequest(courseCreationRequest);

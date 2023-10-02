@@ -3,6 +3,7 @@ using ConcordiaCurriculumManager.DTO;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
+using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManager.Swagger;
 using Microsoft.AspNetCore.Authorization;
@@ -73,8 +74,8 @@ public class CourseController : Controller
     {
         try
         {
-            var user = await _userService.GetCurrentUser();
-            var courseCreationRequest = await _courseService.InitiateCourseCreation(initiation, user);
+            Guid userId = Guid.Parse(_userService.GetCurrentUserClaim(Claims.Id));
+            var courseCreationRequest = await _courseService.InitiateCourseCreation(initiation, userId);
             var courseCreationRequestDTO = _mapper.Map<CourseCreationRequestDTO>(courseCreationRequest);
 
             return Created($"/{nameof(InitiateCourseCreation)}", courseCreationRequestDTO);
