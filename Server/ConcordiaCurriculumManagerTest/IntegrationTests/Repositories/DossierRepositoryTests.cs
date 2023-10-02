@@ -63,6 +63,26 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
         }
 
         [TestMethod]
+        public async Task GetDossierByDossierId_ValidId_ReturnsDossier()
+        {
+            var dossier = new Dossier
+            {
+                InitiatorId = Guid.NewGuid(),
+                Title = "test title",
+                Description = "test description",
+                Published = false
+
+            };
+
+            dbContext.Dossiers.Add(dossier);
+            await dbContext.SaveChangesAsync();
+
+            var result = await dossierRepository.GetDossierByDossierId(dossier.Id);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result, dossier);
+        }
+
+        [TestMethod]
         public async Task SaveDossier_ReturnsTrue() {
             var dossier = new Dossier
             {

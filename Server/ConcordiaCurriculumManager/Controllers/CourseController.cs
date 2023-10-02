@@ -67,16 +67,17 @@ public class CourseController : Controller
     [Authorize(Roles = RoleNames.Initiator)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Course creation dossier created successfully", typeof(Guid))]
+    [SwaggerResponse(StatusCodes.Status201Created, "Course creation dossier created successfully", typeof(CourseCreationRequestDTO))]
     [SwaggerRequestExample(typeof(CourseCreationInitiationDTO), typeof(CourseCreationInitiationDTOExample))]
     public async Task<ActionResult> InitiateCourseCreation([FromBody, Required] CourseCreationInitiationDTO initiation)
     {
         try
         {
             var user = await _userService.GetCurrentUser();
-            var response = await _courseService.InitiateCourseCreation(initiation, user);
+            var courseCreationRequest = await _courseService.InitiateCourseCreation(initiation, user);
+            var courseCreationRequestDTO = _mapper.Map<CourseCreationRequestDTO>(courseCreationRequest);
 
-            return Created($"/{nameof(InitiateCourseCreation)}", response.Id);
+            return Created($"/{nameof(InitiateCourseCreation)}", courseCreationRequestDTO);
         }
         catch (ArgumentException e)
         {
