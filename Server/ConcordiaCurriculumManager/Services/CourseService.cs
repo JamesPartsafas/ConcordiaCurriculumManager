@@ -71,7 +71,7 @@ public class CourseService : ICourseService
             _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${dossier?.Id}: does not exist");
             throw new Exception("Error retrieving the dossier: does not exist");
         }
-        else if (dossier.Initiator.Id != user.Id)
+        else if (dossier.InitiatorId != user.Id)
         {
             _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${dossier.Id}: does not belong to user ${typeof(User)} ${user.Id}");
             throw new Exception("Error retrieving the dossier: does not belong to the user");
