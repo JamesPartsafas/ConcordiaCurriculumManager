@@ -2,7 +2,6 @@
 using ConcordiaCurriculumManager.DTO;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManager.Swagger;
@@ -70,12 +69,12 @@ public class CourseController : Controller
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status201Created, "Course creation dossier created successfully", typeof(Guid))]
     [SwaggerRequestExample(typeof(CourseCreationInitiationDTO), typeof(CourseCreationInitiationDTOExample))]
-    public async Task<ActionResult> InitiateCourseCreation([FromBody, Required] CourseCreationInitiationDTO initiation)
+    public async Task<ActionResult> InitiateCourseCreation([FromBody, Required] CourseCreationInitiationDTO initiation, Guid dossierId)
     {
         try
         {
             var user = await _userService.GetCurrentUser();
-            var response = await _courseService.InitiateCourseCreation(initiation, user);
+            var response = await _courseService.InitiateCourseCreation(initiation, user, dossierId);
 
             return Created($"/{nameof(InitiateCourseCreation)}", response.Id);
         }

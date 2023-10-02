@@ -1,5 +1,4 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext.Seeding;
@@ -26,7 +25,7 @@ public class CCMDbContext : DbContext
 
     public DbSet<CourseComponent> CourseComponents { get; set; }
 
-    public DbSet<CourseCreationDossier> CourseCreationDossiers { get; set; }
+    public DbSet<CourseCreationRequest> CourseCreationRequests { get; set; }
 
     public DbSet<Dossier> Dossiers { get; set; }
 
@@ -62,19 +61,24 @@ public class CCMDbContext : DbContext
     private static void ConfigureDossiersRelationship(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
-            .HasMany(user => user.CourseCreationDossiers)
+            .HasMany(user => user.CourseCreationRequests)
             .WithOne(dossier => dossier.Initiator)
             .HasForeignKey(dossier => dossier.InitiatorId);
 
         modelBuilder.Entity<Course>()
-            .HasOne(course => course.CourseCreationDossier)
+            .HasOne(course => course.CourseCreationRequest)
             .WithOne(dossier => dossier.NewCourse)
-            .HasForeignKey<CourseCreationDossier>(dossier => dossier.NewCourseId);
+            .HasForeignKey<CourseCreationRequest>(dossier => dossier.NewCourseId);
 
         modelBuilder.Entity<User>()
           .HasMany(user => user.Dossiers)
           .WithOne(dossier => dossier.Initiator)
           .HasForeignKey(dossier => dossier.InitiatorId);
+
+        modelBuilder.Entity<Dossier>()
+            .HasMany(dossier => dossier.CourseCreationRequests)
+            .WithOne(request => request.Dossier)
+            .HasForeignKey(request => request.DossierId);
     }
 
     private void PreseedUsersAndRolesInDatabase(ModelBuilder modelBuilder)

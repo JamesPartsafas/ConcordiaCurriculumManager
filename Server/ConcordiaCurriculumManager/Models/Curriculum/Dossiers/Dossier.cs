@@ -1,4 +1,4 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
+﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
@@ -11,6 +11,8 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
         public required Guid InitiatorId { get; set; }
 
         public required String Title { get; set; }
+
+        public List<CourseCreationRequest> CourseCreationRequests { get; set; } = new List<CourseCreationRequest>();
     }
 }
 

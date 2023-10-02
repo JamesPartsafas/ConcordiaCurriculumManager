@@ -1,8 +1,8 @@
 ﻿using ConcordiaCurriculumManager.Models.Users;
 
-namespace ConcordiaCurriculumManager.Models.Curriculum.Dossier;
+namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 
-public class CourseCreationDossier : BaseModel
+public class CourseCreationRequest : BaseModel
 {
     public Guid InitiatorId { get; set; }
 
@@ -11,4 +11,8 @@ public class CourseCreationDossier : BaseModel
     public Guid NewCourseId { get; set; }
 
     public Course NewCourse { get; set; }
+
+    public Guid DossierId {  get; set; }
+
+    public Dossier Dossier { get; set; }
 }
