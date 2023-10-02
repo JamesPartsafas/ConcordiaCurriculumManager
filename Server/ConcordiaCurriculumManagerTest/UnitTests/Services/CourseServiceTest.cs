@@ -76,7 +76,7 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
         dossierRepository.Setup(cr => cr.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
 
-        await courseService.InitiateCourseCreation(GetSampleCourseCreationInitiationDTO(dossier), user.Id);
+        await courseService.InitiateCourseCreation(GetSampleCourseCreationInitiationDTO(dossier), Guid.NewGuid());
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
 
