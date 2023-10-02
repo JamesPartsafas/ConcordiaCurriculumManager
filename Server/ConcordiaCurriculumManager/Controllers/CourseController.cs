@@ -69,12 +69,12 @@ public class CourseController : Controller
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status201Created, "Course creation dossier created successfully", typeof(Guid))]
     [SwaggerRequestExample(typeof(CourseCreationInitiationDTO), typeof(CourseCreationInitiationDTOExample))]
-    public async Task<ActionResult> InitiateCourseCreation([FromBody, Required] CourseCreationInitiationDTO initiation, Guid dossierId)
+    public async Task<ActionResult> InitiateCourseCreation([FromBody, Required] CourseCreationInitiationDTO initiation)
     {
         try
         {
             var user = await _userService.GetCurrentUser();
-            var response = await _courseService.InitiateCourseCreation(initiation, user, dossierId);
+            var response = await _courseService.InitiateCourseCreation(initiation, user);
 
             return Created($"/{nameof(InitiateCourseCreation)}", response.Id);
         }

@@ -12,7 +12,7 @@ public interface ICourseService
     public IEnumerable<CourseCareerDTO> GetAllCourseCareers();
     public IEnumerable<CourseComponentDTO> GetAllCourseComponents();
     public Task<IEnumerable<string>> GetAllCourseSubjects();
-    public Task<CourseCreationRequest> InitiateCourseCreation(CourseCreationInitiationDTO initiation, User user, Guid dossierId);
+    public Task<CourseCreationRequest> InitiateCourseCreation(CourseCreationInitiationDTO initiation, User user);
 }
 
 public class CourseService : ICourseService
@@ -56,7 +56,7 @@ public class CourseService : ICourseService
         return await _courseRepository.GetUniqueCourseSubjects();
     }
 
-    public async Task<CourseCreationRequest> InitiateCourseCreation(CourseCreationInitiationDTO initiation, User user, Guid dossierId)
+    public async Task<CourseCreationRequest> InitiateCourseCreation(CourseCreationInitiationDTO initiation, User user)
     {
         var exists = await _courseRepository.GetCourseBySubjectAndCatalog(initiation.Subject, initiation.Catalog) is not null;
         if (exists)
@@ -64,7 +64,7 @@ public class CourseService : ICourseService
             throw new ArgumentException("The course already exists");
         }
 
-        Dossier? dossier = await _dossierRepository.GetDossierByDossierId(dossierId);
+        Dossier? dossier = await _dossierRepository.GetDossierByDossierId(initiation.DossierId);
 
         if (dossier == null)
         {
