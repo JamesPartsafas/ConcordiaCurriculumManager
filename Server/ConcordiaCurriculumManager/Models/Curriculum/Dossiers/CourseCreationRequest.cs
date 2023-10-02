@@ -4,13 +4,11 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 
 public class CourseCreationRequest : BaseModel
 {
-    public Guid InitiatorId { get; set; }
+    public required Guid NewCourseId { get; set; }
 
-    public Guid NewCourseId { get; set; }
+    public Course? NewCourse { get; set; }
 
-    public Course NewCourse { get; set; }
+    public required Guid DossierId {  get; set; }
 
-    public Guid DossierId {  get; set; }
-
-    public Dossier Dossier { get; set; }
+    public Dossier? Dossier { get; set; }
 }

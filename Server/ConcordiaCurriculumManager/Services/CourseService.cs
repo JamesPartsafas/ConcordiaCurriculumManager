@@ -105,7 +105,7 @@ public class CourseService : ICourseService
         }
         _logger.LogInformation($"Inserted ${typeof(Course)} ${course.Id} by {typeof(User)} ${user.Id}");
 
-        var courseCreationRequest = new CourseCreationRequest { Id = Guid.NewGuid(), InitiatorId = user.Id, NewCourseId = course.Id, Dossier = dossier };
+        var courseCreationRequest = new CourseCreationRequest { Id = Guid.NewGuid(), NewCourseId = course.Id, DossierId = dossier.Id, NewCourse = course, Dossier = dossier };
         bool requestCreated = await _dossierRepository.SaveCourseCreationRequest(courseCreationRequest);
         if (!requestCreated)
         {
