@@ -1,14 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace ConcordiaCurriculumManager.Models.Curriculum;
 
-namespace ConcordiaCurriculumManager.Models.Curriculum;
-
-public class CourseReference
+public class CourseReference : BaseModel
 {
-    [Key]
-    public int CourseID { get; set; }
+    public required Guid CourseReferencingId { get; set; }
 
-    public Course CourseReferencing { get; set; }
+    public required Course CourseReferencing { get; set; }
 
-    public ICollection<Course> CourseReferenced { get; set; } = new List<Course>();
+    public required Guid CourseReferencedId { get; set; }
+
+    public required Course CourseReferenced { get; set; }
 
 }

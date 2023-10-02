@@ -44,10 +44,15 @@ public class CCMDbContext : DbContext
 
     private static void ConfigureCourseReferencesRelationship(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<CourseReference>()
+        modelBuilder.Entity<Course>()
             .HasMany(c => c.CourseReferenced)
-            .WithOne(c => c.CourseReference)
-            .HasForeignKey(c => c.CourseID);
+            .WithOne(cr => cr.CourseReferenced)
+            .HasForeignKey(cr => cr.CourseReferencedId);
+
+        modelBuilder.Entity<Course>()
+           .HasMany(c => c.CourseReferencing)
+           .WithOne(cr => cr.CourseReferencing)
+           .HasForeignKey(cr => cr.CourseReferencingId);
     }
 
     private static void ConfigureUserRoleRelationship(ModelBuilder modelBuilder)
@@ -70,6 +75,7 @@ public class CCMDbContext : DbContext
             .HasOne(course => course.CourseCreationDossier)
             .WithOne(dossier => dossier.NewCourse)
             .HasForeignKey<CourseCreationDossier>(dossier => dossier.NewCourseId);
+
 
         modelBuilder.Entity<User>()
           .HasMany(user => user.Dossiers)
