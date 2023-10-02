@@ -179,6 +179,8 @@ public class CourseServiceTest
             Initiator = user,
             InitiatorId = user.Id,
             Title = "Dossier 1",
+            Description = "Text description of a dossier.",
+            Published = false,
             CourseCreationRequests = new List<CourseCreationRequest> { new CourseCreationRequest { } }
         };
     }
