@@ -105,7 +105,7 @@ public class CourseService : ICourseService
         }
         _logger.LogInformation($"Inserted ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
 
-        var courseCreationRequest = new CourseCreationRequest { Id = Guid.NewGuid(), NewCourseId = course.Id, DossierId = dossier.Id, NewCourse = course, Dossier = dossier };
+        var courseCreationRequest = new CourseCreationRequest { Id = Guid.NewGuid(), NewCourseId = course.Id, DossierId = dossier.Id };
         bool requestCreated = await _dossierRepository.SaveCourseCreationRequest(courseCreationRequest);
         if (!requestCreated)
         {
@@ -113,16 +113,6 @@ public class CourseService : ICourseService
             throw new Exception("Error creating the request");
         }
         _logger.LogInformation($"Created ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
-
-        dossier.CourseCreationRequests.Add(courseCreationRequest);
-
-        bool saveDossier = await _dossierRepository.SaveDossier(dossier);
-        if (!saveDossier)
-        {
-            _logger.LogWarning($"Error saving ${typeof(Dossier)} ${dossier.Id}");
-            throw new Exception("Error saving the dossier");
-        }
-        _logger.LogInformation($"Saved ${typeof(Dossier)} ${dossier.Id}");
 
         return courseCreationRequest;
     }
