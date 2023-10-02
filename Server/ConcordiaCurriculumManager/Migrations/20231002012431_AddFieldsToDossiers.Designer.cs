@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConcordiaCurriculumManager.Migrations
 {
     [DbContext(typeof(CCMDbContext))]
-    [Migration("20231001184407_UpdateDossiers")]
-    partial class UpdateDossiers
+    [Migration("20231002012431_AddFieldsToDossiers")]
+    partial class AddFieldsToDossiers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,7 +58,6 @@ namespace ConcordiaCurriculumManager.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("EquivalentCourses")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("ModifiedDate")
@@ -83,8 +82,6 @@ namespace ConcordiaCurriculumManager.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CourseID");
 
                     b.ToTable("Courses");
                 });
@@ -115,170 +112,179 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e12709f5-e0a7-4797-a30c-ef3f307ffa5b"),
+                            Id = new Guid("ee423e14-bf86-46d0-b900-72d73f49b8d0"),
                             ComponentCode = 0,
                             ComponentName = "Conference",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6540),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6540)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3616),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3619)
                         },
                         new
                         {
-                            Id = new Guid("7043f6bc-d5d2-404e-ae3b-589d13671891"),
+                            Id = new Guid("3d5a2ab1-e541-46fe-9d1b-d8691f684265"),
                             ComponentCode = 1,
                             ComponentName = "Field Studies",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6560),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6560)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3630),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3631)
                         },
                         new
                         {
-                            Id = new Guid("b837b339-3fce-49c7-9484-0df7fa66bf6b"),
+                            Id = new Guid("ea792821-1686-4af3-b9f4-105ab6906efa"),
                             ComponentCode = 2,
                             ComponentName = "Fieldwork",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6570),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6570)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3659),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3660)
                         },
                         new
                         {
-                            Id = new Guid("e4b93e49-1778-43b7-89de-74d52f5cea2b"),
+                            Id = new Guid("e4581af3-8a01-40b4-97bd-dadebc3a264f"),
                             ComponentCode = 3,
                             ComponentName = "Independent Study",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6580),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6580)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3666),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3667)
                         },
                         new
                         {
-                            Id = new Guid("c3b748ac-6279-4c30-928e-f1a2cd387945"),
+                            Id = new Guid("93ca69bc-1b31-4ca6-a5ef-39011cbf195f"),
                             ComponentCode = 4,
                             ComponentName = "Laboratory",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6590),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6590)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3672),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3673)
                         },
                         new
                         {
-                            Id = new Guid("fc414fca-107a-44c9-a9d1-537b797e6c83"),
+                            Id = new Guid("38bb2be8-5d09-41d5-81e0-3fcf2419bc15"),
                             ComponentCode = 5,
                             ComponentName = "Lecture",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6610),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6610)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3683),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3684)
                         },
                         new
                         {
-                            Id = new Guid("720a4ccb-a0a4-4bb7-9002-0eda589f2b5d"),
+                            Id = new Guid("9b595081-bca9-459d-8355-6cb39b94063b"),
                             ComponentCode = 6,
                             ComponentName = "Modular",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6620),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6620)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3689),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3689)
                         },
                         new
                         {
-                            Id = new Guid("5887e5a7-02cb-4158-bb7a-f96cebbdac7a"),
+                            Id = new Guid("fffabc21-6838-4629-8eed-c6964f441fc3"),
                             ComponentCode = 7,
                             ComponentName = "Online",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6630),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6630)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3694),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3695)
                         },
                         new
                         {
-                            Id = new Guid("13e452ed-c215-4f58-828d-a8d78d492575"),
+                            Id = new Guid("774c6826-b52c-4a68-9f8c-81ae2b71194a"),
                             ComponentCode = 8,
                             ComponentName = "Practicum/Internship/Work-Term",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6640),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6640)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3700),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3701)
                         },
                         new
                         {
-                            Id = new Guid("e210eb56-d9ef-4f3a-9cf2-637a2236397d"),
+                            Id = new Guid("e6439894-e66d-4876-a4ed-c8c353c76cb8"),
                             ComponentCode = 9,
                             ComponentName = "Private Studies",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6650),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6650)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3708),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3709)
                         },
                         new
                         {
-                            Id = new Guid("1cff55e5-23d5-4d78-9192-778b8b54f659"),
+                            Id = new Guid("8df10afe-ef11-4dd7-be29-2f64b2856ed6"),
                             ComponentCode = 10,
                             ComponentName = "Reading",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6670),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6670)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3723),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3724)
                         },
                         new
                         {
-                            Id = new Guid("baa7a2cb-a986-40b9-a134-529ea18723fc"),
+                            Id = new Guid("ef699266-cf27-4543-95dc-017182f3fef5"),
                             ComponentCode = 11,
                             ComponentName = "Regular",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6680),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6680)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3729),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3730)
                         },
                         new
                         {
-                            Id = new Guid("1e3376f9-6749-4a84-88fa-83316fcf43a3"),
+                            Id = new Guid("606b0473-9d62-472f-bbb8-f2c13c607c89"),
                             ComponentCode = 12,
                             ComponentName = "Research",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6690),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6690)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3736),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3736)
                         },
                         new
                         {
-                            Id = new Guid("e9add686-c23e-4416-bf21-a9724a2a99d8"),
+                            Id = new Guid("f22ba818-c939-494a-8b73-fc21215d2246"),
                             ComponentCode = 13,
                             ComponentName = "Seminar",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6710),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6710)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3742),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3743)
                         },
                         new
                         {
-                            Id = new Guid("831b6bef-acfe-4bca-b57d-2ea052ee9dbd"),
+                            Id = new Guid("ef4307f5-a5d9-479b-b61f-81404609d29a"),
                             ComponentCode = 14,
                             ComponentName = "Studio",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6720),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6720)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3748),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3749)
                         },
                         new
                         {
-                            Id = new Guid("2e82a833-ff46-48d4-9d7c-def35c92ad65"),
+                            Id = new Guid("9531f2d6-aef8-4682-a3e9-2d4323b8f1a6"),
                             ComponentCode = 15,
                             ComponentName = "Thesis Research",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6730),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6730)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3754),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3754)
                         },
                         new
                         {
-                            Id = new Guid("2505db77-c801-4590-b6a2-1180f1b434cb"),
+                            Id = new Guid("adbb796c-5c1e-444b-9db7-3cd7a0563d53"),
                             ComponentCode = 16,
                             ComponentName = "Tutorial",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6740),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6740)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3760),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3760)
                         },
                         new
                         {
-                            Id = new Guid("6b340274-6126-46b6-bdaa-2834ae655d06"),
+                            Id = new Guid("cb733f26-84f1-42f2-9bd7-54a95750a303"),
                             ComponentCode = 17,
                             ComponentName = "Tutorial/Lab",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6750),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6750)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3767),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3768)
                         },
                         new
                         {
-                            Id = new Guid("1ea9921e-6cd5-4aea-89a8-064f011db5b8"),
+                            Id = new Guid("4210de11-0c8e-4b04-8f60-d7b7a14d1e2a"),
                             ComponentCode = 18,
                             ComponentName = "Workshop",
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6770),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6770)
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3780),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(3780)
                         });
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseReference", b =>
                 {
-                    b.Property<int>("CourseID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CourseID"));
+                    b.Property<Guid>("CourseReferencedId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("CourseReferencingId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("CourseID");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseReferencedId");
 
                     b.HasIndex("CourseReferencingId");
 
@@ -368,23 +374,23 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("eb8f66cc-a50a-44b2-aa28-e227eefa9383"),
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(5930),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(5930),
+                            Id = new Guid("2372760c-31cf-4f34-92d5-d52d721795fe"),
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(1419),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(1424),
                             UserRole = RoleEnum.Initiator
                         },
                         new
                         {
-                            Id = new Guid("3d879b5a-f6a7-4913-9919-9b1e95526492"),
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(5950),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(5950),
+                            Id = new Guid("1b0eac8c-58cd-4c92-8b6c-b09bca84ff23"),
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(1437),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(1438),
                             UserRole = RoleEnum.Admin
                         },
                         new
                         {
-                            Id = new Guid("e47345a4-ac5c-4d4b-b686-051868658899"),
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(5960),
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(5960),
+                            Id = new Guid("9525360f-e8fa-43ad-9576-71f248f10a89"),
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(1446),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(1447),
                             UserRole = RoleEnum.FacultyMember
                         });
                 });
@@ -425,21 +431,21 @@ namespace ConcordiaCurriculumManager.Migrations
                         new
                         {
                             Id = new Guid("37581d9d-713f-475c-9668-23971b0e64d0"),
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6120),
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(1619),
                             Email = "admin@ccm.ca",
                             FirstName = "Super",
                             LastName = "User",
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6120),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(1620),
                             Password = "9767718E8A58C097D48ED8986E632368F71F71740C6DCE113AE75ED90176DA49:FE06FEFB87C75014327930CFB3373565"
                         },
                         new
                         {
                             Id = new Guid("8c55b0c3-b4cf-4948-a730-dad3fa37c69a"),
-                            CreatedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6140),
+                            CreatedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(1661),
                             Email = "joe.user@ccm.ca",
                             FirstName = "Joe",
                             LastName = "User",
-                            ModifiedDate = new DateTime(2023, 10, 1, 18, 44, 6, 994, DateTimeKind.Utc).AddTicks(6140),
+                            ModifiedDate = new DateTime(2023, 10, 2, 1, 24, 31, 8, DateTimeKind.Utc).AddTicks(1662),
                             Password = "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788"
                         });
                 });
@@ -476,39 +482,36 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasData(
                         new
                         {
-                            RolesId = new Guid("3d879b5a-f6a7-4913-9919-9b1e95526492"),
+                            RolesId = new Guid("1b0eac8c-58cd-4c92-8b6c-b09bca84ff23"),
                             UsersId = new Guid("37581d9d-713f-475c-9668-23971b0e64d0")
                         },
                         new
                         {
-                            RolesId = new Guid("eb8f66cc-a50a-44b2-aa28-e227eefa9383"),
+                            RolesId = new Guid("2372760c-31cf-4f34-92d5-d52d721795fe"),
                             UsersId = new Guid("8c55b0c3-b4cf-4948-a730-dad3fa37c69a")
                         },
                         new
                         {
-                            RolesId = new Guid("e47345a4-ac5c-4d4b-b686-051868658899"),
+                            RolesId = new Guid("9525360f-e8fa-43ad-9576-71f248f10a89"),
                             UsersId = new Guid("8c55b0c3-b4cf-4948-a730-dad3fa37c69a")
                         });
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Course", b =>
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseReference", b =>
                 {
-                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseReference", "CourseReference")
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Course", "CourseReferenced")
                         .WithMany("CourseReferenced")
-                        .HasForeignKey("CourseID")
+                        .HasForeignKey("CourseReferencedId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CourseReference");
-                });
-
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseReference", b =>
-                {
                     b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Course", "CourseReferencing")
-                        .WithMany()
+                        .WithMany("CourseReferencing")
                         .HasForeignKey("CourseReferencingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CourseReferenced");
 
                     b.Navigation("CourseReferencing");
                 });
@@ -576,11 +579,10 @@ namespace ConcordiaCurriculumManager.Migrations
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Course", b =>
                 {
                     b.Navigation("CourseCreationDossier");
-                });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseReference", b =>
-                {
                     b.Navigation("CourseReferenced");
+
+                    b.Navigation("CourseReferencing");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Users.User", b =>
