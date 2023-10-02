@@ -67,7 +67,7 @@ public class CCMDbContext : DbContext
     {
         modelBuilder.Entity<Course>()
             .HasOne(course => course.CourseCreationRequest)
-            .WithOne(dossier => dossier.NewCourse)
+            .WithOne(request => request.NewCourse)
             .HasForeignKey<CourseCreationRequest>(dossier => dossier.NewCourseId);
 
         modelBuilder.Entity<User>()

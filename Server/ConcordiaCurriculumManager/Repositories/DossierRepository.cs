@@ -8,7 +8,7 @@ namespace ConcordiaCurriculumManager.Repositories;
 
 public interface IDossierRepository
 {
-    Task<bool> SaveCourseCreationRequest(CourseCreationRequest dossier);
+    Task<bool> SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     Task<List<Dossier>> GetDossiersByID(Guid userId);
     Task<Dossier?> GetDossierByDossierId(Guid dossierId);
     Task<bool> SaveDossier(Dossier dossier);
