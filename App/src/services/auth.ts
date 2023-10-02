@@ -47,12 +47,10 @@ export function login(dto: LoginDTO): Promise<AuthenticationResponse> {
 }
 
 export function RegisterUser(dto: RegisterDTO): Promise<AuthenticationResponse> {
-    return axios
-        .post("/Authentication/Register", dto)
-        .then((response) => {
-            localStorage.setItem("token", response.data.accessToken);
-            return response;
-        });
+    return axios.post("/Authentication/Register", dto).then((response) => {
+        localStorage.setItem("token", response.data.accessToken);
+        return response;
+    });
 }
 
 export function logout(): Promise<void> {
