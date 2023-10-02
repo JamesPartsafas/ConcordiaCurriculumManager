@@ -20,3 +20,12 @@ public class Role : BaseModel
 
     public List<User> Users { get; set; } = new();
 }
+
+public static class RoleNames
+{
+    public const string Initiator = "Initiator";
+
+    public const string Admin = "Admin";
+
+    public const string FacultyMember = "FacultyMember";
+}
