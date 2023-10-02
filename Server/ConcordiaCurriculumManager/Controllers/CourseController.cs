@@ -2,8 +2,8 @@
 using ConcordiaCurriculumManager.DTO;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
 using ConcordiaCurriculumManager.Models.Users;
+using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManager.Swagger;
 using Microsoft.AspNetCore.Authorization;
@@ -68,16 +68,17 @@ public class CourseController : Controller
     [Authorize(Roles = RoleNames.Initiator)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Course creation dossier created successfully", typeof(Guid))]
+    [SwaggerResponse(StatusCodes.Status201Created, "Course creation dossier created successfully", typeof(CourseCreationRequestDTO))]
     [SwaggerRequestExample(typeof(CourseCreationInitiationDTO), typeof(CourseCreationInitiationDTOExample))]
     public async Task<ActionResult> InitiateCourseCreation([FromBody, Required] CourseCreationInitiationDTO initiation)
     {
         try
         {
-            var user = await _userService.GetCurrentUser();
-            var response = await _courseService.InitiateCourseCreation(initiation, user);
+            Guid userId = Guid.Parse(_userService.GetCurrentUserClaim(Claims.Id));
+            var courseCreationRequest = await _courseService.InitiateCourseCreation(initiation, userId);
+            var courseCreationRequestDTO = _mapper.Map<CourseCreationRequestDTO>(courseCreationRequest);
 
-            return Created($"/{nameof(InitiateCourseCreation)}", response.Id);
+            return Created($"/{nameof(InitiateCourseCreation)}", courseCreationRequestDTO);
         }
         catch (ArgumentException e)
         {

@@ -1,4 +1,4 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
+﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using NpgsqlTypes;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum;
@@ -31,7 +31,7 @@ public class Course : BaseModel
 
     public List<CourseComponent> CourseComponents { get; set; } = new();
 
-    public CourseCreationDossier? CourseCreationDossier { get; set; }
+    public CourseCreationRequest? CourseCreationRequest { get; set; }
 
     // Self-reference related fields
     public ICollection<CourseReference>? CourseReferenced { get; set; }

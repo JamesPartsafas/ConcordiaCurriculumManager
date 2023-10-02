@@ -1,4 +1,4 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
+﻿using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
@@ -8,8 +8,9 @@ namespace ConcordiaCurriculumManager.Repositories;
 
 public interface IDossierRepository
 {
-    Task<bool> SaveCourseCreationDossier(CourseCreationDossier dossier);
+    Task<bool> SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     Task<List<Dossier>> GetDossiersByID(Guid userId);
+    Task<Dossier?> GetDossierByDossierId(Guid dossierId);
     Task<bool> SaveDossier(Dossier dossier);
 }
 
@@ -22,9 +23,9 @@ public class DossierRepository : IDossierRepository
         _dbContext = dbContext;
     }
 
-    public async Task<bool> SaveCourseCreationDossier(CourseCreationDossier dossier)
+    public async Task<bool> SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest)
     {
-        await _dbContext.CourseCreationDossiers.AddAsync(dossier);
+        await _dbContext.CourseCreationRequests.AddAsync(courseCreationRequest);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
@@ -37,10 +38,12 @@ public class DossierRepository : IDossierRepository
             
     }
 
-    public async Task<bool> SaveDossier(Dossier dossier) {
+    public async Task<Dossier?> GetDossierByDossierId(Guid dossierId) => await _dbContext.Dossiers.Where(d => d.Id == dossierId).FirstOrDefaultAsync();
+
+    public async Task<bool> SaveDossier(Dossier dossier)
+    {
         await _dbContext.Dossiers.AddAsync(dossier);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
-
 }
