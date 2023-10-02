@@ -61,7 +61,7 @@ public class DossierController : Controller
     [HttpPost(nameof(CreateDossierForUser))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Dossier created successfully", typeof(Guid))]
+    [SwaggerResponse(StatusCodes.Status201Created, "Dossier created successfully", typeof(DossierDTO))]
     public async Task<ActionResult> CreateDossierForUser([FromBody, Required] CreateDossierDTO dossier)
     {
         try
