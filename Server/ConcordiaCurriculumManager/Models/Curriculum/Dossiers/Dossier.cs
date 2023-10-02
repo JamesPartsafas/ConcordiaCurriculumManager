@@ -16,6 +16,8 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
         public required bool Published { get; set; }
 
+        public List<CourseCreationRequest> CourseCreationRequests { get; set; } = new List<CourseCreationRequest>();
+
     }
 }
 
