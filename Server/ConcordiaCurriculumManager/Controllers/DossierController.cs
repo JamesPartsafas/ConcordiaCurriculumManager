@@ -2,6 +2,7 @@
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
+using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManager.Swagger;
 using Microsoft.AspNetCore.Authorization;
@@ -41,7 +42,7 @@ public class DossierController : Controller
     {
         try
         {
-            Guid userId = (await _userService.GetCurrentUser()).Id;
+            Guid userId = Guid.Parse(_userService.GetCurrentUserClaim(Claims.Id));
             var dossiers = await _dossierService.GetDossiersByID(userId);
             var dossiersDTOs = _mapper.Map<List<DossierDTO>>(dossiers);
             _logger.LogInformation(string.Join(",", dossiersDTOs));
@@ -59,6 +60,7 @@ public class DossierController : Controller
     }
 
     [HttpPost(nameof(CreateDossierForUser))]
+    [Authorize(Roles = RoleNames.Initiator)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status201Created, "Dossier created successfully", typeof(DossierDTO))]
