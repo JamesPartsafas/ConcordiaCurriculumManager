@@ -76,7 +76,6 @@ public class CCMDbContext : DbContext
             .WithOne(dossier => dossier.NewCourse)
             .HasForeignKey<CourseCreationDossier>(dossier => dossier.NewCourseId);
 
-
         modelBuilder.Entity<User>()
           .HasMany(user => user.Dossiers)
           .WithOne(dossier => dossier.Initiator)
