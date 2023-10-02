@@ -43,7 +43,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         {
             dossierRepository.Setup(d => d.SaveDossier(It.IsAny<Dossier>())).ReturnsAsync(false);
 
-            await dossierService.CreateDossierForUser(GetSampleCreateDossierDIO(), GetSampleUser());
+            await dossierService.CreateDossierForUser(GetSampleCreateDossierDTO(), GetSampleUser());
 
             logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
         }
@@ -54,7 +54,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
             dossierRepository.Setup(d => d.SaveDossier(It.IsAny<Dossier>())).ReturnsAsync(true);
             var user = GetSampleUser();
 
-            var dossier = await dossierService.CreateDossierForUser(GetSampleCreateDossierDIO(), user);
+            var dossier = await dossierService.CreateDossierForUser(GetSampleCreateDossierDTO(), user);
 
             Assert.AreEqual(user.Id, dossier.InitiatorId);
         }
@@ -71,7 +71,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
             };
         }
 
-        private CreateDossierDTO GetSampleCreateDossierDIO()
+        private CreateDossierDTO GetSampleCreateDossierDTO()
         {
             return new CreateDossierDTO
             {
