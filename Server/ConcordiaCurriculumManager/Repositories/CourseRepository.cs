@@ -37,5 +37,5 @@ public class CourseRepository : ICourseRepository
         return result > 0;
     }
 
-    public async Task<Course?> GetCourseByCourseId(int CourseId) => await _dbContext.Courses.Where(course => course.CourseID == CourseId).FirstOrDefaultAsync();
+    public async Task<Course?> GetCourseByCourseId(int CourseId) => await _dbContext.Courses.Where(course => course.CourseID == CourseId && course.CourseState == CourseStateEnum.Accepted).FirstOrDefaultAsync();
 }

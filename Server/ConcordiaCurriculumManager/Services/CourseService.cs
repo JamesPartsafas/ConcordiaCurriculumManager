@@ -151,7 +151,7 @@ public class CourseService : ICourseService
             Career = modification.Career,
             EquivalentCourses = modification.EquivalentCourses,
             CourseState = CourseStateEnum.CourseChangeProposal,
-            Version = 1,
+            Version = course.Version,
             Published = false,
             CourseComponents = (List<CourseComponent>)ComponentCodeMapping.GetComponentCodeMapping(modification.ComponentCodes)
         };
