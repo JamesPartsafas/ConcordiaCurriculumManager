@@ -96,4 +96,38 @@ public class CourseController : Controller
                 statusCode: StatusCodes.Status500InternalServerError);
         }
     }
+
+    [HttpPut(nameof(InitiateCourseModification))]
+    [Consumes("application/json")]
+    [Authorize(Roles = RoleNames.Initiator)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Course modification created successfully", typeof(CourseModificationRequestDTO))]
+    //[SwaggerRequestExample(typeof(CourseCreationInitiationDTO), typeof(CourseCreationInitiationDTOExample))]
+    public async Task<ActionResult> InitiateCourseModification([FromBody, Required] CourseModificationInitiationDTO modification)
+    {
+        try 
+        {
+            Guid userId = Guid.Parse(_userService.GetCurrentUserClaim(Claims.Id));
+            var courseModificationRequest = await _courseService.InitiateCourseModification(modification, userId);
+            var courseModificationRequestDTO = _mapper.Map<CourseModificationRequestDTO>(courseModificationRequest);
+
+            return Created($"/{nameof(InitiateCourseModification)}", courseModificationRequestDTO);
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"Unexpected error occured while trying to modify the dossier: {e.Message}");
+            return Problem(
+                title: "Unexpected error occured while trying to modify the dossier",
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
 }

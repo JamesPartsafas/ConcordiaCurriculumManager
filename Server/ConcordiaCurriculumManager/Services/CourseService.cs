@@ -13,6 +13,7 @@ public interface ICourseService
     public IEnumerable<CourseComponentDTO> GetAllCourseComponents();
     public Task<IEnumerable<string>> GetAllCourseSubjects();
     public Task<CourseCreationRequest> InitiateCourseCreation(CourseCreationInitiationDTO initiation, Guid userId);
+    public Task<CourseModificationRequest> InitiateCourseModification(CourseModificationInitiationDTO modification, Guid userId);
 }
 
 public class CourseService : ICourseService
@@ -115,5 +116,56 @@ public class CourseService : ICourseService
         _logger.LogInformation($"Created ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
 
         return courseCreationRequest;
+    }
+
+    public async Task<CourseModificationRequest> InitiateCourseModification(CourseModificationInitiationDTO modification, Guid userId)
+    {
+        var course = await _courseRepository.GetCourseByGuid(modification.Id);
+        if (course == null)
+        {
+            throw new ArgumentException("The course does not exist.");
+        }
+
+        course.Subject = modification.Subject;
+        course.Catalog = modification.Catalog;
+        course.Title = modification.Title;
+        course.Description = modification.Description;
+        course.CreditValue = modification.CreditValue;
+        course.PreReqs = modification.PreReqs;
+        course.Career = modification.Career;
+        course.EquivalentCourses = modification.EquivalentCourses;
+        //course.CourseComponents = modification.ComponentCodes;
+
+        Dossier? dossier = await _dossierRepository.GetDossierByDossierId(modification.DossierId);
+
+        if (dossier == null)
+        {
+            _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${dossier?.Id}: does not exist");
+            throw new Exception("Error retrieving the dossier: does not exist");
+        }
+        else if (dossier.InitiatorId != userId)
+        {
+            _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${dossier.Id}: does not belong to user ${typeof(User)} ${userId}");
+            throw new Exception("Error retrieving the dossier: does not belong to the user");
+        }
+
+        bool courseModified = await _courseRepository.UpdateCourse(course);
+        if (!courseModified)
+        {
+            _logger.LogWarning($"Error updating ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
+            throw new Exception("Error updating the course");
+        }
+        _logger.LogInformation($"Inserted ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
+
+        var courseModificationRequest = new CourseModificationRequest { Id = Guid.NewGuid(), CourseId  = course.Id, DossierId = dossier.Id};
+        bool requestCreated = await _dossierRepository.SaveCourseModificationRequest(courseModificationRequest);
+        if (!requestCreated)
+        {
+            _logger.LogWarning($"Error creating ${typeof(CourseCreationRequest)} ${courseModificationRequest.Id}");
+            throw new Exception("Error creating the request");
+        }
+        _logger.LogInformation($"Created ${typeof(CourseCreationRequest)} ${courseModificationRequest.Id}");
+
+        return courseModificationRequest;
     }
 }

@@ -33,6 +33,8 @@ public class Course : BaseModel
 
     public CourseCreationRequest? CourseCreationRequest { get; set; }
 
+    public CourseModificationRequest? CourseModificationRequest { get; set; }
+
     // Self-reference related fields
     public ICollection<CourseReference>? CourseReferenced { get; set; }
 

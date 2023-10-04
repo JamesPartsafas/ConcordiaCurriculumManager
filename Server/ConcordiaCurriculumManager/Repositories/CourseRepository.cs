@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,8 @@ public interface ICourseRepository
     public Task<int> GetMaxCourseId();
     public Task<Course?> GetCourseBySubjectAndCatalog(string subject, string catalog);
     public Task<bool> SaveCourse(Course course);
+    public Task<Course?> GetCourseByGuid(Guid id);
+    public Task<bool> UpdateCourse(Course course);
 }
 
 public class CourseRepository : ICourseRepository
@@ -34,4 +37,13 @@ public class CourseRepository : ICourseRepository
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
+
+    public async Task<bool> UpdateCourse(Course course)
+    {
+        _dbContext.Courses.Update(course);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<Course?> GetCourseByGuid(Guid id) => await _dbContext.Courses.Where(course => course.Id == id).FirstOrDefaultAsync();
 }
