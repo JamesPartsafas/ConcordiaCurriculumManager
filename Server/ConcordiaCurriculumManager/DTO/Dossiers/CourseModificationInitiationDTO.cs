@@ -4,8 +4,6 @@ namespace ConcordiaCurriculumManager.DTO.Dossiers
 {
     public class CourseModificationInitiationDTO
     {
-        public required Guid Id { get; set; }
-
         public required string Subject { get; set; }
 
         public required string Catalog { get; set; }
@@ -25,6 +23,8 @@ namespace ConcordiaCurriculumManager.DTO.Dossiers
         public required List<ComponentCodeEnum> ComponentCodes { get; set; }
 
         public required Guid DossierId { get; set; }
+
+        public required int CourseId { get; set; }
     }
 }
 

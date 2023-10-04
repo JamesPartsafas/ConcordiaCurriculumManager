@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
 
 namespace ConcordiaCurriculumManager.Controllers;
 
@@ -64,7 +65,7 @@ public class CourseController : Controller
     }
 
     [HttpPost(nameof(InitiateCourseCreation))]
-    [Consumes("application/json")]
+    [Consumes(typeof(CourseCreationInitiationDTO), MediaTypeNames.Application.Json)]
     [Authorize(Roles = RoleNames.Initiator)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
@@ -97,13 +98,12 @@ public class CourseController : Controller
         }
     }
 
-    [HttpPut(nameof(InitiateCourseModification))]
-    [Consumes("application/json")]
+    [HttpPost(nameof(InitiateCourseModification))]
+    [Consumes(typeof(CourseModificationInitiationDTO), MediaTypeNames.Application.Json)]
     [Authorize(Roles = RoleNames.Initiator)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status201Created, "Course modification created successfully", typeof(CourseModificationRequestDTO))]
-    //[SwaggerRequestExample(typeof(CourseCreationInitiationDTO), typeof(CourseCreationInitiationDTOExample))]
     public async Task<ActionResult> InitiateCourseModification([FromBody, Required] CourseModificationInitiationDTO modification)
     {
         try 

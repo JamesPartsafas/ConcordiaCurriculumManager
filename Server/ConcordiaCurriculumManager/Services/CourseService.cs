@@ -120,24 +120,13 @@ public class CourseService : ICourseService
 
     public async Task<CourseModificationRequest> InitiateCourseModification(CourseModificationInitiationDTO modification, Guid userId)
     {
-        var course = await _courseRepository.GetCourseByGuid(modification.Id);
+        var course = await _courseRepository.GetCourseByCourseId(modification.CourseId);
         if (course == null)
         {
             throw new ArgumentException("The course does not exist.");
         }
 
-        course.Subject = modification.Subject;
-        course.Catalog = modification.Catalog;
-        course.Title = modification.Title;
-        course.Description = modification.Description;
-        course.CreditValue = modification.CreditValue;
-        course.PreReqs = modification.PreReqs;
-        course.Career = modification.Career;
-        course.EquivalentCourses = modification.EquivalentCourses;
-        //course.CourseComponents = modification.ComponentCodes;
-
         Dossier? dossier = await _dossierRepository.GetDossierByDossierId(modification.DossierId);
-
         if (dossier == null)
         {
             _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${dossier?.Id}: does not exist");
@@ -149,15 +138,33 @@ public class CourseService : ICourseService
             throw new Exception("Error retrieving the dossier: does not belong to the user");
         }
 
-        bool courseModified = await _courseRepository.UpdateCourse(course);
-        if (!courseModified)
+        var newModifiedCourse = new Course
         {
-            _logger.LogWarning($"Error updating ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
-            throw new Exception("Error updating the course");
-        }
-        _logger.LogInformation($"Inserted ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
+            Id = new Guid(),
+            CourseID = course.CourseID,
+            Subject = modification.Subject,
+            Catalog = modification.Catalog,
+            Title = modification.Title,
+            Description = modification.Description,
+            CreditValue = modification.CreditValue,
+            PreReqs = modification.PreReqs,
+            Career = modification.Career,
+            EquivalentCourses = modification.EquivalentCourses,
+            CourseState = CourseStateEnum.CourseChangeProposal,
+            Version = 1,
+            Published = false,
+            CourseComponents = (List<CourseComponent>)ComponentCodeMapping.GetComponentCodeMapping(modification.ComponentCodes)
+        };
 
-        var courseModificationRequest = new CourseModificationRequest { Id = Guid.NewGuid(), CourseId  = course.Id, DossierId = dossier.Id};
+        bool courseCreated = await _courseRepository.SaveCourse(newModifiedCourse);
+        if (!courseCreated)
+        {
+            _logger.LogWarning($"Error inserting ${typeof(Course)} ${newModifiedCourse.Id} by {typeof(User)} ${userId}");
+            throw new Exception("Error registering the course");
+        }
+        _logger.LogInformation($"Inserted ${typeof(Course)} ${newModifiedCourse.Id} by {typeof(User)} ${userId}");
+
+        var courseModificationRequest = new CourseModificationRequest { Id = Guid.NewGuid(), CourseId  = newModifiedCourse.Id, DossierId = dossier.Id};
         bool requestCreated = await _dossierRepository.SaveCourseModificationRequest(courseModificationRequest);
         if (!requestCreated)
         {
