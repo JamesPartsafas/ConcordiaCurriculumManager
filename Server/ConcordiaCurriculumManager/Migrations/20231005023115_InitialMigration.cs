@@ -207,6 +207,33 @@ namespace ConcordiaCurriculumManager.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "CourseModificationRequests",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CourseId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DossierId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseModificationRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CourseModificationRequests_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourseModificationRequests_Dossiers_DossierId",
+                        column: x => x.DossierId,
+                        principalTable: "Dossiers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_CourseCourseComponent_CoursesId",
                 table: "CourseCourseComponent",
@@ -222,6 +249,17 @@ namespace ConcordiaCurriculumManager.Migrations
                 table: "CourseCreationRequests",
                 column: "NewCourseId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseModificationRequests_CourseId",
+                table: "CourseModificationRequests",
+                column: "CourseId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseModificationRequests_DossierId",
+                table: "CourseModificationRequests",
+                column: "DossierId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CourseReferences_CourseReferencedId",
@@ -252,6 +290,9 @@ namespace ConcordiaCurriculumManager.Migrations
 
             migrationBuilder.DropTable(
                 name: "CourseCreationRequests");
+
+            migrationBuilder.DropTable(
+                name: "CourseModificationRequests");
 
             migrationBuilder.DropTable(
                 name: "CourseReferences");

@@ -78,7 +78,7 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseComponent", b =>
@@ -102,7 +102,7 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CourseComponents", (string)null);
+                    b.ToTable("CourseComponents");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseReference", b =>
@@ -129,7 +129,7 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.HasIndex("CourseReferencingId");
 
-                    b.ToTable("CourseReferences", (string)null);
+                    b.ToTable("CourseReferences");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.CourseCreationRequest", b =>
@@ -157,7 +157,7 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasIndex("NewCourseId")
                         .IsUnique();
 
-                    b.ToTable("CourseCreationRequests", (string)null);
+                    b.ToTable("CourseCreationRequests");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.CourseModificationRequest", b =>
@@ -218,7 +218,7 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.HasIndex("InitiatorId");
 
-                    b.ToTable("Dossiers", (string)null);
+                    b.ToTable("Dossiers");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Users.Role", b =>
@@ -238,7 +238,7 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Users.User", b =>
@@ -271,7 +271,7 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("CourseCourseComponent", b =>
@@ -286,7 +286,7 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.HasIndex("CoursesId");
 
-                    b.ToTable("CourseCourseComponent", (string)null);
+                    b.ToTable("CourseCourseComponent");
                 });
 
             modelBuilder.Entity("RoleUser", b =>
@@ -301,7 +301,7 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("RoleUser", (string)null);
+                    b.ToTable("RoleUser");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseReference", b =>
