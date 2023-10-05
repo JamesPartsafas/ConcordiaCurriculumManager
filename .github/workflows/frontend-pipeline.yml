@@ -1,0 +1,30 @@
+name: Frontend Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'App/**'
+
+jobs:
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install --prefix App
+
+    - name: Run ESLint
+      run: npm run lint --prefix App
+
+    - name: Run frontend tests
+      run: npm test --prefix App
