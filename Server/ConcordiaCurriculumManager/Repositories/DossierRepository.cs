@@ -9,6 +9,7 @@ namespace ConcordiaCurriculumManager.Repositories;
 public interface IDossierRepository
 {
     Task<bool> SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
+    Task<bool> SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
     Task<List<Dossier>> GetDossiersByID(Guid userId);
     Task<Dossier?> GetDossierByDossierId(Guid dossierId);
     Task<bool> SaveDossier(Dossier dossier);
@@ -26,6 +27,13 @@ public class DossierRepository : IDossierRepository
     public async Task<bool> SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest)
     {
         await _dbContext.CourseCreationRequests.AddAsync(courseCreationRequest);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest)
+    {
+        await _dbContext.CourseModificationRequests.AddAsync(courseModificationRequest);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }

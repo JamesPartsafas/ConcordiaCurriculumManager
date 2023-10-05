@@ -96,6 +96,34 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
 
             Assert.IsTrue(result);
         }
+
+        [TestMethod]
+        public async Task SaveCourseCreationRequest_ReturnsTrue()
+        {
+            var courseCreationRequest = new CourseCreationRequest
+            {
+                NewCourseId = Guid.NewGuid(),
+                DossierId = Guid.NewGuid(),
+            };
+
+            var result = await dossierRepository.SaveCourseCreationRequest(courseCreationRequest);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public async Task SaveCourseModificationRequest_ReturnsTrue()
+        {
+            var courseModificationRequest = new CourseModificationRequest
+            {
+                CourseId = Guid.NewGuid(),
+                DossierId = Guid.NewGuid(),
+            };
+
+            var result = await dossierRepository.SaveCourseModificationRequest(courseModificationRequest);
+
+            Assert.IsTrue(result);
+        }
     }
 }
 

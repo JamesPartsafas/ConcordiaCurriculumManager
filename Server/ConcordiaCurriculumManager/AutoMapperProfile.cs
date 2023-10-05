@@ -17,6 +17,7 @@ public class AutoMapper : Profile
         CreateMap<Course, CourseCreationInitiationDTO>().ReverseMap();
         CreateMap<Dossier, DossierDTO>().ReverseMap();
         CreateMap<CourseCreationRequest, CourseCreationRequestDTO>().ReverseMap();
+        CreateMap<CourseModificationRequest, CourseModificationRequestDTO>().ReverseMap();
     }
 
 }
