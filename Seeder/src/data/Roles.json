@@ -1,0 +1,22 @@
+{
+  "TableName": "Roles",
+  "AutoGenerateCreatedDate": true,
+  "AutoGenerateModifiedDate": true,
+  "Data": [
+    {
+      "Id": "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
+      "UserRole": 2,
+      "UserRole-Name": "FacultyMember"
+    },
+    {
+      "Id": "bf4b66cd-0c71-4737-96bf-76ba6220df44",
+      "UserRole": 1,
+      "UserRole-Name": "Admin"
+    },
+    {
+      "Id": "c8b69129-6320-4cfe-9766-4417061fbb9a",
+      "UserRole": 0,
+      "UserRole-Name": "Initiator"
+    }
+  ]
+}
