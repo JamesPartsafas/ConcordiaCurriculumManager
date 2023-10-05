@@ -23,6 +23,8 @@ public class CCMDbContext : DbContext
 
     public DbSet<CourseCreationRequest> CourseCreationRequests { get; set; }
 
+    public DbSet<CourseModificationRequest> CourseModificationRequests { get; set; }
+
     public DbSet<Dossier> Dossiers { get; set; }
 
     public DbSet<CourseReference> CourseReferences { get; set; }
@@ -61,6 +63,11 @@ public class CCMDbContext : DbContext
             .HasOne(course => course.CourseCreationRequest)
             .WithOne(request => request.NewCourse)
             .HasForeignKey<CourseCreationRequest>(dossier => dossier.NewCourseId);
+
+        modelBuilder.Entity<Course>()
+            .HasOne(course => course.CourseModificationRequest)
+            .WithOne(request => request.Course)
+            .HasForeignKey<CourseModificationRequest>(dossier => dossier.CourseId);
 
         modelBuilder.Entity<User>()
           .HasMany(user => user.Dossiers)
