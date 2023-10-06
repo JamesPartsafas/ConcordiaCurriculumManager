@@ -24,8 +24,9 @@ import {
     LoginProps,
 } from "../services/auth";
 import { User } from "../services/user";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { BaseRoutes } from "../constants";
 
 export default function Login({ setUser }: LoginProps) {
     const navigate = useNavigate();
@@ -126,16 +127,14 @@ export default function Login({ setUser }: LoginProps) {
                                     </Button>
                                 </Stack>
                                 <Stack spacing="6">
-                                    <Link to="/register">
-                                        <Button
-                                            backgroundColor="#932439"
-                                            color="white"
-                                            _hover={{ bg: "#7A1D2E" }}
-                                            type="submit"
-                                        >
-                                            Register New Account
-                                        </Button>
-                                    </Link>
+                                    <Button
+                                        backgroundColor="#932439"
+                                        color="white"
+                                        _hover={{ bg: "#7A1D2E" }}
+                                        onClick={() => navigate(BaseRoutes.Register)}
+                                    >
+                                        Register New Account
+                                    </Button>
                                 </Stack>
                             </Stack>
                         </Box>
