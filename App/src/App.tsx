@@ -11,6 +11,8 @@ import { createContext, useEffect, useState } from "react";
 import Register from "./pages/Register";
 import { decodeTokenToUser } from "./services/auth";
 import { BaseRoutes } from "./constants";
+import axios from "axios";
+import { getDossiers } from "./services/dossier";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -25,6 +27,7 @@ export function App() {
             const user: User = decodeTokenToUser(token);
             setUser(user);
         }
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; //set the token globally
     }, []);
 
     return (
