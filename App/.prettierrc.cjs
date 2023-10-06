@@ -6,7 +6,7 @@ const config = {
     singleQuote: false,
     endOfLine: "auto",
     nextLine: false,
-    printWidth: 100 ,
+    printWidth: 120 ,
   };
   
   module.exports = config;

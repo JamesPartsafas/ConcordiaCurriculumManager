@@ -12,7 +12,7 @@ import Register from "./pages/Register";
 import { decodeTokenToUser } from "./services/auth";
 import { BaseRoutes } from "./constants";
 import axios from "axios";
-import { getDossiers } from "./services/dossier";
+import Dossiers from "./pages/dossier/Dossiers";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -23,11 +23,12 @@ export function App() {
         // Check for the token in localStorage
         const token = localStorage.getItem("token");
 
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; //set the token globally
+
         if (token != null) {
             const user: User = decodeTokenToUser(token);
             setUser(user);
         }
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; //set the token globally
     }, []);
 
     return (
@@ -37,6 +38,7 @@ export function App() {
                     <Route path={BaseRoutes.Home} element={<Home />} />
                     <Route path={BaseRoutes.Login} element={<Login setUser={setUser} />} />
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
+                    <Route path={BaseRoutes.Dossiers} element={<Dossiers />} />
                     {/* whenever none of the other routes match we show the not found page */}
                     <Route path={BaseRoutes.NotFound} element={<NotFound />} />
                 </Routes>

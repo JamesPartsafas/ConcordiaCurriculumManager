@@ -10,13 +10,17 @@ export interface DossierDTO {
     published: boolean;
 }
 
+export interface GetMyDossiersResponse {
+    data: DossierDTO[];
+}
+
 export interface CreateDossierDTO {
     title: string | null;
     description: string | null;
 }
 
 //api calls with axios function style
-export function getDossiers(): Promise<DossierDTO> {
+export function getMyDossiers(): Promise<GetMyDossiersResponse> {
     return axios.get("/Dossier/GetDossiersByID");
 }
 
