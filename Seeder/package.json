@@ -1,0 +1,23 @@
+{
+  "name": "seeder",
+  "version": "1.0.0",
+  "description": "A Seeder application to automatically insert data into the database",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "npm run build && node build/index.js",
+    "validateData": "npm run start -- --validateData",
+    "run": "node index"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "pg-promise": "^11.5.4"
+  }
+}
