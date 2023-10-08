@@ -9,6 +9,8 @@ import Login from "./pages/Login";
 import { User } from "./services/user";
 import { createContext, useEffect, useState } from "react";
 import Register from "./pages/Register";
+import CreateGroup from "./pages/CreateGroup";
+import DisplayGroups from "./pages/RegularGroups";
 import { decodeTokenToUser } from "./services/auth";
 
 export const UserContext = createContext<User | null>(null);
@@ -33,6 +35,8 @@ export function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login setUser={setUser} />} />
                     <Route path="/register" element={<Register setUser={setUser} />} />
+                    <Route path="/creategroup" element={<CreateGroup />} />
+                    <Route path="/regulargroups" element={<DisplayGroups />} />
                     {/* whenever none of the other routes match we show the not found page */}
                     <Route path="*" element={<NotFound />} />
                 </Routes>
