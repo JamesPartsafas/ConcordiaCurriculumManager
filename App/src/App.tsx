@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 
 // 1. import `ChakraProvider` component
 import { ChakraProvider } from "@chakra-ui/react";
@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import { User } from "./services/user";
 import { createContext, useEffect, useState } from "react";
 import Register from "./pages/Register";
-import { decodeTokenToUser } from "./services/auth";
+import { decodeTokenToUser, logout } from "./services/auth";
 import { BaseRoutes } from "./constants";
 import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
@@ -18,18 +18,29 @@ export const UserContext = createContext<User | null>(null);
 
 export function App() {
     const [user, setUser] = useState<User | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        // Check for the token in localStorage
-        const token = localStorage.getItem("token");
+        initializeUser();
+    }, []);
 
+    // Check for the token in localStorage.
+    function initializeUser() {
+        const token = localStorage.getItem("token");
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; //set the token globally
 
         if (token != null) {
             const user: User = decodeTokenToUser(token);
+            //if token expired logout, and clear token
+            if (user.expiresAtTimestamp < Date.now()) {
+                logout().then(() => {
+                    navigate(BaseRoutes.Login);
+                });
+            }
+
             setUser(user);
         }
-    }, []);
+    }
 
     return (
         <>
@@ -38,7 +49,12 @@ export function App() {
                     <Route path={BaseRoutes.Home} element={<Home />} />
                     <Route path={BaseRoutes.Login} element={<Login setUser={setUser} />} />
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
-                    <Route path={BaseRoutes.Dossiers} element={<Dossiers />} />
+
+                    <Route
+                        path={BaseRoutes.Dossiers}
+                        element={user != null ? <Dossiers /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
                     {/* whenever none of the other routes match we show the not found page */}
                     <Route path={BaseRoutes.NotFound} element={<NotFound />} />
                 </Routes>
