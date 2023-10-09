@@ -13,8 +13,6 @@ export default function Dossiers() {
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
 
     useEffect(() => {
-        document.body.style.backgroundColor = "#932439";
-        console.log("Dossier");
         getAllDossiers();
     }, []);
 
@@ -45,12 +43,19 @@ export default function Dossiers() {
 
     return (
         <>
-            <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%">
+            <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                 {user?.firstName + "'s"} Dossiers
             </Text>
 
-            <TableContainer style={{ backgroundColor: "white" }} borderRadius="xl" boxShadow="xl" maxW="5xl" m="auto">
-                <Table variant="simple">
+            <TableContainer
+                style={{ backgroundColor: "#932439" }}
+                borderRadius="xl"
+                boxShadow="xl"
+                maxW="5xl"
+                m="auto"
+                padding="5"
+            >
+                <Table variant="simple" style={{ backgroundColor: "white" }}>
                     <Thead>
                         <Tr>
                             <Th>Title</Th>
