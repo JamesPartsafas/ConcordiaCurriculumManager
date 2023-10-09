@@ -36,7 +36,7 @@ function ComponentsList() {
     return (
         <Box p={4}>
             <Box>
-                <Heading mb={4}>Brand Colors: {"<Button>"}</Heading>
+                <Heading mb={4}>Brand Colors:</Heading>
                 <Flex flexWrap="wrap" justifyContent="space-between" width="70%" m="auto">
                     {Object.entries(brandColors).map(([colorName, colorCode]) => (
                         <Box
