@@ -4,7 +4,6 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
 import { DossierDTO, GetMyDossiersResponse, getMyDossiers } from "../../services/dossier";
 import DossierModal from "./DossierModal";
-import { set } from "react-hook-form";
 
 export default function Dossiers() {
     const user = useContext(UserContext);
