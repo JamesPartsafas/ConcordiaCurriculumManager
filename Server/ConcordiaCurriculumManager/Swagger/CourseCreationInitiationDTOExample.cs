@@ -18,7 +18,8 @@ public class CourseCreationInitiationDTOExample : IExamplesProvider<CourseCreati
             PreReqs = "SOEN 490 previously or concurrently",
             Career = CourseCareerEnum.UGRD,
             EquivalentCourses = "",
-            ComponentCodes = new List<ComponentCodeEnum> { ComponentCodeEnum.LEC, ComponentCodeEnum.LAB }
+            ComponentCodes = new List<ComponentCodeEnum> { ComponentCodeEnum.LEC, ComponentCodeEnum.LAB },
+            DossierId = Guid.NewGuid(),
         };
     }
 }

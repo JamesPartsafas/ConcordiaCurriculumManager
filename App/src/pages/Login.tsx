@@ -16,26 +16,16 @@ import {
 } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
-import { AuthenticationResponse, login, LoginDTO } from "../services/auth";
-import jwt_decode from "jwt-decode";
+import {
+    AuthenticationResponse,
+    decodeTokenToUser,
+    login,
+    LoginDTO,
+    LoginProps,
+} from "../services/auth";
 import { User } from "../services/user";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-
-interface LoginProps {
-    setUser: (user: User | null) => void;
-}
-
-interface DecodedToken {
-    fName: string;
-    lName: string;
-    email: string;
-    roles: string[];
-    iat: number;
-    exp: number;
-    iss: string;
-    aud: string;
-}
 
 export default function Login({ setUser }: LoginProps) {
     const navigate = useNavigate();
@@ -51,26 +41,8 @@ export default function Login({ setUser }: LoginProps) {
         login(data)
             .then(
                 (res: AuthenticationResponse) => {
-                    console.log(res.data.accessToken);
-                    //decode access token
-                    //save access token in local storage
-                    //save user in context
-                    //redirect to home page
-                    //code:
                     if (res.data.accessToken != null) {
-                        const decodedToken = jwt_decode<DecodedToken>(res.data.accessToken);
-                        console.log(decodedToken);
-                        localStorage.setItem("token", res.data.accessToken);
-                        const user: User = {
-                            firstName: decodedToken.fName,
-                            lastName: decodedToken.lName,
-                            email: decodedToken.email,
-                            roles: decodedToken.roles,
-                            issuedAtTimestamp: decodedToken.iat,
-                            expiresAtTimestamp: decodedToken.exp,
-                            issuer: decodedToken.iss,
-                            audience: decodedToken.aud,
-                        };
+                        const user: User = decodeTokenToUser(res.data.accessToken);
                         setUser(user);
                         navigate("/");
                     }
@@ -152,6 +124,18 @@ export default function Login({ setUser }: LoginProps) {
                                     >
                                         Sign in
                                     </Button>
+                                </Stack>
+                                <Stack spacing="6">
+                                    <Link to="/register">
+                                        <Button
+                                            backgroundColor="#932439"
+                                            color="white"
+                                            _hover={{ bg: "#7A1D2E" }}
+                                            type="submit"
+                                        >
+                                            Register New Account
+                                        </Button>
+                                    </Link>
                                 </Stack>
                             </Stack>
                         </Box>

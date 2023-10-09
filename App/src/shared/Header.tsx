@@ -14,12 +14,7 @@ import {
     useBreakpointValue,
     useDisclosure,
 } from "@chakra-ui/react";
-import {
-    HamburgerIcon,
-    CloseIcon,
-    ChevronDownIcon,
-    ChevronRightIcon,
-} from "@chakra-ui/icons";
+import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
 export default function Header() {
     const { isOpen, onToggle } = useDisclosure();
@@ -44,21 +39,12 @@ export default function Header() {
                 >
                     <IconButton
                         onClick={onToggle}
-                        icon={
-                            isOpen ? (
-                                <CloseIcon w={3} h={3} />
-                            ) : (
-                                <HamburgerIcon w={5} h={5} />
-                            )
-                        }
+                        icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
                         variant={"ghost"}
                         aria-label={"Toggle Navigation"}
                     />
                 </Flex>
-                <Flex
-                    flex={{ base: 1 }}
-                    justify={{ base: "center", md: "start" }}
-                >
+                <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
                     <Text
                         textAlign={useBreakpointValue({
                             base: "center",
@@ -75,12 +61,7 @@ export default function Header() {
                     </Flex>
                 </Flex>
 
-                <Stack
-                    flex={{ base: 1, md: 0 }}
-                    justify={"flex-end"}
-                    direction={"row"}
-                    spacing={6}
-                >
+                <Stack flex={{ base: 1, md: 0 }} justify={"flex-end"} direction={"row"} spacing={6}>
                     <Button
                         as={"a"}
                         display={{ base: "none", md: "inline-flex" }}
@@ -143,10 +124,7 @@ const DesktopNav = () => {
                             >
                                 <Stack>
                                     {navItem.children.map((child) => (
-                                        <DesktopSubNav
-                                            key={child.label}
-                                            {...child}
-                                        />
+                                        <DesktopSubNav key={child.label} {...child} />
                                     ))}
                                 </Stack>
                             </PopoverContent>
@@ -192,12 +170,7 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
                     align={"center"}
                     flex={1}
                 >
-                    <Icon
-                        color={"pink.400"}
-                        w={5}
-                        h={5}
-                        as={ChevronRightIcon}
-                    />
+                    <Icon color={"pink.400"} w={5} h={5} as={ChevronRightIcon} />
                 </Flex>
             </Stack>
         </Box>
@@ -206,11 +179,7 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
 
 const MobileNav = () => {
     return (
-        <Stack
-            bg={useColorModeValue("white", "gray.800")}
-            p={4}
-            display={{ md: "none" }}
-        >
+        <Stack bg={useColorModeValue("white", "gray.800")} p={4} display={{ md: "none" }}>
             {NAV_ITEMS.map((navItem) => (
                 <MobileNavItem key={navItem.label} {...navItem} />
             ))}
@@ -233,10 +202,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                     textDecoration: "none",
                 }}
             >
-                <Text
-                    fontWeight={600}
-                    color={useColorModeValue("gray.600", "gray.200")}
-                >
+                <Text fontWeight={600} color={useColorModeValue("gray.600", "gray.200")}>
                     {label}
                 </Text>
                 {children && (
@@ -250,11 +216,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                 )}
             </Box>
 
-            <Collapse
-                in={isOpen}
-                animateOpacity
-                style={{ marginTop: "0!important" }}
-            >
+            <Collapse in={isOpen} animateOpacity style={{ marginTop: "0!important" }}>
                 <Stack
                     mt={2}
                     pl={4}
@@ -265,12 +227,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
                 >
                     {children &&
                         children.map((child) => (
-                            <Box
-                                as="a"
-                                key={child.label}
-                                py={2}
-                                href={child.href}
-                            >
+                            <Box as="a" key={child.label} py={2} href={child.href}>
                                 {child.label}
                             </Box>
                         ))}

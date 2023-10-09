@@ -2,8 +2,8 @@
 using ConcordiaCurriculumManager.DTO;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
 using ConcordiaCurriculumManager.Models.Users;
+using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManager.Swagger;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
 
 namespace ConcordiaCurriculumManager.Controllers;
 
@@ -64,20 +65,21 @@ public class CourseController : Controller
     }
 
     [HttpPost(nameof(InitiateCourseCreation))]
-    [Consumes("application/json")]
-    [Authorize] ////////// TODO: Add role check
+    [Consumes(typeof(CourseCreationInitiationDTO), MediaTypeNames.Application.Json)]
+    [Authorize(Roles = RoleNames.Initiator)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Course creation dossier created successfully", typeof(Guid))]
+    [SwaggerResponse(StatusCodes.Status201Created, "Course creation dossier created successfully", typeof(CourseCreationRequestDTO))]
     [SwaggerRequestExample(typeof(CourseCreationInitiationDTO), typeof(CourseCreationInitiationDTOExample))]
     public async Task<ActionResult> InitiateCourseCreation([FromBody, Required] CourseCreationInitiationDTO initiation)
     {
         try
         {
-            var user = await _userService.GetCurrentUser();
-            var response = await _courseService.InitiateCourseCreation(initiation, user);
+            Guid userId = Guid.Parse(_userService.GetCurrentUserClaim(Claims.Id));
+            var courseCreationRequest = await _courseService.InitiateCourseCreation(initiation, userId);
+            var courseCreationRequestDTO = _mapper.Map<CourseCreationRequestDTO>(courseCreationRequest);
 
-            return Created($"/{nameof(InitiateCourseCreation)}", response.Id);
+            return Created($"/{nameof(InitiateCourseCreation)}", courseCreationRequestDTO);
         }
         catch (ArgumentException e)
         {
@@ -91,6 +93,39 @@ public class CourseController : Controller
             _logger.LogWarning($"Unexpected error occured while creating the new course dossier: {e.Message}");
             return Problem(
                 title: "Unexpected error occured while creating the new course dossier",
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    [HttpPost(nameof(InitiateCourseModification))]
+    [Consumes(typeof(CourseModificationInitiationDTO), MediaTypeNames.Application.Json)]
+    [Authorize(Roles = RoleNames.Initiator)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Course modification created successfully", typeof(CourseModificationRequestDTO))]
+    public async Task<ActionResult> InitiateCourseModification([FromBody, Required] CourseModificationInitiationDTO modification)
+    {
+        try 
+        {
+            Guid userId = Guid.Parse(_userService.GetCurrentUserClaim(Claims.Id));
+            var courseModificationRequest = await _courseService.InitiateCourseModification(modification, userId);
+            var courseModificationRequestDTO = _mapper.Map<CourseModificationRequestDTO>(courseModificationRequest);
+
+            return Created($"/{nameof(InitiateCourseModification)}", courseModificationRequestDTO);
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"Unexpected error occured while trying to modify the dossier: {e.Message}");
+            return Problem(
+                title: "Unexpected error occured while trying to modify the dossier",
                 detail: e.Message,
                 statusCode: StatusCodes.Status500InternalServerError);
         }

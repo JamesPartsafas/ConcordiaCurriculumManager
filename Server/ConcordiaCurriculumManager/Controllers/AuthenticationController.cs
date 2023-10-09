@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
 
 namespace ConcordiaCurriculumManager.Controllers;
 
@@ -27,7 +28,7 @@ public class AuthenticationController : Controller
     }
 
     [HttpPost(nameof(Register))]
-    [Consumes(typeof(RegisterDTO), RegisterDTO.MediaType)]
+    [Consumes(typeof(RegisterDTO), MediaTypeNames.Application.Json)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status201Created, "User created successfully", typeof(AuthenticationResponse), AuthenticationResponse.MediaType)]
@@ -65,7 +66,7 @@ public class AuthenticationController : Controller
     }
 
     [HttpPost(nameof(Login))]
-    [Consumes(typeof(LoginDTO), LoginDTO.MediaType)]
+    [Consumes(typeof(LoginDTO), MediaTypeNames.Application.Json)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status200OK, "User logged in successfully", typeof(AuthenticationResponse), AuthenticationResponse.MediaType)]

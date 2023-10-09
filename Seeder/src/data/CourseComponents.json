@@ -1,0 +1,102 @@
+{
+  "TableName": "CourseComponents",
+  "AutoGenerateCreatedDate": true,
+  "AutoGenerateModifiedDate": true,
+  "Data": [
+    {
+      "Id": "25ac7dc7-2303-4a4c-b442-1b98cffe5847",
+      "ComponentCode": 18,
+      "ComponentName": "Workshop"
+    },
+    {
+      "Id": "3761847e-0d9b-45e0-a48c-c6fe163ac21a",
+      "ComponentCode": 10,
+      "ComponentName": "Reading"
+    },
+    {
+      "Id": "3e62a93f-1663-465d-acf4-3d161a0989df",
+      "ComponentCode": 9,
+      "ComponentName": "Private Studies"
+    },
+    {
+      "Id": "534b2725-b6c3-4c1d-8d2a-b48a69d6ae18",
+      "ComponentCode": 2,
+      "ComponentName": "Fieldwork"
+    },
+    {
+      "Id": "7472644f-d51b-47ab-8d3e-65b7d6199f15",
+      "ComponentCode": 14,
+      "ComponentName": "Studio"
+    },
+    {
+      "Id": "7a0f0a96-6cc7-431a-8337-ec485c9c2d9a",
+      "ComponentCode": 17,
+      "ComponentName": "Tutorial/Lab"
+    },
+    {
+      "Id": "7acf78c1-9dec-44ca-aabd-d5f026265feb",
+      "ComponentCode": 8,
+      "ComponentName": "Practicum/Internship/Work-Term"
+    },
+    {
+      "Id": "80c8addf-9eb8-499a-9f1c-dae6dab18204",
+      "ComponentCode": 7,
+      "ComponentName": "Online"
+    },
+    {
+      "Id": "85ef4e28-9bc5-4ef1-b1f4-44f62fc088ba",
+      "ComponentCode": 4,
+      "ComponentName": "Laboratory"
+    },
+    {
+      "Id": "91d6fcc9-41d2-4b08-b149-6a25dc32b8e1",
+      "ComponentCode": 12,
+      "ComponentName": "Research"
+    },
+    {
+      "Id": "a115f2ec-24e8-4ca0-b45c-e47da56baa47",
+      "ComponentCode": 13,
+      "ComponentName": "Seminar"
+    },
+    {
+      "Id": "a15b77eb-59ca-4d08-aa5e-e300d7874156",
+      "ComponentCode": 16,
+      "ComponentName": "Tutorial"
+    },
+    {
+      "Id": "aaf47335-7c45-48d9-86d8-041f29b71719",
+      "ComponentCode": 1,
+      "ComponentName": "Field Studies"
+    },
+    {
+      "Id": "b4ee51fb-f9a7-474e-a48b-53184b19e2c1",
+      "ComponentCode": 5,
+      "ComponentName": "Lecture"
+    },
+    {
+      "Id": "d133040f-7908-4ae7-9ea3-7f836c78c1f7",
+      "ComponentCode": 6,
+      "ComponentName": "Modular"
+    },
+    {
+      "Id": "d45e9f39-52c3-4aac-9247-79a3ab30f6fc",
+      "ComponentCode": 11,
+      "ComponentName": "Regular"
+    },
+    {
+      "Id": "ebc62703-3b32-4c9f-8cda-4b5c51ba8d1f",
+      "ComponentCode": 15,
+      "ComponentName": "Thesis Research"
+    },
+    {
+      "Id": "f6aa7f0e-58ea-4c6e-b265-04d756148b0e",
+      "ComponentCode": 3,
+      "ComponentName": "Independent Study"
+    },
+    {
+      "Id": "f6d1af27-3874-4289-9dcc-ffac3053f889",
+      "ComponentCode": 0,
+      "ComponentName": "Conference"
+    }
+   ]
+}

@@ -20,7 +20,7 @@ public class UserRepositoryTests
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
-        dbContext = new CCMDbContext(options, Options.Create(new SeedDatabase()));
+        dbContext = new CCMDbContext(options);
     }
 
     [TestInitialize]

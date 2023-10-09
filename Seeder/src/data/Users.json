@@ -1,0 +1,30 @@
+{
+  "TableName": "Users and RoleUser",
+  "AutoGenerateCreatedDate": true,
+  "AutoGenerateModifiedDate": true,
+  "Data": [
+    {
+      "Id": "37581d9d-713f-475c-9668-23971b0e64d0",
+      "FirstName": "Super",
+      "LastName": "User",
+      "Email": "admin@ccm.ca",
+      "Password": "9767718E8A58C097D48ED8986E632368F71F71740C6DCE113AE75ED90176DA49:FE06FEFB87C75014327930CFB3373565",
+      "Unhased-Password": "AdminPassword123!",
+      "Roles": [
+        "bf4b66cd-0c71-4737-96bf-76ba6220df44"
+      ]
+    },
+    {
+      "Id": "8c55b0c3-b4cf-4948-a730-dad3fa37c69a",
+      "FirstName": "Joe",
+      "LastName": "User",
+      "Email": "joe.user@ccm.ca",
+      "Password": "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788",
+      "Unhased-Password": "JoePassword123!",
+      "Roles": [
+        "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
+        "c8b69129-6320-4cfe-9766-4417061fbb9a"
+      ]
+    }
+  ]
+}

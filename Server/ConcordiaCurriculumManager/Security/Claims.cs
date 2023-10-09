@@ -4,6 +4,8 @@ namespace ConcordiaCurriculumManager.Security;
 
 public static class Claims
 {
+    public const string Id = "id";
+
     public const string Email = "email";
 
     public const string FirstName = "fName";
@@ -11,6 +13,8 @@ public static class Claims
     public const string LastName = "lName";
 
     public const string Roles = "roles";
+
+    public const string Iat = "iat";
 }
 
 public static class Policies
