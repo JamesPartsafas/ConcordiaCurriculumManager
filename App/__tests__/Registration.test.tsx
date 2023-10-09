@@ -1,6 +1,6 @@
 import Register from "../src/pages/Register";
-import { render } from "@testing-library/react";
-//import userEvent from "@testing-library/user-event";
+import { fireEvent, render, waitFor } from "@testing-library/react";
+import * as authService from "../src/services/auth";
 import { BrowserRouter } from "react-router-dom";
 
 describe("Registration Render Test Case", () => {
@@ -19,29 +19,36 @@ describe("Registration Render Test Case", () => {
         expect(labelNode).toBeDefined;
     });
 
-    // it("test registration input", () => {
-    //     const firstName = "JestTest";
-    //     const lastName = "User";
-    //     const username = "jest@ccm.ca";
-    //     const password = "Passcode";
-    //     const onSubmit = jest.fn();
+    it("handles rejected promise from RegisterUser", async () => {
+        const mockConsoleLog = jest.spyOn(console, "log").mockImplementation(() => {});
+        const mockRegisterUser = jest.spyOn(authService, "RegisterUser");
+        mockRegisterUser.mockRejectedValue(new Error("Invalid credentials"));
 
-    //     render(
-    //         <BrowserRouter>
-    //             <Register
-    //                 setUser={() => {
-    //                     onSubmit;
-    //                 }}
-    //             />
-    //         </BrowserRouter>
-    //     );
+        const { getByText, getByLabelText } = render(
+            <BrowserRouter>
+                <Register setUser={jest.fn()} />
+            </BrowserRouter>
+        );
 
-    //     userEvent.type(screen.getByLabelText("First Name"), firstName);
-    //     userEvent.type(screen.getByLabelText("Last Name"), lastName);
-    //     userEvent.type(screen.getByLabelText("Email"), username);
-    //     userEvent.type(screen.getByLabelText("Password"), password);
-    //     userEvent.click(screen.getByText("Create Account"));
+        fireEvent.change(getByLabelText("First Name"), { target: { value: "John" } });
+        fireEvent.change(getByLabelText("Last Name"), { target: { value: "Doe" } });
+        fireEvent.change(getByLabelText("Email"), { target: { value: "john.doe@example.com" } });
+        fireEvent.change(getByLabelText("Password"), { target: { value: "password123" } });
 
-    //     expect(onSubmit).toHaveBeenCalledTimes(1);
-    // });
+        fireEvent.click(getByText("Create Account"));
+
+        await waitFor(() => {
+            expect(getByText("Invalid Credentials")).toBeDefined();
+        });
+
+        expect(mockRegisterUser).toHaveBeenCalledWith({
+            firstName: "John",
+            lastName: "Doe",
+            email: "john.doe@example.com",
+            password: "password123",
+        });
+
+        mockRegisterUser.mockRestore();
+        mockConsoleLog.mockRestore();
+    });
 });
