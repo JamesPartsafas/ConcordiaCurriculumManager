@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import { User } from "./services/user";
 import { createContext, useState } from "react";
 import Register from "./pages/Register";
-import { decodeTokenToUser, logout } from "./services/auth";
+import { decodeTokenToUser } from "./services/auth";
 import { BaseRoutes } from "./constants";
 import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
@@ -30,10 +30,9 @@ export function App() {
             const user: User = decodeTokenToUser(token);
             // if token expired logout, and clear token
             if (user.expiresAtTimestamp * 1000 < Date.now()) {
-                logout().then(() => {
-                    navigate(BaseRoutes.Login);
-                    setIsLoggedIn(false);
-                });
+                localStorage.removeItem("token");
+                navigate(BaseRoutes.Login);
+                setIsLoggedIn(false);
             }
 
             return user;

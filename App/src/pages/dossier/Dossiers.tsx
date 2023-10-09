@@ -1,4 +1,5 @@
-import { Table, Thead, Tbody, Text, Tr, Th, Td, TableContainer } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Text, Tr, Th, Td, TableContainer, IconButton } from "@chakra-ui/react";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
@@ -21,7 +22,6 @@ export default function Dossiers() {
             .then(
                 (res: GetMyDossiersResponse) => {
                     setMyDossiers(res.data);
-                    console.log(res.data);
                 },
                 (rej) => {
                     console.log(rej);
@@ -47,20 +47,14 @@ export default function Dossiers() {
                 {user?.firstName + "'s"} Dossiers
             </Text>
 
-            <TableContainer
-                style={{ backgroundColor: "#932439" }}
-                borderRadius="xl"
-                boxShadow="xl"
-                maxW="5xl"
-                m="auto"
-                padding="5"
-            >
+            <TableContainer borderRadius="xl" boxShadow="xl" maxW="5xl" m="auto" border="2px">
                 <Table variant="simple" style={{ backgroundColor: "white" }}>
-                    <Thead>
-                        <Tr>
-                            <Th>Title</Th>
-                            <Th>Description</Th>
-                            <Th>Published</Th>
+                    <Thead backgroundColor={"#e2e8f0"}>
+                        <Tr display={"flex"}>
+                            <Th flex={"2"}>Title</Th>
+                            <Th flex={"4"}>Description</Th>
+                            <Th flex={"1"}>Published</Th>
+                            <Th flex={"1"}></Th>
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -71,16 +65,30 @@ export default function Dossiers() {
                                     setShowDossierModal(true);
                                     displayDossierModal(dossier);
                                 }}
+                                display={"flex"}
                             >
-                                <Td maxW="100px" overflow="hidden">
-                                    {dossier.title}
-                                </Td>
-                                <Td maxW="200px">
-                                    <Text maxW="100%" overflow="hidden" textOverflow="ellipsis">
+                                <Td flex={"2"}>{dossier.title}</Td>
+                                <Td flex={"4"}>
+                                    <Text overflow="hidden" textOverflow="ellipsis" maxW={"300px"}>
                                         {dossier.description}
                                     </Text>
                                 </Td>
-                                <Td>{dossier.published ? "Yes" : "No"}</Td>
+                                <Td flex={"1"}>{dossier.published ? "Yes" : "No"}</Td>
+                                <Td flex={"1"}>
+                                    <IconButton
+                                        aria-label="Delete"
+                                        icon={<DeleteIcon />}
+                                        backgroundColor={"transparent"}
+                                        _hover={{ backgroundColor: "#932439" }}
+                                    />
+                                    <IconButton
+                                        ml={2}
+                                        aria-label="Edit"
+                                        icon={<EditIcon />}
+                                        backgroundColor={"transparent"}
+                                        _hover={{ backgroundColor: "#0072a8" }}
+                                    />
+                                </Td>
                             </Tr>
                         ))}
                     </Tbody>
