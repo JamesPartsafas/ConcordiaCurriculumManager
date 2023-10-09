@@ -77,8 +77,8 @@ export default function Dossiers() {
                         </AlertDialogHeader>
 
                         <AlertDialogBody>
-                            Are you sure you want to delete <b>{selectedDossier.title}</b>? You can't undo this action
-                            afterwards.
+                            Are you sure you want to delete <b>{selectedDossier.title}</b>? You can&apos;t undo this
+                            action afterwards.
                         </AlertDialogBody>
 
                         <AlertDialogFooter>
