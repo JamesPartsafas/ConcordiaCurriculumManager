@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import logo from "../assets/logo.png";
 import {
     Container,
@@ -18,7 +18,7 @@ export default function AddUserToGroup() {
 
     const [filteredList, setFilteredList] = useState(userList);
 
-    const filterBySearch = (event) => {
+    const filterBySearch = (event: { target: { value: any } }) => {
         const query = event.target.value;
         var updatedList = [...userList];
         updatedList = updatedList.filter((item) => {
@@ -57,8 +57,8 @@ export default function AddUserToGroup() {
                         <div id="item-list">
                             <ol>
                                 {filteredList.map((item, index) => (
-                                    <HStack justify="space-between">
-                                        <li key={index}>{item}</li>
+                                    <HStack justify="space-between" key={index}>
+                                        <li>{item}</li>
                                         <Button
                                             backgroundColor="#932439"
                                             color="white"

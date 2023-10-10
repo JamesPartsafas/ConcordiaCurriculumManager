@@ -1,4 +1,3 @@
-import React from "react";
 import { Container, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 
 export default function DisplayGroups() {

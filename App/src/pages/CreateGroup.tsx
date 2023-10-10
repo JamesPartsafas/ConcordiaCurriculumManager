@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form";
 export default function CreateGroup() {
     const { register, handleSubmit } = useForm();
 
-    function onSubmit(data) {
+    function onSubmit(data: any) {
         // Handle form submission here
         console.log("Form Data:", data);
     }
@@ -53,7 +53,7 @@ export default function CreateGroup() {
                                     <FormLabel htmlFor="groupType">Group Type</FormLabel>
                                     <Select
                                         id="groupType"
-                                        name="groupType"
+                                        //name="groupType"
                                         {...register("groupType", {
                                             required: true,
                                         })}
@@ -77,7 +77,7 @@ export default function CreateGroup() {
                                     <FormLabel htmlFor="faculty">Faculty/School</FormLabel>
                                     <Select
                                         id="faculty"
-                                        name="faculty"
+                                        // name="faculty"
                                         {...register("faculty", {
                                             required: true,
                                         })}
@@ -103,7 +103,7 @@ export default function CreateGroup() {
                                     </FormLabel>
                                     <Select
                                         id="selectedMembers"
-                                        name="selectedMembers"
+                                        //  name="selectedMembers"
                                         multiple // Allow multiple selections
                                         {...register("selectedMembers", {
                                             required: true,

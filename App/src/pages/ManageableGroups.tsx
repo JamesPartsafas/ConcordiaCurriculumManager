@@ -1,4 +1,3 @@
-import React from "react";
 import { Container, Table, Thead, Tbody, Tr, Th, Td, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
