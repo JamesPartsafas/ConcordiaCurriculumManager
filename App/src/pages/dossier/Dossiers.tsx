@@ -144,6 +144,7 @@ export default function Dossiers() {
                                         aria-label="Delete"
                                         icon={<DeleteIcon />}
                                         backgroundColor={"#932439"}
+                                        color={"white"}
                                         onClick={() => {
                                             setSelectedDossier(dossier);
                                             onOpen();
@@ -154,6 +155,7 @@ export default function Dossiers() {
                                         aria-label="Edit"
                                         icon={<EditIcon />}
                                         backgroundColor={"#0072a8"}
+                                        color={"white"}
                                         onClick={() => {
                                             setSelectedDossier(dossier);
                                             displayEditDossierModal();
