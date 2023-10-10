@@ -119,27 +119,37 @@ export default function Dossiers() {
             </Text>
 
             <TableContainer borderRadius="xl" boxShadow="xl" maxW="5xl" m="auto" border="2px">
-                <Table variant="simple" style={{ backgroundColor: "white" }}>
+                <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "fixed" }}>
                     <Thead backgroundColor={"#e2e8f0"}>
                         <Tr display={"flex"}>
-                            <Th flex={"2"}>Title</Th>
-                            <Th flex={"4"}>Description</Th>
-                            <Th flex={"1"}>Published</Th>
-                            <Th flex={"1"}></Th>
+                            <Th minW={"200px"} maxW={"200px"}>
+                                Title
+                            </Th>
+                            <Th minW={"500px"} maxW={"500px"}>
+                                Description
+                            </Th>
+                            <Th minW={"120px"} maxW={"120px"}>
+                                Published
+                            </Th>
+                            <Th width={"25%"}></Th>
                         </Tr>
                     </Thead>
                     <Tbody>
                         {myDossiers.slice(startIndex - 1, endIndex).map((dossier) => (
                             <Tr key={dossier.id} display={"flex"}>
-                                <Td flex={"2"}>{dossier.title}</Td>
-                                <Td flex={"4"}>
-                                    <Text overflow="hidden" textOverflow="ellipsis" maxW={"300px"}>
+                                <Td minW={"200px"} maxW={"200px"}>
+                                    {dossier.title}
+                                </Td>
+                                <Td minW={"500px"} maxW={"500px"}>
+                                    <Text overflow="hidden" textOverflow="ellipsis" maxW={"500px"}>
                                         {dossier.description}
                                     </Text>
                                 </Td>
-                                <Td flex={"1"}>{dossier.published ? "Yes" : "No"}</Td>
+                                <Td minW={"120px"} maxW={"120px"}>
+                                    {dossier.published ? "Yes" : "No"}
+                                </Td>
 
-                                <Td flex={"1"}>
+                                <Td width={"25%"}>
                                     <IconButton
                                         aria-label="Delete"
                                         icon={<DeleteIcon />}
