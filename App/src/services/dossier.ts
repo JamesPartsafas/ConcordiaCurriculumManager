@@ -10,6 +10,10 @@ export interface DossierDTO {
     published: boolean;
 }
 
+export interface DossierDTOResponse {
+    data: DossierDTO;
+}
+
 export interface GetMyDossiersResponse {
     data: DossierDTO[];
 }
@@ -24,6 +28,6 @@ export function getMyDossiers(): Promise<GetMyDossiersResponse> {
     return axios.get("/Dossier/GetDossiersByID");
 }
 
-export function createDossierForUser(dto: CreateDossierDTO): Promise<DossierDTO> {
+export function createDossierForUser(dto: CreateDossierDTO): Promise<DossierDTOResponse> {
     return axios.post("/Dossier/CreateDossierForUser", dto);
 }

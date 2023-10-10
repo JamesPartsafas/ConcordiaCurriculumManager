@@ -241,6 +241,7 @@ export default function Dossiers() {
                 <DossierModal
                     modalTitle={dossierModalTitle}
                     dossier={selectedDossier}
+                    dossierList={myDossiers}
                     open={showDossierModal}
                     closeModal={closeDossierModal}
                 />

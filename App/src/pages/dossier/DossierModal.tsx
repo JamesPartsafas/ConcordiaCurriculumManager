@@ -12,17 +12,18 @@ import {
     Input,
     Textarea,
 } from "@chakra-ui/react";
-import { DossierDTO } from "../../services/dossier";
+import { DossierDTO, createDossierForUser } from "../../services/dossier";
 import { useForm } from "react-hook-form";
 
 interface DossierModalProps {
     open: boolean;
     dossier?: DossierDTO;
     modalTitle: string;
+    dossierList?: DossierDTO[];
     closeModal: () => void;
 }
 
-interface EditDossierForm {
+interface DossierForm {
     title: string;
     description: string;
 }
@@ -32,22 +33,31 @@ export default function DossierModal(props: DossierModalProps) {
         register,
         handleSubmit,
         formState: { isDirty, isValid },
-    } = useForm<EditDossierForm>({
+    } = useForm<DossierForm>({
         defaultValues: {
             title: props.dossier?.title,
             description: props.dossier?.description,
         },
     });
 
-    //this should call the edit dossier endpoint
-    function onSubmit(data: EditDossierForm) {
-        console.log(data);
+    //this should call the edit or add dossier endpoint
+    function onSubmit(data: DossierForm) {
+        createDossierForUser(data).then(
+            (res) => {
+                props.dossierList?.push(res.data);
+                props.closeModal();
+                //display success Toast
+            },
+            () => {
+                //display error Toast
+            }
+        );
     }
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <Modal isOpen={props.open} onClose={props.closeModal}>
+            <Modal isOpen={props.open} onClose={props.closeModal}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <ModalOverlay />
                     <ModalContent>
                         <ModalHeader>{props.modalTitle}</ModalHeader>
@@ -63,11 +73,10 @@ export default function DossierModal(props: DossierModalProps) {
                                 })}
                                 defaultValue={props.dossier?.title}
                             />
-                            <FormLabel htmlFor="title">Description</FormLabel>
+                            <FormLabel htmlFor="description">Description</FormLabel>
                             <Textarea
                                 id="description"
                                 {...register("description", {
-                                    //validate that value is not empty
                                     required: true,
                                 })}
                                 defaultValue={props.dossier?.description}
@@ -79,13 +88,13 @@ export default function DossierModal(props: DossierModalProps) {
                                 Close
                             </Button>
 
-                            <Button variant="ghost" isDisabled={!isDirty || !isValid}>
+                            <Button type="submit" variant="ghost" isDisabled={!isDirty || !isValid}>
                                 Save
                             </Button>
                         </ModalFooter>
                     </ModalContent>
-                </Modal>
-            </form>
+                </form>
+            </Modal>
         </>
     );
 }
