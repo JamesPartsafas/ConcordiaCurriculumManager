@@ -16,6 +16,9 @@ import {
     AlertDialogFooter,
     Button,
     useDisclosure,
+    Tfoot,
+    Spacer,
+    Flex,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon, InfoIcon } from "@chakra-ui/icons";
 
@@ -31,6 +34,13 @@ export default function Dossiers() {
     const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
     const [showEditDossierModal, setShowEditDossierModal] = useState<boolean>(false);
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
+
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const resultsPerPage = 5;
+    const totalResults = myDossiers.length;
+
+    const startIndex = (currentPage - 1) * resultsPerPage + 1;
+    const endIndex = Math.min(currentPage * resultsPerPage, totalResults);
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef();
@@ -77,7 +87,7 @@ export default function Dossiers() {
                         </AlertDialogHeader>
 
                         <AlertDialogBody>
-                            Are you sure you want to delete <b>{selectedDossier.title}</b>? You can&apos;t undo this
+                            Are you sure you want to delete <b>{selectedDossier?.title}</b>? You can&apos;t undo this
                             action afterwards.
                         </AlertDialogBody>
 
@@ -119,7 +129,7 @@ export default function Dossiers() {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {myDossiers.map((dossier) => (
+                        {myDossiers.slice(startIndex, endIndex).map((dossier) => (
                             <Tr key={dossier.id} display={"flex"}>
                                 <Td flex={"2"}>{dossier.title}</Td>
                                 <Td flex={"4"}>
@@ -159,6 +169,35 @@ export default function Dossiers() {
                             </Tr>
                         ))}
                     </Tbody>
+                    <Tfoot>
+                        <Tr>
+                            <Td height={20}>
+                                <Flex>
+                                    <Text alignSelf="center">
+                                        Showing {startIndex} to {endIndex} of {myDossiers.length} results
+                                    </Text>
+                                    <Spacer />
+                                    <Button
+                                        mr={4}
+                                        p={4}
+                                        variant="outline"
+                                        onClick={() => setCurrentPage(currentPage - 1)}
+                                        isDisabled={startIndex == 1}
+                                    >
+                                        Previous
+                                    </Button>
+                                    <Button
+                                        p={4}
+                                        variant="outline"
+                                        onClick={() => setCurrentPage(currentPage + 1)}
+                                        isDisabled={endIndex == totalResults}
+                                    >
+                                        Next
+                                    </Button>
+                                </Flex>
+                            </Td>
+                        </Tr>
+                    </Tfoot>
                 </Table>
             </TableContainer>
             {deleteAlertDialog()}
