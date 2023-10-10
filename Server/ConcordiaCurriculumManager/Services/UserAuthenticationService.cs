@@ -18,6 +18,7 @@ public interface IUserAuthenticationService
     Task<string> SigninUser(string email, string password);
     Task SignoutUser();
     Task<User> GetCurrentUser();
+    string GetCurrentUserClaim(string claim);
 }
 
 public class UserAuthenticationService : IUserAuthenticationService
@@ -68,8 +69,8 @@ public class UserAuthenticationService : IUserAuthenticationService
         var hashedPassword = _inputHasher.Hash(user.Password);
         user.Password = hashedPassword;
 
-        var visitorRole = new Role() { UserRole = RoleEnum.FacultyMember };
-        user.Roles.Add(visitorRole);
+        user.Roles.Add(new Role() { UserRole = RoleEnum.FacultyMember });
+        user.Roles.Add(new Role() { UserRole = RoleEnum.Initiator });
 
         var savedUser = await _userRepository.SaveUser(user);
 
@@ -113,6 +114,16 @@ public class UserAuthenticationService : IUserAuthenticationService
         return user;
     }
 
+    public string GetCurrentUserClaim(string claim)
+    {
+        if (_httpContextAccessor.HttpContext == null)
+        {
+            throw new NullReferenceException("HttpContext is null");
+        }
+
+        return _httpContextAccessor.HttpContext.User.Claims.First(i => i.Type.ToString() == claim).Value;
+    }
+
     public bool IsBlacklistedToken(string accessToken) => _cacheService.Exists(accessToken);
 
     private string GenerateAccessToken(User user)
@@ -122,6 +133,7 @@ public class UserAuthenticationService : IUserAuthenticationService
 
         var claims = new List<Claim>
         {
+            new Claim(Claims.Id, user.Id.ToString()),
             new Claim(Claims.Email, user.Email),
             new Claim(Claims.FirstName, user.FirstName),
             new Claim(Claims.LastName, user.LastName)
@@ -134,7 +146,7 @@ public class UserAuthenticationService : IUserAuthenticationService
 
         var time = DateTime.UtcNow - new DateTime(1970, 1, 1);
         var epoch = Convert.ToInt64(time.TotalSeconds);
-        claims.Add(new Claim("iat", epoch.ToString(), ClaimValueTypes.Integer64));
+        claims.Add(new Claim(Claims.Iat, epoch.ToString(), ClaimValueTypes.Integer64));
 
         var token = new JwtSecurityToken(
             _identitySettings.Issuer,

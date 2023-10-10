@@ -1,5 +1,4 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossier;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 
 namespace ConcordiaCurriculumManager.Models.Users;
 
@@ -16,8 +15,6 @@ public class User : BaseModel
     public List<Role> Roles { get; set; } = new();
 
     public List<Group> Groups { get; set; } = new();
-
-    public List<CourseCreationDossier> CourseCreationDossiers { get; set; } = new();
 
     public List<Dossier> Dossiers { get; set; } = new();
 }

@@ -69,13 +69,8 @@ public class Program
         builder.Services.AddDbContext<CCMDbContext>(options =>
         {
             var dataSourceBuilder = new NpgsqlDataSourceBuilder(dbSetting!.ConnectionString);
-            dataSourceBuilder.MapEnum<RoleEnum>();
             options.UseNpgsql(dataSourceBuilder.Build());
         });
-
-        builder.Services.AddOptions<SeedDatabase>()
-                        .Bind(builder.Configuration.GetSection(SeedDatabase.SectionName))
-                        .Validate(seedDatabase => seedDatabase.Users is not null);
 
         AddServices(builder.Services);
 
@@ -151,12 +146,7 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        // Must use app.UseEndpoints for authorization middleware to run
-        app.UseEndpoints(endpoints =>
-        {
-            // app.UsePathBase("/api"); //TODO: Using an api prefix in URL breaks authorization middleware
-            endpoints.MapControllers();
-        });
+        app.MapControllers();
 
         app.Run();
     }

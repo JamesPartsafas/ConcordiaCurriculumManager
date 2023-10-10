@@ -21,4 +21,6 @@ public class CourseCreationInitiationDTO
     public required string EquivalentCourses { get; set; }
 
     public required List<ComponentCodeEnum> ComponentCodes { get; set; }
+
+    public required Guid DossierId { get; set; }
 }
