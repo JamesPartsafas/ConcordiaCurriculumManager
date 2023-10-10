@@ -41,7 +41,7 @@ export default function Dossiers() {
     const resultsPerPage = 5;
     const totalResults = myDossiers.length;
 
-    const startIndex = (currentPage - 1) * resultsPerPage + 1;
+    const startIndex = myDossiers.length === 0 ? 0 : (currentPage - 1) * resultsPerPage + 1;
     const endIndex = Math.min(currentPage * resultsPerPage, totalResults);
 
     const { isOpen, onOpen, onClose } = useDisclosure();
