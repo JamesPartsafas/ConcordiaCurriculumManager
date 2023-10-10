@@ -19,13 +19,7 @@ import { useForm } from "react-hook-form";
 import { User } from "../services/user";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import {
-    AuthenticationResponse,
-    LoginProps,
-    RegisterDTO,
-    RegisterUser,
-    decodeTokenToUser,
-} from "../services/auth";
+import { AuthenticationResponse, LoginProps, RegisterDTO, RegisterUser, decodeTokenToUser } from "../services/auth";
 import { BaseRoutes } from "../constants";
 
 export default function Register({ setUser }: LoginProps) {
@@ -115,11 +109,7 @@ export default function Register({ setUser }: LoginProps) {
                                                 })}
                                             />
                                             <InputRightElement width="4.5rem">
-                                                <Button
-                                                    h="1.75rem"
-                                                    size="sm"
-                                                    onClick={toggleShowPassword}
-                                                >
+                                                <Button h="1.75rem" size="sm" onClick={toggleShowPassword}>
                                                     {showPassword ? "Hide" : "Show"}
                                                 </Button>
                                             </InputRightElement>
@@ -129,11 +119,7 @@ export default function Register({ setUser }: LoginProps) {
                                 <HStack justify="space-between">
                                     <Checkbox defaultChecked>Remember me</Checkbox>
 
-                                    <Button
-                                        variant="text"
-                                        size="sm"
-                                        onClick={() => navigate(BaseRoutes.Login)}
-                                    >
+                                    <Button variant="text" size="sm" onClick={() => navigate(BaseRoutes.Login)}>
                                         Back to sign in
                                     </Button>
                                 </HStack>
