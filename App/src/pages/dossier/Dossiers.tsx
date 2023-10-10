@@ -26,15 +26,16 @@ import { AddIcon, DeleteIcon, EditIcon, InfoIcon } from "@chakra-ui/icons";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
 import { DossierDTO, GetMyDossiersResponse, getMyDossiers } from "../../services/dossier";
-import EditDossierModal from "./EditDossierModal";
+import DossierModal from "./DossierModal";
 import React from "react";
 
 export default function Dossiers() {
     const user = useContext(UserContext);
 
     const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
-    const [showEditDossierModal, setShowEditDossierModal] = useState<boolean>(false);
+    const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
+    const [dossierModalTitle, setDossierModalTitle] = useState<string>();
 
     const [currentPage, setCurrentPage] = useState<number>(1);
     const resultsPerPage = 5;
@@ -70,12 +71,12 @@ export default function Dossiers() {
         console.log(dossier);
     }
 
-    function displayEditDossierModal() {
-        setShowEditDossierModal(true);
+    function displayDossierModal() {
+        setShowDossierModal(true);
     }
 
-    function closeEditDossierModal() {
-        setShowEditDossierModal(false);
+    function closeDossierModal() {
+        setShowDossierModal(false);
     }
 
     function deleteAlertDialog() {
@@ -171,7 +172,8 @@ export default function Dossiers() {
                                                 color={"white"}
                                                 onClick={() => {
                                                     setSelectedDossier(dossier);
-                                                    displayEditDossierModal();
+                                                    setDossierModalTitle("Edit Dossier");
+                                                    displayDossierModal();
                                                 }}
                                             />
                                             <IconButton
@@ -222,6 +224,11 @@ export default function Dossiers() {
                         bg="linear-gradient(45deg, #932439, #0072a8)"
                         _hover={{ bg: "linear-gradient(45deg, #0072a8, #932439)" }}
                         alignSelf="flex-end"
+                        onClick={() => {
+                            setSelectedDossier(null);
+                            setDossierModalTitle("Add Dossier");
+                            displayDossierModal();
+                        }}
                     >
                         Add
                     </Button>
@@ -230,11 +237,12 @@ export default function Dossiers() {
 
             {deleteAlertDialog()}
             {/* this is the Dossier Modal */}
-            {showEditDossierModal && (
-                <EditDossierModal
+            {showDossierModal && (
+                <DossierModal
+                    modalTitle={dossierModalTitle}
                     dossier={selectedDossier}
-                    open={showEditDossierModal}
-                    closeModal={closeEditDossierModal}
+                    open={showDossierModal}
+                    closeModal={closeDossierModal}
                 />
             )}
         </>

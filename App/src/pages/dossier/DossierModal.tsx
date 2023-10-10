@@ -17,7 +17,8 @@ import { useForm } from "react-hook-form";
 
 interface DossierModalProps {
     open: boolean;
-    dossier: DossierDTO;
+    dossier?: DossierDTO;
+    modalTitle: string;
     closeModal: () => void;
 }
 
@@ -26,15 +27,15 @@ interface EditDossierForm {
     description: string;
 }
 
-export default function EditDossierModal(props: DossierModalProps) {
+export default function DossierModal(props: DossierModalProps) {
     const {
         register,
         handleSubmit,
-        formState: { isDirty },
+        formState: { isDirty, isValid },
     } = useForm<EditDossierForm>({
         defaultValues: {
-            title: props.dossier.title,
-            description: props.dossier.description,
+            title: props.dossier?.title,
+            description: props.dossier?.description,
         },
     });
 
@@ -49,7 +50,7 @@ export default function EditDossierModal(props: DossierModalProps) {
                 <Modal isOpen={props.open} onClose={props.closeModal}>
                     <ModalOverlay />
                     <ModalContent>
-                        <ModalHeader>Edit Dossier</ModalHeader>
+                        <ModalHeader>{props.modalTitle}</ModalHeader>
                         <ModalCloseButton />
 
                         <ModalBody>
@@ -60,15 +61,16 @@ export default function EditDossierModal(props: DossierModalProps) {
                                 {...register("title", {
                                     required: true,
                                 })}
-                                defaultValue={props.dossier.title}
+                                defaultValue={props.dossier?.title}
                             />
                             <FormLabel htmlFor="title">Description</FormLabel>
                             <Textarea
                                 id="description"
                                 {...register("description", {
+                                    //validate that value is not empty
                                     required: true,
                                 })}
-                                defaultValue={props.dossier.description}
+                                defaultValue={props.dossier?.description}
                             />
                         </ModalBody>
 
@@ -77,7 +79,7 @@ export default function EditDossierModal(props: DossierModalProps) {
                                 Close
                             </Button>
 
-                            <Button variant="ghost" isDisabled={!isDirty}>
+                            <Button variant="ghost" isDisabled={!isDirty || !isValid}>
                                 Save
                             </Button>
                         </ModalFooter>
