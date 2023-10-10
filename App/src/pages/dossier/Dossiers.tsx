@@ -129,7 +129,7 @@ export default function Dossiers() {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {myDossiers.slice(startIndex, endIndex).map((dossier) => (
+                        {myDossiers.slice(startIndex - 1, endIndex).map((dossier) => (
                             <Tr key={dossier.id} display={"flex"}>
                                 <Td flex={"2"}>{dossier.title}</Td>
                                 <Td flex={"4"}>
