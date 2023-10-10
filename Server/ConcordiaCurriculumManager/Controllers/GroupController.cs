@@ -44,17 +44,6 @@ public class GroupController : Controller
         return Ok(group);
     }
 
-    [HttpGet("{name}")]
-    public async Task<IActionResult> GetGroupByName(String name)
-    {
-        var group = await _groupService.GetGroupByNameAsync(name);
-        if (group == null)
-        {
-            return NotFound();
-        }
-        return Ok(group);
-    }
-
     [HttpPost("{groupId}/users/{userId}")]
     public async Task<IActionResult> AddUserToGroup(Guid groupId, Guid userId)
     {

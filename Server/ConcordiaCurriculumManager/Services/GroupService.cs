@@ -6,7 +6,6 @@ namespace ConcordiaCurriculumManager.Services;
 public interface IGroupService
 {
     Task<Group?> GetGroupByIdAsync(Guid id);
-    Task<Group?> GetGroupByNameAsync(string name);
     Task<bool> CreateGroupAsync(Group group);
     Task<bool> AddUserToGroup(Guid userId, Guid groupId);
     Task<bool> RemoveUserFromGroup(Guid userId, Guid groupId);
@@ -29,11 +28,6 @@ public class GroupService : IGroupService
     public async Task<Group?> GetGroupByIdAsync(Guid id)
     {
         return await _groupRepository.GetGroupById(id);
-    }
-
-    public async Task<Group?> GetGroupByNameAsync(string name)
-    {
-        return await _groupRepository.GetGroupByName(name);
     }
 
     public async Task<bool> AddUserToGroup(Guid userId, Guid groupId)

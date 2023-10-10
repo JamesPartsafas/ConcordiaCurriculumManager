@@ -20,7 +20,7 @@ public class GroupRepositoryTests
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
-        dbContext = new CCMDbContext(options, Options.Create(new SeedDatabase()));
+        dbContext = new CCMDbContext(options);
     }
 
     [TestInitialize]
@@ -48,35 +48,24 @@ public class GroupRepositoryTests
     }
 
     [TestMethod]
-    public async Task GetGroupByName_ValidName_ReturnsGroup()
-    {
-        var group = new Group
-        {
-            Name = "name"
-        };
-
-        dbContext.Groups.Add(group);
-        await dbContext.SaveChangesAsync();
-
-        var result = await groupRepository.GetGroupByName(group.Name);
-
-        Assert.IsNotNull(result);
-        Assert.AreEqual(group.Name, result.Name);
-    }
-
-    [TestMethod]
     public async Task GetAllGroups_ReturnsGroups()
     {
-        var group1 = new Group { Name = "Group1" };
-        var group2 = new Group { Name = "Group2" };
+        var initialGroups = await dbContext.Groups.ToListAsync();
+        var testGroup1 = new Group { Name = "TestGroup1" };
+        var testGroup2 = new Group { Name = "TestGroup2" };
 
-        dbContext.Groups.AddRange(group1, group2);
+        dbContext.Groups.AddRange(testGroup1, testGroup2);
         await dbContext.SaveChangesAsync();
 
-        var result = await groupRepository.GetAllGroups();
+        var allGroups = await groupRepository.GetAllGroups();
 
-        Assert.IsNotNull(result);
-        Assert.AreEqual(2, result.Count);
+        Assert.IsNotNull(allGroups);
+
+        var expectedGroupCount = initialGroups.Count + 2;
+        Assert.AreEqual(expectedGroupCount, allGroups.Count);
+
+        Assert.IsTrue(allGroups.Contains(testGroup1));
+        Assert.IsTrue(allGroups.Contains(testGroup2));
     }
 
     [TestMethod]

@@ -17,6 +17,8 @@ public class CCMDbContext : DbContext
 
     public DbSet<Role> Roles { get; set; }
 
+    public DbSet<Group> Groups { get; set; }
+
     public DbSet<Course> Courses { get; set; }
 
     public DbSet<CourseComponent> CourseComponents { get; set; }

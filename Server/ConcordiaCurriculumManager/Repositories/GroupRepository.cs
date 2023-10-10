@@ -7,7 +7,6 @@ namespace ConcordiaCurriculumManager.Repositories;
 public interface IGroupRepository
 {
     ValueTask<Group?> GetGroupById(Guid id);
-    Task<Group?> GetGroupByName(string name);
     Task<List<Group>> GetAllGroups();
     Task<bool> SaveGroup(Group group);
     Task<bool> AddUserToGroup(Guid userId, Guid groupId);
@@ -24,8 +23,6 @@ public class GroupRepository : IGroupRepository
     }
 
     public ValueTask<Group?> GetGroupById(Guid id) => _dbContext.Groups.FindAsync(id);
-
-    public Task<Group?> GetGroupByName(string name) => _dbContext.Groups.SingleOrDefaultAsync(group => string.Equals(group.Name.ToLower(), name.ToLower()));
 
     public Task<List<Group>> GetAllGroups() => _dbContext.Groups.ToListAsync();
 
