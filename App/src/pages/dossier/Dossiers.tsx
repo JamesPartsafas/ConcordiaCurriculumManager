@@ -96,7 +96,7 @@ export default function Dossiers() {
                                 Cancel
                             </Button>
                             <Button
-                                colorScheme="red"
+                                backgroundColor="#932439"
                                 onClick={() => {
                                     deleteDossier(selectedDossier);
                                     onClose();
