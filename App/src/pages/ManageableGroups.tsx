@@ -1,5 +1,5 @@
 import { Container, Table, Thead, Tbody, Tr, Th, Td, Button } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function DisplayManageableGroups() {
     const groupsData = [
@@ -7,7 +7,7 @@ export default function DisplayManageableGroups() {
         { groupName: "Group 2", applicationsToApprove: 0, numberOfMembers: 3 },
         { groupName: "Group 3", applicationsToApprove: 1, numberOfMembers: 4 },
     ];
-
+    const navigate = useNavigate();
     return (
         <Container
             maxW="3xl"
@@ -50,26 +50,25 @@ export default function DisplayManageableGroups() {
                                     {group.numberOfMembers}
                                 </Td>
                                 <Td whiteSpace="nowrap" padding="16px">
-                                    <Link to="/addtogroup">
-                                        <Button
-                                            backgroundColor="#932439"
-                                            color="white"
-                                            _hover={{ bg: "#7A1D2E" }}
-                                            margin="3px"
-                                        >
-                                            Add
-                                        </Button>
-                                    </Link>
-                                    <Link to="/removefromgroup">
-                                        <Button
-                                            backgroundColor="#932439"
-                                            color="white"
-                                            _hover={{ bg: "#7A1D2E" }}
-                                            margin="3px"
-                                        >
-                                            Remove
-                                        </Button>
-                                    </Link>
+                                    <Button
+                                        backgroundColor="#932439"
+                                        color="white"
+                                        _hover={{ bg: "#7A1D2E" }}
+                                        margin="3px"
+                                        onClick={() => navigate("/addusertogroup")}
+                                    >
+                                        Add
+                                    </Button>
+
+                                    <Button
+                                        backgroundColor="#932439"
+                                        color="white"
+                                        _hover={{ bg: "#7A1D2E" }}
+                                        margin="3px"
+                                        onClick={() => navigate("/removeuserfromgroup")}
+                                    >
+                                        Remove
+                                    </Button>
                                 </Td>
                             </Tr>
                         ))}

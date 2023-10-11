@@ -15,10 +15,12 @@ import {
 } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+
 
 export default function CreateGroup() {
     const { register, handleSubmit } = useForm();
-
+    const navigate = useNavigate();
     function onSubmit(data: any) {
         // Handle form submission here
         console.log("Form Data:", data);
@@ -122,6 +124,7 @@ export default function CreateGroup() {
                                 color="white"
                                 _hover={{ bg: "#7A1D2E" }}
                                 type="submit"
+                                onClick={() => navigate("/manageablegroup")}
                             >
                                 Create Group
                             </Button>

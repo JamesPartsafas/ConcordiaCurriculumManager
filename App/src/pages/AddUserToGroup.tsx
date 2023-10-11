@@ -11,10 +11,11 @@ import {
     Button,
     HStack,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function AddUserToGroup() {
     const userList = ["User1", "Dave", "Joe", "admin", "Billy", "Benjamen"];
+    const navigate = useNavigate();
 
     const [filteredList, setFilteredList] = useState(userList);
 
@@ -72,15 +73,15 @@ export default function AddUserToGroup() {
                                 ))}
                             </ol>
                         </div>
-                        <Link to="/managegroups">
-                            <Button
-                                backgroundColor="#932439"
-                                color="white"
-                                _hover={{ bg: "#7A1D2E" }}
-                            >
-                                Back
-                            </Button>
-                        </Link>
+
+                        <Button
+                            backgroundColor="#932439"
+                            color="white"
+                            _hover={{ bg: "#7A1D2E" }}
+                            onClick={() => navigate("/manageablegroup")}
+                        >
+                            Back
+                        </Button>
                     </Stack>
                 </Box>
             </Stack>

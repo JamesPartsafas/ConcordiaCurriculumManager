@@ -39,6 +39,17 @@ export function App() {
                     <Route path={BaseRoutes.Home} element={<Home />} />
                     <Route path={BaseRoutes.Login} element={<Login setUser={setUser} />} />
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
+                    <Route path={BaseRoutes.Groups} element={<DisplayGroups />} />
+                    <Route path={BaseRoutes.CreateGroup} element={<CreateGroup />} />
+                    <Route
+                        path={BaseRoutes.ManageableGroup}
+                        element={<DisplayManageableGroups />}
+                    />
+                    <Route path={BaseRoutes.AddUserToGroup} element={<AddUserToGroup />} />
+                    <Route
+                        path={BaseRoutes.RemoveUserFromGroup}
+                        element={<RemoveUserFromGroup />}
+                    />
                     {/* whenever none of the other routes match we show the not found page */}
                     <Route path={BaseRoutes.NotFound} element={<NotFound />} />
                 </Routes>
