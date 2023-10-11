@@ -17,7 +17,7 @@ import {
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
 import { User } from "../services/user";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
     AuthenticationResponse,
@@ -26,6 +26,7 @@ import {
     RegisterUser,
     decodeTokenToUser,
 } from "../services/auth";
+import { BaseRoutes } from "../constants";
 
 export default function Register({ setUser }: LoginProps) {
     const navigate = useNavigate();
@@ -127,11 +128,14 @@ export default function Register({ setUser }: LoginProps) {
                                 </Stack>
                                 <HStack justify="space-between">
                                     <Checkbox defaultChecked>Remember me</Checkbox>
-                                    <Link to="/login">
-                                        <Button variant="text" size="sm">
-                                            Back to sign in
-                                        </Button>
-                                    </Link>
+
+                                    <Button
+                                        variant="text"
+                                        size="sm"
+                                        onClick={() => navigate(BaseRoutes.Login)}
+                                    >
+                                        Back to sign in
+                                    </Button>
                                 </HStack>
                                 <Stack spacing="6">
                                     <Button

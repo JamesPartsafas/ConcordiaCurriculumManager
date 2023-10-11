@@ -15,6 +15,7 @@ import { decodeTokenToUser } from "./services/auth";
 import DisplayManageableGroups from "./pages/ManageableGroups";
 import AddUserToGroup from "./pages/AddUserToGroup";
 import RemoveUserFromGroup from "./pages/RemoveUserFromGroup";
+import { BaseRoutes } from "./constants";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -35,16 +36,11 @@ export function App() {
         <>
             <UserContext.Provider value={user}>
                 <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<Login setUser={setUser} />} />
-                    <Route path="/register" element={<Register setUser={setUser} />} />
-                    <Route path="/creategroup" element={<CreateGroup />} />
-                    <Route path="/regulargroups" element={<DisplayGroups />} />
-                    <Route path="/managegroups" element={<DisplayManageableGroups />} />
-                    <Route path="/addtogroup" element={<AddUserToGroup />} />
-                    <Route path="/removefromgroup" element={<RemoveUserFromGroup />} />
+                    <Route path={BaseRoutes.Home} element={<Home />} />
+                    <Route path={BaseRoutes.Login} element={<Login setUser={setUser} />} />
+                    <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
                     {/* whenever none of the other routes match we show the not found page */}
-                    <Route path="*" element={<NotFound />} />
+                    <Route path={BaseRoutes.NotFound} element={<NotFound />} />
                 </Routes>
             </UserContext.Provider>
         </>
