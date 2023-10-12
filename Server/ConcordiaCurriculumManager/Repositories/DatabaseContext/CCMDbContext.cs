@@ -17,6 +17,8 @@ public class CCMDbContext : DbContext
 
     public DbSet<Role> Roles { get; set; }
 
+    public DbSet<Group> Groups { get; set; }
+
     public DbSet<Course> Courses { get; set; }
 
     public DbSet<CourseComponent> CourseComponents { get; set; }
@@ -78,5 +80,12 @@ public class CCMDbContext : DbContext
             .HasMany(dossier => dossier.CourseCreationRequests)
             .WithOne(request => request.Dossier)
             .HasForeignKey(request => request.DossierId);
+    }
+
+    private static void ConfigureGroupUserRelationship(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Group>()
+            .HasMany(group => group.Members)
+            .WithMany(user => user.Groups);
     }
 }

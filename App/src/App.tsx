@@ -13,7 +13,8 @@ import { decodeTokenToUser } from "./services/auth";
 import AddCourse from "./pages/AddCourse";
 import theme from "../theme.js"; // Import your custom theme
 import ComponentsList from "./pages/ComponentsList";
-import { LoadingProvider } from "./utils/LoadingContext"; // Import the provider
+import { LoadingProvider } from "./utils/loadingContext"; // Import the provider
+import { BaseRoutes } from "./constants";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -34,13 +35,13 @@ export function App() {
         <>
             <UserContext.Provider value={user}>
                 <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<Login setUser={setUser} />} />
-                    <Route path="/register" element={<Register setUser={setUser} />} />
-                    <Route path="/add-course" element={<AddCourse setUser={setUser} />} />
-                    <Route path="/components-list" element={<ComponentsList />} />
+                    <Route path={BaseRoutes.Home} element={<Home />} />
+                    <Route path={BaseRoutes.Login} element={<Login setUser={setUser} />} />
+                    <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
+                    <Route path={BaseRoutes.AddCourse} element={<AddCourse />} />
+                    <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
                     {/* whenever none of the other routes match we show the not found page */}
-                    <Route path="*" element={<NotFound />} />
+                    <Route path={BaseRoutes.NotFound} element={<NotFound />} />
                 </Routes>
             </UserContext.Provider>
         </>
