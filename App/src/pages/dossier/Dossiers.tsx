@@ -20,6 +20,7 @@ import {
     Spacer,
     Flex,
     Box,
+    Tooltip,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon, InfoIcon } from "@chakra-ui/icons";
 
@@ -49,6 +50,7 @@ export default function Dossiers() {
 
     useEffect(() => {
         getAllDossiers();
+        console.log(user);
     }, []);
 
     function getAllDossiers() {
@@ -89,8 +91,8 @@ export default function Dossiers() {
                         </AlertDialogHeader>
 
                         <AlertDialogBody>
-                            Are you sure you want to delete <b>{selectedDossier?.title}</b>? You can&apos;t undo this
-                            action afterwards.
+                            Are you sure you want to delete <b>{selectedDossier?.title}</b>? You
+                            can&apos;t undo this action afterwards.
                         </AlertDialogBody>
 
                         <AlertDialogFooter>
@@ -116,14 +118,23 @@ export default function Dossiers() {
 
     return (
         <>
-            <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
+            <Text
+                textAlign="center"
+                fontSize="3xl"
+                fontWeight="bold"
+                marginTop="7%"
+                marginBottom="5"
+            >
                 {user?.firstName + "'s"} Dossiers
             </Text>
 
             <Box maxW="5xl" m="auto">
                 <Flex flexDirection="column">
                     <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
-                        <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "fixed" }}>
+                        <Table
+                            variant="simple"
+                            style={{ backgroundColor: "white", tableLayout: "fixed" }}
+                        >
                             <Thead backgroundColor={"#e2e8f0"}>
                                 <Tr display={"flex"}>
                                     <Th minW={"200px"} maxW={"200px"}>
@@ -145,7 +156,11 @@ export default function Dossiers() {
                                             {dossier.title}
                                         </Td>
                                         <Td minW={"500px"} maxW={"500px"}>
-                                            <Text overflow="hidden" textOverflow="ellipsis" maxW={"500px"}>
+                                            <Text
+                                                overflow="hidden"
+                                                textOverflow="ellipsis"
+                                                maxW={"500px"}
+                                            >
                                                 {dossier.description}
                                             </Text>
                                         </Td>
@@ -191,7 +206,8 @@ export default function Dossiers() {
                                     <Td height={20}>
                                         <Flex>
                                             <Text alignSelf="center">
-                                                Showing {startIndex} to {endIndex} of {myDossiers.length} results
+                                                Showing {startIndex} to {endIndex} of{" "}
+                                                {myDossiers.length} results
                                             </Text>
                                             <Spacer />
                                             <Button
@@ -218,20 +234,26 @@ export default function Dossiers() {
                         </Table>
                     </TableContainer>
 
-                    <Button
-                        leftIcon={<AddIcon />}
-                        mt="2"
-                        bg="linear-gradient(45deg, #932439, #0072a8)"
-                        _hover={{ bg: "linear-gradient(45deg, #0072a8, #932439)" }}
-                        alignSelf="flex-end"
-                        onClick={() => {
-                            setSelectedDossier(null);
-                            setDossierModalTitle("Add Dossier");
-                            displayDossierModal();
-                        }}
+                    <Tooltip
+                        label="Only Initiators can create dossiers"
+                        isDisabled={user.roles.includes("Initiator")}
                     >
-                        Add
-                    </Button>
+                        <Button
+                            leftIcon={<AddIcon />}
+                            mt="2"
+                            bg="linear-gradient(45deg, #932439, #0072a8)"
+                            _hover={{ bg: "linear-gradient(45deg, #0072a8, #932439)" }}
+                            alignSelf="flex-end"
+                            isDisabled={!user.roles.includes("Initiator")}
+                            onClick={() => {
+                                setSelectedDossier(null);
+                                setDossierModalTitle("Add Dossier");
+                                displayDossierModal();
+                            }}
+                        >
+                            Add
+                        </Button>
+                    </Tooltip>
                 </Flex>
             </Box>
 
