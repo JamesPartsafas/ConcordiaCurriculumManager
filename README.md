@@ -1,7 +1,7 @@
 # ConcordiaCurriculumManager
 A tool to facilitate curriculum and course modification for staff at Concordia University, built in partial requirements of SOEN 490.
 
-The project contains an App folder for the frontend React project, built in Typescript, and a Server folder for the backend ASP.NET project, built in C#. Setup instructions for each of the projects can be found in their respective folders or in the project's wiki. The CourseAdmin folder contains documentation surrounding the project.
+The project contains an App folder for the frontend React project, built in Typescript, a Server folder for the backend ASP.NET project, built in C#, and a Seeder folder for a Node project which is used to seed data for the application, which is also built using Typescript. Setup instructions for each of the projects can be found in their respective folders or in the project's wiki. The CourseAdmin folder contains documentation surrounding the project.
 
 - James Partsafas - 40170301 - jamespartsafas@gmail.com
 - Eyad Al Sweidan - 40068386 - eyadsw2@gmail.com
