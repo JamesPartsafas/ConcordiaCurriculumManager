@@ -57,7 +57,7 @@ public class GroupController : Controller
     [SwaggerResponse(StatusCodes.Status404NotFound, "No groups found")]
     public async Task<IActionResult> GetAllGroups()
     {
-        var groups = await _groupService.GetAllGroups();
+        var groups = await _groupService.GetAllGroupsAsync();
         if (groups == null || !groups.Any())
         {
             return NotFound();
