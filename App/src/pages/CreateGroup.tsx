@@ -1,4 +1,4 @@
-//import React, { useState } from "react";
+import React from "react";
 import {
     Box,
     Button,
@@ -8,23 +8,36 @@ import {
     Heading,
     HStack,
     Input,
-    //InputGroup,
-    //InputRightElement,
     Stack,
     Select,
 } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios"; // Import Axios
 
 export default function CreateGroup() {
     const { register, handleSubmit } = useForm();
     const navigate = useNavigate();
-    function onSubmit(data: any) {
-        // Handle form submission here
-        console.log("Form Data:", data);
-    }
+
+    const onSubmit = (data) => {
+        // Make an HTTP POST request to the server to create a new group
+        axios
+            .post("/api/group", {  // Assuming your route is "/api/group" for creating a group
+                name: data.groupName,  // Make sure this matches your GroupCreateDTO
+                // Add other data here, e.g., groupType, faculty, department, selectedMembers
+                // Replace "data.groupName" with the actual form field names
+            })
+            .then((response) => {
+                // Handle a successful response from the server
+                console.log("Group created:", response.data);
+                navigate("/manageablegroup");
+            })
+            .catch((error) => {
+                // Handle errors if the request fails
+                console.error("Error creating group:", error);
+            });
+    };
 
     return (
         <>
@@ -55,7 +68,6 @@ export default function CreateGroup() {
                                     <FormLabel htmlFor="groupType">Group Type</FormLabel>
                                     <Select
                                         id="groupType"
-                                        //name="groupType"
                                         {...register("groupType", {
                                             required: true,
                                         })}
@@ -79,7 +91,6 @@ export default function CreateGroup() {
                                     <FormLabel htmlFor="faculty">Faculty/School</FormLabel>
                                     <Select
                                         id="faculty"
-                                        // name="faculty"
                                         {...register("faculty", {
                                             required: true,
                                         })}
@@ -105,8 +116,7 @@ export default function CreateGroup() {
                                     </FormLabel>
                                     <Select
                                         id="selectedMembers"
-                                        //  name="selectedMembers"
-                                        multiple // Allow multiple selections
+                                        multiple
                                         {...register("selectedMembers", {
                                             required: true,
                                         })}
@@ -124,7 +134,6 @@ export default function CreateGroup() {
                                 color="white"
                                 _hover={{ bg: "#7A1D2E" }}
                                 type="submit"
-                                onClick={() => navigate("/manageablegroup")}
                             >
                                 Create Group
                             </Button>
