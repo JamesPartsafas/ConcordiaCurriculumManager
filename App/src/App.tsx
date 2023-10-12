@@ -53,16 +53,12 @@ export function App() {
 
                     <Route
                         path={BaseRoutes.Dossiers}
-                        element={
-                            isLoggedIn == true ? <Dossiers /> : <Navigate to={BaseRoutes.Login} />
-                        }
+                        element={isLoggedIn == true ? <Dossiers /> : <Navigate to={BaseRoutes.Login} />}
                     />
 
                     <Route
                         path={BaseRoutes.AddCourse}
-                        element={
-                            isLoggedIn == true ? <AddCourse /> : <Navigate to={BaseRoutes.Login} />
-                        }
+                        element={isLoggedIn == true ? <AddCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
                     {/* whenever none of the other routes match we show the not found page */}

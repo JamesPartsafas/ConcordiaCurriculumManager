@@ -19,12 +19,7 @@ import {
     Textarea,
     Button,
 } from "@chakra-ui/react";
-import {
-    AutoComplete,
-    AutoCompleteInput,
-    AutoCompleteItem,
-    AutoCompleteList,
-} from "@choc-ui/chakra-autocomplete";
+import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from "@choc-ui/chakra-autocomplete";
 import { AddIcon } from "@chakra-ui/icons";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useState, useRef } from "react";
@@ -41,21 +36,15 @@ export default function AddCourse() {
     const selectedComponentRef = useRef<HTMLSelectElement>(null);
     const selectedCourseRef = useRef<HTMLSelectElement>(null);
 
-    const handleChangeDepartment = (e: React.ChangeEvent<HTMLSelectElement>) =>
-        setDepartment(e.currentTarget.value);
-    const handleChangeCourseNumber = (e: React.ChangeEvent<HTMLInputElement>) =>
-        setCourseNumber(e.currentTarget.value);
-    const handleChangeCourseName = (e: React.ChangeEvent<HTMLInputElement>) =>
-        setCourseName(e.currentTarget.value);
+    const handleChangeDepartment = (e: React.ChangeEvent<HTMLSelectElement>) => setDepartment(e.currentTarget.value);
+    const handleChangeCourseNumber = (e: React.ChangeEvent<HTMLInputElement>) => setCourseNumber(e.currentTarget.value);
+    const handleChangeCourseName = (e: React.ChangeEvent<HTMLInputElement>) => setCourseName(e.currentTarget.value);
     const handleChangeCourseCredits = (e: React.ChangeEvent<HTMLInputElement>) =>
         setCourseCredits(e.currentTarget.value);
     const handleChangeCourseDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
         setCourseDescription(e.currentTarget.value);
     const handleAddComponent = (selectedComponent: string | undefined) => {
-        setCourseComponents([
-            ...courseComponents,
-            { type: selectedComponent ? selectedComponent : "", hours: 3 },
-        ]);
+        setCourseComponents([...courseComponents, { type: selectedComponent ? selectedComponent : "", hours: 3 }]);
         setComponents(components.filter((component) => component !== selectedComponent));
     };
     const handleEditComponentHours = (hours: number, index: number) => {
@@ -64,16 +53,9 @@ export default function AddCourse() {
     };
     const handleRemoveComponent = (index: number) => {
         setComponents([...components, courseComponents[index].type]);
-        setCourseComponents(
-            courseComponents.filter((_component, componentIndex) => componentIndex !== index)
-        );
+        setCourseComponents(courseComponents.filter((_component, componentIndex) => componentIndex !== index));
     };
-    const handleEditRequesites = (
-        action: string,
-        course: string | undefined,
-        type: string,
-        index: number
-    ) => {
+    const handleEditRequesites = (action: string, course: string | undefined, type: string, index: number) => {
         if (course === undefined) return;
         if (action == "add") {
             if (course.trim() == "") return;
@@ -82,9 +64,7 @@ export default function AddCourse() {
             requesites[index].type = type.toLowerCase();
             setRequesites(requesites);
         } else if (action == "delete") {
-            setRequesites(
-                requesites.filter((_requesite, requesiteIndex) => requesiteIndex !== index)
-            );
+            setRequesites(requesites.filter((_requesite, requesiteIndex) => requesiteIndex !== index));
         }
     };
 
@@ -153,11 +133,7 @@ export default function AddCourse() {
                             </Stack>
                             <Stack mb={4}>
                                 <FormLabel m={0}>Name</FormLabel>
-                                <Input
-                                    placeholder="Name"
-                                    value={courseName}
-                                    onChange={handleChangeCourseName}
-                                />
+                                <Input placeholder="Name" value={courseName} onChange={handleChangeCourseName} />
                             </Stack>
                             <Stack mb={4}>
                                 <FormLabel m={0}>Credits</FormLabel>
@@ -205,10 +181,7 @@ export default function AddCourse() {
                                                             w="50px"
                                                             defaultValue={component.hours}
                                                             onChange={(e) =>
-                                                                handleEditComponentHours(
-                                                                    parseInt(e),
-                                                                    index
-                                                                )
+                                                                handleEditComponentHours(parseInt(e), index)
                                                             }
                                                         >
                                                             <NumberInputField pr={0} />
@@ -220,9 +193,7 @@ export default function AddCourse() {
                                                             isAttached
                                                             variant="outline"
                                                             ml="10px"
-                                                            onClick={() =>
-                                                                handleRemoveComponent(index)
-                                                            }
+                                                            onClick={() => handleRemoveComponent(index)}
                                                         >
                                                             <IconButton
                                                                 rounded="full"
@@ -236,22 +207,12 @@ export default function AddCourse() {
                                         );
                                     })}
                                     {components.length === 0 ? null : (
-                                        <Box
-                                            w="100%"
-                                            p={2}
-                                            mb={2}
-                                            rounded="10"
-                                            border="1px"
-                                            borderColor="gray.200"
-                                        >
+                                        <Box w="100%" p={2} mb={2} rounded="10" border="1px" borderColor="gray.200">
                                             <Flex>
                                                 <Center w="70%">
                                                     <Select ref={selectedComponentRef}>
                                                         {components.map((component) => (
-                                                            <option
-                                                                key={component}
-                                                                value={component}
-                                                            >
+                                                            <option key={component} value={component}>
                                                                 {component}
                                                             </option>
                                                         ))}
@@ -264,9 +225,7 @@ export default function AddCourse() {
                                                         variant="outline"
                                                         ml="10px"
                                                         onClick={() =>
-                                                            handleAddComponent(
-                                                                selectedComponentRef.current?.value
-                                                            )
+                                                            handleAddComponent(selectedComponentRef.current?.value)
                                                         }
                                                     >
                                                         <IconButton
@@ -338,9 +297,7 @@ export default function AddCourse() {
                                         </Text>
                                         <Text>
                                             <b>Description:</b>{" "}
-                                            {courseDescription
-                                                ? courseDescription
-                                                : "No description for this class"}
+                                            {courseDescription ? courseDescription : "No description for this class"}
                                         </Text>
                                         <Text>
                                             <b>Component(s):</b>{" "}
@@ -348,10 +305,7 @@ export default function AddCourse() {
                                                 ? "Not Available"
                                                 : courseComponents.map(
                                                       (component) =>
-                                                          component.type +
-                                                          " " +
-                                                          component.hours +
-                                                          " hour(s) per week. "
+                                                          component.type + " " + component.hours + " hour(s) per week. "
                                                   )}
                                         </Text>
                                     </Box>
@@ -370,10 +324,7 @@ export default function AddCourse() {
                                 <FormControl w="60">
                                     <FormLabel>Search for course</FormLabel>
                                     <AutoComplete openOnFocus>
-                                        <AutoCompleteInput
-                                            variant="filled"
-                                            ref={selectedCourseRef}
-                                        />
+                                        <AutoCompleteInput variant="filled" ref={selectedCourseRef} />
                                         <AutoCompleteList>
                                             {courses.map((courses, cid) => (
                                                 <AutoCompleteItem
@@ -445,14 +396,7 @@ export default function AddCourse() {
                                                         isAttached
                                                         variant="outline"
                                                         ml="10px"
-                                                        onClick={() =>
-                                                            handleEditRequesites(
-                                                                "delete",
-                                                                "",
-                                                                "",
-                                                                index
-                                                            )
-                                                        }
+                                                        onClick={() => handleEditRequesites("delete", "", "", index)}
                                                     >
                                                         <IconButton
                                                             rounded="full"
