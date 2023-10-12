@@ -36,7 +36,7 @@ export default function Dossiers() {
     const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
     const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
-    const [dossierModalTitle, setDossierModalTitle] = useState<string>();
+    const [dossierModalAction, setDossierModalTitle] = useState<"add" | "edit">();
 
     const [currentPage, setCurrentPage] = useState<number>(1);
     const resultsPerPage = 5;
@@ -187,7 +187,7 @@ export default function Dossiers() {
                                                 color={"white"}
                                                 onClick={() => {
                                                     setSelectedDossier(dossier);
-                                                    setDossierModalTitle("Edit Dossier");
+                                                    setDossierModalTitle("edit");
                                                     displayDossierModal();
                                                 }}
                                             />
@@ -247,7 +247,7 @@ export default function Dossiers() {
                             isDisabled={!user.roles.includes("Initiator")}
                             onClick={() => {
                                 setSelectedDossier(null);
-                                setDossierModalTitle("Add Dossier");
+                                setDossierModalTitle("add");
                                 displayDossierModal();
                             }}
                         >
@@ -261,7 +261,7 @@ export default function Dossiers() {
             {/* this is the Dossier Modal */}
             {showDossierModal && (
                 <DossierModal
-                    modalTitle={dossierModalTitle}
+                    action={dossierModalAction}
                     dossier={selectedDossier}
                     dossierList={myDossiers}
                     open={showDossierModal}

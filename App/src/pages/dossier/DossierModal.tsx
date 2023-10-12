@@ -11,14 +11,16 @@ import {
     FormLabel,
     Input,
     Textarea,
+    useToast,
 } from "@chakra-ui/react";
 import { DossierDTO, createDossierForUser } from "../../services/dossier";
 import { useForm } from "react-hook-form";
+import { showToast } from "../../utils/toastUtils"; // Import the utility function
 
 interface DossierModalProps {
     open: boolean;
     dossier?: DossierDTO;
-    modalTitle: string;
+    action: "add" | "edit";
     dossierList?: DossierDTO[];
     closeModal: () => void;
 }
@@ -29,6 +31,8 @@ interface DossierForm {
 }
 
 export default function DossierModal(props: DossierModalProps) {
+    const toast = useToast(); // Use the useToast hook
+
     const {
         register,
         handleSubmit,
@@ -42,16 +46,18 @@ export default function DossierModal(props: DossierModalProps) {
 
     //this should call the edit or add dossier endpoint
     function onSubmit(data: DossierForm) {
-        createDossierForUser(data).then(
-            (res) => {
-                props.dossierList?.push(res.data);
-                props.closeModal();
-                //display success Toast
-            },
-            () => {
-                //display error Toast
-            }
-        );
+        if (props.action === "add") {
+            createDossierForUser(data).then(
+                (res) => {
+                    props.dossierList?.push(res.data);
+                    props.closeModal();
+                    showToast(toast, "Success!", "Dossier created.", "success");
+                },
+                () => {
+                    showToast(toast, "Error!", "Dossier not created.", "error");
+                }
+            );
+        }
     }
 
     return (
@@ -60,7 +66,9 @@ export default function DossierModal(props: DossierModalProps) {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <ModalOverlay />
                     <ModalContent>
-                        <ModalHeader>{props.modalTitle}</ModalHeader>
+                        <ModalHeader>
+                            {props.action == "add" ? "Add Dossier" : "Edit Dossier"}
+                        </ModalHeader>
                         <ModalCloseButton />
 
                         <ModalBody>
