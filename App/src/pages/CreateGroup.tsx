@@ -21,12 +21,9 @@ export default function CreateGroup() {
     const navigate = useNavigate();
 
     const onSubmit = (data) => {
-        // Make an HTTP POST request to the server to create a new group
         axios
-            .post("/api/group", {  // Assuming your route is "/api/group" for creating a group
-                name: data.groupName,  // Make sure this matches your GroupCreateDTO
-                // Add other data here, e.g., groupType, faculty, department, selectedMembers
-                // Replace "data.groupName" with the actual form field names
+            .post("/api/group", {
+                name: data.groupName,
             })
             .then((response) => {
                 // Handle a successful response from the server
