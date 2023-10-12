@@ -27,5 +27,9 @@ export function GetGroupByID(id: string): Promise<GroupResponseDTO> {
 }
 
 export function AddUserToGroup(gid: string, uid: string){
-    return axios.post("/Group/")
+    return axios.post("/Group/" + gid + "/users/" + uid);
+}
+
+export function RemoveUserFromGroup(gid: string, uid: string){
+    return axios.post("/Group/"+ gid + "/users/" + uid);
 }
