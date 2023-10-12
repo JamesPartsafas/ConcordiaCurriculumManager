@@ -9,30 +9,20 @@ import {
     Stack,
 } from "@chakra-ui/react";
 
-interface SubjectItem {
-    value: string;
-    label: string;
-}
 
-const SUBJECT_ITEMS: Array<SubjectItem> = [
+const options1 = [
     { value: "COMP", label: "COMP" },
     { value: "SOEN", label: "SOEN" },
     { value: "ENGR", label: "ENGR" },
-]
-
-interface CatalogItem {
-    value: string;
-    label: string;
-}
-
-const CATALOG_ITEMS: Array<CatalogItem> = [
+];
+const options2 = [
     { value: "201", label: "201" },
     { value: "301", label: "301" },
     { value: "401", label: "401" },
-]
+];
 
-const CourseSelector1 = () => <Select options={SUBJECT_ITEMS} />;
-const CourseSelector2 = () => <Select options={CATALOG_ITEMS} />;
+const CourseSelector1 = () => <Select options={options1} />;
+const CourseSelector2 = () => <Select options={options2} />;
 
 
 function App() {
