@@ -1,9 +1,4 @@
-import {
-    AutoComplete,
-    AutoCompleteInput,
-    AutoCompleteList,
-    AutoCompleteItem,
-} from "@choc-ui/chakra-autocomplete";
+import { AutoComplete, AutoCompleteInput, AutoCompleteList, AutoCompleteItem } from "@choc-ui/chakra-autocomplete";
 import PropTypes from "prop-types";
 
 function AutocompleteInput({ options, onSelect, width }) {

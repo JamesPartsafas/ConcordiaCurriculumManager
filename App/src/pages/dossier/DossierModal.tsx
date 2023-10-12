@@ -66,9 +66,7 @@ export default function DossierModal(props: DossierModalProps) {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <ModalOverlay />
                     <ModalContent>
-                        <ModalHeader>
-                            {props.action == "add" ? "Add Dossier" : "Edit Dossier"}
-                        </ModalHeader>
+                        <ModalHeader>{props.action == "add" ? "Add Dossier" : "Edit Dossier"}</ModalHeader>
                         <ModalCloseButton />
 
                         <ModalBody>
