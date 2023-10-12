@@ -15,24 +15,32 @@ import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Import Axios
+import { GroupCreateDTO, GroupResponseDTO } from "../services/group";
+import { CreateGroupCall } from "../services/group";
 
 export default function CreateGroup() {
     const { register, handleSubmit } = useForm();
     const navigate = useNavigate();
 
-    const onSubmit = (data) => {
-        axios
-            .post("/api/group", {
-                name: data.groupName,
-            })
-            .then((response) => {
-                // Handle a successful response from the server
-                console.log("Group created:", response.data);
-                navigate("/manageablegroup");
-            })
-            .catch((error) => {
-                // Handle errors if the request fails
-                console.error("Error creating group:", error);
+    const onSubmit = (data: GroupCreateDTO) => {
+        // axios
+        //     .post("/api/group", {
+        //         name: data.name,
+        //     })
+        //     .then((response) => {
+        //         // Handle a successful response from the server
+        //         console.log("Group created:", response.data);
+        //         navigate("/manageablegroup");
+        //     })
+        //     .catch((error) => {
+        //         // Handle errors if the request fails
+        //         console.error("Error creating group:", error);
+        //     });
+
+        CreateGroupCall(data)
+            .then(() => navigate("/manageablegroup"))
+            .catch((err) => {
+                console.log(err);
             });
     };
 

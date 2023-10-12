@@ -18,7 +18,7 @@ export interface GroupResponseDTO {
 }
 
 //api calls
-export function CreateGroup(dto: GroupCreateDTO): Promise<GroupResponseDTO> {
+export function CreateGroupCall(dto: GroupCreateDTO): Promise<GroupResponseDTO> {
     return axios.post("/Group/CreateGroup", dto);
 }
 
