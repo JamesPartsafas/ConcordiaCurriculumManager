@@ -16,6 +16,7 @@ import DisplayManageableGroups from "./pages/ManageableGroups";
 import AddUserToGroup from "./pages/AddUserToGroup";
 import RemoveUserFromGroup from "./pages/RemoveUserFromGroup";
 import { BaseRoutes } from "./constants";
+import axios from "axios";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -25,6 +26,7 @@ export function App() {
     useEffect(() => {
         // Check for the token in localStorage
         const token = localStorage.getItem("token");
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; //set the token globally
 
         if (token != null) {
             const user: User = decodeTokenToUser(token);
