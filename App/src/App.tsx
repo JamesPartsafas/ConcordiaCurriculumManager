@@ -10,6 +10,10 @@ import { User } from "./services/user";
 import { createContext, useEffect, useState } from "react";
 import Register from "./pages/Register";
 import { decodeTokenToUser } from "./services/auth";
+import AddCourse from "./pages/AddCourse";
+import theme from "../theme.js"; // Import your custom theme
+import ComponentsList from "./pages/ComponentsList";
+import { LoadingProvider } from "./utils/loadingContext"; // Import the provider
 import { BaseRoutes } from "./constants";
 
 export const UserContext = createContext<User | null>(null);
@@ -34,6 +38,8 @@ export function App() {
                     <Route path={BaseRoutes.Home} element={<Home />} />
                     <Route path={BaseRoutes.Login} element={<Login setUser={setUser} />} />
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
+                    <Route path={BaseRoutes.AddCourse} element={<AddCourse />} />
+                    <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
                     {/* whenever none of the other routes match we show the not found page */}
                     <Route path={BaseRoutes.NotFound} element={<NotFound />} />
                 </Routes>
@@ -45,8 +51,10 @@ export function App() {
 export function WrappedApp() {
     return (
         <BrowserRouter>
-            <ChakraProvider>
-                <App />
+            <ChakraProvider theme={theme}>
+                <LoadingProvider>
+                    <App />
+                </LoadingProvider>
             </ChakraProvider>
         </BrowserRouter>
     );

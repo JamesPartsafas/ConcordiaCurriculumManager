@@ -3,4 +3,6 @@ export enum BaseRoutes {
     Login = "/login",
     Register = "/register",
     NotFound = "*",
+    AddCourse = "/add-course",
+    ComponentsList = "/components-list",
 }

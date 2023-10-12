@@ -250,7 +250,7 @@ const NAV_ITEMS: Array<NavItem> = [
         children: [
             {
                 label: "New Class",
-                href: "#",
+                href: "/add-course",
             },
             {
                 label: "New Curriculum",
