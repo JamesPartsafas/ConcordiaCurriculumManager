@@ -18,6 +18,9 @@ public class AutoMapper : Profile
         CreateMap<Dossier, DossierDTO>().ReverseMap();
         CreateMap<CourseCreationRequest, CourseCreationRequestDTO>().ReverseMap();
         CreateMap<CourseModificationRequest, CourseModificationRequestDTO>().ReverseMap();
+        CreateMap<User, UserDTO>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+        CreateMap<Group, GroupDTO>();
     }
 
 }
