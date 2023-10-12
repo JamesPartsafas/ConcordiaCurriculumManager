@@ -32,7 +32,11 @@ export default function Header() {
                 borderColor={useColorModeValue("gray.200", "gray.900")}
                 align={"center"}
             >
-                <Flex flex={{ base: 1, md: "auto" }} ml={{ base: -2 }} display={{ base: "flex", md: "none" }}>
+                <Flex
+                    flex={{ base: 1, md: "auto" }}
+                    ml={{ base: -2 }}
+                    display={{ base: "flex", md: "none" }}
+                >
                     <IconButton
                         onClick={onToggle}
                         icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
@@ -145,7 +149,11 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
         >
             <Stack direction={"row"} align={"center"}>
                 <Box>
-                    <Text transition={"all .3s ease"} _groupHover={{ color: "pink.400" }} fontWeight={500}>
+                    <Text
+                        transition={"all .3s ease"}
+                        _groupHover={{ color: "pink.400" }}
+                        fontWeight={500}
+                    >
                         {label}
                     </Text>
                     <Text fontSize={"sm"}>{subLabel}</Text>

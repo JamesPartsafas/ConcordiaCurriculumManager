@@ -16,7 +16,13 @@ import {
 } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
-import { AuthenticationResponse, decodeTokenToUser, login, LoginDTO, LoginProps } from "../services/auth";
+import {
+    AuthenticationResponse,
+    decodeTokenToUser,
+    login,
+    LoginDTO,
+    LoginProps,
+} from "../services/auth";
 import { User } from "../services/user";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -93,7 +99,11 @@ export default function Login({ setUser }: LoginProps) {
                                                 })}
                                             />
                                             <InputRightElement width="4.5rem">
-                                                <Button h="1.75rem" size="sm" onClick={toggleShowPassword}>
+                                                <Button
+                                                    h="1.75rem"
+                                                    size="sm"
+                                                    onClick={toggleShowPassword}
+                                                >
                                                     {showPassword ? "Hide" : "Show"}
                                                 </Button>
                                             </InputRightElement>
