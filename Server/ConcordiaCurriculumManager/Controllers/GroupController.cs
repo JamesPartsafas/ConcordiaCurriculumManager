@@ -52,6 +52,19 @@ public class GroupController : Controller
         return Ok(group);
     }
 
+    [HttpGet("{id}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "All groups retrieved successfully")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "No groups found")]
+    public async Task<IActionResult> GetAllGroups()
+    {
+        var groups = await _groupService.GetAllGroups();
+        if (groups == null || !groups.Any())
+        {
+            return NotFound();
+        }
+        return Ok(groups);
+    }
+
     [HttpPost("{groupId}/users/{userId}")]
     [Authorize(Roles = RoleNames.Admin)]
     [SwaggerResponse(StatusCodes.Status200OK, "User added to group successfully")]
