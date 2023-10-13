@@ -1,22 +1,12 @@
 import React from "react";
-import {
-    Box,
-    Button,
-    Container,
-    FormControl,
-    FormLabel,
-    Heading,
-    HStack,
-    Input,
-    Stack,
-    Select,
-} from "@chakra-ui/react";
+import { Box, Container, FormControl, FormLabel, Heading, HStack, Input, Stack, Select } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Import Axios
 import { GroupCreateDTO, GroupResponseDTO } from "../services/group";
 import { CreateGroupCall } from "../services/group";
+import Button from "../components/Button";
 
 export default function CreateGroup() {
     const { register, handleSubmit } = useForm();
@@ -50,13 +40,7 @@ export default function CreateGroup() {
                 <Container maxW="lg" py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>
                     <Stack spacing="8">
                         <Stack spacing="6">
-                            <img
-                                src={logo}
-                                alt="Logo"
-                                width="50px"
-                                height="50px"
-                                style={{ margin: "auto" }}
-                            />
+                            <img src={logo} alt="Logo" width="50px" height="50px" style={{ margin: "auto" }} />
                             <Heading textAlign="center" size="lg">
                                 Create New Group
                             </Heading>
@@ -116,9 +100,7 @@ export default function CreateGroup() {
                                     />
                                 </FormControl>
                                 <FormControl>
-                                    <FormLabel htmlFor="selectedMembers">
-                                        Select Members to Add
-                                    </FormLabel>
+                                    <FormLabel htmlFor="selectedMembers">Select Members to Add</FormLabel>
                                     <Select
                                         id="selectedMembers"
                                         multiple
@@ -134,12 +116,7 @@ export default function CreateGroup() {
                             </Stack>
                         </Box>
                         <HStack justify="space-between">
-                            <Button
-                                backgroundColor="#932439"
-                                color="white"
-                                _hover={{ bg: "#7A1D2E" }}
-                                type="submit"
-                            >
+                            <Button type="primary" variant="outline" width="50%" height="40px">
                                 Create Group
                             </Button>
                         </HStack>

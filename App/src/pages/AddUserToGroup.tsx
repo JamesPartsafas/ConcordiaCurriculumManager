@@ -1,20 +1,11 @@
 import { useState } from "react";
 import logo from "../assets/logo.png";
-import {
-    Container,
-    Stack,
-    Heading,
-    Box,
-    FormControl,
-    Input,
-    FormLabel,
-    Button,
-    HStack,
-} from "@chakra-ui/react";
+import { Container, Stack, Heading, Box, FormControl, Input, FormLabel, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
 
 export default function AddUserToGroup() {
-    const userList = ["User1", "Dave", "Joe", "admin", "Billy", "Benjamen"];
+    const userList = ["User1", "Dave", "Joe", "Billy", "Benjamen"];
     const navigate = useNavigate();
 
     const [filteredList, setFilteredList] = useState(userList);
@@ -39,13 +30,7 @@ export default function AddUserToGroup() {
                     borderRadius={{ base: "none", sm: "xl" }}
                 >
                     <Stack spacing="6">
-                        <img
-                            src={logo}
-                            alt="Logo"
-                            width="50px"
-                            height="50px"
-                            style={{ margin: "auto" }}
-                        />
+                        <img src={logo} alt="Logo" width="50px" height="50px" style={{ margin: "auto" }} />
                         <Heading textAlign="center" size="lg">
                             Add User to Group
                         </Heading>
@@ -61,10 +46,10 @@ export default function AddUserToGroup() {
                                     <HStack justify="space-between" key={index}>
                                         <li>{item}</li>
                                         <Button
-                                            backgroundColor="#932439"
-                                            color="white"
-                                            _hover={{ bg: "#7A1D2E" }}
-                                            type="submit"
+                                            type="primary"
+                                            variant="outline"
+                                            width="22%"
+                                            height="40px"
                                             justifyContent={"flex-end"}
                                         >
                                             Select
@@ -75,9 +60,10 @@ export default function AddUserToGroup() {
                         </div>
 
                         <Button
-                            backgroundColor="#932439"
-                            color="white"
-                            _hover={{ bg: "#7A1D2E" }}
+                            type="primary"
+                            variant="outline"
+                            width="50%"
+                            height="40px"
                             onClick={() => navigate("/manageablegroup")}
                         >
                             Back

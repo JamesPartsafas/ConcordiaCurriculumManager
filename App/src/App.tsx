@@ -21,8 +21,6 @@ import AddCourse from "./pages/AddCourse";
 import theme from "../theme.js"; // Import your custom theme
 import ComponentsList from "./pages/ComponentsList";
 import { LoadingProvider } from "./utils/loadingContext"; // Import the provider
-import { BaseRoutes } from "./constants";
-import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
 
 export const UserContext = createContext<User | null>(null);
@@ -72,6 +70,7 @@ export function App() {
                         path={BaseRoutes.AddCourse}
                         element={isLoggedIn == true ? <AddCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
+
                     <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
                     {/* whenever none of the other routes match we show the not found page */}
                     <Route path={BaseRoutes.NotFound} element={<NotFound />} />

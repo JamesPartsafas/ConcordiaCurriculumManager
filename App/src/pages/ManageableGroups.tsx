@@ -1,5 +1,6 @@
-import { Container, Table, Thead, Tbody, Tr, Th, Td, Button } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Container, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import Button from "../components/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function DisplayManageableGroups() {
     const groupsData = [
@@ -9,13 +10,7 @@ export default function DisplayManageableGroups() {
     ];
     const navigate = useNavigate();
     return (
-        <Container
-            maxW="3xl"
-            height="80vh"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-        >
+        <Container maxW="3xl" height="80vh" display="flex" alignItems="center" justifyContent="center">
             <div>
                 <h1
                     style={{
@@ -51,20 +46,20 @@ export default function DisplayManageableGroups() {
                                 </Td>
                                 <Td whiteSpace="nowrap" padding="16px">
                                     <Button
-                                        backgroundColor="#932439"
-                                        color="white"
-                                        _hover={{ bg: "#7A1D2E" }}
-                                        margin="3px"
+                                        type="primary"
+                                        variant="outline"
+                                        width="50%"
+                                        height="40px"
                                         onClick={() => navigate("/addusertogroup")}
                                     >
                                         Add
                                     </Button>
 
                                     <Button
-                                        backgroundColor="#932439"
-                                        color="white"
-                                        _hover={{ bg: "#7A1D2E" }}
-                                        margin="3px"
+                                        type="primary"
+                                        variant="outline"
+                                        width="50%"
+                                        height="40px"
                                         onClick={() => navigate("/removeuserfromgroup")}
                                     >
                                         Remove
