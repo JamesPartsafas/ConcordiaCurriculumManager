@@ -6,6 +6,7 @@ using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManager.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -66,10 +67,9 @@ public class Program
                        .Bind(builder.Configuration.GetSection(DatabaseSettings.SectionName))
                        .Validate(dbSettings => dbSettings.ConnectionString is not null);
 
-        builder.Services.AddDbContext<CCMDbContext>(options =>
-        {
-            var dataSourceBuilder = new NpgsqlDataSourceBuilder(dbSetting!.ConnectionString);
-            options.UseNpgsql(dataSourceBuilder.Build());
+        var dbDataSource = new NpgsqlDataSourceBuilder(dbSetting!.ConnectionString).Build();
+        builder.Services.AddDbContext<CCMDbContext>((options) => {
+            options.UseNpgsql(dbDataSource);
         });
 
         AddServices(builder.Services);
