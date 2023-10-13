@@ -13,6 +13,8 @@
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.1",
+    "@chakra-ui/theme": "^3.3.0",
+    "@choc-ui/chakra-autocomplete": "^5.2.7",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "axios": "^1.5.0",

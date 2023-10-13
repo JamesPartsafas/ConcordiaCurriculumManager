@@ -8,6 +8,7 @@ namespace ConcordiaCurriculumManager.Services;
 public interface IGroupService
 {
     Task<GroupDTO?> GetGroupByIdAsync(Guid id);
+    Task<List<GroupDTO>> GetAllGroupsAsync();
     Task<bool> CreateGroupAsync(Group group);
     Task<bool> AddUserToGroup(Guid userId, Guid groupId);
     Task<bool> RemoveUserFromGroup(Guid userId, Guid groupId);
@@ -39,6 +40,19 @@ public class GroupService : IGroupService
         else
         {
             return _mapper.Map<GroupDTO>(group);
+        }
+    }
+
+    public async Task<List<GroupDTO>> GetAllGroupsAsync()
+    {
+        var groups = await _groupRepository.GetAllGroups();
+        if (groups == null || !groups.Any())
+        {
+            return new List<GroupDTO>();
+        }
+        else
+        {
+            return _mapper.Map<List<GroupDTO>>(groups);
         }
     }
 

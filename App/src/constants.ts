@@ -7,5 +7,8 @@ export enum BaseRoutes {
     ManageableGroup = "/manageablegroup",
     AddUserToGroup = "/addusertogroup",
     RemoveUserFromGroup = "/removeuserfromgroup",
+    Dossiers = "/dossiers",
     NotFound = "*",
+    AddCourse = "/add-course",
+    ComponentsList = "/components-list",
 }
