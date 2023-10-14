@@ -1,4 +1,5 @@
-﻿using ConcordiaCurriculumManager.Models.Users;
+﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Users;
 using System.Data;
 using System.Linq.Expressions;
 
@@ -39,6 +40,35 @@ public static class ObjectSelectors
             {
                 UserRole = role.UserRole
             })
+        })
+    };
+
+    public static Expression<Func<Dossier, Dossier>> DossierSelector() => dossier => new Dossier
+    {
+        Id = dossier.Id,
+        CreatedDate = dossier.CreatedDate,
+        ModifiedDate = dossier.ModifiedDate,
+        Title = dossier.Title,
+        Description = dossier.Description,
+        Published = dossier.Published,
+        InitiatorId = dossier.InitiatorId,
+        CourseCreationRequests = (List<CourseCreationRequest>)dossier.CourseCreationRequests.Select(request => new CourseCreationRequest
+        {
+            Id = request.Id,
+            CreatedDate = request.CreatedDate,
+            ModifiedDate = request.ModifiedDate,
+            NewCourseId = request.NewCourseId,
+            NewCourse = request.NewCourse,
+            DossierId = request.DossierId
+        }),
+        CourseModificationRequests = (List<CourseModificationRequest>)dossier.CourseModificationRequests.Select(request => new CourseModificationRequest
+        {
+            Id = request.Id,
+            CreatedDate = request.CreatedDate,
+            ModifiedDate = request.ModifiedDate,
+            CourseId = request.CourseId,
+            Course = request.Course,
+            DossierId = request.DossierId
         })
     };
 }

@@ -11,6 +11,7 @@ public interface IDossierService
 {
     public Task<List<Dossier>> GetDossiersByID(Guid ID);
     public Task<Dossier> CreateDossierForUser(CreateDossierDTO dossier, User user);
+    public Task<Dossier> GetDossierDetailsById(Guid id);
 }
 
 public class DossierService : IDossierService
@@ -49,6 +50,15 @@ public class DossierService : IDossierService
         _logger.LogInformation($"Created ${typeof(Dossier)} ${dossier.Id}");
 
         return dossier;
+    }
+
+    public async Task<Dossier> GetDossierDetailsById(Guid id)
+    {
+        var dossierDetails = await _dossierRepository.GetDossierByDossierId(id);
+        if (dossierDetails == null)
+            throw new ArgumentException("Dossier could not be found.");
+
+        return dossierDetails;
     }
 }
 
