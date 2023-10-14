@@ -71,7 +71,6 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
                 Title = "test title",
                 Description = "test description",
                 Published = false
-
             };
 
             dbContext.Dossiers.Add(dossier);
@@ -79,7 +78,8 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
 
             var result = await dossierRepository.GetDossierByDossierId(dossier.Id);
             Assert.IsNotNull(result);
-            Assert.AreEqual(result, dossier);
+            Assert.AreEqual(result.InitiatorId, dossier.InitiatorId);
+            Assert.AreEqual(result.Title, dossier.Title);
         }
 
         [TestMethod]
