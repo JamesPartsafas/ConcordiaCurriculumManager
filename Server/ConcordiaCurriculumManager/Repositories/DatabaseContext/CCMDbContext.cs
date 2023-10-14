@@ -37,6 +37,7 @@ public class CCMDbContext : DbContext
         ConfigureUserRoleRelationship(modelBuilder);
         ConfigureDossiersRelationship(modelBuilder);
         ConfigureCourseReferencesRelationship(modelBuilder);
+        ConfigureGroupUserRelationship(modelBuilder);
     }
 
     private static void ConfigureCourseReferencesRelationship(ModelBuilder modelBuilder)
