@@ -221,27 +221,6 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.ToTable("Dossiers");
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Users.Group", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Groups");
-                });
-
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Users.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -308,21 +287,6 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasIndex("CoursesId");
 
                     b.ToTable("CourseCourseComponent");
-                });
-
-            modelBuilder.Entity("GroupUser", b =>
-                {
-                    b.Property<Guid>("GroupsId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("MembersId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("GroupsId", "MembersId");
-
-                    b.HasIndex("MembersId");
-
-                    b.ToTable("GroupUser");
                 });
 
             modelBuilder.Entity("RoleUser", b =>
@@ -419,21 +383,6 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Course", null)
                         .WithMany()
                         .HasForeignKey("CoursesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GroupUser", b =>
-                {
-                    b.HasOne("ConcordiaCurriculumManager.Models.Users.Group", null)
-                        .WithMany()
-                        .HasForeignKey("GroupsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ConcordiaCurriculumManager.Models.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -64,8 +64,8 @@ public class GroupRepositoryTests
         var expectedGroupCount = initialGroups.Count + 2;
         Assert.AreEqual(expectedGroupCount, allGroups.Count);
 
-        Assert.IsNotNull(allGroups.First(group => group.Name == testGroup1.Name));
-        Assert.IsNotNull(allGroups.First(group => group.Name == testGroup2.Name));
+        Assert.IsTrue(allGroups.Contains(testGroup1));
+        Assert.IsTrue(allGroups.Contains(testGroup2));
     }
 
     [TestMethod]
