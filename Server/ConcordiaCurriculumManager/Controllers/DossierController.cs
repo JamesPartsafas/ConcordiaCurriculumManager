@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO.Dossiers;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
-using ConcordiaCurriculumManager.Swagger;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.Filters;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -47,6 +44,38 @@ public class DossierController : Controller
             var dossiersDTOs = _mapper.Map<List<DossierDTO>>(dossiers);
             _logger.LogInformation(string.Join(",", dossiersDTOs));
             return Ok(dossiersDTOs);
+        }
+        catch (Exception e)
+        {
+            var message = "Unexpected error occured while retrieving the dossier.";
+            _logger.LogWarning($"${message}: {e.Message}");
+            return Problem(
+                title: message,
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    [HttpGet("{id}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Dossier retrieved successfully", typeof(DossierDetailsDTO))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Dossier not found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<IActionResult> GetDossierByDossierId(Guid id)
+    {
+        try
+        {
+            var dossier = await _dossierService.GetDossierDetailsById(id);
+            var dossierDetails = _mapper.Map<DossierDetailsDTO>(dossier);
+            return Ok(dossierDetails);
+        }
+        catch (ArgumentException e)
+        {
+            var message = $"Dossier with id {id} could not be found";
+            _logger.LogWarning($"${message}: {e.Message}");
+            return Problem(
+                title: message,
+                detail: e.Message,
+                statusCode: StatusCodes.Status404NotFound);
         }
         catch (Exception e)
         {
