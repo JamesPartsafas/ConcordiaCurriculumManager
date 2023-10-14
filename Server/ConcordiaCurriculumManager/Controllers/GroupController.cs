@@ -10,7 +10,6 @@ namespace ConcordiaCurriculumManager.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Authorize]
-
 public class GroupController : Controller
 {
     private readonly IGroupService _groupService;
