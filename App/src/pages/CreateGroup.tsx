@@ -1,10 +1,9 @@
-import React from "react";
 import { Box, Container, FormControl, FormLabel, Heading, HStack, Input, Stack, Select } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Import Axios
-import { GroupCreateDTO, GroupResponseDTO } from "../services/group";
+
+import { GroupCreateDTO } from "../services/group";
 import { CreateGroupCall } from "../services/group";
 import Button from "../components/Button";
 
