@@ -1,6 +1,8 @@
 import { Container, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
+import { GetAllGroups } from "../services/group";
+import { GroupDTO, MultiGroupResponseDTO } from "../services/group";
 
 export default function DisplayManageableGroups() {
     const groupsData = [
@@ -22,6 +24,7 @@ export default function DisplayManageableGroups() {
                     }}
                 >
                     Group Information
+                    {}
                 </h1>
                 <Table variant="simple" size="lg">
                     <Thead>
