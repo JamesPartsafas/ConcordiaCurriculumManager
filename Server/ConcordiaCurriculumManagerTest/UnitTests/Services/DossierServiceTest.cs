@@ -58,6 +58,26 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
             Assert.AreEqual(user.Id, dossier.InitiatorId);
         }
 
+        [TestMethod]
+        public async Task RetrieveDossierDetails_ValidInput_Succeeds()
+        {
+            var dossier = GetSampleDossier();
+            dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
+
+            var dossierDetails = await dossierService.GetDossierDetailsById(Guid.NewGuid());
+
+            Assert.AreEqual(dossier.Id, dossierDetails.Id);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public async Task RetrieveDossierDetails_InvalidInput_ThrowsArgumentException()
+        {
+            dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync((Dossier)null!);
+
+            await dossierService.GetDossierDetailsById(Guid.NewGuid());
+        }
+
         private User GetSampleUser()
         {
             return new User
@@ -74,6 +94,17 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         {
             return new CreateDossierDTO
             {
+                Title = "test title",
+                Description = "test description"
+            };
+        }
+
+        private Dossier GetSampleDossier()
+        {
+            return new Dossier
+            {
+                InitiatorId = Guid.NewGuid(),
+                Published = false,
                 Title = "test title",
                 Description = "test description"
             };
