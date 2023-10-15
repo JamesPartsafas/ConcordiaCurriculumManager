@@ -14,7 +14,6 @@ import {
     AlertDialogHeader,
     AlertDialogBody,
     AlertDialogFooter,
-    Button,
     useDisclosure,
     Tfoot,
     Spacer,
@@ -22,6 +21,7 @@ import {
     Box,
     Tooltip,
 } from "@chakra-ui/react";
+import { Button as ChakraButton } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon, InfoIcon } from "@chakra-ui/icons";
 
 import { useContext, useEffect, useState } from "react";
@@ -29,6 +29,8 @@ import { UserContext } from "../../App";
 import { DossierDTO, GetMyDossiersResponse, getMyDossiers } from "../../services/dossier";
 import DossierModal from "./DossierModal";
 import React from "react";
+import Button from "../../components/Button";
+import { UserRoles } from "../../services/user";
 
 export default function Dossiers() {
     const user = useContext(UserContext);
@@ -37,6 +39,7 @@ export default function Dossiers() {
     const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
     const [dossierModalAction, setDossierModalTitle] = useState<"add" | "edit">();
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [currentPage, setCurrentPage] = useState<number>(1);
     const resultsPerPage = 5;
@@ -70,6 +73,7 @@ export default function Dossiers() {
 
     // endpoint not implemented yet
     function deleteDossier(dossier: DossierDTO) {
+        setLoading(true);
         console.log(dossier);
     }
 
@@ -96,11 +100,23 @@ export default function Dossiers() {
                         </AlertDialogBody>
 
                         <AlertDialogFooter>
-                            <Button ref={cancelRef} onClick={onClose}>
+                            <Button
+                                type="secondary"
+                                variant="outline"
+                                width="fit-content"
+                                height="40px"
+                                ref={cancelRef}
+                                onClick={onClose}
+                            >
                                 Cancel
                             </Button>
                             <Button
-                                backgroundColor="#932439"
+                                type="primary"
+                                variant="solid"
+                                width="fit-content"
+                                height="40px"
+                                isLoading={loading}
+                                loadingText="Deleting"
                                 onClick={() => {
                                     deleteDossier(selectedDossier);
                                     onClose();
@@ -196,7 +212,7 @@ export default function Dossiers() {
                                                 Showing {startIndex} to {endIndex} of {myDossiers.length} results
                                             </Text>
                                             <Spacer />
-                                            <Button
+                                            <ChakraButton
                                                 mr={4}
                                                 p={4}
                                                 variant="outline"
@@ -204,15 +220,15 @@ export default function Dossiers() {
                                                 isDisabled={startIndex == 1}
                                             >
                                                 Previous
-                                            </Button>
-                                            <Button
+                                            </ChakraButton>
+                                            <ChakraButton
                                                 p={4}
                                                 variant="outline"
                                                 onClick={() => setCurrentPage(currentPage + 1)}
                                                 isDisabled={endIndex == totalResults}
                                             >
                                                 Next
-                                            </Button>
+                                            </ChakraButton>
                                         </Flex>
                                     </Td>
                                 </Tr>
@@ -220,14 +236,19 @@ export default function Dossiers() {
                         </Table>
                     </TableContainer>
 
-                    <Tooltip label="Only Initiators can create dossiers" isDisabled={user.roles.includes("Initiator")}>
+                    <Tooltip
+                        label="Only Initiators can create dossiers"
+                        isDisabled={user.roles.includes(UserRoles.Initiator)}
+                    >
                         <Button
                             leftIcon={<AddIcon />}
+                            type="primary"
+                            variant="solid"
+                            width="100px"
+                            height="40px"
                             mt="2"
-                            bg="linear-gradient(45deg, #932439, #0072a8)"
-                            _hover={{ bg: "linear-gradient(45deg, #0072a8, #932439)" }}
                             alignSelf="flex-end"
-                            isDisabled={!user.roles.includes("Initiator")}
+                            isDisabled={!user.roles.includes(UserRoles.Initiator)}
                             onClick={() => {
                                 setSelectedDossier(null);
                                 setDossierModalTitle("add");
