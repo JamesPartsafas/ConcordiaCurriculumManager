@@ -11,6 +11,7 @@ public interface IDossierService
 {
     public Task<List<Dossier>> GetDossiersByID(Guid ID);
     public Task<Dossier> CreateDossierForUser(CreateDossierDTO dossier, User user);
+    public Task<Dossier> EditDossier(EditDossierDTO dossier, User user);
 }
 
 public class DossierService : IDossierService
@@ -47,6 +48,33 @@ public class DossierService : IDossierService
             throw new Exception("Error creating the dossier");
         }
         _logger.LogInformation($"Created ${typeof(Dossier)} ${dossier.Id}");
+
+        return dossier;
+    }
+
+    public async Task<Dossier> EditDossier(EditDossierDTO d, User user)
+    {
+        var dossier = await _dossierRepository.GetDossierByDossierId(d.Id);
+
+        if (dossier == null)
+        {
+            throw new ArgumentException("The dossier does not exist.");
+        }
+
+        if (dossier.InitiatorId != user.Id) {
+            throw new ArgumentException("The dossier does not belong to " + user.FirstName + " " + user.LastName);
+        }
+
+        dossier.Title = d.Title;
+        dossier.Description = d.Description;
+
+        bool editedDossier = await _dossierRepository.UpdateDossier(dossier);
+        if (!editedDossier)
+        {
+            _logger.LogWarning($"Error editing ${typeof(Dossier)} ${dossier.Id}");
+            throw new Exception("Error editing the dossier");
+        }
+        _logger.LogInformation($"Edited ${typeof(Dossier)} ${dossier.Id}");
 
         return dossier;
     }
