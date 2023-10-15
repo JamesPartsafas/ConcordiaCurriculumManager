@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace ConcordiaCurriculumManager.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 [Authorize]
 
 public class GroupController : Controller
@@ -20,7 +20,7 @@ public class GroupController : Controller
         _groupService = groupService;
     }
 
-    [HttpPost]
+    [HttpPost(nameof(CreateGroup))]
     [Authorize(Roles = RoleNames.Admin)]
     [SwaggerResponse(StatusCodes.Status201Created, "Group created successfully")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "An error occured while creating the group")]
@@ -52,7 +52,7 @@ public class GroupController : Controller
         return Ok(group);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet(nameof(GetAllGroups))]
     [SwaggerResponse(StatusCodes.Status200OK, "All groups retrieved successfully")]
     [SwaggerResponse(StatusCodes.Status404NotFound, "No groups found")]
     public async Task<IActionResult> GetAllGroups()
