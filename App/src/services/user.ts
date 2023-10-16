@@ -8,3 +8,9 @@ export interface User {
     issuer: string | null;
     audience: string | null;
 }
+
+export enum UserRoles {
+    Initiator = "Initiator",
+    Admin = "Admin",
+    FacultyMember = "FacultyMember",
+}
