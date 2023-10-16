@@ -1,4 +1,5 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum;
+﻿using ConcordiaCurriculumManager.DTO.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
@@ -46,7 +47,9 @@ public class DossierRepository : IDossierRepository
             
     }
 
-    public async Task<Dossier?> GetDossierByDossierId(Guid dossierId) => await _dbContext.Dossiers.Where(d => d.Id == dossierId).FirstOrDefaultAsync();
+    public async Task<Dossier?> GetDossierByDossierId(Guid dossierId) => await _dbContext.Dossiers
+        .Select(ObjectSelectors.DossierSelector())
+        .Where(d => d.Id == dossierId).FirstOrDefaultAsync();
 
     public async Task<bool> SaveDossier(Dossier dossier)
     {
