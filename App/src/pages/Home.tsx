@@ -1,8 +1,11 @@
 import { useContext } from "react";
 import { UserContext } from "../App";
 import Button from "../components/Button";
+import { BaseRoutes } from "../constants";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+    const navigate = useNavigate();
     const user = useContext(UserContext);
     return (
         <div>
@@ -27,7 +30,38 @@ export default function Home() {
                     textAlign: "center",
                 }}
             >
-                Dossier List: <Button type="primary"></Button>
+                Dossier List:{" "}
+                <Button
+                    type="primary"
+                    variant="outline"
+                    width="20%"
+                    height="40px"
+                    margin="5%"
+                    onClick={() => navigate(BaseRoutes.Dossiers)}
+                >
+                    View Dossier List
+                </Button>
+            </h2>
+            <h2
+                style={{
+                    marginBottom: "20px",
+                    fontWeight: "bold",
+                    fontSize: "24px",
+                    color: "#FF8888",
+                    textAlign: "center",
+                }}
+            >
+                View your Groups{" "}
+                <Button
+                    type="primary"
+                    variant="outline"
+                    width="20%"
+                    height="40px"
+                    margin="5%"
+                    onClick={() => navigate(BaseRoutes.Dossiers)}
+                >
+                    View Dossier List
+                </Button>
             </h2>
         </div>
     );
