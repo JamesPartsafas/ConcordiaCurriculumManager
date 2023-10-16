@@ -12,20 +12,6 @@ export default function CreateGroup() {
     const navigate = useNavigate();
 
     const onSubmit = (data: GroupCreateDTO) => {
-        // axios
-        //     .post("/api/group", {
-        //         name: data.name,
-        //     })
-        //     .then((response) => {
-        //         // Handle a successful response from the server
-        //         console.log("Group created:", response.data);
-        //         navigate("/manageablegroup");
-        //     })
-        //     .catch((error) => {
-        //         // Handle errors if the request fails
-        //         console.error("Error creating group:", error);
-        //     });
-        
         CreateGroupCall(data)
             .then((res: GroupResponseDTO) => {
                 if (res.data != null) navigate("/manageablegroup");

@@ -23,22 +23,21 @@ export interface MultiGroupResponseDTO {
 
 //api calls
 export function CreateGroupCall(dto: GroupCreateDTO): Promise<GroupResponseDTO> {
-    return axios.post("/Groups/CreateGroup", dto);
+    return axios.post("/Group/CreateGroup", dto);
 }
 
 export function GetGroupByID(id: string): Promise<GroupResponseDTO> {
-    return axios.get("/Groups/GetGroupById/" + id);
+    return axios.get("/Group/" + id);
 }
 
-export function AddUserToGroup(gid: string, uid: string){
-    return axios.post("/Groups/" + gid + "/users/" + uid);
+export function AddUserToGroup(gid: string, uid: string) {
+    return axios.post("/Group/" + gid + "/users/" + uid);
 }
 
-export function RemoveUserFromGroup(gid: string, uid: string){
-    return axios.post("/Groups/"+ gid + "/users/" + uid);
+export function RemoveUserFromGroup(gid: string, uid: string) {
+    return axios.post("/Group/" + gid + "/users/" + uid);
 }
 
-export function GetAllGroups(): Promise<MultiGroupResponseDTO>{
-    return axios.get("/Groups/GetAllGroups")
-     
+export function GetAllGroups(): Promise<MultiGroupResponseDTO> {
+    return axios.get("/Group/GetAllGroups");
 }

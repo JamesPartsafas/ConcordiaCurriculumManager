@@ -10,9 +10,9 @@ export default function AddUserToGroup() {
 
     const [filteredList, setFilteredList] = useState(userList);
 
-    const filterBySearch = (event: { target: { value: any } }) => {
+    const filterBySearch = (event: { target: { value: string } }) => {
         const query = event.target.value;
-        var updatedList = [...userList];
+        let updatedList = [...userList];
         updatedList = updatedList.filter((item) => {
             return item.toLowerCase().indexOf(query.toLowerCase()) !== -1;
         });

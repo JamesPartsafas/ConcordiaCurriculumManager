@@ -8,13 +8,7 @@ export default function DisplayGroups() {
     ];
 
     return (
-        <Container
-            maxW="3xl"
-            height="80vh"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-        >
+        <Container maxW="3xl" height="80vh" display="flex" alignItems="center" justifyContent="center">
             <div>
                 <h1
                     style={{
