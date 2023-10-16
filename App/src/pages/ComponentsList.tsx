@@ -66,28 +66,28 @@ function ComponentsList() {
             <Divider mt={6} mb={6} />
             <Heading mb={4}>Button Showcase: {"<Button>"}</Heading>
             <Text mb="2">
-                <strong>Button Props:</strong> type (primary, secondary), variant (solid, outline),
-                width (string), height (string). And can pass other Chakra props as well.
+                <strong>Button Props:</strong> type (primary, secondary), variant (solid, outline), width (string),
+                height (string). And can pass other Chakra props as well.
             </Text>
             <Flex alignItems="center" mb={4} width="50%">
-                <Button type="primary" variant="solid" width="50%" height="40px" mr="2">
+                <Button style="primary" variant="solid" width="50%" height="40px" mr="2">
                     Solid Primary Button
                 </Button>
-                <Button type="primary" variant="outline" width="50%" height="40px">
+                <Button style="primary" variant="outline" width="50%" height="40px">
                     Outline Primary Button
                 </Button>
             </Flex>
             <Flex alignItems="center" mb={4} width="50%">
-                <Button type="secondary" variant="solid" width="50%" height="40px" mr="2">
+                <Button style="secondary" variant="solid" width="50%" height="40px" mr="2">
                     Solid Secondary Button
                 </Button>
-                <Button type="secondary" variant="outline" width="50%" height="40px">
+                <Button style="secondary" variant="outline" width="50%" height="40px">
                     Outline Secondary Button
                 </Button>
             </Flex>
             <Flex alignItems="center" mb={4} width="50%">
                 <Button
-                    type="primary"
+                    style="primary"
                     variant="solid"
                     width="50%"
                     height="40px"
@@ -97,15 +97,15 @@ function ComponentsList() {
                 >
                     Solid Secondary Button
                 </Button>
-                <Button type="secondary" variant="outline" width="50%" height="40px" isLoading>
+                <Button style="secondary" variant="outline" width="50%" height="40px" isLoading>
                     Outline Secondary Button
                 </Button>
             </Flex>
             <Divider mt={6} mb={6} />
             <Heading mb={4}>Inputs Showcase</Heading>
             <Text mb="2">
-                <strong>For regular inputs:</strong> Use the inputs from chakra UI, they are
-                customized them to fit the brand.
+                <strong>For regular inputs:</strong> Use the inputs from chakra UI, they are customized them to fit the
+                brand.
             </Text>
             <Link href="https://chakra-ui.com/docs/components/input">Chakra Inputs</Link>
             <br></br>
@@ -124,16 +124,14 @@ function ComponentsList() {
             <Divider mt={6} mb={6} />
             <Heading mb={4}>Toast: {"useToast()"}</Heading>
             <Text mb="2">
-                <strong>Toast Props:</strong> toast (useToast), title (string), description
-                (string), status = (success, error, warning, info), position = (top-right, top,
-                top-left, bottom-right, bottom, bottom-left, left, right)
+                <strong>Toast Props:</strong> toast (useToast), title (string), description (string), status = (success,
+                error, warning, info), position = (top-right, top, top-left, bottom-right, bottom, bottom-left, left,
+                right)
             </Text>
             <Flex>
                 <Button
-                    onClick={() =>
-                        showToast(toast, "Success!", "This is a success toast message.", "success")
-                    }
-                    type="primary"
+                    onClick={() => showToast(toast, "Success!", "This is a success toast message.", "success")}
+                    style="primary"
                     variant="solid"
                     width="50%"
                     height="40px"
@@ -142,10 +140,8 @@ function ComponentsList() {
                     Success Toast
                 </Button>
                 <Button
-                    onClick={() =>
-                        showToast(toast, "Warning!", "This is a warning toast message.", "warning")
-                    }
-                    type="primary"
+                    onClick={() => showToast(toast, "Warning!", "This is a warning toast message.", "warning")}
+                    style="primary"
                     variant="solid"
                     width="50%"
                     height="40px"
@@ -154,10 +150,8 @@ function ComponentsList() {
                     Warning Toast
                 </Button>
                 <Button
-                    onClick={() =>
-                        showToast(toast, "Error!", "This is an error toast message.", "error")
-                    }
-                    type="primary"
+                    onClick={() => showToast(toast, "Error!", "This is an error toast message.", "error")}
+                    style="primary"
                     variant="solid"
                     width="50%"
                     height="40px"
@@ -171,13 +165,7 @@ function ComponentsList() {
             <Text mb="2">
                 <strong>Toast Props:</strong> isLoading (boolean), toggleLoading (function)
             </Text>
-            <Button
-                type="primary"
-                variant="solid"
-                width="50%"
-                height="40px"
-                onClick={handleLoadingButtonClick}
-            >
+            <Button style="primary" variant="solid" width="50%" height="40px" onClick={handleLoadingButtonClick}>
                 {isLoading ? "Stop Loading" : "Start Loading"}
             </Button>
             <Divider mt={6} mb={6} />
@@ -185,9 +173,7 @@ function ComponentsList() {
             <Text mb="2">
                 <strong>Use Chakra Link:</strong> They are customized to fit the branding.
                 <br />
-                <Link href="https://chakra-ui.com/docs/components/link">
-                    Chakra Link Documentation
-                </Link>
+                <Link href="https://chakra-ui.com/docs/components/link">Chakra Link Documentation</Link>
             </Text>
         </Box>
     );
