@@ -3,9 +3,9 @@ import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-import { GroupCreateDTO } from "../services/group";
+import { GroupCreateDTO, GroupResponseDTO } from "../services/group";
 import { CreateGroupCall } from "../services/group";
-import Button from "../components/Button";
+import SubmitButton from "../components/SubmitButton";
 
 export default function CreateGroup() {
     const { register, handleSubmit } = useForm();
@@ -25,9 +25,11 @@ export default function CreateGroup() {
         //         // Handle errors if the request fails
         //         console.error("Error creating group:", error);
         //     });
-
+        
         CreateGroupCall(data)
-            .then(() => navigate("/manageablegroup"))
+            .then((res: GroupResponseDTO) => {
+                if (res.data != null) navigate("/manageablegroup");
+            })
             .catch((err) => {
                 console.log(err);
             });
@@ -66,7 +68,7 @@ export default function CreateGroup() {
                                     </Select>
                                 </FormControl>
                                 <FormControl>
-                                    <FormLabel htmlFor="groupName">Group Name</FormLabel>
+                                    <FormLabel>Group Name</FormLabel>
                                     <Input
                                         id="groupName"
                                         type="text"
@@ -115,9 +117,9 @@ export default function CreateGroup() {
                             </Stack>
                         </Box>
                         <HStack justify="space-between">
-                            <Button type="primary" variant="outline" width="50%" height="40px">
+                            <SubmitButton variant="outline" width="50%" height="40px">
                                 Create Group
-                            </Button>
+                            </SubmitButton>
                         </HStack>
                     </Stack>
                 </Container>
