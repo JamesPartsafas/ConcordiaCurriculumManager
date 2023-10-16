@@ -2,6 +2,7 @@
 using ConcordiaCurriculumManager.Controllers;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -66,12 +67,74 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
             Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
         }
 
+        [TestMethod]
+        public async Task EditDossier_ValidCall_ReturnsData()
+        {
+            var user = GetSampleUser();
+            var dossier = GetSampleDossier();
+            var editDossier = GetSampleEditDossierDTO();
+
+            userService.Setup(u => u.GetCurrentUser()).ReturnsAsync(user);
+            dossierService.Setup(d => d.EditDossier(editDossier, user)).ReturnsAsync(dossier);
+
+            var actionResult = await dossierController.EditDossier(editDossier);
+            var objectResult = (ObjectResult)actionResult;
+
+            Assert.AreEqual((int)HttpStatusCode.Created, objectResult.StatusCode);
+            mapper.Verify(mock => mock.Map<DossierDTO>(dossier), Times.Once());
+        }
+
+        [TestMethod]
+        public async Task EditDossier_InvalidCall_Returns400()
+        {
+            dossierService.Setup(d => d.EditDossier(It.IsAny<EditDossierDTO>(), It.IsAny<User>())).Throws(new ArgumentException());
+
+            var actionResult = await dossierController.EditDossier(GetSampleEditDossierDTO());
+            var objectResult = (ObjectResult)actionResult;
+
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task EditDossier_ServerError_Returns500()
+        {
+            dossierService.Setup(d => d.EditDossier(It.IsAny<EditDossierDTO>(), It.IsAny<User>())).Throws(new Exception());
+
+            var actionResult = await dossierController.EditDossier(GetSampleEditDossierDTO());
+            var objectResult = (ObjectResult)actionResult;
+
+            Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        }
+
         private Dossier GetSampleDossier()
         {
             return new Dossier
             {
                 InitiatorId = Guid.NewGuid(),
                 Published = false,
+                Title = "test title",
+                Description = "test description"
+            };
+        }
+
+        private User GetSampleUser()
+        {
+            return new User
+            {
+                Id = new Guid(),
+                FirstName = "Joe",
+                LastName = "Smith",
+                Email = "jsmith@ccm.com",
+                Password = "Password123!"
+            };
+        }
+
+        private EditDossierDTO GetSampleEditDossierDTO()
+        {
+            return new EditDossierDTO
+            {
+                Id = Guid.NewGuid(),
+                InitiatorId = Guid.NewGuid(),
                 Title = "test title",
                 Description = "test description"
             };
