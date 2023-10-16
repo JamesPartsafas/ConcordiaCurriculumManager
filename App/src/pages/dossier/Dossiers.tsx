@@ -101,7 +101,7 @@ export default function Dossiers() {
 
                         <AlertDialogFooter>
                             <Button
-                                type="secondary"
+                                style="secondary"
                                 variant="outline"
                                 width="fit-content"
                                 height="40px"
@@ -111,7 +111,7 @@ export default function Dossiers() {
                                 Cancel
                             </Button>
                             <Button
-                                type="primary"
+                                style="primary"
                                 variant="solid"
                                 width="fit-content"
                                 height="40px"
@@ -240,23 +240,25 @@ export default function Dossiers() {
                         label="Only Initiators can create dossiers"
                         isDisabled={user.roles.includes(UserRoles.Initiator)}
                     >
-                        <Button
-                            leftIcon={<AddIcon />}
-                            type="primary"
-                            variant="solid"
-                            width="100px"
-                            height="40px"
-                            mt="2"
-                            alignSelf="flex-end"
-                            isDisabled={!user.roles.includes(UserRoles.Initiator)}
-                            onClick={() => {
-                                setSelectedDossier(null);
-                                setDossierModalTitle("add");
-                                displayDossierModal();
-                            }}
-                        >
-                            Add
-                        </Button>
+                        <span style={{ alignSelf: "flex-end", width: "fit-content", height: "fit-content" }}>
+                            <Button
+                                leftIcon={<AddIcon />}
+                                style="primary"
+                                variant="solid"
+                                width="100px"
+                                height="40px"
+                                mt="2"
+                                alignSelf="flex-end"
+                                isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                                onClick={() => {
+                                    setSelectedDossier(null);
+                                    setDossierModalTitle("add");
+                                    displayDossierModal();
+                                }}
+                            >
+                                Add
+                            </Button>
+                        </span>
                     </Tooltip>
                 </Flex>
             </Box>

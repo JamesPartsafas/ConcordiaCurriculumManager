@@ -96,7 +96,7 @@ export default function DossierModal(props: DossierModalProps) {
 
                         <ModalFooter>
                             <Button
-                                type="primary"
+                                style="primary"
                                 variant="outline"
                                 width="fit-content"
                                 height="40px"
@@ -107,7 +107,8 @@ export default function DossierModal(props: DossierModalProps) {
                             </Button>
 
                             <Button
-                                type="secondary"
+                                style="secondary"
+                                type="submit"
                                 //add type submit
                                 isLoading={loading}
                                 loadingText="Saving"
