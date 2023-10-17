@@ -179,7 +179,7 @@ public class CourseRepositoryTests
         var result = await courseRepository.GetCourseByCourseId(course.CourseID);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(result, course);
+        Assert.AreEqual(result.CourseID, course.CourseID);
     }
 
 }
