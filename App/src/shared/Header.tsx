@@ -15,6 +15,9 @@ import {
     useDisclosure,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { logout } from "../services/auth";
+import { Image } from "@chakra-ui/react";
+import logo from "../assets/logo.png";
 
 export default function Header() {
     const { isOpen, onToggle } = useDisclosure();
@@ -41,18 +44,8 @@ export default function Header() {
                     />
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-                    <Text
-                        textAlign={useBreakpointValue({
-                            base: "center",
-                            md: "left",
-                        })}
-                        fontFamily={"heading"}
-                        color={useColorModeValue("gray.800", "white")}
-                    >
-                        Logo
-                    </Text>
-
                     <Flex display={{ base: "none", md: "flex" }} ml={10}>
+                        <Image src={logo} width="50px" />
                         <DesktopNav />
                     </Flex>
                 </Flex>
@@ -65,7 +58,7 @@ export default function Header() {
                         fontWeight={600}
                         color={"white"}
                         bg={"pink.400"}
-                        href={"#"}
+                        onClick={logout}
                         _hover={{
                             bg: "pink.300",
                         }}
@@ -238,30 +231,8 @@ interface NavItem {
 
 const NAV_ITEMS: Array<NavItem> = [
     {
-        label: "Create New",
-        children: [
-            {
-                label: "New Class",
-                href: "/add-course",
-            },
-            {
-                label: "New Curriculum",
-                href: "#",
-            },
-        ],
-    },
-    {
-        label: "Modify Current",
-        children: [
-            {
-                label: "Edit Class",
-                href: "#",
-            },
-            {
-                label: "Edit Curriculum",
-                href: "#",
-            },
-        ],
+        label: "Manage Dossiers",
+        href: "/dossiers",
     },
     {
         label: "Review Proposal",
