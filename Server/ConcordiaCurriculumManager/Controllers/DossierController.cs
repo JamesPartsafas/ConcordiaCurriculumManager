@@ -120,4 +120,36 @@ public class DossierController : Controller
                 statusCode: StatusCodes.Status500InternalServerError);
         }
     }
+
+    [HttpPut(nameof(EditDossier))]
+    [Authorize(Roles = RoleNames.Initiator)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Dossier edited successfully", typeof(DossierDTO))]
+    public async Task<ActionResult> EditDossier([FromBody, Required] EditDossierDTO dossier) {
+        try
+        {
+            var user = await _userService.GetCurrentUser();
+            var editedDossier = await _dossierService.EditDossier(dossier, user);
+            var editedDossierDTO = _mapper.Map<DossierDTO>(editedDossier);
+
+            return Created($"/{nameof(EditDossier)}", editedDossierDTO);
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            var message = "Unexpected error occured while editing the dossier.";
+            _logger.LogWarning($"${message}: {e.Message}");
+            return Problem(
+                title: message,
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
 }

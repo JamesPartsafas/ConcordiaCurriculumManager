@@ -58,6 +58,10 @@ public class CCMDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasMany(user => user.Roles)
             .WithMany(role => role.Users);
+
+        modelBuilder.Entity<User>()
+            .HasIndex(user => user.Email)
+            .IsUnique();
     }
 
     private static void ConfigureDossiersRelationship(ModelBuilder modelBuilder)
