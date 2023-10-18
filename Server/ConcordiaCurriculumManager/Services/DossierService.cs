@@ -12,7 +12,7 @@ public interface IDossierService
     public Task<List<Dossier>> GetDossiersByID(Guid ID);
     public Task<Dossier> CreateDossierForUser(CreateDossierDTO dossier, User user);
     public Task<Dossier> EditDossier(EditDossierDTO dossier, User user);
-    public Task<Dossier> DeleteDossier(DeleteDossierDTO dossier, User user);
+    public Task DeleteDossier(DeleteDossierDTO dossier, User user);
     public Task<Dossier> GetDossierDetailsById(Guid id);
 }
 
@@ -83,7 +83,7 @@ public class DossierService : IDossierService
     }
 
 
-    public async Task<Dossier> DeleteDossier(DeleteDossierDTO d, User user)
+    public async Task DeleteDossier(DeleteDossierDTO d, User user)
     {
         var dossier = await _dossierRepository.GetDossierByDossierId(d.DossierId);
 
@@ -104,8 +104,6 @@ public class DossierService : IDossierService
             throw new Exception("Error deleting the dossier");
         }
         _logger.LogInformation($"Deleted ${typeof(Dossier)} ${dossier.Id}");
-
-        return dossier;
     }
 
     public async Task<Dossier> GetDossierDetailsById(Guid id)

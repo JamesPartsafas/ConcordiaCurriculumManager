@@ -157,16 +157,15 @@ public class DossierController : Controller
     [Authorize(Roles = RoleNames.Initiator)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Dossier deleted successfully", typeof(DossierDTO))]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Dossier deleted successfully")]
     public async Task<ActionResult> DeleteDossier([FromBody, Required] DeleteDossierDTO dossier)
     {
         try
         {
             var user = await _userService.GetCurrentUser();
-            var deletedDossier = await _dossierService.DeleteDossier(dossier, user);
-            var deletedDossierDTO = _mapper.Map<DossierDTO>(deletedDossier);
+            await _dossierService.DeleteDossier(dossier, user);
 
-            return Created($"/{nameof(DeleteDossier)}", deletedDossierDTO);
+            return NoContent();
         }
         catch (ArgumentException e)
         {
