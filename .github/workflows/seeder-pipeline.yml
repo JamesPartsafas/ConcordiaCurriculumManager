@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'Seeder/**'
   pull_request:
     paths:
       - 'Seeder/**'
@@ -25,3 +27,45 @@ jobs:
 
     - name: Run Seeder Data Validation
       run: npm run validateData --prefix Seeder
+  
+  seeder-add-data:
+      needs:
+      - seeder-validate-data
+      if: github.ref == 'refs/heads/main' && needs.seeder-validate-data.result == 'success'
+      # This needs to be a windows machine since Net7 does not support OpenSSL3.x.x. 
+      # Downgrading OpenSSL on a linux machine is not advised (and it takes a long time to finish ending up costing more than if a windows machine was used)
+      # https://github.com/dotnet/runtime/issues/46526
+      runs-on: windows-latest
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Update Database
+        run: |
+          dotnet tool install --global dotnet-ef
+          dotnet ef database update --project Server/ConcordiaCurriculumManager/ConcordiaCurriculumManager.csproj --startup-project Server/ConcordiaCurriculumManager/ConcordiaCurriculumManager.csproj
+        env:
+          ASPNETCORE_ENVIRONMENT: Production
+          AllowedHosts: ccm-backend.onrender.com
+          IdentitySettings__Key: dummy-test-123
+          IdentitySettings__Issuer: https://ccm-backend.onrender.com
+          IdentitySettings__SecurityAlgorithms: HS256
+          IdentitySettings__Audience: ccm-backend
+          DatabaseSettings__ConnectionString: "${{ secrets.RENDER_DATABASE_MIGRATION_DB_STRING }}"
+          CorsSettings__AllowedWebsite: https://ccm-frontend.onrender.com
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: cd .\Seeder\ && npm install
+
+      - name: Seed Database
+        env:
+          connection_string: ${{ secrets.RENDER_DATABASE_CONNECTION_STRING }}
+        run: |
+          cd .\Seeder\
+          echo ConnectionString=$connection_string >> .env
+          npm run start

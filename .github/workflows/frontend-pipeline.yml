@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'App/**'
   pull_request:
     paths:
       - 'App/**'
@@ -28,3 +30,15 @@ jobs:
 
     - name: Run frontend tests
       run: npm test --prefix App
+  
+  deploy-frontend:
+    needs:
+    - frontend-tests
+    if: github.ref == 'refs/heads/main' && needs.frontend-tests.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy
+      env:
+        deploy_url: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK_URL }}
+      run: |
+          curl "$deploy_url"
