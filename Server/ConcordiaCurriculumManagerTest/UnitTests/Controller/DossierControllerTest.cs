@@ -106,6 +106,54 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
             Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
         }
 
+        [TestMethod]
+        public async Task GetDossiersByID_ValidCall_ReturnsDatatest()
+        {
+            var dossier = GetSampleDossier();
+            dossierService.Setup(d => d.GetDossierDetailsById(dossier.Id)).ReturnsAsync(dossier);
+
+            var actionResult = await dossierController.GetDossierByDossierId(dossier.Id);
+            var objectResult = (ObjectResult)actionResult;
+
+            Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+            mapper.Verify(mock => mock.Map<DossierDetailsDTO>(dossier), Times.Once());
+        }
+
+        [TestMethod]
+        public async Task DeleteDossier_ValidCall_Returns204()
+        {
+            var user = GetSampleUser();
+            var deleteDossier = GetSampleDeleteDossierDTO();
+
+            userService.Setup(u => u.GetCurrentUser()).ReturnsAsync(user);
+
+            var actionResult = await dossierController.DeleteDossier(deleteDossier);
+            var objectResult = (NoContentResult)actionResult;
+
+            Assert.AreEqual((int)HttpStatusCode.NoContent, objectResult.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task DeleteDossier_InvalidCall_Returns400()
+        {
+            dossierService.Setup(d => d.DeleteDossier(It.IsAny<DeleteDossierDTO>(), It.IsAny<User>())).Throws(new ArgumentException());
+
+            var actionResult = await dossierController.DeleteDossier(GetSampleDeleteDossierDTO());
+            var objectResult = (ObjectResult)actionResult;
+
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task DeleteDossier_ServerError_Returns500()
+        {
+            dossierService.Setup(d => d.DeleteDossier(It.IsAny<DeleteDossierDTO>(), It.IsAny<User>())).Throws(new Exception());
+
+            var actionResult = await dossierController.DeleteDossier(GetSampleDeleteDossierDTO());
+            var objectResult = (ObjectResult)actionResult;
+
+            Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        }
         private Dossier GetSampleDossier()
         {
             return new Dossier
@@ -137,6 +185,14 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
                 InitiatorId = Guid.NewGuid(),
                 Title = "test title",
                 Description = "test description"
+            };
+        }
+
+        private DeleteDossierDTO GetSampleDeleteDossierDTO()
+        {
+            return new DeleteDossierDTO
+            {
+                DossierId = Guid.NewGuid(),
             };
         }
     }

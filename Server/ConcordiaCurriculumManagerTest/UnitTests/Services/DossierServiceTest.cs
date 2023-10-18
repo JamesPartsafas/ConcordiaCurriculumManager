@@ -160,6 +160,75 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
 
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public async Task DeleteDossier_DoesNotExist_ThrowsArgumentException()
+        {
+            dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync((Dossier?)null);
+
+            await dossierService.DeleteDossier(GetSampleDeleteDossierDTO(), GetSampleUser());
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public async Task DeleteDossier_DossierDoesNotBelongToUser_ThrowsArgumentException()
+        {
+            var user = GetSampleUser();
+            var dossier = GetSampleDossier();
+
+            dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
+
+            await dossierService.DeleteDossier(GetSampleDeleteDossierDTO(), GetSampleUser());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public async Task DeleteDossier_DoesNotUpdate_LogsAndThrowsException()
+        {
+            var user = GetSampleUser();
+            var dossier = new Dossier
+            {
+                InitiatorId = user.Id,
+                Title = "test title",
+                Description = "test description",
+                Published = false
+            };
+
+            dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
+            dossierRepository.Setup(d => d.DeleteDossier(It.IsAny<Dossier>())).ReturnsAsync(false);
+
+            await dossierService.DeleteDossier(GetSampleDeleteDossierDTO(), GetSampleUser());
+
+            logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+        }
+
+        [TestMethod]
+        public async Task DeleteDossierValidInput_Succeeds()
+        {
+            var user = GetSampleUser();
+            var dossier = new Dossier
+            {
+                Id = Guid.NewGuid(),
+                InitiatorId = user.Id,
+                Title = "test title",
+                Description = "test description",
+                Published = false
+            };
+
+            var deletedDossier = new DeleteDossierDTO
+            {
+                DossierId = dossier.Id,
+            };
+
+            dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
+            dossierRepository.Setup(d => d.DeleteDossier(It.IsAny<Dossier>())).ReturnsAsync(true);
+
+            await dossierService.DeleteDossier(deletedDossier, GetSampleUser());
+
+            dossierRepository.Verify(r => r.DeleteDossier(dossier));
+        }
+
         private User GetSampleUser()
         {
             return new User
@@ -200,6 +269,14 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
                 InitiatorId = Guid.NewGuid(),
                 Title = "test title",
                 Description = "test description"
+            };
+        }
+
+        private DeleteDossierDTO GetSampleDeleteDossierDTO()
+        {
+            return new DeleteDossierDTO
+            {
+                DossierId = Guid.NewGuid(),
             };
         }
     }
