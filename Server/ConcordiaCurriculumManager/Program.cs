@@ -25,6 +25,11 @@ public class Program
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
             .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: false);
 
+        if (env.IsProduction())
+        {
+            builder.Configuration.AddEnvironmentVariables();
+        }
+        
         var identitySettings = builder.Configuration
                             .GetSection(IdentitySettings.SectionName)
                             .Get<IdentitySettings>();
