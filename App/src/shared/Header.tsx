@@ -3,7 +3,6 @@ import {
     Flex,
     Text,
     IconButton,
-    Button,
     Stack,
     Collapse,
     Icon,
@@ -18,6 +17,7 @@ import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@ch
 import { logout } from "../services/auth";
 import { Image } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
+import Button from "../components/Button";
 
 export default function Header() {
     const { isOpen, onToggle } = useDisclosure();
@@ -44,7 +44,7 @@ export default function Header() {
                     />
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-                    <Flex display={{ base: "none", md: "flex" }} ml={10}>
+                    <Flex display={{ base: "none", md: "flex" }} ml={20}>
                         <Image src={logo} width="50px" />
                         <DesktopNav />
                     </Flex>
@@ -57,10 +57,10 @@ export default function Header() {
                         fontSize={"sm"}
                         fontWeight={600}
                         color={"white"}
-                        bg={"pink.400"}
+                        bg={"blue"}
                         onClick={logout}
                         _hover={{
-                            bg: "pink.300",
+                            bg: "blue.300",
                         }}
                     >
                         Log Out
@@ -92,13 +92,12 @@ const DesktopNav = () => {
                                 href={navItem.href ?? "#"}
                                 fontSize={"sm"}
                                 fontWeight={500}
-                                color={linkColor}
                                 _hover={{
                                     textDecoration: "none",
                                     color: linkHoverColor,
                                 }}
                             >
-                                {navItem.label}
+                                <Button>{navItem.label}</Button>
                             </Box>
                         </PopoverTrigger>
 
