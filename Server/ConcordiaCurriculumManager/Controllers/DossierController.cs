@@ -152,4 +152,36 @@ public class DossierController : Controller
                 statusCode: StatusCodes.Status500InternalServerError);
         }
     }
+
+    [HttpDelete(nameof(DeleteDossier))]
+    [Authorize(Roles = RoleNames.Initiator)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Dossier deleted successfully")]
+    public async Task<ActionResult> DeleteDossier([FromBody, Required] DeleteDossierDTO dossier)
+    {
+        try
+        {
+            var user = await _userService.GetCurrentUser();
+            await _dossierService.DeleteDossier(dossier, user);
+
+            return NoContent();
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            var message = "Unexpected error occured while deleting the dossier.";
+            _logger.LogWarning($"${message}: {e.Message}");
+            return Problem(
+                title: message,
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
 }
