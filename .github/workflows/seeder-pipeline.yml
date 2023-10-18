@@ -6,9 +6,11 @@ on:
       - main
     paths:
       - 'Seeder/**'
+      - 'Server/ConcordiaCurriculumManager/Migrations/*'
   pull_request:
     paths:
       - 'Seeder/**'
+      - 'Server/ConcordiaCurriculumManager/Migrations/*'
 
 jobs:
   seeder-validate-data:
@@ -16,16 +18,27 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+    
+    - name: Check Path Filters
+      uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          Seeder:
+            - 'Seeder/**'
 
     - name: Setup Node.js
+      if: steps.filter.outputs.Seeder == 'true'
       uses: actions/setup-node@v3
       with:
         node-version: '18'
 
     - name: Install dependencies
+      if: steps.filter.outputs.Seeder == 'true'
       run: npm install --prefix Seeder
 
     - name: Run Seeder Data Validation
+      if: steps.filter.outputs.Seeder == 'true'
       run: npm run validateData --prefix Seeder
   
   seeder-add-data:
@@ -39,8 +52,19 @@ jobs:
       steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      
+      - name: Check Path Filters
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            Seeder:
+              - 'Seeder/**'
+            Migrations:
+              - 'Server/ConcordiaCurriculumManager/Migrations/*'
 
       - name: Update Database
+        if: steps.filter.outputs.Migrations == 'true'
         run: |
           dotnet tool install --global dotnet-ef
           dotnet ef database update --project Server/ConcordiaCurriculumManager/ConcordiaCurriculumManager.csproj --startup-project Server/ConcordiaCurriculumManager/ConcordiaCurriculumManager.csproj
@@ -55,17 +79,18 @@ jobs:
           CorsSettings__AllowedWebsite: https://ccm-frontend.onrender.com
 
       - name: Setup Node.js
+        if: steps.filter.outputs.Seeder == 'true'
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
       - name: Install dependencies
+        if: steps.filter.outputs.Seeder == 'true'
         run: cd .\Seeder\ && npm install
 
       - name: Seed Database
-        env:
-          connection_string: ${{ secrets.RENDER_DATABASE_CONNECTION_STRING }}
+        if: steps.filter.outputs.Seeder == 'true'
         run: |
           cd .\Seeder\
-          echo ConnectionString=$connection_string >> .env
+          echo ConnectionString=${{ secrets.RENDER_DATABASE_CONNECTION_STRING }} >> .env
           npm run start
