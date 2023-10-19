@@ -40,7 +40,9 @@ jobs:
     - name: Generate HS256 Key
       id: generate-key
       run: |
-        echo "hs256_key=$(openssl rand -hex 32)" >> $GITHUB_OUTPUT
+        hs256_key=$(openssl rand -hex 32)
+        echo "::add-mask::$hs256_key"
+        echo "hs256_key=$hs256_key" >> $GITHUB_OUTPUT
 
     - name: Apply Production AppSettings
       env:
