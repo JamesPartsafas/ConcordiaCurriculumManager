@@ -24,16 +24,16 @@ export default function Header() {
 
     return (
         <Box>
-            <Flex
+            <Flex 
                 bg={useColorModeValue("white", "gray.800")}
                 color={useColorModeValue("gray.600", "white")}
                 minH={"60px"}
-                py={{ base: 2 }}
-                px={{ base: 4 }}
+                py={{ base: 5 }}
+                px={{ base: 20 }}
                 borderBottom={1}
                 borderStyle={"solid"}
                 borderColor={useColorModeValue("gray.200", "gray.900")}
-                align={"center"}
+                
             >
                 <Flex flex={{ base: 1, md: "auto" }} ml={{ base: -2 }} display={{ base: "flex", md: "none" }}>
                     <IconButton
@@ -44,10 +44,8 @@ export default function Header() {
                     />
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-                    <Flex display={{ base: "none", md: "flex" }} ml={20}>
                         <Image src={logo} width="50px" />
                         <DesktopNav />
-                    </Flex>
                 </Flex>
 
                 <Stack flex={{ base: 1, md: 0 }} justify={"flex-end"} direction={"row"} spacing={6}>
@@ -81,7 +79,7 @@ const DesktopNav = () => {
     const popoverContentBgColor = useColorModeValue("white", "gray.800");
 
     return (
-        <Stack direction={"row"} spacing={4}>
+        <Stack direction={"row"} spacing={8}>
             {NAV_ITEMS.map((navItem) => (
                 <Box key={navItem.label}>
                     <Popover trigger={"hover"} placement={"bottom-start"}>
