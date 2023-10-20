@@ -10,7 +10,6 @@ import {
     PopoverTrigger,
     PopoverContent,
     useColorModeValue,
-    useBreakpointValue,
     useDisclosure,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
@@ -24,7 +23,7 @@ export default function Header() {
 
     return (
         <Box>
-            <Flex 
+            <Flex
                 bg={useColorModeValue("white", "gray.800")}
                 color={useColorModeValue("gray.600", "white")}
                 minH={"60px"}
@@ -33,7 +32,6 @@ export default function Header() {
                 borderBottom={1}
                 borderStyle={"solid"}
                 borderColor={useColorModeValue("gray.200", "gray.900")}
-                
             >
                 <Flex flex={{ base: 1, md: "auto" }} ml={{ base: -2 }} display={{ base: "flex", md: "none" }}>
                     <IconButton
@@ -44,10 +42,9 @@ export default function Header() {
                     />
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-                        <Image src={logo} width="50px" />
-                        <DesktopNav />
+                    <Image src={logo} width="50px" />
+                    <DesktopNav />
                 </Flex>
-
                 <Stack flex={{ base: 1, md: 0 }} justify={"flex-end"} direction={"row"} spacing={6}>
                     <Button
                         as={"a"}
@@ -74,10 +71,8 @@ export default function Header() {
 }
 
 const DesktopNav = () => {
-    const linkColor = useColorModeValue("gray.600", "gray.200");
     const linkHoverColor = useColorModeValue("gray.800", "white");
     const popoverContentBgColor = useColorModeValue("white", "gray.800");
-
     return (
         <Stack direction={"row"} spacing={8}>
             {NAV_ITEMS.map((navItem) => (
