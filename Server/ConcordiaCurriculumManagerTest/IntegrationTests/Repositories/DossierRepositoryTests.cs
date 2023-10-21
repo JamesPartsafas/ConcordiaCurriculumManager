@@ -124,6 +124,49 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
 
             Assert.IsTrue(result);
         }
+
+        [TestMethod]
+        public async Task UpdateDossier_ReturnsTrue() {
+            var dossier = new Dossier
+            {
+                InitiatorId = Guid.NewGuid(),
+                Title = "test title",
+                Description = "test description",
+                Published = false
+            };
+
+            var newTitle = "test title modified";
+            var newDescription = "test description modified";
+
+            dossier.Title = newTitle;
+            dossier.Description = newDescription;
+            var result = await dossierRepository.UpdateDossier(dossier);
+
+            Assert.AreEqual(dossier.Title, newTitle);
+            Assert.AreEqual(dossier.Description, newDescription);
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public async Task DeleteDossier_ReturnsTrue()
+        {
+            var dossier = new Dossier
+            {   
+                Id = Guid.NewGuid(),
+                InitiatorId = Guid.NewGuid(),
+                Title = "test title",
+                Description = "test description",
+                Published = false
+            };
+
+            dbContext.Dossiers.Add(dossier);
+            await dbContext.SaveChangesAsync();
+
+            var result = await dossierRepository.DeleteDossier(dossier);
+
+            Assert.IsTrue(result);
+        }
+
     }
 }
 

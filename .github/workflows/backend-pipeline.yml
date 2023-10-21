@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'Server/**'
   pull_request:
     paths:
       - 'Server/**'
@@ -25,3 +27,35 @@ jobs:
 
     - name: Run backend tests
       run: dotnet test Server/ConcordiaCurriculumManagerTest/ConcordiaCurriculumManagerTest.csproj
+
+  deploy-backend:
+    needs:
+    - backend-tests
+    if: github.ref == 'refs/heads/main' && needs.backend-tests.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Generate HS256 Key
+      id: generate-key
+      run: |
+        hs256_key=$(openssl rand -hex 32)
+        echo "::add-mask::$hs256_key"
+        echo "hs256_key=$hs256_key" >> $GITHUB_OUTPUT
+
+    - name: Apply Production AppSettings
+      env:
+        service_id: ${{ secrets.RENDER_BACKEND_SERVICE_ID }}
+        api_key: ${{ secrets.RENDER_BACKEND_API_KEY }}
+        db_string: ${{ secrets.RENDER_BACKEND_DB_STRING }}
+      run: |
+        hs256_key=${{ steps.generate-key.outputs.hs256_key }}
+        chmod +x ./Scripts/ApplyProdAppSettings.sh
+        ./Scripts/ApplyProdAppSettings.sh "$service_id" "$api_key" "$hs256_key" "$db_string"
+
+    - name: Deploy
+      env:
+        deploy_url: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK_URL }}
+      run: |
+          curl "$deploy_url"

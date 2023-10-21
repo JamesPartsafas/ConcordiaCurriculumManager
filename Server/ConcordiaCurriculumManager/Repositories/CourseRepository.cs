@@ -28,7 +28,7 @@ public class CourseRepository : ICourseRepository
     public async Task<int> GetMaxCourseId() => (await _dbContext.Courses.MaxAsync(course => (int?)course.CourseID)) ?? 0;
 
     public Task<Course?> GetCourseBySubjectAndCatalog(string subject, string catalog) => _dbContext.Courses
-        .Where(course => course.Subject == subject && course.Catalog == catalog).FirstOrDefaultAsync();
+        .Where(course => course.Subject == subject && course.Catalog == catalog && course.CourseState == CourseStateEnum.Accepted).FirstOrDefaultAsync();
 
     public async Task<bool> SaveCourse(Course course)
     {

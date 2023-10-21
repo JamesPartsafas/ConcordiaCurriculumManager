@@ -1,4 +1,3 @@
-import React from "react";
 import { Spinner, Box } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 function LoadingSpinner({ size = "md", color = "blue.500", label = "Loading..." }) {

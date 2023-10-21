@@ -14,6 +14,8 @@ public interface IDossierRepository
     Task<List<Dossier>> GetDossiersByID(Guid userId);
     Task<Dossier?> GetDossierByDossierId(Guid dossierId);
     Task<bool> SaveDossier(Dossier dossier);
+    Task<bool> UpdateDossier(Dossier dossier);
+    Task<bool> DeleteDossier(Dossier dossier);
 }
 
 public class DossierRepository : IDossierRepository
@@ -51,9 +53,22 @@ public class DossierRepository : IDossierRepository
         .Select(ObjectSelectors.DossierSelector())
         .Where(d => d.Id == dossierId).FirstOrDefaultAsync();
 
+
     public async Task<bool> SaveDossier(Dossier dossier)
     {
         await _dbContext.Dossiers.AddAsync(dossier);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> UpdateDossier(Dossier dossier) {
+        _dbContext.Dossiers.Update(dossier);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteDossier(Dossier dossier) {
+        _dbContext.Dossiers.Remove(dossier);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
