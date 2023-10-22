@@ -68,7 +68,7 @@ export function App() {
                     />
                     <Route
                         path={BaseRoutes.AddUserToGroup}
-                        element={isLoggedIn == true ? AddingUserToGroup("1") : <Navigate to={BaseRoutes.Login} />}
+                        element={isLoggedIn == true ? <AddingUserToGroup /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
                         path={BaseRoutes.RemoveUserFromGroup}

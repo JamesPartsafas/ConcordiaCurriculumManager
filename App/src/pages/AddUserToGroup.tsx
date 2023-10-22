@@ -1,17 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../assets/logo.png";
 import { Container, Stack, Heading, Box, FormControl, Input, FormLabel, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { AddUserToGroup, GetGroupByID, GroupDTO, GroupResponseDTO } from "../services/group";
-import { useForm } from "react-hook-form";
+import { useLocation } from "react-router-dom";
 
-export default function AddingUserToGroup(gid: string) {
+export default function AddingUserToGroup() {
     const userList = ["User1", "Dave", "Joe", "Billy", "Benjamen"];
     const navigate = useNavigate();
-
+    const location = useLocation();
     const [filteredList, setFilteredList] = useState(userList);
     const [myGroup, setMyGroup] = useState<GroupDTO | null>(null);
+    const [locationState, setLocationState] = useState({ gid: "", name: "" });
+
+    function getMyGroup(gid: string) {
+        console.log("Grabbing group info");
+        GetGroupByID(gid)
+            .then(
+                (res: GroupResponseDTO) => {
+                    setMyGroup(res.data);
+                    console.log(res.data.name);
+                },
+                (rej) => {
+                    console.log(rej);
+                }
+            )
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    useEffect(() => {
+        if (location.state) {
+            let _state = location.state as any;
+            setLocationState(_state);
+            console.log(locationState.gid);
+            getMyGroup(locationState.gid);
+        }
+    }, [location]);
 
     const filterBySearch = (event: { target: { value: string } }) => {
         const query = event.target.value;
@@ -22,11 +49,11 @@ export default function AddingUserToGroup(gid: string) {
         setFilteredList(updatedList);
     };
 
-    function getMyGroup(gid: string) {
-        GetGroupByID(gid)
+    function addingUser(uid: string) {
+        AddUserToGroup(myGroup.id, uid)
             .then(
-                (res: GroupResponseDTO) => {
-                    setMyGroup(res.data);
+                (res: void) => {
+                    console.log("User Added");
                 },
                 (rej) => {
                     console.log(rej);
@@ -35,11 +62,6 @@ export default function AddingUserToGroup(gid: string) {
             .catch((err) => {
                 console.log(err);
             });
-    }
-    getMyGroup(gid);
-
-    function addingUser(uid: string) {
-        AddUserToGroup(myGroup.id, uid);
     }
 
     return (
@@ -55,7 +77,7 @@ export default function AddingUserToGroup(gid: string) {
                     <Stack spacing="6">
                         <img src={logo} alt="Logo" width="50px" height="50px" style={{ margin: "auto" }} />
                         <Heading textAlign="center" size="lg">
-                            Add User to Group: {myGroup.name}
+                            Add User to Group: {locationState.name}
                         </Heading>
 
                         <FormControl>
@@ -74,7 +96,7 @@ export default function AddingUserToGroup(gid: string) {
                                             width="22%"
                                             height="40px"
                                             justifyContent={"flex-end"}
-                                            onClick={addingUser(item)}
+                                            onClick={() => addingUser(item)}
                                         >
                                             Select
                                         </Button>

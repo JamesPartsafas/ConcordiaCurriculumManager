@@ -1,10 +1,11 @@
 import { Container, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import Button from "../components/Button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { GetAllGroups } from "../services/group";
 import { GroupDTO, MultiGroupResponseDTO } from "../services/group";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../App";
+import { BaseRoutes } from "../constants";
 
 export default function DisplayManageableGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
@@ -65,21 +66,23 @@ export default function DisplayManageableGroups() {
                                     {group.members.length}
                                 </Td>
                                 <Td whiteSpace="nowrap" padding="16px">
+                                    <Link to={BaseRoutes.AddUserToGroup} state={{ gid: group.id, name: group.name }}>
+                                        <Button
+                                            style="primary"
+                                            variant="outline"
+                                            width="50%"
+                                            height="40px"
+                                            onClick={() => navigate(BaseRoutes.AddUserToGroup)}
+                                        >
+                                            Add
+                                        </Button>
+                                    </Link>
                                     <Button
                                         style="primary"
                                         variant="outline"
                                         width="50%"
                                         height="40px"
-                                        onClick={() => navigate("/addusertogroup")}
-                                    >
-                                        Add
-                                    </Button>
-                                    <Button
-                                        style="primary"
-                                        variant="outline"
-                                        width="50%"
-                                        height="40px"
-                                        onClick={() => navigate("/removeuserfromgroup")}
+                                        onClick={() => navigate(BaseRoutes.RemoveUserFromGroup)}
                                     >
                                         Remove
                                     </Button>
@@ -88,6 +91,9 @@ export default function DisplayManageableGroups() {
                         ))}
                     </Tbody>
                 </Table>
+                <Button style="primary" variant={"solid"} width="100%" height="40px">
+                    Create Group
+                </Button>
             </div>
         </Container>
     );
