@@ -42,25 +42,9 @@ export default function Header() {
                     />
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-                    <Image src={logo} width="50px" />
+                    <Image src={logo} width="50px" marginRight="200px" />
                     <DesktopNav />
                 </Flex>
-                <Stack flex={{ base: 1, md: 0 }} justify={"flex-end"} direction={"row"} spacing={6}>
-                    <Button
-                        as={"a"}
-                        display={{ base: "none", md: "inline-flex" }}
-                        fontSize={"sm"}
-                        fontWeight={600}
-                        color={"white"}
-                        bg={"blue"}
-                        onClick={logout}
-                        _hover={{
-                            bg: "blue.300",
-                        }}
-                    >
-                        Log Out
-                    </Button>
-                </Stack>
             </Flex>
 
             <Collapse in={isOpen} animateOpacity>
@@ -113,6 +97,20 @@ const DesktopNav = () => {
                     </Popover>
                 </Box>
             ))}
+            <Button
+                as={"a"}
+                display={{ base: "none", md: "inline-flex" }}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"blue"}
+                onClick={logout}
+                _hover={{
+                    bg: "blue.300",
+                }}
+            >
+                Log Out
+            </Button>
         </Stack>
     );
 };
