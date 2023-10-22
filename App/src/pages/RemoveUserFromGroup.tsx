@@ -1,13 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../assets/logo.png";
 import { Container, Stack, Heading, Box, FormControl, Input, FormLabel, HStack } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import { GetGroupByID, GroupDTO, GroupResponseDTO, RemoveUserFromGroup } from "../services/group";
+import { BaseRoutes } from "../constants";
 
-export default function RemoveUserFromGroup() {
+export default function RemovingUserFromGroup() {
     const userList = ["User1", "Dave", "Joe", "admin", "Billy", "Benjamen"];
     const navigate = useNavigate();
     const [filteredList, setFilteredList] = useState(userList);
+    const [locationState, setLocationState] = useState({ gid: "", name: "" });
+    const [myGroup, setMyGroup] = useState<GroupDTO | null>(null);
+    const location = useLocation();
+
+    function getMyGroup(gid: string) {
+        console.log("Grabbing group info");
+        GetGroupByID(gid)
+            .then(
+                (res: GroupResponseDTO) => {
+                    setMyGroup(res.data);
+                    console.log(res.data.name);
+                },
+                (rej) => {
+                    console.log(rej);
+                }
+            )
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    useEffect(() => {
+        if (location.state) {
+            let _state = location.state as any;
+            setLocationState(_state);
+            console.log(locationState.gid);
+            getMyGroup(locationState.gid);
+        }
+    }, [location]);
 
     const filterBySearch = (event: { target: { value: string } }) => {
         const query = event.target.value;
@@ -20,6 +51,21 @@ export default function RemoveUserFromGroup() {
 
         setFilteredList(updatedList);
     };
+
+    function removingUser(uid: string) {
+        RemoveUserFromGroup(myGroup.id, uid)
+            .then(
+                (res: void) => {
+                    console.log("User Added");
+                },
+                (rej) => {
+                    console.log(rej);
+                }
+            )
+            .catch((err) => {
+                console.log(err);
+            });
+    }
 
     return (
         <Container maxW="lg" py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>
@@ -34,7 +80,7 @@ export default function RemoveUserFromGroup() {
                     <Stack spacing="6">
                         <img src={logo} alt="Logo" width="50px" height="50px" style={{ margin: "auto" }} />
                         <Heading textAlign="center" size="lg">
-                            Remove User from Group
+                            Remove User from Group: {locationState.name}
                         </Heading>
 
                         <FormControl>
@@ -53,6 +99,7 @@ export default function RemoveUserFromGroup() {
                                             width="22%"
                                             height="40px"
                                             justifyContent={"flex-end"}
+                                            onClick={() => removingUser(item)}
                                         >
                                             Select
                                         </Button>
@@ -66,7 +113,7 @@ export default function RemoveUserFromGroup() {
                             variant="outline"
                             width="50%"
                             height="40px"
-                            onClick={() => navigate("/manageablegroup")}
+                            onClick={() => navigate(BaseRoutes.ManageableGroup)}
                         >
                             Back
                         </Button>

@@ -13,7 +13,6 @@ import CreateGroup from "./pages/CreateGroup";
 import DisplayGroups from "./pages/RegularGroups";
 import { decodeTokenToUser } from "./services/auth";
 import DisplayManageableGroups from "./pages/ManageableGroups";
-import RemoveUserFromGroup from "./pages/RemoveUserFromGroup";
 import { BaseRoutes } from "./constants";
 import axios from "axios";
 import AddCourse from "./pages/AddCourse";
@@ -22,6 +21,7 @@ import ComponentsList from "./pages/ComponentsList";
 import { LoadingProvider } from "./utils/loadingContext"; // Import the provider
 import Dossiers from "./pages/dossier/Dossiers";
 import AddingUserToGroup from "./pages/AddUserToGroup";
+import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -72,7 +72,7 @@ export function App() {
                     />
                     <Route
                         path={BaseRoutes.RemoveUserFromGroup}
-                        element={isLoggedIn == true ? <RemoveUserFromGroup /> : <Navigate to={BaseRoutes.Login} />}
+                        element={isLoggedIn == true ? <RemovingUserFromGroup /> : <Navigate to={BaseRoutes.Login} />}
                     />
 
                     <Route

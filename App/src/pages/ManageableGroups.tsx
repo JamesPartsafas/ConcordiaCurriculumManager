@@ -67,25 +67,15 @@ export default function DisplayManageableGroups() {
                                 </Td>
                                 <Td whiteSpace="nowrap" padding="16px">
                                     <Link to={BaseRoutes.AddUserToGroup} state={{ gid: group.id, name: group.name }}>
-                                        <Button
-                                            style="primary"
-                                            variant="outline"
-                                            width="50%"
-                                            height="40px"
-                                            onClick={() => navigate(BaseRoutes.AddUserToGroup)}
-                                        >
+                                        <Button style="primary" variant="outline" width="50%" height="40px">
                                             Add
                                         </Button>
                                     </Link>
-                                    <Button
-                                        style="primary"
-                                        variant="outline"
-                                        width="50%"
-                                        height="40px"
-                                        onClick={() => navigate(BaseRoutes.RemoveUserFromGroup)}
-                                    >
-                                        Remove
-                                    </Button>
+                                    <Link to={BaseRoutes.AddUserToGroup} state={{ gid: group.id, name: group.name }}>
+                                        <Button style="primary" variant="outline" width="50%" height="40px">
+                                            Remove
+                                        </Button>
+                                    </Link>
                                 </Td>
                             </Tr>
                         ))}

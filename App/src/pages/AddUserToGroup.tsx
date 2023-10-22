@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { AddUserToGroup, GetGroupByID, GroupDTO, GroupResponseDTO } from "../services/group";
 import { useLocation } from "react-router-dom";
+import { BaseRoutes } from "../constants";
 
 export default function AddingUserToGroup() {
     const userList = ["User1", "Dave", "Joe", "Billy", "Benjamen"];
@@ -110,7 +111,7 @@ export default function AddingUserToGroup() {
                             variant="outline"
                             width="50%"
                             height="40px"
-                            onClick={() => navigate("/manageablegroup")}
+                            onClick={() => navigate(BaseRoutes.ManageableGroup)}
                         >
                             Back
                         </Button>
