@@ -1,4 +1,7 @@
 import { Container, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { useContext, useEffect, useState } from "react";
+import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../services/group";
+import { UserContext } from "../App";
 
 export default function DisplayGroups() {
     const groupsData = [
@@ -6,7 +9,35 @@ export default function DisplayGroups() {
         { groupName: "Group 2", applicationsToApprove: 0, numberOfMembers: 3 },
         { groupName: "Group 3", applicationsToApprove: 1, numberOfMembers: 4 },
     ];
+    const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
+    const user = useContext(UserContext);
+    useEffect(() => {
+        AllGroups();
+        console.log(user);
+    }, []);
 
+    function AllGroups() {
+        GetAllGroups()
+            .then(
+                (res: MultiGroupResponseDTO) => {
+                    setMyGroups(res.data);
+                    setMyGroups(res.data.filter(membership));
+                },
+                (rej) => {
+                    console.log(rej);
+                }
+            )
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+    function membership(GroupDTO: GroupDTO): boolean {
+        if (GroupDTO.members.includes(user)) {
+            return true;
+        }
+
+        return false;
+    }
     return (
         <Container maxW="3xl" height="80vh" display="flex" alignItems="center" justifyContent="center">
             <div>
@@ -30,16 +61,16 @@ export default function DisplayGroups() {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {groupsData.map((group, index) => (
+                        {myGroups.map((group, index) => (
                             <Tr key={index}>
                                 <Td whiteSpace="nowrap" padding="16px">
-                                    {group.groupName}
+                                    {group.name}
                                 </Td>
                                 <Td whiteSpace="nowrap" padding="16px">
-                                    {group.applicationsToApprove}
+                                    {0}
                                 </Td>
                                 <Td whiteSpace="nowrap" padding="16px">
-                                    {group.numberOfMembers}
+                                    {group.members.length}
                                 </Td>
                             </Tr>
                         ))}

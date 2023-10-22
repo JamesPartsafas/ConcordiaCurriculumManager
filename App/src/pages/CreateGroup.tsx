@@ -2,10 +2,9 @@ import { Box, Container, FormControl, FormLabel, Heading, HStack, Input, Stack, 
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
 import { GroupCreateDTO, GroupResponseDTO } from "../services/group";
 import { CreateGroupCall } from "../services/group";
-import SubmitButton from "../components/SubmitButton";
+import Button from "../components/Button";
 
 export default function CreateGroup() {
     const { register, handleSubmit } = useForm();
@@ -44,9 +43,9 @@ export default function CreateGroup() {
                                     <FormLabel htmlFor="groupType">Group Type</FormLabel>
                                     <Select
                                         id="groupType"
-                                        {...register("groupType", {
-                                            required: true,
-                                        })}
+                                        // {...register("groupType", {
+                                        //     required: true,
+                                        // })}
                                     >
                                         <option value="option1">Group 1</option>
                                         <option value="option2">Group 2</option>
@@ -54,11 +53,11 @@ export default function CreateGroup() {
                                     </Select>
                                 </FormControl>
                                 <FormControl>
-                                    <FormLabel>Group Name</FormLabel>
+                                    <FormLabel>Name</FormLabel>
                                     <Input
                                         id="groupName"
                                         type="text"
-                                        {...register("groupName", {
+                                        {...register("name", {
                                             required: true,
                                         })}
                                     />
@@ -67,9 +66,9 @@ export default function CreateGroup() {
                                     <FormLabel htmlFor="faculty">Faculty/School</FormLabel>
                                     <Select
                                         id="faculty"
-                                        {...register("faculty", {
-                                            required: true,
-                                        })}
+                                        // {...register("faculty", {
+                                        //     required: true,
+                                        // })}
                                     >
                                         <option value="faculty1">Faculty 1</option>
                                         <option value="faculty2">Faculty 2</option>
@@ -81,31 +80,17 @@ export default function CreateGroup() {
                                     <Input
                                         id="department"
                                         type="text"
-                                        {...register("department", {
-                                            required: true,
-                                        })}
+                                        // {...register("department", {
+                                        //     required: true,
+                                        // })}
                                     />
-                                </FormControl>
-                                <FormControl>
-                                    <FormLabel htmlFor="selectedMembers">Select Members to Add</FormLabel>
-                                    <Select
-                                        id="selectedMembers"
-                                        multiple
-                                        {...register("selectedMembers", {
-                                            required: true,
-                                        })}
-                                    >
-                                        <option value="user1">User 1</option>
-                                        <option value="user2">User 2</option>
-                                        <option value="user3">User 3</option>
-                                    </Select>
                                 </FormControl>
                             </Stack>
                         </Box>
                         <HStack justify="space-between">
-                            <SubmitButton variant="outline" width="50%" height="40px">
+                            <Button style="secondary" type="submit" variant="outline" width="50%" height="40px">
                                 Create Group
-                            </SubmitButton>
+                            </Button>
                         </HStack>
                     </Stack>
                 </Container>

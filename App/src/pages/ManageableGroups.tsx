@@ -71,7 +71,7 @@ export default function DisplayManageableGroups() {
                                 </Td>
                                 <Td whiteSpace="nowrap" padding="16px">
                                     <Button
-                                        type="primary"
+                                        style="primary"
                                         variant="outline"
                                         width="50%"
                                         height="40px"
@@ -79,9 +79,8 @@ export default function DisplayManageableGroups() {
                                     >
                                         Add
                                     </Button>
-
                                     <Button
-                                        type="primary"
+                                        style="primary"
                                         variant="outline"
                                         width="50%"
                                         height="40px"
