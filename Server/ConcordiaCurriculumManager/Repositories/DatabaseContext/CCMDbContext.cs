@@ -92,5 +92,9 @@ public class CCMDbContext : DbContext
         modelBuilder.Entity<Group>()
             .HasMany(group => group.Members)
             .WithMany(user => user.Groups);
+
+        modelBuilder.Entity<Group>()
+            .HasMany(group => group.GroupMasters)
+            .WithMany(user => user.MasteredGroups);
     }
 }

@@ -12,6 +12,9 @@ public interface IGroupService
     Task<bool> CreateGroupAsync(Group group);
     Task<bool> AddUserToGroup(Guid userId, Guid groupId);
     Task<bool> RemoveUserFromGroup(Guid userId, Guid groupId);
+    Task<bool> AddGroupMaster(Guid userId, Guid groupId);
+    Task<bool> IsGroupMaster(Guid userId, Guid groupId);
+
 }
 
 public class GroupService : IGroupService
@@ -64,5 +67,17 @@ public class GroupService : IGroupService
     public async Task<bool> RemoveUserFromGroup(Guid userId, Guid groupId)
     {
         return await _groupRepository.RemoveUserFromGroup(userId, groupId); 
+    }
+
+    public async Task<bool> AddGroupMaster(Guid userId, Guid groupId)
+    {
+        return await _groupRepository.AddGroupMaster(userId, groupId);
+    }
+
+    public async Task<bool> IsGroupMaster(Guid userId, Guid groupId)
+    {
+
+        var group = await _groupRepository.GetGroupWithMasters(groupId);
+        return group.GroupMasters.Any(gm => gm.Id == userId);
     }
 }

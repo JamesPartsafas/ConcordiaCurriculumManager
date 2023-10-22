@@ -11,6 +11,8 @@ public interface IGroupRepository
     Task<bool> SaveGroup(Group group);
     Task<bool> AddUserToGroup(Guid userId, Guid groupId);
     Task<bool> RemoveUserFromGroup(Guid userId, Guid groupId);
+    Task<bool> AddGroupMaster(Guid userId, Guid groupId);
+    Task<Group> GetGroupWithMasters(Guid groupId);
 }
 
 public class GroupRepository : IGroupRepository
@@ -60,5 +62,43 @@ public class GroupRepository : IGroupRepository
             return await _dbContext.SaveChangesAsync() > 0;
         }
         return false;
+    }
+
+    public async Task<bool> AddGroupMaster(Guid userId, Guid groupId)
+    {
+        var group = await _dbContext.Groups
+                                    .Include(g => g.Members)
+                                    .Include(g => g.GroupMasters)
+                                    .FirstOrDefaultAsync(g => g.Id == groupId);
+
+        if (group == null)
+        {
+            return false;
+        }
+
+        var member = group.Members.FirstOrDefault(u => u.Id == userId);
+        if (member == null)
+        {
+            return false;
+        }
+
+        var isAlreadyGroupMaster = group.GroupMasters.Any(u => u.Id == userId);
+        if (isAlreadyGroupMaster)
+        {
+            return false;
+        }
+
+        group.GroupMasters.Add(member);
+        return await _dbContext.SaveChangesAsync() > 0;
+    }
+
+    public async Task<Group> GetGroupWithMasters(Guid groupId)
+    {
+        var groupWithMasters = await _dbContext.Groups
+            .Include(g => g.GroupMasters)
+            .Where(group => group.Id == groupId)
+            .FirstOrDefaultAsync();
+
+        return groupWithMasters;
     }
 }
