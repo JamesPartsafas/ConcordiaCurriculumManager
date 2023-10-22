@@ -30,11 +30,11 @@ export function GetGroupByID(id: string): Promise<GroupResponseDTO> {
     return axios.get("/Group/" + id);
 }
 
-export function AddUserToGroup(gid: string, uid: string) {
+export function AddUserToGroup(gid: string, uid: string): Promise<void> {
     return axios.post("/Group/" + gid + "/users/" + uid);
 }
 
-export function RemoveUserFromGroup(gid: string, uid: string) {
+export function RemoveUserFromGroup(gid: string, uid: string): Promise<void> {
     return axios.post("/Group/" + gid + "/users/" + uid);
 }
 

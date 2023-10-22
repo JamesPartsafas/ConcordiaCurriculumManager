@@ -3,12 +3,15 @@ import logo from "../assets/logo.png";
 import { Container, Stack, Heading, Box, FormControl, Input, FormLabel, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import { AddUserToGroup, GetGroupByID, GroupDTO, GroupResponseDTO } from "../services/group";
+import { useForm } from "react-hook-form";
 
-export default function AddUserToGroup() {
+export default function AddingUserToGroup(gid: string) {
     const userList = ["User1", "Dave", "Joe", "Billy", "Benjamen"];
     const navigate = useNavigate();
 
     const [filteredList, setFilteredList] = useState(userList);
+    const [myGroup, setMyGroup] = useState<GroupDTO | null>(null);
 
     const filterBySearch = (event: { target: { value: string } }) => {
         const query = event.target.value;
@@ -18,6 +21,26 @@ export default function AddUserToGroup() {
         });
         setFilteredList(updatedList);
     };
+
+    function getMyGroup(gid: string) {
+        GetGroupByID(gid)
+            .then(
+                (res: GroupResponseDTO) => {
+                    setMyGroup(res.data);
+                },
+                (rej) => {
+                    console.log(rej);
+                }
+            )
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+    getMyGroup(gid);
+
+    function addingUser(uid: string) {
+        AddUserToGroup(myGroup.id, uid);
+    }
 
     return (
         <Container maxW="lg" py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>
@@ -32,12 +55,12 @@ export default function AddUserToGroup() {
                     <Stack spacing="6">
                         <img src={logo} alt="Logo" width="50px" height="50px" style={{ margin: "auto" }} />
                         <Heading textAlign="center" size="lg">
-                            Add User to Group
+                            Add User to Group: {myGroup.name}
                         </Heading>
 
                         <FormControl>
                             <FormLabel htmlFor="search-text">Search:</FormLabel>
-                            <Input id="groupName" type="text" onChange={filterBySearch} />
+                            <Input id="searcher" type="text" onChange={filterBySearch} />
                         </FormControl>
 
                         <div id="item-list">
@@ -46,11 +69,12 @@ export default function AddUserToGroup() {
                                     <HStack justify="space-between" key={index}>
                                         <li>{item}</li>
                                         <Button
-                                            type="primary"
+                                            style="primary"
                                             variant="outline"
                                             width="22%"
                                             height="40px"
                                             justifyContent={"flex-end"}
+                                            onClick={addingUser(item)}
                                         >
                                             Select
                                         </Button>
@@ -60,7 +84,7 @@ export default function AddUserToGroup() {
                         </div>
 
                         <Button
-                            type="primary"
+                            style="primary"
                             variant="outline"
                             width="50%"
                             height="40px"

@@ -48,7 +48,7 @@ export default function RemoveUserFromGroup() {
                                     <HStack justify="space-between" key={index}>
                                         <li>{item}</li>
                                         <Button
-                                            type="primary"
+                                            style="primary"
                                             variant="outline"
                                             width="22%"
                                             height="40px"
@@ -62,7 +62,7 @@ export default function RemoveUserFromGroup() {
                         </div>
 
                         <Button
-                            type="primary"
+                            style="primary"
                             variant="outline"
                             width="50%"
                             height="40px"
