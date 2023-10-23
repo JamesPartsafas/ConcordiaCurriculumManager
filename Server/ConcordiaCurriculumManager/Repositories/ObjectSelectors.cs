@@ -40,6 +40,18 @@ public static class ObjectSelectors
             {
                 UserRole = role.UserRole
             })
+        }),
+        GroupMasters = (List<User>)group.GroupMasters.Select(user => new User
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            Password = user.Password,
+            Roles = (List<Role>)user.Roles.Select(role => new Role
+            {
+                UserRole = role.UserRole
+            })
         })
     };
 

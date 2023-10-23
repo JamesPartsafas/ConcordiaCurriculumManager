@@ -7,4 +7,5 @@ public class GroupDTO
     public required Guid Id { get; set; }
     public required string Name { get; set; }
     public required List<UserDTO> Members { get; set; } = new();
+    public required List<UserDTO> GroupMasters { get; set; } = new();
 }

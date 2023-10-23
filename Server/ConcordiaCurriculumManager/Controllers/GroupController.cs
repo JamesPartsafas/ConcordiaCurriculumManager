@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Swashbuckle.AspNetCore.Annotations;
 using ConcordiaCurriculumManager.Security;
+using System.ComponentModel;
 
 namespace ConcordiaCurriculumManager.Controllers;
 
@@ -15,9 +16,9 @@ public class GroupController : Controller
 {
     private readonly IGroupService _groupService;
     private readonly IUserAuthenticationService _userService;
-    private readonly ILogger<CourseController> _logger;
+    private readonly ILogger<GroupController> _logger;
 
-    public GroupController(IGroupService groupService, IUserAuthenticationService userService, ILogger<CourseController> logger)
+    public GroupController(IGroupService groupService, IUserAuthenticationService userService, ILogger<GroupController> logger)
     {
         _groupService = groupService;
         _userService = userService;
@@ -82,7 +83,7 @@ public class GroupController : Controller
         }
         catch (Exception e)
         {
-            var message = "Unexpected error occured while retrieving user information.";
+            var message = "Unexpected error occurred while retrieving user information.";
             _logger.LogWarning($"${message}: {e.Message}");
             return Problem(
                 title: message,
@@ -90,12 +91,9 @@ public class GroupController : Controller
                 statusCode: StatusCodes.Status500InternalServerError);
         }
 
-        bool isAdmin = User.IsInRole(RoleNames.Admin);
-        bool isMaster = await _groupService.IsGroupMaster(currentUserId, groupId);
-
-        if (!isAdmin && !isMaster)
+        if (!await IsAdminOrGroupMaster(currentUserId, groupId))
         {
-            return StatusCode(StatusCodes.Status403Forbidden, "You are not authorized to add users to this group");
+            return StatusCode(StatusCodes.Status403Forbidden, "You must be an admin or a group master to make changes to this group");
         }
 
         var result = await _groupService.AddUserToGroup(userId, groupId);
@@ -127,12 +125,9 @@ public class GroupController : Controller
                 statusCode: StatusCodes.Status500InternalServerError);
         }
 
-        bool isAdmin = User.IsInRole(RoleNames.Admin);
-        bool isMaster = await _groupService.IsGroupMaster(currentUserId, groupId);
-
-        if (!isAdmin && !isMaster)
+        if (!await IsAdminOrGroupMaster(currentUserId, groupId))
         {
-            return StatusCode(StatusCodes.Status403Forbidden, "You are not authorized to add users to this group");
+            return StatusCode(StatusCodes.Status403Forbidden, "You must be an admin or a group master to make changes to this group");
         }
 
         var result = await _groupService.RemoveUserFromGroup(userId, groupId);
@@ -164,12 +159,9 @@ public class GroupController : Controller
                 statusCode: StatusCodes.Status500InternalServerError);
         }
 
-        bool isAdmin = User.IsInRole(RoleNames.Admin);
-        bool isMaster = await _groupService.IsGroupMaster(currentUserId, groupId);
-
-        if (!isAdmin && !isMaster)
+        if (!await IsAdminOrGroupMaster(currentUserId, groupId))
         {
-            return StatusCode(StatusCodes.Status403Forbidden, "You are not authorized to add users to this group");
+            return StatusCode(StatusCodes.Status403Forbidden, "You must be an admin or a group master to make changes to this group");
         }
 
         var result = await _groupService.AddGroupMaster(userId, groupId);
@@ -178,5 +170,46 @@ public class GroupController : Controller
             return Ok();
         }
         return NotFound();
+    }
+
+    [HttpDelete("{groupId}/masters/{userId}")]
+    [Authorize]
+    [SwaggerResponse(StatusCodes.Status200OK, "User removed from group masters successfully")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "User is not a member of this group or is not a group master")]
+    public async Task<IActionResult> RemoveGroupMaster(Guid groupId, Guid userId)
+    {
+        Guid currentUserId;
+        try
+        {
+            currentUserId = Guid.Parse(_userService.GetCurrentUserClaim(Claims.Id));
+        }
+        catch (Exception e)
+        {
+            var message = "Unexpected error occured while retrieving user information.";
+            _logger.LogWarning($"${message}: {e.Message}");
+            return Problem(
+                title: message,
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+
+        if (!await IsAdminOrGroupMaster(currentUserId, groupId))
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, "You must be an admin or a group master to make changes to this group");
+        }
+
+        var result = await _groupService.RemoveGroupMaster(userId, groupId);
+        if (result)
+        {
+            return Ok();
+        }
+        return NotFound();
+    }
+
+    public async Task<bool> IsAdminOrGroupMaster(Guid currentUserId, Guid groupId)
+    {
+        bool isAdmin = User.IsInRole(RoleNames.Admin);
+        bool isGroupMaster = await _groupService.IsGroupMaster(currentUserId, groupId);
+        return isAdmin || isGroupMaster;
     }
 }
