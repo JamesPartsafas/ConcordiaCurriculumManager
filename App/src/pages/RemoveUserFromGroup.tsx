@@ -98,7 +98,7 @@ export default function RemovingUserFromGroup() {
                                             width="22%"
                                             height="40px"
                                             justifyContent={"flex-end"}
-                                            onClick={() => removingUser(item.email)}
+                                            onClick={() => removingUser(item.id)}
                                         >
                                             Select
                                         </Button>

@@ -35,7 +35,7 @@ export function AddUserToGroup(gid: string, uid: string): Promise<void> {
 }
 
 export function RemoveUserFromGroup(gid: string, uid: string): Promise<void> {
-    return axios.post("/Group/" + gid + "/users/" + uid);
+    return axios.delete("/Group/" + gid + "/users/" + uid);
 }
 
 export function GetAllGroups(): Promise<MultiGroupResponseDTO> {
