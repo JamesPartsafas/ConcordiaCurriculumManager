@@ -47,7 +47,10 @@ export function App() {
         <>
             <UserContext.Provider value={user}>
                 <Routes>
-                    <Route path={BaseRoutes.Home} element={<Home />} />
+                    <Route
+                        path={BaseRoutes.Home}
+                        element={isLoggedIn == true ? <Home /> : <Navigate to={BaseRoutes.Login} />}
+                    />
                     <Route path={BaseRoutes.Login} element={<Login setUser={setUser} />} />
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
 

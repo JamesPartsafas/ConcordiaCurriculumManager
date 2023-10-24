@@ -3,7 +3,6 @@ import {
     Flex,
     Text,
     IconButton,
-    Button,
     Stack,
     Collapse,
     Icon,
@@ -11,10 +10,13 @@ import {
     PopoverTrigger,
     PopoverContent,
     useColorModeValue,
-    useBreakpointValue,
     useDisclosure,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { logout } from "../services/auth";
+import { Image } from "@chakra-ui/react";
+import logo from "../assets/logo.png";
+import Button from "../components/Button";
 
 export default function Header() {
     const { isOpen, onToggle } = useDisclosure();
@@ -25,12 +27,11 @@ export default function Header() {
                 bg={useColorModeValue("white", "gray.800")}
                 color={useColorModeValue("gray.600", "white")}
                 minH={"60px"}
-                py={{ base: 2 }}
-                px={{ base: 4 }}
+                py={{ base: 5 }}
+                px={{ base: 20 }}
                 borderBottom={1}
                 borderStyle={"solid"}
                 borderColor={useColorModeValue("gray.200", "gray.900")}
-                align={"center"}
             >
                 <Flex flex={{ base: 1, md: "auto" }} ml={{ base: -2 }} display={{ base: "flex", md: "none" }}>
                     <IconButton
@@ -41,38 +42,9 @@ export default function Header() {
                     />
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-                    <Text
-                        textAlign={useBreakpointValue({
-                            base: "center",
-                            md: "left",
-                        })}
-                        fontFamily={"heading"}
-                        color={useColorModeValue("gray.800", "white")}
-                    >
-                        Logo
-                    </Text>
-
-                    <Flex display={{ base: "none", md: "flex" }} ml={10}>
-                        <DesktopNav />
-                    </Flex>
+                    <Image src={logo} width="50px" marginRight="200px" />
+                    <DesktopNav />
                 </Flex>
-
-                <Stack flex={{ base: 1, md: 0 }} justify={"flex-end"} direction={"row"} spacing={6}>
-                    <Button
-                        as={"a"}
-                        display={{ base: "none", md: "inline-flex" }}
-                        fontSize={"sm"}
-                        fontWeight={600}
-                        color={"white"}
-                        bg={"pink.400"}
-                        href={"#"}
-                        _hover={{
-                            bg: "pink.300",
-                        }}
-                    >
-                        Log Out
-                    </Button>
-                </Stack>
             </Flex>
 
             <Collapse in={isOpen} animateOpacity>
@@ -83,12 +55,10 @@ export default function Header() {
 }
 
 const DesktopNav = () => {
-    const linkColor = useColorModeValue("gray.600", "gray.200");
     const linkHoverColor = useColorModeValue("gray.800", "white");
     const popoverContentBgColor = useColorModeValue("white", "gray.800");
-
     return (
-        <Stack direction={"row"} spacing={4}>
+        <Stack direction={"row"} spacing={8}>
             {NAV_ITEMS.map((navItem) => (
                 <Box key={navItem.label}>
                     <Popover trigger={"hover"} placement={"bottom-start"}>
@@ -99,13 +69,12 @@ const DesktopNav = () => {
                                 href={navItem.href ?? "#"}
                                 fontSize={"sm"}
                                 fontWeight={500}
-                                color={linkColor}
                                 _hover={{
                                     textDecoration: "none",
                                     color: linkHoverColor,
                                 }}
                             >
-                                {navItem.label}
+                                <Button>{navItem.label}</Button>
                             </Box>
                         </PopoverTrigger>
 
@@ -128,6 +97,20 @@ const DesktopNav = () => {
                     </Popover>
                 </Box>
             ))}
+            <Button
+                as={"a"}
+                display={{ base: "none", md: "inline-flex" }}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"blue"}
+                onClick={logout}
+                _hover={{
+                    bg: "blue.300",
+                }}
+            >
+                Log Out
+            </Button>
         </Stack>
     );
 };
@@ -238,30 +221,8 @@ interface NavItem {
 
 const NAV_ITEMS: Array<NavItem> = [
     {
-        label: "Create New",
-        children: [
-            {
-                label: "New Class",
-                href: "/add-course",
-            },
-            {
-                label: "New Curriculum",
-                href: "#",
-            },
-        ],
-    },
-    {
-        label: "Modify Current",
-        children: [
-            {
-                label: "Edit Class",
-                href: "#",
-            },
-            {
-                label: "Edit Curriculum",
-                href: "#",
-            },
-        ],
+        label: "Manage Dossiers",
+        href: "/dossiers",
     },
     {
         label: "Review Proposal",
