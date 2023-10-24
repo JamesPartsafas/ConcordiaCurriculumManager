@@ -39,7 +39,7 @@ export default function DisplayManageableGroups() {
                         marginBottom: "20px",
                         fontWeight: "bold",
                         fontSize: "24px",
-                        color: "#FF8888",
+                        color: "brandRed",
                     }}
                 >
                     Group Information
