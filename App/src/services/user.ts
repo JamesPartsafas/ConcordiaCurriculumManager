@@ -1,7 +1,7 @@
 export interface User {
-    firstName: string | null;
-    lastName: string | null;
-    email: string | null;
+    firstName: string;
+    lastName: string;
+    email: string;
     roles: string[] | null;
     issuedAtTimestamp: number | null;
     expiresAtTimestamp: number;

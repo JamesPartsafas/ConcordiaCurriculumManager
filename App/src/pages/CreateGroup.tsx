@@ -7,18 +7,20 @@ import { CreateGroupCall } from "../services/group";
 import Button from "../components/Button";
 
 export default function CreateGroup() {
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit } = useForm<GroupCreateDTO>();
     const navigate = useNavigate();
 
     function onSubmit(data: GroupCreateDTO) {
         CreateGroupCall(data)
             .then((res: GroupResponseDTO) => {
-                if (res.data != null) navigate("/manageablegroup");
+                if (res.data != null) {
+                    navigate("/manageablegroup");
+                }
             })
             .catch((err) => {
                 console.log(err);
             });
-    };
+    }
 
     return (
         <>
