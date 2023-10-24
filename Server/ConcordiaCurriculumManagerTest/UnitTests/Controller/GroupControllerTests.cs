@@ -12,10 +12,10 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Controllers
     [TestClass]
     public class GroupControllerTests
     {
-        private Mock<IGroupService> _groupService = null;
-        private Mock<IUserAuthenticationService> _userService = null;
-        private Mock<ILogger<GroupController>> _logger = null;
-        private GroupController _groupController = null;
+        private Mock<IGroupService> _groupService = null!;
+        private Mock<IUserAuthenticationService> _userService = null!;
+        private Mock<ILogger<GroupController>> _logger = null!;
+        private GroupController _groupController = null!;
 
         [TestInitialize]
         public void TestInitialize()
