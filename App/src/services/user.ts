@@ -1,11 +1,10 @@
 export interface User {
-    id: string | null;
     firstName: string | null;
     lastName: string | null;
     email: string | null;
     roles: string[] | null;
     issuedAtTimestamp: number | null;
-    expiresAtTimestamp: number | null;
+    expiresAtTimestamp: number;
     issuer: string | null;
     audience: string | null;
 }

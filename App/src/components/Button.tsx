@@ -1,7 +1,15 @@
-import PropTypes from "prop-types";
 import { Button as ChakraButton } from "@chakra-ui/react";
 
-function Button({ style, variant, width, height, children, ...rest }) {
+interface ButtonPropType {
+    style: "primary" | "secondary";
+    variant?: "solid" | "outline";
+    width?: string;
+    height?: string;
+    children: React.ReactNode;
+    [key: string]: any;
+}
+
+const Button: React.FC<ButtonPropType> = ({ style, variant, width, height, children, ...rest }) => {
     let buttonColor = "blue"; // Default color
     let buttonVariantStyles = {};
 
@@ -32,14 +40,6 @@ function Button({ style, variant, width, height, children, ...rest }) {
             {children}
         </ChakraButton>
     );
-}
-
-Button.propTypes = {
-    style: PropTypes.oneOf(["primary", "secondary"]).isRequired,
-    variant: PropTypes.oneOf(["solid", "outline"]), // New variant prop
-    width: PropTypes.string,
-    height: PropTypes.string,
-    children: PropTypes.node.isRequired,
 };
 
 export default Button;

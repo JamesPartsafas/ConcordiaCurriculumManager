@@ -10,7 +10,7 @@ export default function CreateGroup() {
     const { register, handleSubmit } = useForm();
     const navigate = useNavigate();
 
-    const onSubmit = (data: GroupCreateDTO) => {
+    function onSubmit(data: GroupCreateDTO) {
         CreateGroupCall(data)
             .then((res: GroupResponseDTO) => {
                 if (res.data != null) navigate("/manageablegroup");

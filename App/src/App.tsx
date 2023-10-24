@@ -7,7 +7,7 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { User } from "./services/user";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import Register from "./pages/Register";
 import CreateGroup from "./pages/CreateGroup";
 import DisplayGroups from "./pages/RegularGroups";
@@ -16,19 +16,19 @@ import DisplayManageableGroups from "./pages/ManageableGroups";
 import { BaseRoutes } from "./constants";
 import axios from "axios";
 import AddCourse from "./pages/AddCourse";
-import theme from "../theme.js"; // Import your custom theme
+import theme from "../theme"; // Import your custom theme
 import ComponentsList from "./pages/ComponentsList";
 import { LoadingProvider } from "./utils/loadingContext"; // Import the provider
 import Dossiers from "./pages/dossier/Dossiers";
 import AddingUserToGroup from "./pages/AddUserToGroup";
 import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
 
-export const UserContext = createContext<User | null>(null);
+export const UserContext = createContext<User | null | undefined>(null);
 
 export function App() {
-    const [user, setUser] = useState<User | null>(initializeUser());
+    const [user, setUser] = useState<User | null | undefined>();
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(user != null ? true : false);
-    const [isAdmin, setIsAdmin] = useState<boolean>(user.roles.includes("Admin") ? true : false);
+    // const [isAdmin, setIsAdmin] = useState<boolean>(user.roles.includes("Admin") ? true : false);
     const navigate = useNavigate();
 
     // Check for the token in localStorage.
@@ -47,6 +47,11 @@ export function App() {
             return user;
         }
     }
+
+    useEffect(() => {
+        initializeUser();
+        return () => localStorage.removeItem("token");
+    }, []);
 
     return (
         <>

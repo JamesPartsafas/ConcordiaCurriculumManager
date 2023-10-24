@@ -8,7 +8,13 @@ import { useLocation } from "react-router-dom";
 import { BaseRoutes } from "../constants";
 
 export default function AddingUserToGroup() {
-    const userList = ["User1", "Dave", "Joe", "Billy", "Benjamen"];
+    const userList = [
+        { id: "1", email: "User1@gmail.com", firstName: "User", lastName: "1" },
+        { id: "2", email: "Dave@gmail.com", firstName: "Dave", lastName: "1" },
+        { id: "3", email: "Joe@gmail.com", firstName: "Joe", lastName: "1" },
+        { id: "4", email: "Billy@gmail.com", firstName: "Billy", lastName: "1" },
+        { id: "5", email: "Benjamen@gmail.com", firstName: "Benjamen", lastName: "1" },
+    ];
     const navigate = useNavigate();
     const location = useLocation();
     const [filteredList, setFilteredList] = useState(userList);
@@ -18,15 +24,11 @@ export default function AddingUserToGroup() {
     function getMyGroup(gid: string) {
         console.log("Grabbing group info");
         GetGroupByID(gid)
-            .then(
-                (res: GroupResponseDTO) => {
-                    setMyGroup(res.data);
-                    console.log(res.data.name);
-                },
-                (rej) => {
-                    console.log(rej);
-                }
-            )
+            .then((res: GroupResponseDTO) => {
+                setMyGroup(res.data);
+                console.log("this is the name" + res.data.name);
+                console.log("this is the id " + res.data.id);
+            })
             .catch((err) => {
                 console.log(err);
             });
@@ -45,7 +47,7 @@ export default function AddingUserToGroup() {
         const query = event.target.value;
         let updatedList = [...userList];
         updatedList = updatedList.filter((item) => {
-            return item.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+            return item.email.toLowerCase().indexOf(query.toLowerCase()) !== -1;
         });
         setFilteredList(updatedList);
     };
@@ -90,14 +92,14 @@ export default function AddingUserToGroup() {
                             <ol>
                                 {filteredList.map((item, index) => (
                                     <HStack justify="space-between" key={index}>
-                                        <li>{item}</li>
+                                        <li>{item.email}</li>
                                         <Button
                                             style="primary"
                                             variant="outline"
                                             width="22%"
                                             height="40px"
                                             justifyContent={"flex-end"}
-                                            onClick={() => addingUser(item)}
+                                            onClick={() => addingUser(item.id)}
                                         >
                                             Select
                                         </Button>

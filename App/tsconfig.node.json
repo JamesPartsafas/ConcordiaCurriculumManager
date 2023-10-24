@@ -8,5 +8,5 @@
     "jsx": "react-jsx",
   },
   "esModuleInterop": true,
-  "include": ["vite.config.ts", "src", "__tests__"]
+  "include": ["vite.config.ts", "src", "__tests__", "notReadyTests/CreateGroup.test.tsx", "notReadyTests/AddUserToGroup.test.tsx", "notReadyTests/RegularGroups.test.tsx", "notReadyTests/RemoveUserFromGroup.test.tsx"]
 }
