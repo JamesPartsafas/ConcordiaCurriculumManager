@@ -6,7 +6,7 @@ interface ButtonPropType {
     width?: string;
     height?: string;
     children: React.ReactNode;
-    [key: string]: any;
+    [key: string]: object | React.ReactNode;
 }
 
 const Button: React.FC<ButtonPropType> = ({ style, variant, width, height, children, ...rest }) => {
