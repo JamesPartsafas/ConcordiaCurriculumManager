@@ -34,7 +34,7 @@ export default function AddingUserToGroup() {
 
     useEffect(() => {
         if (location.state) {
-            let _state = location.state as any;
+            const _state = location.state as { gid: string; name: string };
             setLocationState(_state);
             console.log(locationState.gid);
             getMyGroup(locationState.gid);
@@ -53,7 +53,7 @@ export default function AddingUserToGroup() {
     function addingUser(uid: string) {
         AddUserToGroup(myGroup.id, uid)
             .then(
-                (res: void) => {
+                () => {
                     console.log("User Added");
                 },
                 (rej) => {

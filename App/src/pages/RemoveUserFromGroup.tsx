@@ -7,9 +7,7 @@ import { GetGroupByID, GroupDTO, GroupResponseDTO, RemoveUserFromGroup } from ".
 import { BaseRoutes } from "../constants";
 
 export default function RemovingUserFromGroup() {
-    const userList = ["User1", "Dave", "Joe", "admin", "Billy", "Benjamen"];
     const navigate = useNavigate();
-    const [filteredList, setFilteredList] = useState(userList);
     const [locationState, setLocationState] = useState({ gid: "", name: "" });
     const [myGroup, setMyGroup] = useState<GroupDTO | null>(null);
     const location = useLocation();
@@ -33,20 +31,21 @@ export default function RemovingUserFromGroup() {
 
     useEffect(() => {
         if (location.state) {
-            let _state = location.state as any;
+            const _state = location.state as { gid: string; name: string };
             setLocationState(_state);
             console.log(locationState.gid);
             getMyGroup(locationState.gid);
         }
     }, [location]);
-
+    const userList = myGroup.members;
+    const [filteredList, setFilteredList] = useState(userList);
     const filterBySearch = (event: { target: { value: string } }) => {
         const query = event.target.value;
 
         let updatedList = [...userList];
 
         updatedList = updatedList.filter((item) => {
-            return item.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+            return item.email.toLowerCase().indexOf(query.toLowerCase()) !== -1;
         });
 
         setFilteredList(updatedList);
@@ -55,7 +54,7 @@ export default function RemovingUserFromGroup() {
     function removingUser(uid: string) {
         RemoveUserFromGroup(myGroup.id, uid)
             .then(
-                (res: void) => {
+                () => {
                     console.log("User Added");
                 },
                 (rej) => {
@@ -92,14 +91,14 @@ export default function RemovingUserFromGroup() {
                             <ol>
                                 {filteredList.map((item, index) => (
                                     <HStack justify="space-between" key={index}>
-                                        <li>{item}</li>
+                                        <li>{item.email}</li>
                                         <Button
                                             style="primary"
                                             variant="outline"
                                             width="22%"
                                             height="40px"
                                             justifyContent={"flex-end"}
-                                            onClick={() => removingUser(item)}
+                                            onClick={() => removingUser(item.email)}
                                         >
                                             Select
                                         </Button>

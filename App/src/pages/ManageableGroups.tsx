@@ -1,6 +1,6 @@
 import { Container, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import Button from "../components/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { GetAllGroups } from "../services/group";
 import { GroupDTO, MultiGroupResponseDTO } from "../services/group";
 import { useContext, useEffect, useState } from "react";
@@ -10,7 +10,6 @@ import { BaseRoutes } from "../constants";
 export default function DisplayManageableGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
     const user = useContext(UserContext);
-    const navigate = useNavigate();
     useEffect(() => {
         AllGroups();
         console.log(user);

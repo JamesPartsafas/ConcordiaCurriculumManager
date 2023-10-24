@@ -1,12 +1,12 @@
 //This file is used to define group related types and apis
 import axios from "axios";
-import { User } from "./user";
+import { UserDTO } from "./user";
 
 //types
 export interface GroupDTO {
     id: string | null;
     name: string | null;
-    members: User[] | null;
+    members: UserDTO[] | null;
 }
 
 export interface GroupCreateDTO {

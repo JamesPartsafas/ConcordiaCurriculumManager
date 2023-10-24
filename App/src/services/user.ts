@@ -1,4 +1,5 @@
 export interface User {
+    id: string | null;
     firstName: string | null;
     lastName: string | null;
     email: string | null;
@@ -7,6 +8,13 @@ export interface User {
     expiresAtTimestamp: number | null;
     issuer: string | null;
     audience: string | null;
+}
+
+export interface UserDTO {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
 }
 
 export enum UserRoles {

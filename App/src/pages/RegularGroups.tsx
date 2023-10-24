@@ -4,11 +4,6 @@ import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../services/group
 import { UserContext } from "../App";
 
 export default function DisplayGroups() {
-    const groupsData = [
-        { groupName: "Software Engineering", applicationsToApprove: 2, numberOfMembers: 5 },
-        { groupName: "Group 2", applicationsToApprove: 0, numberOfMembers: 3 },
-        { groupName: "Group 3", applicationsToApprove: 1, numberOfMembers: 4 },
-    ];
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
     const user = useContext(UserContext);
     useEffect(() => {
