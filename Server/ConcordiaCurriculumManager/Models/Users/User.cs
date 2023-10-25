@@ -16,5 +16,7 @@ public class User : BaseModel
 
     public List<Group> Groups { get; set; } = new();
 
+    public List<Group> MasteredGroups { get; set; } = new();
+
     public List<Dossier> Dossiers { get; set; } = new();
 }
