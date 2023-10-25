@@ -151,11 +151,7 @@ function ComponentsList() {
                 </Button>
                 <Button
                     onClick={() => showToast(toast, "Error!", "This is an error toast message.", "error")}
-<<<<<<< HEAD
-                    type="primary"
-=======
                     style="primary"
->>>>>>> origin/main
                     variant="solid"
                     width="50%"
                     height="40px"
@@ -169,11 +165,7 @@ function ComponentsList() {
             <Text mb="2">
                 <strong>Toast Props:</strong> isLoading (boolean), toggleLoading (function)
             </Text>
-<<<<<<< HEAD
-            <Button type="primary" variant="solid" width="50%" height="40px" onClick={handleLoadingButtonClick}>
-=======
             <Button style="primary" variant="solid" width="50%" height="40px" onClick={handleLoadingButtonClick}>
->>>>>>> origin/main
                 {isLoading ? "Stop Loading" : "Start Loading"}
             </Button>
             <Divider mt={6} mb={6} />
