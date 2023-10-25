@@ -10,7 +10,7 @@ import { User } from "./services/user";
 import { createContext, useState } from "react";
 import Register from "./pages/Register";
 import CreateGroup from "./pages/CreateGroup";
-import DisplayGroups from "./pages/RegularGroups";
+import RegularGroups from "./pages/RegularGroups";
 import { decodeTokenToUser } from "./services/auth";
 import DisplayManageableGroups from "./pages/ManageableGroups";
 import { BaseRoutes } from "./constants";
@@ -48,11 +48,6 @@ export function App() {
         }
     }
 
-    // useEffect(() => {
-    //     initializeUser();
-    //     return () => localStorage.removeItem("token");
-    // }, []);
-
     return (
         <>
             <UserContext.Provider value={user}>
@@ -65,7 +60,7 @@ export function App() {
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
                     <Route
                         path={BaseRoutes.Groups}
-                        element={isLoggedIn == true ? <DisplayGroups /> : <Navigate to={BaseRoutes.Login} />}
+                        element={isLoggedIn == true ? <RegularGroups /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
                         path={BaseRoutes.CreateGroup}

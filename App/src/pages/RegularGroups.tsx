@@ -2,16 +2,13 @@ import { Container, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../services/group";
 import { UserContext } from "../App";
-import { UserDTO } from "../services/user";
 import Header from "../shared/Header";
 
-export default function DisplayGroups() {
+export default function RegularGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
     const user = useContext(UserContext);
-    const userDTO: UserDTO = { firstName: user.firstName, id: "7", lastName: user.lastName, email: user.email };
     useEffect(() => {
         AllGroups();
-        console.log(user);
     }, []);
 
     function AllGroups() {
@@ -19,7 +16,7 @@ export default function DisplayGroups() {
             .then(
                 (res: MultiGroupResponseDTO) => {
                     setMyGroups(res.data);
-                    setMyGroups(res.data.filter(membership));
+                    setMyGroups(res.data.filter(isMemberOfGroup));
                 },
                 (rej) => {
                     console.log(rej);
@@ -29,12 +26,8 @@ export default function DisplayGroups() {
                 console.log(err);
             });
     }
-    function membership(GroupDTO: GroupDTO): boolean {
-        if (GroupDTO.members.includes(userDTO)) {
-            return true;
-        }
-
-        return false;
+    function isMemberOfGroup(GroupDTO: GroupDTO): boolean {
+        return GroupDTO.members.map((member) => member.id).includes(user.id);
     }
     return (
         <div>

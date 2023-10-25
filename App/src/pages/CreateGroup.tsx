@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { GroupCreateDTO, GroupResponseDTO } from "../services/group";
 import { CreateGroupCall } from "../services/group";
 import Button from "../components/Button";
+import { BaseRoutes } from "../constants";
 
 export default function CreateGroup() {
     const { register, handleSubmit } = useForm<GroupCreateDTO>();
@@ -90,8 +91,19 @@ export default function CreateGroup() {
                             </Stack>
                         </Box>
                         <HStack justify="space-between">
-                            <Button style="secondary" type="submit" variant="outline" width="50%" height="40px">
+                            <Button style="primary" type="submit" variant="outline" width="50%" height="40px">
                                 Create Group
+                            </Button>
+                            <Button
+                                style="secondary"
+                                variant="outline"
+                                width="50%"
+                                height="40px"
+                                onClick={() => {
+                                    navigate(BaseRoutes.ManageableGroup);
+                                }}
+                            >
+                                Back
                             </Button>
                         </HStack>
                     </Stack>
