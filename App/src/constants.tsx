@@ -3,5 +3,5 @@ export enum BaseRoutes {
     Login = "/login",
     Register = "/register",
     NotFound = "*",
-    CourseBrowser = "/CourseBrowser"
+    CourseBrowser = "/CourseBrowser",
 }

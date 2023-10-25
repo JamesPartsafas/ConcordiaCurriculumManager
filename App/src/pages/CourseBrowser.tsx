@@ -1,13 +1,6 @@
 import React from "react";
 import Select from "react-select";
-import {
-    Box,
-    Button,
-    Container,
-    FormLabel,
-    Heading,
-    Stack,
-} from "@chakra-ui/react";
+import { Box, Button, Container, FormLabel, Heading, Stack } from "@chakra-ui/react";
 
 interface SubjectItem {
     value: string;
@@ -18,7 +11,7 @@ const SUBJECT_ITEMS: Array<SubjectItem> = [
     { value: "COMP", label: "COMP" },
     { value: "SOEN", label: "SOEN" },
     { value: "ENGR", label: "ENGR" },
-]
+];
 
 interface CatalogItem {
     value: string;
@@ -29,11 +22,10 @@ const CATALOG_ITEMS: Array<CatalogItem> = [
     { value: "201", label: "201" },
     { value: "301", label: "301" },
     { value: "401", label: "401" },
-]
+];
 
 const CourseSelector1 = () => <Select options={SUBJECT_ITEMS} />;
 const CourseSelector2 = () => <Select options={CATALOG_ITEMS} />;
-
 
 function App() {
     return (
@@ -52,26 +44,22 @@ function App() {
                         bg={{ base: "transparent", sm: "bg.surface" }}
                         boxShadow={{ base: "none", sm: "2xl" }}
                         borderRadius={{ base: "none", sm: "xl" }}
-                    ><Stack spacing="5">
+                    >
+                        <Stack spacing="5">
                             <FormLabel htmlFor="subject">Subject</FormLabel>
 
-                            < CourseSelector1 />
+                            <CourseSelector1 />
 
                             <FormLabel htmlFor="catalog">Catalog N°</FormLabel>
 
-                            < CourseSelector2 />
+                            <CourseSelector2 />
                         </Stack>
                         <div>
                             <Box h={6} />
                         </div>
 
                         <Stack spacing="6">
-                            <Button
-                                backgroundColor="#932439"
-                                color="white"
-                                _hover={{ bg: "#7A1D2E" }}
-                                type="submit"
-                            >
+                            <Button backgroundColor="#932439" color="white" hover={{ bg: "#7A1D2E" }} type="submit">
                                 Enter
                             </Button>
                         </Stack>
@@ -79,8 +67,6 @@ function App() {
                 </Stack>
             </Container>
         </form>
-
     );
 }
-
 export default App;
