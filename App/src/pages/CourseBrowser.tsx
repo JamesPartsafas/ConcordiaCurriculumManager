@@ -24,10 +24,7 @@ const CATALOG_ITEMS: Array<CatalogItem> = [
     { value: "401", label: "401" },
 ];
 
-const CourseSelector1 = () => <Select options={SUBJECT_ITEMS} />;
-const CourseSelector2 = () => <Select options={CATALOG_ITEMS} />;
-
-function App() {
+function CourseBrowser() {
     return (
         <form>
             <Container maxW="lg" py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>
@@ -48,11 +45,11 @@ function App() {
                         <Stack spacing="5">
                             <FormLabel htmlFor="subject">Subject</FormLabel>
 
-                            <CourseSelector1 />
+                            <Select options={SUBJECT_ITEMS} />
 
                             <FormLabel htmlFor="catalog">Catalog N°</FormLabel>
 
-                            <CourseSelector2 />
+                            <Select options={CATALOG_ITEMS} />
                         </Stack>
                         <div>
                             <Box h={6} />
@@ -69,4 +66,4 @@ function App() {
         </form>
     );
 }
-export default App;
+export default CourseBrowser;
