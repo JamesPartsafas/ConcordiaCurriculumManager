@@ -52,8 +52,8 @@ export function App() {
                         element={isLoggedIn == true ? <Home /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
-                        path={BaseRoutes.CourseBrowser} 
-                        element={isLoggedIn == true? <CourseBrowser /> : <Navigate to={BaseRoutes.Login} />}
+                        path={BaseRoutes.CourseBrowser}
+                        element={isLoggedIn == true ? <CourseBrowser /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.Login} element={<Login setUser={setUser} />} />
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
