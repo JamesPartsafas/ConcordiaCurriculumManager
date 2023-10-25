@@ -2,6 +2,10 @@ import { createContext, useContext, useState } from "react";
 import PropTypes from "prop-types";
 import LoadingSpinner from "../components/LoadingSpinner";
 
+/**
+ * Loading Context to manage loading state across the app with a custom hook and provider
+ * component to wrap around the app in App.tsx
+ */
 type LoadingContextType = {
     isLoading: boolean;
     toggleLoading: () => void;

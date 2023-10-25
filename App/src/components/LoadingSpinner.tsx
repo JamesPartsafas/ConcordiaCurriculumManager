@@ -1,5 +1,11 @@
 import { Spinner, Box } from "@chakra-ui/react";
 import PropTypes from "prop-types";
+
+/**
+ * Resuable Loading Spinner Component with custom props
+ * @param param0 size of the loading spinner (xs, sm, md, lg, xl, 2xl), color of the loading spinner (blue.500, brandRed, etc.), label of the loading spinner
+ * @returns
+ */
 function LoadingSpinner({ size = "md", color = "blue.500", label = "Loading..." }) {
     return (
         <Box

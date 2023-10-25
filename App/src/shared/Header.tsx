@@ -3,7 +3,6 @@ import {
     Flex,
     Text,
     IconButton,
-    Button,
     Stack,
     Collapse,
     Icon,
@@ -14,8 +13,14 @@ import {
     useBreakpointValue,
     useDisclosure,
 } from "@chakra-ui/react";
+import Button from "../components/Button";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
+/**
+ * This is the header component for the application that can be displayed on every page of the application
+ * @param param0 isOpen and onToggle are used to toggle the hamburger menu on mobile devices
+ * @returns header component
+ */
 export default function Header() {
     const { isOpen, onToggle } = useDisclosure();
 
@@ -58,18 +63,7 @@ export default function Header() {
                 </Flex>
 
                 <Stack flex={{ base: 1, md: 0 }} justify={"flex-end"} direction={"row"} spacing={6}>
-                    <Button
-                        as={"a"}
-                        display={{ base: "none", md: "inline-flex" }}
-                        fontSize={"sm"}
-                        fontWeight={600}
-                        color={"white"}
-                        bg={"pink.400"}
-                        href={"#"}
-                        _hover={{
-                            bg: "pink.300",
-                        }}
-                    >
+                    <Button type="primary" variant="solid" height="40px" width="auto">
                         Log Out
                     </Button>
                 </Stack>
@@ -84,7 +78,7 @@ export default function Header() {
 
 const DesktopNav = () => {
     const linkColor = useColorModeValue("gray.600", "gray.200");
-    const linkHoverColor = useColorModeValue("gray.800", "white");
+    const linkHoverColor = useColorModeValue("brandRed100", "white");
     const popoverContentBgColor = useColorModeValue("white", "gray.800");
 
     return (
@@ -141,11 +135,11 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
             display={"block"}
             p={2}
             rounded={"md"}
-            _hover={{ bg: useColorModeValue("pink.50", "gray.900") }}
+            _hover={{ bg: useColorModeValue("brandRed600", "gray.900") }}
         >
             <Stack direction={"row"} align={"center"}>
                 <Box>
-                    <Text transition={"all .3s ease"} _groupHover={{ color: "pink.400" }} fontWeight={500}>
+                    <Text transition={"all .3s ease"} _groupHover={{ color: "gray.500" }} fontWeight={500}>
                         {label}
                     </Text>
                     <Text fontSize={"sm"}>{subLabel}</Text>

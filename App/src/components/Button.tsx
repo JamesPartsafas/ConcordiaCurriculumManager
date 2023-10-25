@@ -1,6 +1,9 @@
 import PropTypes from "prop-types";
 import { Button as ChakraButton } from "@chakra-ui/react";
 
+/**
+ * Reusable Brand Button Component with custom variants
+ */
 function Button({ type, variant, width, height, children, ...rest }) {
     let buttonColor = "blue"; // Default color
     let buttonVariantStyles = {};

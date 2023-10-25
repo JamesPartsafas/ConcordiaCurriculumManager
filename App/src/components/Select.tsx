@@ -1,6 +1,11 @@
 import { AutoComplete, AutoCompleteInput, AutoCompleteList, AutoCompleteItem } from "@choc-ui/chakra-autocomplete";
 import PropTypes from "prop-types";
 
+/**
+ * Reusable Autocomplete Input Component with custom props and styling
+ * @param param0 options (array of options), onSelect (function to handle selected option), width (string)
+ * @returns
+ */
 function AutocompleteInput({ options, onSelect, width }) {
     const handleSelect = (value) => {
         onSelect(value);
