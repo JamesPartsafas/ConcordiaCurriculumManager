@@ -206,6 +206,7 @@ public class GroupController : Controller
         return NotFound();
     }
 
+    [NonAction]
     public async Task<bool> IsAdminOrGroupMaster(Guid currentUserId, Guid groupId)
     {
         bool isAdmin = User.IsInRole(RoleNames.Admin);
