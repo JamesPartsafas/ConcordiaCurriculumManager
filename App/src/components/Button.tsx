@@ -9,7 +9,7 @@ interface ButtonPropType {
     [key: string]: object | React.ReactNode;
 }
 
-const Button: React.FC<ButtonPropType> = ({ style, variant, width, height, children, ...rest }) => {
+const Button = ({ style, variant, width, height, children, ...rest }: ButtonPropType) => {
     let buttonColor = "blue"; // Default color
     let buttonVariantStyles = {};
 

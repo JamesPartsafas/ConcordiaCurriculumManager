@@ -7,7 +7,7 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { User } from "./services/user";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import Register from "./pages/Register";
 import CreateGroup from "./pages/CreateGroup";
 import DisplayGroups from "./pages/RegularGroups";
@@ -23,10 +23,10 @@ import Dossiers from "./pages/dossier/Dossiers";
 import AddingUserToGroup from "./pages/AddUserToGroup";
 import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
 
-export const UserContext = createContext<User | null | undefined>(null);
+export const UserContext = createContext<User | null>(null);
 
 export function App() {
-    const [user, setUser] = useState<User | null | undefined>();
+    const [user, setUser] = useState<User | null>(initializeUser());
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(user != null ? true : false);
     // const [isAdmin, setIsAdmin] = useState<boolean>(user.roles.includes("Admin") ? true : false);
     const navigate = useNavigate();
@@ -48,10 +48,10 @@ export function App() {
         }
     }
 
-    useEffect(() => {
-        initializeUser();
-        return () => localStorage.removeItem("token");
-    }, []);
+    // useEffect(() => {
+    //     initializeUser();
+    //     return () => localStorage.removeItem("token");
+    // }, []);
 
     return (
         <>

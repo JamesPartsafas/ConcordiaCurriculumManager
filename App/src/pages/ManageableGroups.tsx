@@ -3,17 +3,14 @@ import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import { GetAllGroups } from "../services/group";
 import { GroupDTO, MultiGroupResponseDTO } from "../services/group";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../App";
+import { useEffect, useState } from "react";
 import { BaseRoutes } from "../constants";
 import Header from "../shared/Header";
 
 export default function DisplayManageableGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
-    const user = useContext(UserContext);
     useEffect(() => {
         AllGroups();
-        console.log(user);
     }, []);
 
     function AllGroups() {
