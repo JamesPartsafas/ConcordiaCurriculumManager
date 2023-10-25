@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'Seeder/**'
+      - 'Server/ConcordiaCurriculumManager/Migrations/*'
   pull_request:
     paths:
       - 'Seeder/**'
+      - 'Server/ConcordiaCurriculumManager/Migrations/*'
 
 jobs:
   seeder-validate-data:
@@ -14,14 +18,79 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+    
+    - name: Check Path Filters
+      uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          Seeder:
+            - 'Seeder/**'
 
     - name: Setup Node.js
+      if: steps.filter.outputs.Seeder == 'true'
       uses: actions/setup-node@v3
       with:
         node-version: '18'
 
     - name: Install dependencies
+      if: steps.filter.outputs.Seeder == 'true'
       run: npm install --prefix Seeder
 
     - name: Run Seeder Data Validation
+      if: steps.filter.outputs.Seeder == 'true'
       run: npm run validateData --prefix Seeder
+  
+  seeder-add-data:
+      needs:
+      - seeder-validate-data
+      if: github.ref == 'refs/heads/main' && needs.seeder-validate-data.result == 'success'
+      # This needs to be a windows machine since Net7 does not support OpenSSL3.x.x. 
+      # Downgrading OpenSSL on a linux machine is not advised (and it takes a long time to finish ending up costing more than if a windows machine was used)
+      # https://github.com/dotnet/runtime/issues/46526
+      runs-on: windows-latest
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Check Path Filters
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            Seeder:
+              - 'Seeder/**'
+            Migrations:
+              - 'Server/ConcordiaCurriculumManager/Migrations/*'
+
+      - name: Update Database
+        if: steps.filter.outputs.Migrations == 'true'
+        run: |
+          dotnet tool install --global dotnet-ef
+          dotnet ef database update --project Server/ConcordiaCurriculumManager/ConcordiaCurriculumManager.csproj --startup-project Server/ConcordiaCurriculumManager/ConcordiaCurriculumManager.csproj
+        env:
+          ASPNETCORE_ENVIRONMENT: Production
+          AllowedHosts: ccm-backend.onrender.com
+          IdentitySettings__Key: dummy-test-123
+          IdentitySettings__Issuer: https://ccm-backend.onrender.com
+          IdentitySettings__SecurityAlgorithms: HS256
+          IdentitySettings__Audience: ccm-backend
+          DatabaseSettings__ConnectionString: "${{ secrets.RENDER_DATABASE_MIGRATION_DB_STRING }}"
+          CorsSettings__AllowedWebsite: https://ccm-frontend.onrender.com
+
+      - name: Setup Node.js
+        if: steps.filter.outputs.Seeder == 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        if: steps.filter.outputs.Seeder == 'true'
+        run: cd .\Seeder\ && npm install
+
+      - name: Seed Database
+        if: steps.filter.outputs.Seeder == 'true'
+        run: |
+          cd .\Seeder\
+          echo ConnectionString=${{ secrets.RENDER_DATABASE_CONNECTION_STRING }} >> .env
+          npm run start

@@ -5,7 +5,7 @@ export default {
     moduleFileExtensions: ["js", "jsx", "tsx", "ts"],
     rootDir: "__tests__/",
     transform: {
-        "^.+\\.tsx?$": "ts-jest",
+        "^.+\\.tsx?$": ["ts-jest", { tsconfig: "./tsconfig-test.json" }],
     },
     moduleNameMapper: {
         "\\.(gif|ttf|eot|svg|png)$": "<rootDir>/__mocks__/image_mock.tsx",

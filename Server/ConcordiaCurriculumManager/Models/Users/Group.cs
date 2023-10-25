@@ -9,6 +9,8 @@ public class Group : BaseModel
 
     public List<User> Members { get; set; } = new();
 
+    public List<User> GroupMasters { get; set; } = new();
+
     public override string ToString()
     {
         return JsonSerializer.Serialize(this);

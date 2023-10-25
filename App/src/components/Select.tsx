@@ -11,7 +11,7 @@ function AutocompleteInput({ options, onSelect, width }) {
         onSelect(value);
     };
     return (
-        <AutoComplete>
+        <AutoComplete onChange={(vals) => handleSelect(vals)} openOnFocus>
             <AutoCompleteInput width={width} />
             <AutoCompleteList>
                 {options.map((option, index) => (
@@ -19,7 +19,6 @@ function AutocompleteInput({ options, onSelect, width }) {
                         key={`option-${index}`}
                         value={option}
                         textTransform="capitalize"
-                        onClick={() => handleSelect(option)}
                         _focus={{ bg: "brandRed100", color: "white" }}
                     >
                         {option}

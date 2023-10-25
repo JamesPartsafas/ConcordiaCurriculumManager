@@ -37,6 +37,7 @@ public class CCMDbContext : DbContext
         ConfigureUserRoleRelationship(modelBuilder);
         ConfigureDossiersRelationship(modelBuilder);
         ConfigureCourseReferencesRelationship(modelBuilder);
+        ConfigureGroupUserRelationship(modelBuilder);
     }
 
     private static void ConfigureCourseReferencesRelationship(ModelBuilder modelBuilder)
@@ -57,6 +58,10 @@ public class CCMDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasMany(user => user.Roles)
             .WithMany(role => role.Users);
+
+        modelBuilder.Entity<User>()
+            .HasIndex(user => user.Email)
+            .IsUnique();
     }
 
     private static void ConfigureDossiersRelationship(ModelBuilder modelBuilder)
@@ -87,5 +92,9 @@ public class CCMDbContext : DbContext
         modelBuilder.Entity<Group>()
             .HasMany(group => group.Members)
             .WithMany(user => user.Groups);
+
+        modelBuilder.Entity<Group>()
+            .HasMany(group => group.GroupMasters)
+            .WithMany(user => user.MasteredGroups);
     }
 }

@@ -70,24 +70,24 @@ function ComponentsList() {
                 height (string). And can pass other Chakra props as well.
             </Text>
             <Flex alignItems="center" mb={4} width="50%">
-                <Button type="primary" variant="solid" width="50%" height="40px" mr="2">
+                <Button style="primary" variant="solid" width="50%" height="40px" mr="2">
                     Solid Primary Button
                 </Button>
-                <Button type="primary" variant="outline" width="50%" height="40px">
+                <Button style="primary" variant="outline" width="50%" height="40px">
                     Outline Primary Button
                 </Button>
             </Flex>
             <Flex alignItems="center" mb={4} width="50%">
-                <Button type="secondary" variant="solid" width="50%" height="40px" mr="2">
+                <Button style="secondary" variant="solid" width="50%" height="40px" mr="2">
                     Solid Secondary Button
                 </Button>
-                <Button type="secondary" variant="outline" width="50%" height="40px">
+                <Button style="secondary" variant="outline" width="50%" height="40px">
                     Outline Secondary Button
                 </Button>
             </Flex>
             <Flex alignItems="center" mb={4} width="50%">
                 <Button
-                    type="primary"
+                    style="primary"
                     variant="solid"
                     width="50%"
                     height="40px"
@@ -97,7 +97,7 @@ function ComponentsList() {
                 >
                     Solid Secondary Button
                 </Button>
-                <Button type="secondary" variant="outline" width="50%" height="40px" isLoading>
+                <Button style="secondary" variant="outline" width="50%" height="40px" isLoading>
                     Outline Secondary Button
                 </Button>
             </Flex>
@@ -131,7 +131,7 @@ function ComponentsList() {
             <Flex>
                 <Button
                     onClick={() => showToast(toast, "Success!", "This is a success toast message.", "success")}
-                    type="primary"
+                    style="primary"
                     variant="solid"
                     width="50%"
                     height="40px"
@@ -141,7 +141,7 @@ function ComponentsList() {
                 </Button>
                 <Button
                     onClick={() => showToast(toast, "Warning!", "This is a warning toast message.", "warning")}
-                    type="primary"
+                    style="primary"
                     variant="solid"
                     width="50%"
                     height="40px"
@@ -151,7 +151,11 @@ function ComponentsList() {
                 </Button>
                 <Button
                     onClick={() => showToast(toast, "Error!", "This is an error toast message.", "error")}
+<<<<<<< HEAD
                     type="primary"
+=======
+                    style="primary"
+>>>>>>> origin/main
                     variant="solid"
                     width="50%"
                     height="40px"
@@ -165,7 +169,11 @@ function ComponentsList() {
             <Text mb="2">
                 <strong>Toast Props:</strong> isLoading (boolean), toggleLoading (function)
             </Text>
+<<<<<<< HEAD
             <Button type="primary" variant="solid" width="50%" height="40px" onClick={handleLoadingButtonClick}>
+=======
+            <Button style="primary" variant="solid" width="50%" height="40px" onClick={handleLoadingButtonClick}>
+>>>>>>> origin/main
                 {isLoading ? "Stop Loading" : "Start Loading"}
             </Button>
             <Divider mt={6} mb={6} />

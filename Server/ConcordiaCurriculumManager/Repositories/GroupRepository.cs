@@ -6,11 +6,13 @@ namespace ConcordiaCurriculumManager.Repositories;
 
 public interface IGroupRepository
 {
-    ValueTask<Group?> GetGroupById(Guid id);
+    Task<Group?> GetGroupById(Guid id);
     Task<List<Group>> GetAllGroups();
     Task<bool> SaveGroup(Group group);
     Task<bool> AddUserToGroup(Guid userId, Guid groupId);
     Task<bool> RemoveUserFromGroup(Guid userId, Guid groupId);
+    Task<bool> AddGroupMaster(Guid userId, Guid groupId);
+    Task<bool> RemoveGroupMaster(Guid userId, Guid groupId);
 }
 
 public class GroupRepository : IGroupRepository
@@ -22,10 +24,15 @@ public class GroupRepository : IGroupRepository
         _dbContext = dbContext;
     }
 
-    public ValueTask<Group?> GetGroupById(Guid id) => _dbContext.Groups.FindAsync(id);
+    public Task<Group?> GetGroupById(Guid id) => _dbContext.Groups
+        .Where(group => group.Id == id)
+        .Select(ObjectSelectors.GroupSelector())
+        .FirstOrDefaultAsync();
 
-    public Task<List<Group>> GetAllGroups() => _dbContext.Groups.ToListAsync();
-
+    public Task<List<Group>> GetAllGroups() => _dbContext.Groups
+        .Select(ObjectSelectors.GroupSelector())
+        .ToListAsync();
+       
     public async Task<bool> SaveGroup(Group group)
     {
         await _dbContext.Groups.AddAsync(group);
@@ -55,5 +62,62 @@ public class GroupRepository : IGroupRepository
             return await _dbContext.SaveChangesAsync() > 0;
         }
         return false;
+    }
+
+    public async Task<bool> AddGroupMaster(Guid userId, Guid groupId)
+    {
+        var group = await _dbContext.Groups
+                                    .Include(g => g.Members)
+                                    .Include(g => g.GroupMasters)
+                                    .FirstOrDefaultAsync(g => g.Id == groupId);
+
+        if (group == null)
+        {
+            return false;
+        }
+
+        var member = group.Members.FirstOrDefault(u => u.Id == userId);
+        if (member == null)
+        {
+            return false;
+        }
+
+        var isAlreadyGroupMaster = group.GroupMasters.Any(u => u.Id == userId);
+        if (isAlreadyGroupMaster)
+        {
+            return false;
+        }
+
+        group.GroupMasters.Add(member);
+        return await _dbContext.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> RemoveGroupMaster(Guid userId, Guid groupId)
+    {
+        var group = await _dbContext.Groups
+                                    .Include(g => g.Members)
+                                    .Include(g => g.GroupMasters)
+                                    .FirstOrDefaultAsync(g => g.Id == groupId);
+
+        if (group == null)
+        {
+            return false;
+        }
+
+        var member = group.Members.FirstOrDefault(u => u.Id == userId);
+        if (member == null)
+        {
+            return false;
+        }
+
+        var isCurrentlyGroupMaster = group.GroupMasters.Any(u => u.Id == userId);
+        if (!isCurrentlyGroupMaster)
+        {
+            return false;
+        }
+
+        group.GroupMasters.Remove(member);
+
+        return await _dbContext.SaveChangesAsync() > 0;
     }
 }

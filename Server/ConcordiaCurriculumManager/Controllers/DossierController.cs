@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO.Dossiers;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
-using ConcordiaCurriculumManager.Swagger;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.Filters;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -59,6 +56,38 @@ public class DossierController : Controller
         }
     }
 
+    [HttpGet("{id}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Dossier retrieved successfully", typeof(DossierDetailsDTO))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Dossier not found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<IActionResult> GetDossierByDossierId(Guid id)
+    {
+        try
+        {
+            var dossier = await _dossierService.GetDossierDetailsById(id);
+            var dossierDetails = _mapper.Map<DossierDetailsDTO>(dossier);
+            return Ok(dossierDetails);
+        }
+        catch (ArgumentException e)
+        {
+            var message = $"Dossier with id {id} could not be found";
+            _logger.LogWarning($"${message}: {e.Message}");
+            return Problem(
+                title: message,
+                detail: e.Message,
+                statusCode: StatusCodes.Status404NotFound);
+        }
+        catch (Exception e)
+        {
+            var message = "Unexpected error occured while retrieving the dossier.";
+            _logger.LogWarning($"${message}: {e.Message}");
+            return Problem(
+                title: message,
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
+
     [HttpPost(nameof(CreateDossierForUser))]
     [Authorize(Roles = RoleNames.Initiator)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
@@ -84,6 +113,70 @@ public class DossierController : Controller
         catch (Exception e)
         {
             var message = "Unexpected error occured while creating the dossier.";
+            _logger.LogWarning($"${message}: {e.Message}");
+            return Problem(
+                title: message,
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    [HttpPut(nameof(EditDossier))]
+    [Authorize(Roles = RoleNames.Initiator)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Dossier edited successfully", typeof(DossierDTO))]
+    public async Task<ActionResult> EditDossier([FromBody, Required] EditDossierDTO dossier) {
+        try
+        {
+            var user = await _userService.GetCurrentUser();
+            var editedDossier = await _dossierService.EditDossier(dossier, user);
+            var editedDossierDTO = _mapper.Map<DossierDTO>(editedDossier);
+
+            return Created($"/{nameof(EditDossier)}", editedDossierDTO);
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            var message = "Unexpected error occured while editing the dossier.";
+            _logger.LogWarning($"${message}: {e.Message}");
+            return Problem(
+                title: message,
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    [HttpDelete(nameof(DeleteDossier))]
+    [Authorize(Roles = RoleNames.Initiator)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Dossier deleted successfully")]
+    public async Task<ActionResult> DeleteDossier([FromBody, Required] DeleteDossierDTO dossier)
+    {
+        try
+        {
+            var user = await _userService.GetCurrentUser();
+            await _dossierService.DeleteDossier(dossier, user);
+
+            return NoContent();
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            var message = "Unexpected error occured while deleting the dossier.";
             _logger.LogWarning($"${message}: {e.Message}");
             return Problem(
                 title: message,

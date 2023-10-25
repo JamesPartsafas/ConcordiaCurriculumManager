@@ -1,16 +1,13 @@
 import PropTypes from "prop-types";
 import { Button as ChakraButton } from "@chakra-ui/react";
 
-/**
- * Reusable Brand Button Component with custom variants
- */
-function Button({ type, variant, width, height, children, ...rest }) {
+function Button({ style, variant, width, height, children, ...rest }) {
     let buttonColor = "blue"; // Default color
     let buttonVariantStyles = {};
 
-    if (type === "primary") {
+    if (style === "primary") {
         buttonColor = "brandRed"; // Change to your primary color
-    } else if (type === "secondary") {
+    } else if (style === "secondary") {
         buttonColor = "brandBlue"; // Change to your secondary color
     }
 
@@ -38,7 +35,7 @@ function Button({ type, variant, width, height, children, ...rest }) {
 }
 
 Button.propTypes = {
-    type: PropTypes.oneOf(["primary", "secondary"]).isRequired,
+    style: PropTypes.oneOf(["primary", "secondary"]).isRequired,
     variant: PropTypes.oneOf(["solid", "outline"]), // New variant prop
     width: PropTypes.string,
     height: PropTypes.string,
