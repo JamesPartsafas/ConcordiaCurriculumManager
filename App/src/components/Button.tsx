@@ -1,7 +1,7 @@
 import { Button as ChakraButton } from "@chakra-ui/react";
 
 interface ButtonPropType {
-    style: "primary" | "secondary";
+    style?: "primary" | "secondary";
     variant?: "solid" | "outline";
     width?: string;
     height?: string;
