@@ -153,17 +153,17 @@ public class DossierController : Controller
         }
     }
 
-    [HttpDelete(nameof(DeleteDossier))]
+    [HttpDelete(nameof(DeleteDossier) + "/{id}")]
     [Authorize(Roles = RoleNames.Initiator)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status204NoContent, "Dossier deleted successfully")]
-    public async Task<ActionResult> DeleteDossier([FromBody, Required] DeleteDossierDTO dossier)
+    public async Task<ActionResult> DeleteDossier(Guid id)
     {
         try
         {
             var user = await _userService.GetCurrentUser();
-            await _dossierService.DeleteDossier(dossier, user);
+            await _dossierService.DeleteDossier(id, user);
 
             return NoContent();
         }

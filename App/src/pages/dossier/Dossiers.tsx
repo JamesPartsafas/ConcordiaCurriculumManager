@@ -26,7 +26,7 @@ import { AddIcon, DeleteIcon, EditIcon, InfoIcon } from "@chakra-ui/icons";
 
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
-import { DossierDTO, GetMyDossiersResponse, getMyDossiers } from "../../services/dossier";
+import { DossierDTO, GetMyDossiersResponse, deleteDossierById, getMyDossiers } from "../../services/dossier";
 import DossierModal from "./DossierModal";
 import React from "react";
 import Button from "../../components/Button";
@@ -75,6 +75,16 @@ export default function Dossiers() {
     function deleteDossier(dossier: DossierDTO) {
         setLoading(true);
         console.log(dossier);
+        deleteDossierById(dossier.id).then(
+            (res) => {
+                myDossiers.splice(myDossiers.indexOf(dossier), 1);
+                setLoading(false);
+            },
+            (rej) => {
+                console.log(rej);
+                setLoading(false);
+            }
+        );
     }
 
     function displayDossierModal() {

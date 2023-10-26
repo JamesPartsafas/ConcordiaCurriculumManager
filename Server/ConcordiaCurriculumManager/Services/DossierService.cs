@@ -12,7 +12,7 @@ public interface IDossierService
     public Task<List<Dossier>> GetDossiersByID(Guid ID);
     public Task<Dossier> CreateDossierForUser(CreateDossierDTO dossier, User user);
     public Task<Dossier> EditDossier(EditDossierDTO dossier, User user);
-    public Task DeleteDossier(DeleteDossierDTO dossier, User user);
+    public Task DeleteDossier(Guid ID, User user);
     public Task<Dossier> GetDossierDetailsById(Guid id);
 }
 
@@ -83,9 +83,9 @@ public class DossierService : IDossierService
     }
 
 
-    public async Task DeleteDossier(DeleteDossierDTO d, User user)
+    public async Task DeleteDossier(Guid ID, User user)
     {
-        var dossier = await _dossierRepository.GetDossierByDossierId(d.DossierId);
+        var dossier = await _dossierRepository.GetDossierByDossierId(ID);
 
         if (dossier == null)
         {

@@ -31,3 +31,7 @@ export function getMyDossiers(): Promise<GetMyDossiersResponse> {
 export function createDossierForUser(dto: CreateDossierDTO): Promise<DossierDTOResponse> {
     return axios.post("/Dossier/CreateDossierForUser", dto);
 }
+
+export function deleteDossier(id: string): Promise<void> {
+    return axios.delete(`/Dossier/DeleteDossier/${id}`);
+}
