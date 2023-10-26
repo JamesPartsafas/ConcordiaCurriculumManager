@@ -12,17 +12,14 @@ import {
     useColorModeValue,
     useDisclosure,
 } from "@chakra-ui/react";
-import Button from "../components/Button";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { logout } from "../services/auth";
 import { Image } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
+import Button from "../components/Button";
+import { BaseRoutes } from "../constants";
+import { useNavigate } from "react-router-dom";
 
-/**
- * This is the header component for the application that can be displayed on every page of the application
- * @param param0 isOpen and onToggle are used to toggle the hamburger menu on mobile devices
- * @returns header component
- */
 export default function Header() {
     const { isOpen, onToggle } = useDisclosure();
 
@@ -62,6 +59,11 @@ export default function Header() {
 const DesktopNav = () => {
     const linkHoverColor = useColorModeValue("gray.800", "white");
     const popoverContentBgColor = useColorModeValue("white", "gray.800");
+    const navigate = useNavigate();
+    function loggingOut() {
+        logout();
+        navigate(BaseRoutes.Login);
+    }
     return (
         <Stack direction={"row"} spacing={8}>
             {NAV_ITEMS.map((navItem) => (
@@ -79,7 +81,7 @@ const DesktopNav = () => {
                                     color: linkHoverColor,
                                 }}
                             >
-                                <Button>{navItem.label}</Button>
+                                <Button style="secondary">{navItem.label}</Button>
                             </Box>
                         </PopoverTrigger>
 
@@ -109,7 +111,8 @@ const DesktopNav = () => {
                 fontWeight={600}
                 color={"white"}
                 bg={"blue"}
-                onClick={logout}
+                onClick={loggingOut}
+                style="secondary"
                 _hover={{
                     bg: "blue.300",
                 }}
@@ -129,11 +132,11 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
             display={"block"}
             p={2}
             rounded={"md"}
-            _hover={{ bg: useColorModeValue("brandRed600", "gray.900") }}
+            _hover={{ bg: useColorModeValue("pink.50", "gray.900") }}
         >
             <Stack direction={"row"} align={"center"}>
                 <Box>
-                    <Text transition={"all .3s ease"} _groupHover={{ color: "gray.500" }} fontWeight={500}>
+                    <Text transition={"all .3s ease"} _groupHover={{ color: "pink.400" }} fontWeight={500}>
                         {label}
                     </Text>
                     <Text fontSize={"sm"}>{subLabel}</Text>
