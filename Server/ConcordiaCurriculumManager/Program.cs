@@ -162,6 +162,7 @@ public class Program
         services.AddScoped<ICourseService, CourseService>();
         services.AddScoped<IDossierService, DossierService>();
         services.AddScoped<IGroupService, GroupService>();
+        services.AddScoped<IUserService, UserService>();
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
