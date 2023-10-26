@@ -19,3 +19,20 @@ export interface CourseComponents {
     componentName: string;
     hours?: number;
 }
+export interface CourseCareer {
+    careerCode: number;
+    careerName: string;
+}
+
+export interface Course {
+    subject: string;
+    catalog: string;
+    title: string;
+    description: string;
+    creditValue: string;
+    preReqs: string;
+    career: number;
+    equivalentCourses: string;
+    componentCodes: number[];
+    dossierId: string;
+}
