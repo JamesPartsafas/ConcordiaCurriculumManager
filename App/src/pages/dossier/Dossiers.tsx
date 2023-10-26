@@ -27,12 +27,13 @@ import { AddIcon, DeleteIcon, EditIcon, InfoIcon } from "@chakra-ui/icons";
 
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
-import { DossierDTO, GetMyDossiersResponse, deleteDossierById, getMyDossiers } from "../../services/dossier";
+import { deleteDossierById, getMyDossiers } from "../../services/dossier";
 import DossierModal from "./DossierModal";
 import React from "react";
 import Button from "../../components/Button";
 import { UserRoles } from "../../models/user";
 import { showToast } from "../../utils/toastUtils";
+import { DossierDTO, GetMyDossiersResponse } from "../../models/dossier";
 
 export default function Dossiers() {
     const user = useContext(UserContext);
