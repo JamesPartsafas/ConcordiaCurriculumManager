@@ -1,12 +1,20 @@
 export interface User {
-    firstName: string | null;
-    lastName: string | null;
-    email: string | null;
-    roles: string[] | null;
-    issuedAtTimestamp: number | null;
-    expiresAtTimestamp: number | null;
-    issuer: string | null;
-    audience: string | null;
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    roles: string[];
+    issuedAtTimestamp: number;
+    expiresAtTimestamp: number;
+    issuer: string;
+    audience: string;
+}
+
+export interface UserDTO {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
 }
 
 export enum UserRoles {
