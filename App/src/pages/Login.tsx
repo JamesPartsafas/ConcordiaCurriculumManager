@@ -18,7 +18,7 @@ import {
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
 import { AuthenticationResponse, decodeTokenToUser, login, LoginDTO, LoginProps } from "../services/auth";
-import { User } from "../services/user";
+import { User } from "../models/user";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { BaseRoutes } from "../constants";

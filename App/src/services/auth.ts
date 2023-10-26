@@ -1,7 +1,7 @@
 //this file is to define user related types and apis
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { User } from "./user";
+import { User } from "../models/user";
 
 //types
 export interface AuthenticationResponse {
@@ -15,6 +15,7 @@ export interface LoginProps {
 }
 
 export interface DecodedToken {
+    id: string;
     fName: string;
     lName: string;
     email: string;
@@ -63,6 +64,7 @@ export function logout(): Promise<void> {
 export function decodeTokenToUser(accessToken: string) {
     const decodedToken = jwt_decode<DecodedToken>(accessToken);
     const user: User = {
+        id: decodedToken.id,
         firstName: decodedToken.fName,
         lastName: decodedToken.lName,
         email: decodedToken.email,

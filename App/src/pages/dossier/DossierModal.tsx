@@ -12,11 +12,12 @@ import {
     Textarea,
     useToast,
 } from "@chakra-ui/react";
-import { DossierDTO, createDossierForUser, editDossier } from "../../services/dossier";
+import { createDossierForUser, editDossier } from "../../services/dossier";
 import { useForm } from "react-hook-form";
 import { showToast } from "../../utils/toastUtils"; // Import the utility function
 import Button from "../../components/Button";
 import { useState } from "react";
+import { DossierDTO, DossierDTOResponse } from "../../models/dossier";
 
 interface DossierModalProps {
     open: boolean;
@@ -51,7 +52,7 @@ export default function DossierModal(props: DossierModalProps) {
         setLoading(true);
         if (props.action === "add") {
             createDossierForUser(data).then(
-                (res) => {
+                (res: DossierDTOResponse) => {
                     props.dossierList?.push(res.data);
                     props.closeModal();
                     showToast(toast, "Success!", "Dossier created.", "success");

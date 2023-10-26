@@ -1,22 +1,7 @@
 //this file is to define Dossier related types and apis.
 
 import axios from "axios";
-
-export interface DossierDTO {
-    id: string;
-    initiatorId: string;
-    title: string | null;
-    description: string | null;
-    published: boolean;
-}
-
-export interface DossierDTOResponse {
-    data: DossierDTO;
-}
-
-export interface GetMyDossiersResponse {
-    data: DossierDTO[];
-}
+import { DossierDTO, DossierDTOResponse, GetMyDossiersResponse } from "../models/dossier";
 
 export interface CreateDossierDTO {
     title: string | null;

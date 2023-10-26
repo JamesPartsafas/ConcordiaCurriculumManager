@@ -31,7 +31,7 @@ import { DossierDTO, GetMyDossiersResponse, deleteDossierById, getMyDossiers } f
 import DossierModal from "./DossierModal";
 import React from "react";
 import Button from "../../components/Button";
-import { UserRoles } from "../../services/user";
+import { UserRoles } from "../../models/user";
 import { showToast } from "../../utils/toastUtils";
 
 export default function Dossiers() {
