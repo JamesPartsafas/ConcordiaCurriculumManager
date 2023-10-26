@@ -31,18 +31,18 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Controllers
         public async Task CreateGroup_ValidRequest_CreatesGroup()
         {
             var groupCreateDTO = new GroupCreateDTO { Name = "Test Group" };
-            var createdGroup = new ConcordiaCurriculumManager.Models.Users.Group { Id = Guid.NewGuid(), Name = groupCreateDTO.Name };
+            var createdGroup = new Group { Id = Guid.NewGuid(), Name = groupCreateDTO.Name };
 
-            _groupService.Setup(x => x.CreateGroupAsync(It.IsAny<ConcordiaCurriculumManager.Models.Users.Group>()))
+            _groupService.Setup(x => x.CreateGroupAsync(It.IsAny<Group>()))
                          .ReturnsAsync(true)
-                         .Callback<ConcordiaCurriculumManager.Models.Users.Group>((x) => x.Id = createdGroup.Id); // Simulate setting the ID upon creation
+                         .Callback<Group>((x) => x.Id = createdGroup.Id); // Simulate setting the ID upon creation
 
             var result = await _groupController.CreateGroup(groupCreateDTO);
 
             Assert.IsInstanceOfType(result, typeof(CreatedAtActionResult));
             var createdResult = (CreatedAtActionResult)result;
             Assert.AreEqual((int)HttpStatusCode.Created, createdResult.StatusCode);
-            Assert.AreEqual(createdGroup.Id, ((ConcordiaCurriculumManager.Models.Users.Group)createdResult.Value).Id);
+            Assert.AreEqual(createdGroup.Id, (createdResult.Value as Group)!.Id);
         }
 
         [TestMethod]
@@ -74,14 +74,14 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Controllers
 
             var objectResult = result as OkObjectResult;
 
-            Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+            Assert.AreEqual((int)HttpStatusCode.OK, objectResult!.StatusCode);
             Assert.AreEqual(expectedGroup, objectResult.Value);
         }
 
         [TestMethod]
         public async Task GetGroupById_NotFound_Returns404()
         {
-            _groupService.Setup(x => x.GetGroupByIdAsync(It.IsAny<Guid>())).ReturnsAsync((GroupDTO)null);
+            _groupService.Setup(x => x.GetGroupByIdAsync(It.IsAny<Guid>())).ReturnsAsync((GroupDTO)null!);
 
             var result = await _groupController.GetGroupById(Guid.NewGuid());
 
