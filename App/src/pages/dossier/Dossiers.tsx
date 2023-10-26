@@ -20,6 +20,7 @@ import {
     Flex,
     Box,
     Tooltip,
+    useToast,
 } from "@chakra-ui/react";
 import { Button as ChakraButton } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon, InfoIcon } from "@chakra-ui/icons";
@@ -31,9 +32,11 @@ import DossierModal from "./DossierModal";
 import React from "react";
 import Button from "../../components/Button";
 import { UserRoles } from "../../services/user";
+import { showToast } from "../../utils/toastUtils";
 
 export default function Dossiers() {
     const user = useContext(UserContext);
+    const toast = useToast(); // Use the useToast hook
 
     const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
     const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
@@ -76,13 +79,16 @@ export default function Dossiers() {
         setLoading(true);
         console.log(dossier);
         deleteDossierById(dossier.id).then(
-            (res) => {
+            () => {
                 myDossiers.splice(myDossiers.indexOf(dossier), 1);
+                showToast(toast, "Success!", "Dossier deleted.", "success");
                 setLoading(false);
+                onClose();
             },
-            (rej) => {
-                console.log(rej);
+            () => {
+                showToast(toast, "Error!", "Dossier not deleted.", "error");
                 setLoading(false);
+                onClose();
             }
         );
     }
@@ -129,7 +135,7 @@ export default function Dossiers() {
                                 loadingText="Deleting"
                                 onClick={() => {
                                     deleteDossier(selectedDossier);
-                                    onClose();
+                                    // onClose();
                                 }}
                                 ml={3}
                             >
