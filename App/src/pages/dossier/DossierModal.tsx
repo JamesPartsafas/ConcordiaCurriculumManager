@@ -12,7 +12,7 @@ import {
     Textarea,
     useToast,
 } from "@chakra-ui/react";
-import { DossierDTO, createDossierForUser } from "../../services/dossier";
+import { DossierDTO, createDossierForUser, editDossier } from "../../services/dossier";
 import { useForm } from "react-hook-form";
 import { showToast } from "../../utils/toastUtils"; // Import the utility function
 import Button from "../../components/Button";
@@ -59,6 +59,32 @@ export default function DossierModal(props: DossierModalProps) {
                 },
                 () => {
                     showToast(toast, "Error!", "Dossier not created.", "error");
+                    setLoading(false);
+                }
+            );
+        }
+        if (props.action === "edit") {
+            const dossier: DossierDTO = {
+                id: props.dossier?.id,
+                title: data.title,
+                description: data.description,
+                initiatorId: props.dossier?.initiatorId,
+                published: props.dossier?.published,
+            };
+            editDossier(dossier).then(
+                () => {
+                    showToast(toast, "Success!", "Dossier edited.", "success");
+                    props.dossierList?.forEach((dossier) => {
+                        if (dossier.id === props.dossier?.id) {
+                            dossier.title = data.title;
+                            dossier.description = data.description;
+                        }
+                    });
+                    setLoading(false);
+                    props.closeModal();
+                },
+                () => {
+                    showToast(toast, "Error!", "Dossier not edited.", "error");
                     setLoading(false);
                 }
             );

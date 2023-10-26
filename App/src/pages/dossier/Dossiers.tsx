@@ -37,6 +37,7 @@ import { showToast } from "../../utils/toastUtils";
 export default function Dossiers() {
     const user = useContext(UserContext);
     const toast = useToast(); // Use the useToast hook
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
     const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
@@ -51,7 +52,6 @@ export default function Dossiers() {
     const startIndex = myDossiers.length === 0 ? 0 : (currentPage - 1) * resultsPerPage + 1;
     const endIndex = Math.min(currentPage * resultsPerPage, totalResults);
 
-    const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef();
 
     useEffect(() => {

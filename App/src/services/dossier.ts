@@ -35,3 +35,7 @@ export function createDossierForUser(dto: CreateDossierDTO): Promise<DossierDTOR
 export function deleteDossierById(id: string): Promise<void> {
     return axios.delete(`/Dossier/DeleteDossier/${id}`);
 }
+
+export function editDossier(dto: DossierDTO) {
+    return axios.put("/Dossier/EditDossier", dto);
+}
