@@ -216,10 +216,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
                 Published = false
             };
 
-            var deletedDossier = new DeleteDossierDTO
-            {
-                DossierId = dossier.Id,
-            };
+            var deletedDossier = dossier.Id;
 
             dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
             dossierRepository.Setup(d => d.DeleteDossier(It.IsAny<Dossier>())).ReturnsAsync(true);
@@ -272,12 +269,9 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
             };
         }
 
-        private DeleteDossierDTO GetSampleDeleteDossierDTO()
+        private Guid GetSampleDeleteDossierDTO()
         {
-            return new DeleteDossierDTO
-            {
-                DossierId = Guid.NewGuid(),
-            };
+            return Guid.NewGuid();
         }
     }
 }
