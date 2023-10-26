@@ -23,6 +23,16 @@ const theme = extendTheme({
                 focusBorderColor: "brandRed100",
             },
         },
+        NumberInput: {
+            defaultProps: {
+                focusBorderColor: "brandRed100",
+            },
+        },
+        Textarea: {
+            defaultProps: {
+                focusBorderColor: "brandRed100",
+            },
+        },
         Link: {
             baseStyle: {
                 color: "brandBlue",
