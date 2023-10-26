@@ -1,6 +1,6 @@
 //This file is used to define group related types and apis
 import axios from "axios";
-import { UserDTO } from "./user";
+import { UserDTO } from "../models/user";
 
 //types
 export interface GroupDTO {

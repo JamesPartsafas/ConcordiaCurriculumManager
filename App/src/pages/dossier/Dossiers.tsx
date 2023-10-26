@@ -20,20 +20,25 @@ import {
     Flex,
     Box,
     Tooltip,
+    useToast,
 } from "@chakra-ui/react";
 import { Button as ChakraButton } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon, InfoIcon } from "@chakra-ui/icons";
 
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
-import { DossierDTO, GetMyDossiersResponse, getMyDossiers } from "../../services/dossier";
+import { deleteDossierById, getMyDossiers } from "../../services/dossier";
 import DossierModal from "./DossierModal";
 import React from "react";
 import Button from "../../components/Button";
-import { UserRoles } from "../../services/user";
+import { UserRoles } from "../../models/user";
+import { showToast } from "../../utils/toastUtils";
+import { DossierDTO, GetMyDossiersResponse } from "../../models/dossier";
 
 export default function Dossiers() {
     const user = useContext(UserContext);
+    const toast = useToast(); // Use the useToast hook
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
     const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
@@ -48,7 +53,6 @@ export default function Dossiers() {
     const startIndex = myDossiers.length === 0 ? 0 : (currentPage - 1) * resultsPerPage + 1;
     const endIndex = Math.min(currentPage * resultsPerPage, totalResults);
 
-    const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef();
 
     useEffect(() => {
@@ -75,6 +79,19 @@ export default function Dossiers() {
     function deleteDossier(dossier: DossierDTO) {
         setLoading(true);
         console.log(dossier);
+        deleteDossierById(dossier.id).then(
+            () => {
+                myDossiers.splice(myDossiers.indexOf(dossier), 1);
+                showToast(toast, "Success!", "Dossier deleted.", "success");
+                setLoading(false);
+                onClose();
+            },
+            () => {
+                showToast(toast, "Error!", "Dossier not deleted.", "error");
+                setLoading(false);
+                onClose();
+            }
+        );
     }
 
     function displayDossierModal() {
@@ -119,7 +136,7 @@ export default function Dossiers() {
                                 loadingText="Deleting"
                                 onClick={() => {
                                     deleteDossier(selectedDossier);
-                                    onClose();
+                                    // onClose();
                                 }}
                                 ml={3}
                             >
@@ -141,7 +158,7 @@ export default function Dossiers() {
             <Box maxW="5xl" m="auto">
                 <Flex flexDirection="column">
                     <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
-                        <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "fixed" }}>
+                        <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "auto" }}>
                             <Thead backgroundColor={"#e2e8f0"}>
                                 <Tr display={"flex"}>
                                     <Th minW={"200px"} maxW={"200px"}>

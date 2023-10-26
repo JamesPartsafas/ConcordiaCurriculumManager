@@ -136,7 +136,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         [TestMethod]
         public async Task DeleteDossier_InvalidCall_Returns400()
         {
-            dossierService.Setup(d => d.DeleteDossier(It.IsAny<DeleteDossierDTO>(), It.IsAny<User>())).Throws(new ArgumentException());
+            dossierService.Setup(d => d.DeleteDossier(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new ArgumentException());
 
             var actionResult = await dossierController.DeleteDossier(GetSampleDeleteDossierDTO());
             var objectResult = (ObjectResult)actionResult;
@@ -147,7 +147,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         [TestMethod]
         public async Task DeleteDossier_ServerError_Returns500()
         {
-            dossierService.Setup(d => d.DeleteDossier(It.IsAny<DeleteDossierDTO>(), It.IsAny<User>())).Throws(new Exception());
+            dossierService.Setup(d => d.DeleteDossier(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new Exception());
 
             var actionResult = await dossierController.DeleteDossier(GetSampleDeleteDossierDTO());
             var objectResult = (ObjectResult)actionResult;
@@ -188,12 +188,9 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
             };
         }
 
-        private DeleteDossierDTO GetSampleDeleteDossierDTO()
+        private Guid GetSampleDeleteDossierDTO()
         {
-            return new DeleteDossierDTO
-            {
-                DossierId = Guid.NewGuid(),
-            };
+            return Guid.NewGuid();
         }
     }
 }

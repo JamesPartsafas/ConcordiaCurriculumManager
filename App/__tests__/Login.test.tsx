@@ -22,7 +22,12 @@ describe("Login Render Test Case", () => {
     it("handles rejected promise from RegisterUser", async () => {
         const mockConsoleLog = jest.spyOn(console, "log").mockImplementation(() => {});
         const mockLoginUser = jest.spyOn(authService, "login");
-        mockLoginUser.mockRejectedValue(new Error("Invalid credentials"));
+        mockLoginUser.mockRejectedValue({
+            response: {
+                status: 400,
+                data: "Invalid Credentials",
+            },
+        });
 
         const { getByText, getByLabelText } = render(
             <BrowserRouter>
