@@ -24,19 +24,22 @@ import { AddIcon } from "@chakra-ui/icons";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useState, useRef, useEffect } from "react";
 import { addCourse, getAllCourseSettings } from "../services/course";
-import { AllCourseSettings, Course, CourseComponent, CourseComponents } from "../models/course";
+import { AllCourseSettings, Course, CourseCareer, CourseComponent, CourseComponents } from "../models/course";
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
 import Button from "../components/Button";
 
 export default function AddCourse() {
     const toast = useToast();
-    const [errors, setErrors] = useState({
-        courseSubject: false,
-        courseCode: false,
-        courseName: false,
-        courseCredit: false,
-    });
+    // Form managment and error handling states
+    const [isLoading, toggleLoading] = useState(false);
+    const [formSubmitted, setFormSubmitted] = useState(false);
+    const [courseSubjectError, setCourseSubjectError] = useState(true);
+    const [courseCodeError, setCourseCodeError] = useState(true);
+    const [courseNameError, setCourseNameError] = useState(true);
+    const [courseCreditError, setCourseCreditError] = useState(true);
+    const [courseCareersError, setCourseCareersError] = useState(true);
+
     const [selectedComponent, setSelectedComponent] = useState<string>(
         '{"componentCode":0,"componentName":"Conference"}'
     );
@@ -49,22 +52,48 @@ export default function AddCourse() {
     const [courseRequesites, setCourseRequesites] = useState("");
     const [courseComponents, setCourseComponents] = useState<CourseComponents[]>([]); // [ {type: "lecture", hours: 3}, {type: "lab", hours: 2} ]
     const [components, setComponents] = useState<CourseComponents[]>([]);
+    const [courseCareer, setCouresCareer] = useState<CourseCareer>(null);
+    const [courseCareers, setCourseCareers] = useState<string[]>([]);
     const selectedComponentRef = useRef<HTMLSelectElement>(null);
 
+    const handleChangeCourseCareer = (value: string) => {
+        if (value.length === 0) setCourseCareersError(true);
+        else setCourseCareersError(false);
+        // Find course carrer code
+        const career = allCourseSettings?.courseCareers.find((career) => career.careerName === value);
+        setCouresCareer(career);
+    };
     const handleChangeDepartment = (value: string) => {
+        if (value.length === 0) setCourseSubjectError(true);
+        else setCourseSubjectError(false);
         setDepartment(value);
     };
-    const handleChangeCourseNumber = (e: React.ChangeEvent<HTMLInputElement>) => setCourseNumber(e.currentTarget.value);
-    const handleChangeCourseName = (e: React.ChangeEvent<HTMLInputElement>) => setCourseName(e.currentTarget.value);
-    const handleChangeCourseCredits = (e: React.ChangeEvent<HTMLInputElement>) =>
+    const handleChangeCourseNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value.length === 0) setCourseCodeError(true);
+        else setCourseCodeError(false);
+        setCourseNumber(e.currentTarget.value);
+    };
+    const handleChangeCourseName = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value.length === 0) setCourseNameError(true);
+        else setCourseNameError(false);
+        setCourseName(e.currentTarget.value);
+    };
+    const handleChangeCourseCredits = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.currentTarget.value.length === 0) setCourseCreditError(true);
+        else setCourseCreditError(false);
         setCourseCredits(e.currentTarget.value);
+    };
     const handleChangeCourseDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
         setCourseDescription(e.currentTarget.value);
     const handleChangeCourseRequesites = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
         setCourseRequesites(e.currentTarget.value);
     const handleAddComponent = () => {
-        console.log(selectedComponent);
         const selectedItem: CourseComponent = JSON.parse(selectedComponent) as CourseComponent;
+        // check if course component already exists
+        if (courseComponents.find((component) => component.componentCode === selectedItem.componentCode)) {
+            showToast(toast, "Warning!", "Course component already exists", "warning");
+            return;
+        }
         // setSelectedComponent(JSON.parse(selectedComponent) as CourseComponent);
         if (selectedComponent === undefined) return;
         setCourseComponents([
@@ -83,9 +112,10 @@ export default function AddCourse() {
     };
 
     const handleSubmitCourse = () => {
-        console.log(validateCourse());
-        if (validateCourse()) return;
+        setFormSubmitted(true);
+        if (courseCodeError || courseCreditError || courseNameError || courseSubjectError) return;
         else {
+            toggleLoading(true);
             const course: Course = {
                 subject: department,
                 catalog: "1",
@@ -93,35 +123,30 @@ export default function AddCourse() {
                 description: courseDescription,
                 creditValue: courseCredits,
                 preReqs: courseRequesites,
-                career: 4,
+                career: courseCareer.careerCode,
                 equivalentCourses: "",
-                componentCodes: [],
+                componentCodes: courseComponents.map((component) => component.componentCode),
                 dossierId: "37581d9d-713f-475c-9668-23971b0e64d0",
             };
-            console.log(course.creditValue);
             addCourse(course)
                 .then(() => {
                     showToast(toast, "Success!", "Course added successfully.", "success");
+                    toggleLoading(false);
                 })
                 .catch(() => {
                     showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                    toggleLoading(false);
                 });
         }
     };
-    const validateCourse = () => {
-        console.log("course number", courseNumber);
-        if (courseNumber == "") setErrors({ ...errors, courseCode: true });
-        if (courseName == "") setErrors({ ...errors, courseName: true });
-        if (department == "") setErrors({ ...errors, courseSubject: true });
-        if (courseCredits == "") setErrors({ ...errors, courseCredit: true });
-        // return true if there are errors
-        return Object.values(errors).some((error) => error);
-    };
+
     useEffect(() => {
         getAllCourseSettings()
             .then((res) => {
                 setAllCourseSettings(res.data);
                 setComponents(res.data.courseComponents);
+                const courseCareersTemp = res.data.courseCareers.map((career) => career.careerName);
+                setCourseCareers(courseCareersTemp);
             })
             .catch((err) => {
                 showToast(toast, "Error!", err.message, "error");
@@ -146,7 +171,16 @@ export default function AddCourse() {
                                 </Stack>
                                 <Stack>
                                     <Stack>
-                                        <FormControl isInvalid={errors.courseSubject}>
+                                        <FormControl isInvalid={courseCareersError && formSubmitted}>
+                                            <FormLabel m={0}>Course Career</FormLabel>
+                                            <AutocompleteInput
+                                                options={courseCareers}
+                                                onSelect={handleChangeCourseCareer}
+                                                width="100%"
+                                            />
+                                            <FormErrorMessage>Subject is required</FormErrorMessage>
+                                        </FormControl>
+                                        <FormControl isInvalid={courseSubjectError && formSubmitted}>
                                             <FormLabel m={0}>Subject</FormLabel>
                                             <AutocompleteInput
                                                 options={allCourseSettings?.courseSubjects}
@@ -157,7 +191,7 @@ export default function AddCourse() {
                                         </FormControl>
                                     </Stack>
                                     <Stack>
-                                        <FormControl isInvalid={errors.courseCode}>
+                                        <FormControl isInvalid={courseCodeError && formSubmitted}>
                                             <FormLabel m={0}>Course Code</FormLabel>
                                             <NumberInput>
                                                 <NumberInputField
@@ -171,7 +205,7 @@ export default function AddCourse() {
                                         </FormControl>
                                     </Stack>
                                     <Stack>
-                                        <FormControl isInvalid={errors.courseName}>
+                                        <FormControl isInvalid={courseNameError && formSubmitted}>
                                             <FormLabel m={0}>Name</FormLabel>
                                             <Input
                                                 placeholder="Name"
@@ -182,9 +216,9 @@ export default function AddCourse() {
                                         </FormControl>
                                     </Stack>
                                     <Stack>
-                                        <FormControl isInvalid={errors.courseCredit}>
+                                        <FormControl isInvalid={courseCreditError && formSubmitted}>
                                             <FormLabel m={0}>Credits</FormLabel>
-                                            <NumberInput max={10}>
+                                            <NumberInput>
                                                 <NumberInputField
                                                     placeholder="Credits"
                                                     pl="16px"
@@ -228,10 +262,15 @@ export default function AddCourse() {
                                                         {courseCredits === "" ? null : (
                                                             <Text display={"inline"}>
                                                                 {"("}
-                                                                {courseCredits} {" credits)"}{" "}
+                                                                {courseCredits}{" "}
+                                                                {parseInt(courseCredits) === 1 ? "credit)" : "credits)"}
                                                             </Text>
                                                         )}
                                                     </Heading>
+                                                    <Text>
+                                                        <b>Course Career:</b>{" "}
+                                                        {courseCareer ? courseCareer.careerName : "Not specified"}
+                                                    </Text>
                                                     <Text>
                                                         <b>Description:</b>{" "}
                                                         {courseDescription
@@ -389,11 +428,12 @@ export default function AddCourse() {
                                 </Stack>
                                 <Stack>
                                     <Button
-                                        type="primary"
+                                        style="primary"
                                         width="auto"
                                         height="50px"
                                         variant="solid"
                                         onClick={() => handleSubmitCourse()}
+                                        isLoading={isLoading}
                                     >
                                         Submit
                                     </Button>

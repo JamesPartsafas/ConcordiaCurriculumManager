@@ -19,6 +19,10 @@ export interface CourseComponents {
     componentName: string;
     hours?: number;
 }
+export interface CourseCareer {
+    careerCode: number;
+    careerName: string;
+}
 
 export interface Course {
     subject: string;

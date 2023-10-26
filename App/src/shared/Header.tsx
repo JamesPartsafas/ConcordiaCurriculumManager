@@ -17,7 +17,6 @@ import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@ch
 import { logout } from "../services/auth";
 import { Image } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
-import Button from "../components/Button";
 
 /**
  * This is the header component for the application that can be displayed on every page of the application
