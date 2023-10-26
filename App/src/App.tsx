@@ -11,7 +11,7 @@ import { createContext, useState } from "react";
 import Register from "./pages/Register";
 import { decodeTokenToUser } from "./services/auth";
 import AddCourse from "./pages/AddCourse";
-import theme from "../theme.js"; // Import your custom theme
+import theme from "../theme"; // Import your custom theme
 import ComponentsList from "./pages/ComponentsList";
 import { LoadingProvider } from "./utils/loadingContext"; // Import the provider
 import { BaseRoutes } from "./constants";

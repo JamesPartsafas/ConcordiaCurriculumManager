@@ -17,6 +17,8 @@ import { logout } from "../services/auth";
 import { Image } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import Button from "../components/Button";
+import { BaseRoutes } from "../constants";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
     const { isOpen, onToggle } = useDisclosure();
@@ -57,6 +59,11 @@ export default function Header() {
 const DesktopNav = () => {
     const linkHoverColor = useColorModeValue("gray.800", "white");
     const popoverContentBgColor = useColorModeValue("white", "gray.800");
+    const navigate = useNavigate();
+    function loggingOut() {
+        logout();
+        navigate(BaseRoutes.Login);
+    }
     return (
         <Stack direction={"row"} spacing={8}>
             {NAV_ITEMS.map((navItem) => (
@@ -74,7 +81,7 @@ const DesktopNav = () => {
                                     color: linkHoverColor,
                                 }}
                             >
-                                <Button>{navItem.label}</Button>
+                                <Button style="secondary">{navItem.label}</Button>
                             </Box>
                         </PopoverTrigger>
 
@@ -104,7 +111,8 @@ const DesktopNav = () => {
                 fontWeight={600}
                 color={"white"}
                 bg={"blue"}
-                onClick={logout}
+                onClick={loggingOut}
+                style="secondary"
                 _hover={{
                     bg: "blue.300",
                 }}
