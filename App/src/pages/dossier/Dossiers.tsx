@@ -157,7 +157,7 @@ export default function Dossiers() {
             <Box maxW="5xl" m="auto">
                 <Flex flexDirection="column">
                     <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
-                        <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "fixed" }}>
+                        <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "auto" }}>
                             <Thead backgroundColor={"#e2e8f0"}>
                                 <Tr display={"flex"}>
                                     <Th minW={"200px"} maxW={"200px"}>
