@@ -2,7 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-route
 
 // 1. import `ChakraProvider` component
 import { ChakraProvider } from "@chakra-ui/react";
-
+import CourseBrowser from "./pages/CourseBrowser";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -11,7 +11,7 @@ import { createContext, useState } from "react";
 import Register from "./pages/Register";
 import { decodeTokenToUser } from "./services/auth";
 import AddCourse from "./pages/AddCourse";
-import theme from "../theme.js"; // Import your custom theme
+import theme from "../theme"; // Import your custom theme
 import ComponentsList from "./pages/ComponentsList";
 import { LoadingProvider } from "./utils/loadingContext"; // Import the provider
 import { BaseRoutes } from "./constants";
@@ -50,6 +50,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.Home}
                         element={isLoggedIn == true ? <Home /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.CourseBrowser}
+                        element={isLoggedIn == true ? <CourseBrowser /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.Login} element={<Login setUser={setUser} />} />
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />

@@ -38,7 +38,7 @@ export default function Home() {
                             Dossier List:{" "}
                         </h2>
                         <Button
-                            type="primary"
+                            style="primary"
                             variant="outline"
                             width="200px"
                             height="40px"
@@ -62,7 +62,7 @@ export default function Home() {
                         >
                             View your Groups{" "}
                             <Button
-                                type="primary"
+                                style="primary"
                                 variant="outline"
                                 width="200px"
                                 height="40px"
