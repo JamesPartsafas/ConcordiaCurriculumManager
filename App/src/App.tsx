@@ -18,6 +18,7 @@ import { BaseRoutes } from "./constants";
 import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
 import DisplayManageableGroups from "./pages/ManageableGroups";
+import EditCourse from "./pages/EditCourse";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -71,6 +72,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.AddCourse}
                         element={isLoggedIn == true ? <AddCourse /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.EditCourse + "/:id"}
+                        element={isLoggedIn == true ? <EditCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
                     {/* whenever none of the other routes match we show the not found page */}
