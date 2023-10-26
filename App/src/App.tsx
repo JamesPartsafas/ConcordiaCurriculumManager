@@ -17,6 +17,7 @@ import { LoadingProvider } from "./utils/loadingContext"; // Import the provider
 import { BaseRoutes } from "./constants";
 import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
+import DisplayManageableGroups from "./pages/ManageableGroups";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -57,6 +58,10 @@ export function App() {
                     /> */}
                     <Route path={BaseRoutes.Login} element={<Login setUser={setUser} />} />
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
+                    <Route
+                        path={BaseRoutes.ManageableGroup}
+                        element={isLoggedIn == true ? <DisplayManageableGroups /> : <Navigate to={BaseRoutes.Login} />}
+                    />
 
                     <Route
                         path={BaseRoutes.Dossiers}

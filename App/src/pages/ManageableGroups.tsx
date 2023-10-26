@@ -65,18 +65,12 @@ export default function DisplayManageableGroups() {
                                         {group.members?.length}
                                     </Td>
                                     <Td whiteSpace="nowrap" padding="16px">
-                                        <Link
-                                            to={BaseRoutes.AddUserToGroup}
-                                            state={{ gid: group.id, name: group.name }}
-                                        >
+                                        <Link to={BaseRoutes.Home} state={{ gid: group.id, name: group.name }}>
                                             <Button style="primary" variant="outline" width="50%" height="40px">
                                                 Add
                                             </Button>
                                         </Link>
-                                        <Link
-                                            to={BaseRoutes.RemoveUserFromGroup}
-                                            state={{ gid: group.id, name: group.name }}
-                                        >
+                                        <Link to={BaseRoutes.Home} state={{ gid: group.id, name: group.name }}>
                                             <Button style="primary" variant="outline" width="50%" height="40px">
                                                 Remove
                                             </Button>
@@ -86,7 +80,7 @@ export default function DisplayManageableGroups() {
                             ))}
                         </Tbody>
                     </Table>
-                    <Link to={BaseRoutes.CreateGroup}>
+                    <Link to={BaseRoutes.Home}>
                         <Button style="primary" variant={"solid"} width="100%" height="40px">
                             Create Group
                         </Button>
