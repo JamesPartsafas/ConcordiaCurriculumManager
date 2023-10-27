@@ -54,7 +54,7 @@ export default function DossierDetails() {
                     justifyContent={"center"}
                 >
                     {dossierDetails?.courseCreationRequests?.map((courseCreationRequest) => (
-                        <Card key={courseCreationRequest.id} boxShadow={"xl"}>
+                        <Card key={courseCreationRequest.id} boxShadow={"xl"} maxW={"400px"}>
                             <CardBody>
                                 <Stack spacing="4">
                                     <Heading size="md" color={"brandRed"}>
@@ -86,13 +86,7 @@ export default function DossierDetails() {
                                                 ? "N/A"
                                                 : courseCreationRequest.newCourse?.equivalentCourses}
                                         </Text>
-                                        <Text>Career: {courseCreationRequest.newCourse?.career}</Text>
-                                    </Stack>
-                                    <Stack alignSelf={"end"} alignItems={"baseline"}>
-                                        <Text>Course State: {courseCreationRequest.newCourse?.courseState}</Text>
-                                        <Text>
-                                            Version: <Kbd>{courseCreationRequest.newCourse?.version}</Kbd>
-                                        </Text>
+                                        <Text>Career: {courseCreationRequest.newCourse?.career} CHANGE THAT</Text>
                                     </Stack>
                                 </Stack>
                             </CardBody>
@@ -156,7 +150,6 @@ export default function DossierDetails() {
                                         <Text>Career: {courseModificationRequest.course?.career}</Text>
                                     </Stack>
                                     <Stack alignSelf={"end"} alignItems={"baseline"}>
-                                        <Text>Course State: {courseModificationRequest.course?.courseState}</Text>
                                         <Text>
                                             Version: <Kbd>{courseModificationRequest.course?.version}</Kbd>
                                         </Text>
