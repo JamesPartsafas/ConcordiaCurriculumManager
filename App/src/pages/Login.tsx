@@ -32,7 +32,7 @@ export default function Login({ setUser }: LoginProps) {
     const [showError, setShowError] = useState(false);
     const toast = useToast(); // Use the useToast hook
     const [loading, setLoading] = useState<boolean>(false);
-    const { isLoading, toggleLoading } = useLoading(); // Use the useLoading hook
+    const { toggleLoading } = useLoading(); // Use the useLoading hook
 
     const handleLoadingButtonClick = () => {
         toggleLoading(); // Call the toggleLoading function to update isLoading

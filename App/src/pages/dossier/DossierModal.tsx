@@ -36,7 +36,7 @@ interface DossierForm {
 export default function DossierModal(props: DossierModalProps) {
     const toast = useToast(); // Use the useToast hook
     const [loading, setLoading] = useState<boolean>(false);
-    const { isLoading, toggleLoading } = useLoading(); // Use the useLoading hook
+    const { toggleLoading } = useLoading(); // Use the useLoading hook
 
     const handleLoadingButtonClick = () => {
         toggleLoading(); // Call the toggleLoading function to update isLoading

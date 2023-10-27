@@ -30,7 +30,7 @@ export default function Register({ setUser }: LoginProps) {
     const { register, handleSubmit } = useForm<RegisterDTO>();
     const [showPassword, setShowPassword] = useState(false);
     const [showError, setShowError] = useState(false);
-    const { isLoading, toggleLoading } = useLoading(); // Use the useLoading hook
+    const { toggleLoading } = useLoading(); // Use the useLoading hook
     const toast = useToast(); // Use the useToast hook
 
     const handleLoadingButtonClick = () => {
