@@ -34,9 +34,9 @@ export default function Register({ setUser }: LoginProps) {
     const toast = useToast(); // Use the useToast hook
 
     const handleLoadingButtonClick = () => {
-        toggleLoading(); // Call the toggleLoading function to update isLoading
+        toggleLoading();
         setTimeout(() => {
-            toggleLoading(); // Just for testing purposes, stop loading after 3 seconds
+            toggleLoading();
         }, 1000);
     };
 
