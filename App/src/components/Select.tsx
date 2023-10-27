@@ -6,13 +6,13 @@ import PropTypes from "prop-types";
  * @param param0 options (array of options), onSelect (function to handle selected option), width (string)
  * @returns
  */
-function AutocompleteInput({ options, onSelect, width }) {
+function AutocompleteInput({ options, onSelect, width, placeholder }) {
     const handleSelect = (value) => {
         onSelect(value);
     };
     return (
         <AutoComplete onChange={(vals) => handleSelect(vals)} openOnFocus>
-            <AutoCompleteInput width={width} />
+            <AutoCompleteInput width={width} placeholder={placeholder} />
             <AutoCompleteList>
                 {options.map((option, index) => (
                     <AutoCompleteItem
@@ -32,5 +32,6 @@ AutocompleteInput.propTypes = {
     options: PropTypes.array.isRequired,
     onSelect: PropTypes.func.isRequired,
     width: PropTypes.string,
+    placeholder: PropTypes.string,
 };
 export default AutocompleteInput;
