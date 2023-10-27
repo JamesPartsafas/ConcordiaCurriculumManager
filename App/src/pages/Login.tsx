@@ -23,7 +23,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { BaseRoutes } from "../constants";
 import { showToast } from "../utils/toastUtils";
-import { useLoading } from "../utils/loadingContext"; // Import the useLoading hook
 
 export default function Login({ setUser }: LoginProps) {
     const navigate = useNavigate();
@@ -32,21 +31,12 @@ export default function Login({ setUser }: LoginProps) {
     const [showError, setShowError] = useState(false);
     const toast = useToast(); // Use the useToast hook
     const [loading, setLoading] = useState<boolean>(false);
-    const { toggleLoading } = useLoading(); // Use the useLoading hook
-
-    const handleLoadingButtonClick = () => {
-        toggleLoading(); // Call the toggleLoading function to update isLoading
-        setTimeout(() => {
-            toggleLoading(); // Just for testing purposes, stop loading after 3 seconds
-        }, 1000);
-    };
 
     function toggleShowPassword() {
         setShowPassword(!showPassword);
     }
 
     function onSubmit(data: LoginDTO) {
-        handleLoadingButtonClick();
         setLoading(true);
         setShowError(false);
         login(data)
