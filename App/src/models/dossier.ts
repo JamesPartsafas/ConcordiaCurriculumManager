@@ -7,7 +7,13 @@ export interface DossierDTO {
 }
 
 export interface DossierDetailsDTO {
-    dossier: DossierDTO;
+    id: string;
+    initiatorId: string;
+    title: string | null;
+    description: string | null;
+    published: boolean;
+    createdDate: Date;
+    modifiedDate: Date;
     courseCreationRequests: string; //make a course creation request model
     courseModificationRequests: string; //make a course modification request model
 }
