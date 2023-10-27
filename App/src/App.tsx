@@ -17,6 +17,7 @@ import { LoadingProvider } from "./utils/loadingContext"; // Import the provider
 import { BaseRoutes } from "./constants";
 import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
+import CourseDetails from "./pages/CourseDetails";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -66,6 +67,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.AddCourse}
                         element={isLoggedIn == true ? <AddCourse /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.CourseDetails}
+                        element={isLoggedIn == true ? <CourseDetails /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
                     {/* whenever none of the other routes match we show the not found page */}

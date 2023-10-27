@@ -7,4 +7,5 @@ export enum BaseRoutes {
     AddCourse = "/add-course",
     ComponentsList = "/components-list",
     CourseBrowser = "/CourseBrowser",
+    CourseDetails = "/CourseDetails",
 }

@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 import { Box, Button, Container, FormLabel, Heading, Stack } from "@chakra-ui/react";
-
+import { useNavigate } from "react-router-dom";
+import { Input } from "@chakra-ui/react";
 interface SubjectItem {
     value: string;
     label: string;
 }
 
+// when the api is implemented I will make the subjects available in the drop down
 const SUBJECT_ITEMS: Array<SubjectItem> = [
     { value: "COMP", label: "COMP" },
     { value: "SOEN", label: "SOEN" },
@@ -18,13 +20,22 @@ interface CatalogItem {
     label: string;
 }
 
-const CATALOG_ITEMS: Array<CatalogItem> = [
-    { value: "201", label: "201" },
-    { value: "301", label: "301" },
-    { value: "401", label: "401" },
-];
+const CourseSelector1: React.FC<{ onChange: (selectedOption: SubjectItem | null) => void }> = ({ onChange }) => (
+    <Select options={SUBJECT_ITEMS} onChange={onChange} />
+);
 
-function CourseBrowser() {
+function App() {
+    const navigate = useNavigate();
+    // State variables to store selected values
+    const [selectedSubject, setSelectedSubject] = useState<SubjectItem | null>(null);
+    const [catalog, setCatalog] = useState<string>("");
+
+    // Function to handle subject selection
+    const handleSubjectChange = (selectedOption: SubjectItem | null) => {
+        setSelectedSubject(selectedOption);
+    };
+
+    // Function to handle catalog selection
     return (
         <form>
             <Container maxW="lg" py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>
@@ -45,18 +56,32 @@ function CourseBrowser() {
                         <Stack spacing="5">
                             <FormLabel htmlFor="subject">Subject</FormLabel>
 
-                            <Select options={SUBJECT_ITEMS} />
+                            <CourseSelector1 onChange={handleSubjectChange} />
 
                             <FormLabel htmlFor="catalog">Catalog N°</FormLabel>
 
-                            <Select options={CATALOG_ITEMS} />
+                            <Input
+                                onChange={(e) => setCatalog(e.target.value)}
+                                htmlSize={4}
+                                width="auto"
+                                value={catalog}
+                            />
                         </Stack>
                         <div>
                             <Box h={6} />
                         </div>
 
                         <Stack spacing="6">
-                            <Button backgroundColor="#932439" color="white" hover={{ bg: "#7A1D2E" }} type="submit">
+                            <Button
+                                isDisabled={selectedSubject ? false : true}
+                                onClick={() =>
+                                    navigate(`/CourseDetails?subject=${selectedSubject?.value}&catalog=${catalog}`)
+                                }
+                                backgroundColor="#932439"
+                                color="white"
+                                _hover={{ bg: "#7A1D2E" }}
+                                type="submit"
+                            >
                                 Enter
                             </Button>
                         </Stack>
@@ -66,4 +91,5 @@ function CourseBrowser() {
         </form>
     );
 }
-export default CourseBrowser;
+
+export default App;
