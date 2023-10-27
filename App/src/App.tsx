@@ -18,6 +18,7 @@ import { BaseRoutes } from "./constants";
 import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
 import DisplayManageableGroups from "./pages/ManageableGroups";
+import DossierDetails from "./pages/dossier/DossierDetails";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -67,7 +68,10 @@ export function App() {
                         path={BaseRoutes.Dossiers}
                         element={isLoggedIn == true ? <Dossiers /> : <Navigate to={BaseRoutes.Login} />}
                     />
-
+                    <Route
+                        path={BaseRoutes.DossierDetails}
+                        element={isLoggedIn == true ? <DossierDetails /> : <Navigate to={BaseRoutes.Login} />}
+                    />
                     <Route
                         path={BaseRoutes.AddCourse}
                         element={isLoggedIn == true ? <AddCourse /> : <Navigate to={BaseRoutes.Login} />}

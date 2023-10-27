@@ -12,4 +12,5 @@ export enum BaseRoutes {
     CreateGroup = "/creategroup",
     AddUserToGroup = "/addusertogroup",
     RemoveUserFromGroup = "/removeuserfromgroup",
+    DossierDetails = "/dossierdetails/:dossierId",
 }
