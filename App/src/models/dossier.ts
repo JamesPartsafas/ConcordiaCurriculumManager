@@ -1,3 +1,5 @@
+import { CourseCreationRequest } from "./course";
+
 export interface DossierDTO {
     id: string;
     initiatorId: string;
@@ -14,7 +16,7 @@ export interface DossierDetailsDTO {
     published: boolean;
     createdDate: Date;
     modifiedDate: Date;
-    courseCreationRequests: string; //make a course creation request model
+    courseCreationRequests: CourseCreationRequest[]; //make a course creation request model
     courseModificationRequests: string; //make a course modification request model
 }
 

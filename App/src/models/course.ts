@@ -36,3 +36,21 @@ export interface Course {
     componentCodes: number[];
     dossierId: string;
 }
+
+export interface newCourse extends Course {
+    id: string;
+    createdDate: Date;
+    modifiedDate: Date;
+    version: number;
+    published: boolean;
+    courseState: number;
+}
+
+export interface CourseCreationRequest {
+    id: string;
+    dossierId: string;
+    newCourse: newCourse;
+    newCourseId: string;
+    createdDate: Date;
+    modifiedDate: Date;
+}

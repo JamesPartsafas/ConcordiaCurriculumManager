@@ -44,6 +44,7 @@ export default function Login({ setUser }: LoginProps) {
                 (res: AuthenticationResponse) => {
                     if (res.data.accessToken != null) {
                         const user: User = decodeTokenToUser(res.data.accessToken);
+                        showToast(toast, "Success!", "Logged In", "success");
                         setUser(user);
                         navigate("/");
                     }

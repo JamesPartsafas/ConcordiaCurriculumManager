@@ -15,6 +15,7 @@ import {
     SimpleGrid,
     Stack,
     Text,
+    Textarea,
 } from "@chakra-ui/react";
 
 export default function DossierDetails() {
@@ -52,158 +53,52 @@ export default function DossierDetails() {
                     spacing={4}
                     justifyContent={"center"}
                 >
-                    <Card boxShadow={"xl"}>
-                        <CardBody>
-                            <Stack spacing="4">
-                                <Heading size="md" color={"brandRed"}>
-                                    Course Title
-                                </Heading>
-                                <Stack>
-                                    <Kbd width={"fit-content"}>Course ID: filler</Kbd>
-                                    <Kbd width={"fit-content"}>Subject: filler</Kbd>
-                                    <Kbd width={"fit-content"}>Catalog: filler</Kbd>
+                    {dossierDetails?.courseCreationRequests?.map((newCourse) => (
+                        <Card key={newCourse.id} boxShadow={"xl"}>
+                            <CardBody>
+                                <Stack spacing="4">
+                                    <Heading size="md" color={"brandRed"}>
+                                        Course Title
+                                    </Heading>
+                                    <Stack>
+                                        <Kbd width={"fit-content"}>Course ID: {newCourse.newCourseId}</Kbd>
+                                        <Kbd width={"fit-content"}>Subject: {newCourse.newCourse?.subject}</Kbd>
+                                        <Kbd width={"fit-content"}>Catalog: {newCourse.newCourse?.catalog}</Kbd>
+                                    </Stack>
+                                    <Textarea isReadOnly variant={"filled"} value={newCourse.newCourse?.description} />
+                                    <Stack>
+                                        <Text>Credits: {newCourse.newCourse?.creditValue}</Text>
+                                        <Text>Prerequisites: {newCourse.newCourse?.preReqs}</Text>
+                                        <Text>
+                                            Equivalent Courses:{" "}
+                                            {newCourse.newCourse.equivalentCourses === null ||
+                                            newCourse.newCourse?.equivalentCourses === ""
+                                                ? "N/A"
+                                                : newCourse.newCourse?.equivalentCourses}
+                                        </Text>
+                                        <Text>Career: {newCourse.newCourse?.career}</Text>
+                                    </Stack>
+                                    <Stack alignSelf={"end"} alignItems={"baseline"}>
+                                        <Text>Course State: {newCourse.newCourse?.courseState}</Text>
+                                        <Text>
+                                            Version: <Kbd>{newCourse.newCourse?.version}</Kbd>
+                                        </Text>
+                                    </Stack>
                                 </Stack>
-                                <Text>
-                                    Course description Course description Course description Course description Course
-                                    description Course description Course description Course description Course
-                                    description Course description
-                                </Text>
-                                <Text>Credits: filler</Text>
-                                <Text>Prerequisites: filler</Text>
-                                <Text>Equivalent Courses: filler</Text>
-                                <Text>Career: filler</Text>
-                                <Text>Course State: filler</Text>
-                                <Text>Version: filler</Text>
-                            </Stack>
-                        </CardBody>
-                        <Divider />
-                        <CardFooter>
-                            <ButtonGroup spacing="2">
-                                <Button variant="solid" colorScheme="blue">
-                                    View
-                                </Button>
-                                <Button variant="ghost" colorScheme="blue">
-                                    Delete
-                                </Button>
-                            </ButtonGroup>
-                        </CardFooter>
-                    </Card>
-                    <Card boxShadow={"xl"}>
-                        <CardBody>
-                            <Stack spacing="4">
-                                <Heading size="md" color={"brandRed"}>
-                                    Course Title
-                                </Heading>
-                                <Stack>
-                                    <Kbd width={"fit-content"}>Course ID: filler</Kbd>
-                                    <Kbd width={"fit-content"}>Subject: filler</Kbd>
-                                    <Kbd width={"fit-content"}>Catalog: filler</Kbd>
-                                </Stack>
-                                <Text>
-                                    Course description Course description Course description Course description Course
-                                    description Course description Course description Course description Course
-                                    description Course description
-                                </Text>
-                                <Text>Credits: filler</Text>
-                                <Text>Prerequisites: filler</Text>
-                                <Text>Equivalent Courses: filler</Text>
-                                <Text>Career: filler</Text>
-                                <Text>Course State: filler</Text>
-                                <Text>Version: filler</Text>
-                            </Stack>
-                        </CardBody>
-                        <Divider />
-                        <CardFooter>
-                            <ButtonGroup spacing="2">
-                                <Button variant="solid" colorScheme="blue">
-                                    View
-                                </Button>
-                                <Button variant="ghost" colorScheme="blue">
-                                    Delete
-                                </Button>
-                            </ButtonGroup>
-                        </CardFooter>
-                    </Card>
-                    <Card boxShadow={"xl"}>
-                        <CardBody>
-                            <Stack spacing="4">
-                                <Heading size="md" color={"brandRed"}>
-                                    Course Title
-                                </Heading>
-                                <Stack>
-                                    <Kbd width={"fit-content"}>Course ID: filler</Kbd>
-                                    <Kbd width={"fit-content"}>Subject: filler</Kbd>
-                                    <Kbd width={"fit-content"}>Catalog: filler</Kbd>
-                                </Stack>
-                                <Text>
-                                    Course description Course description Course description Course description Course
-                                    description Course description Course description Course description Course
-                                    description Course description
-                                </Text>
-                                <Text>Credits: filler</Text>
-                                <Text>Prerequisites: filler</Text>
-                                <Text>Equivalent Courses: filler</Text>
-                                <Text>Career: filler</Text>
-                                <Text>Course State: filler</Text>
-                                <Text>Version: filler</Text>
-                            </Stack>
-                        </CardBody>
-                        <Divider />
-                        <CardFooter>
-                            <ButtonGroup spacing="2">
-                                <Button variant="solid" colorScheme="blue">
-                                    View
-                                </Button>
-                                <Button variant="ghost" colorScheme="blue">
-                                    Delete
-                                </Button>
-                            </ButtonGroup>
-                        </CardFooter>
-                    </Card>
-                    <Card>
-                        <CardBody>
-                            <Stack spacing="4">
-                                <Heading size="md">Course Title</Heading>
-                                <Text>
-                                    Course description Course description Course description Course description Course
-                                    description
-                                </Text>
-                            </Stack>
-                        </CardBody>
-                        <Divider />
-                        <CardFooter>
-                            <ButtonGroup spacing="2">
-                                <Button variant="solid" colorScheme="blue">
-                                    View
-                                </Button>
-                                <Button variant="ghost" colorScheme="blue">
-                                    Delete
-                                </Button>
-                            </ButtonGroup>
-                        </CardFooter>
-                    </Card>
-                    <Card>
-                        <CardBody>
-                            <Stack spacing="4">
-                                <Heading size="md">Course Title</Heading>
-                                <Text>
-                                    Course description Course description Course description Course description Course
-                                    description
-                                </Text>
-                            </Stack>
-                        </CardBody>
-                        <Divider />
-                        <CardFooter>
-                            <ButtonGroup spacing="2">
-                                <Button variant="solid" colorScheme="blue">
-                                    View
-                                </Button>
-                                <Button variant="ghost" colorScheme="blue">
-                                    Delete
-                                </Button>
-                            </ButtonGroup>
-                        </CardFooter>
-                    </Card>
+                            </CardBody>
+                            <Divider />
+                            <CardFooter>
+                                <ButtonGroup spacing="2">
+                                    <Button variant="solid" colorScheme="blue">
+                                        View
+                                    </Button>
+                                    <Button variant="ghost" colorScheme="blue">
+                                        Delete
+                                    </Button>
+                                </ButtonGroup>
+                            </CardFooter>
+                        </Card>
+                    ))}
                 </SimpleGrid>
             </Box>
             <Box backgroundColor="brandBlue" m={"auto"} mt={5} p="3" width={"70%"} borderRadius={"lg"} minH={"400px"}>
