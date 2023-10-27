@@ -35,9 +35,19 @@ export interface Course {
     equivalentCourses: string;
     componentCodes: number[];
     dossierId: string;
+    courseID: number;
 }
 
 export interface newCourse extends Course {
+    id: string;
+    createdDate: Date;
+    modifiedDate: Date;
+    version: number;
+    published: boolean;
+    courseState: number;
+}
+
+export interface ModifiedCourse extends Course {
     id: string;
     createdDate: Date;
     modifiedDate: Date;
@@ -51,6 +61,15 @@ export interface CourseCreationRequest {
     dossierId: string;
     newCourse: newCourse;
     newCourseId: string;
+    createdDate: Date;
+    modifiedDate: Date;
+}
+
+export interface CourseModificationRequest {
+    id: string;
+    dossierId: string;
+    course: ModifiedCourse;
+    courseId: string;
     createdDate: Date;
     modifiedDate: Date;
 }

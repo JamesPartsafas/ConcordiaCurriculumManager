@@ -53,35 +53,45 @@ export default function DossierDetails() {
                     spacing={4}
                     justifyContent={"center"}
                 >
-                    {dossierDetails?.courseCreationRequests?.map((newCourse) => (
-                        <Card key={newCourse.id} boxShadow={"xl"}>
+                    {dossierDetails?.courseCreationRequests?.map((courseCreationRequest) => (
+                        <Card key={courseCreationRequest.id} boxShadow={"xl"}>
                             <CardBody>
                                 <Stack spacing="4">
                                     <Heading size="md" color={"brandRed"}>
-                                        Course Title
+                                        {courseCreationRequest.newCourse?.title}
                                     </Heading>
                                     <Stack>
-                                        <Kbd width={"fit-content"}>Course ID: {newCourse.newCourseId}</Kbd>
-                                        <Kbd width={"fit-content"}>Subject: {newCourse.newCourse?.subject}</Kbd>
-                                        <Kbd width={"fit-content"}>Catalog: {newCourse.newCourse?.catalog}</Kbd>
+                                        <Kbd width={"fit-content"}>
+                                            Course ID: {courseCreationRequest.newCourse?.courseID}
+                                        </Kbd>
+                                        <Kbd width={"fit-content"}>
+                                            Subject: {courseCreationRequest.newCourse?.subject}
+                                        </Kbd>
+                                        <Kbd width={"fit-content"}>
+                                            Catalog: {courseCreationRequest.newCourse?.catalog}
+                                        </Kbd>
                                     </Stack>
-                                    <Textarea isReadOnly variant={"filled"} value={newCourse.newCourse?.description} />
+                                    <Textarea
+                                        isReadOnly
+                                        variant={"filled"}
+                                        value={courseCreationRequest.newCourse?.description}
+                                    />
                                     <Stack>
-                                        <Text>Credits: {newCourse.newCourse?.creditValue}</Text>
-                                        <Text>Prerequisites: {newCourse.newCourse?.preReqs}</Text>
+                                        <Text>Credits: {courseCreationRequest.newCourse?.creditValue}</Text>
+                                        <Text>Prerequisites: {courseCreationRequest.newCourse?.preReqs}</Text>
                                         <Text>
                                             Equivalent Courses:{" "}
-                                            {newCourse.newCourse.equivalentCourses === null ||
-                                            newCourse.newCourse?.equivalentCourses === ""
+                                            {courseCreationRequest.newCourse.equivalentCourses === null ||
+                                            courseCreationRequest.newCourse?.equivalentCourses === ""
                                                 ? "N/A"
-                                                : newCourse.newCourse?.equivalentCourses}
+                                                : courseCreationRequest.newCourse?.equivalentCourses}
                                         </Text>
-                                        <Text>Career: {newCourse.newCourse?.career}</Text>
+                                        <Text>Career: {courseCreationRequest.newCourse?.career}</Text>
                                     </Stack>
                                     <Stack alignSelf={"end"} alignItems={"baseline"}>
-                                        <Text>Course State: {newCourse.newCourse?.courseState}</Text>
+                                        <Text>Course State: {courseCreationRequest.newCourse?.courseState}</Text>
                                         <Text>
-                                            Version: <Kbd>{newCourse.newCourse?.version}</Kbd>
+                                            Version: <Kbd>{courseCreationRequest.newCourse?.version}</Kbd>
                                         </Text>
                                     </Stack>
                                 </Stack>
@@ -105,6 +115,68 @@ export default function DossierDetails() {
                 <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
                     Course Modification Requests
                 </Heading>
+                <SimpleGrid
+                    templateColumns="repeat(auto-fill, minmax(200px, 400px))"
+                    spacing={4}
+                    justifyContent={"center"}
+                >
+                    {dossierDetails?.courseModificationRequests?.map((courseModificationRequest) => (
+                        <Card key={courseModificationRequest.id} boxShadow={"xl"}>
+                            <CardBody>
+                                <Stack spacing="4">
+                                    <Heading size="md" color={"brandBlue"}>
+                                        {courseModificationRequest.course?.title}
+                                    </Heading>
+                                    <Stack>
+                                        <Kbd width={"fit-content"}>
+                                            Course ID: {courseModificationRequest.course?.courseID}
+                                        </Kbd>
+                                        <Kbd width={"fit-content"}>
+                                            Subject: {courseModificationRequest.course?.subject}
+                                        </Kbd>
+                                        <Kbd width={"fit-content"}>
+                                            Catalog: {courseModificationRequest.course?.catalog}
+                                        </Kbd>
+                                    </Stack>
+                                    <Textarea
+                                        isReadOnly
+                                        variant={"filled"}
+                                        value={courseModificationRequest.course?.description}
+                                    />
+                                    <Stack>
+                                        <Text>Credits: {courseModificationRequest.course?.creditValue}</Text>
+                                        <Text>Prerequisites: {courseModificationRequest.course?.preReqs}</Text>
+                                        <Text>
+                                            Equivalent Courses:{" "}
+                                            {courseModificationRequest.course.equivalentCourses === null ||
+                                            courseModificationRequest.course?.equivalentCourses === ""
+                                                ? "N/A"
+                                                : courseModificationRequest.course?.equivalentCourses}
+                                        </Text>
+                                        <Text>Career: {courseModificationRequest.course?.career}</Text>
+                                    </Stack>
+                                    <Stack alignSelf={"end"} alignItems={"baseline"}>
+                                        <Text>Course State: {courseModificationRequest.course?.courseState}</Text>
+                                        <Text>
+                                            Version: <Kbd>{courseModificationRequest.course?.version}</Kbd>
+                                        </Text>
+                                    </Stack>
+                                </Stack>
+                            </CardBody>
+                            <Divider />
+                            <CardFooter>
+                                <ButtonGroup spacing="2">
+                                    <Button variant="solid" colorScheme="blue">
+                                        View
+                                    </Button>
+                                    <Button variant="ghost" colorScheme="blue">
+                                        Delete
+                                    </Button>
+                                </ButtonGroup>
+                            </CardFooter>
+                        </Card>
+                    ))}
+                </SimpleGrid>
             </Box>
         </>
     );
