@@ -18,6 +18,7 @@ import { showToast } from "../../utils/toastUtils"; // Import the utility functi
 import Button from "../../components/Button";
 import { useState } from "react";
 import { DossierDTO, DossierDTOResponse } from "../../models/dossier";
+import { useLoading } from "../../utils/loadingContext"; // Import the useLoading hook
 
 interface DossierModalProps {
     open: boolean;
@@ -35,6 +36,14 @@ interface DossierForm {
 export default function DossierModal(props: DossierModalProps) {
     const toast = useToast(); // Use the useToast hook
     const [loading, setLoading] = useState<boolean>(false);
+    const { isLoading, toggleLoading } = useLoading(); // Use the useLoading hook
+
+    const handleLoadingButtonClick = () => {
+        toggleLoading(); // Call the toggleLoading function to update isLoading
+        setTimeout(() => {
+            toggleLoading(); // Just for testing purposes, stop loading after 3 seconds
+        }, 1000);
+    };
 
     const {
         register,
@@ -144,6 +153,7 @@ export default function DossierModal(props: DossierModalProps) {
                                 minW="85px"
                                 height="40px"
                                 isDisabled={!isDirty || !isValid}
+                                onClick={handleLoadingButtonClick}
                             >
                                 Save
                             </Button>

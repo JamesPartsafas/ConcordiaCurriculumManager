@@ -13,6 +13,7 @@ import {
     InputGroup,
     InputRightElement,
     Stack,
+    useToast,
 } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
@@ -21,22 +22,35 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { AuthenticationResponse, LoginProps, RegisterDTO, RegisterUser, decodeTokenToUser } from "../services/auth";
 import { BaseRoutes } from "../constants";
+import { useLoading } from "./../utils/loadingContext"; // Import the useLoading hook
+import { showToast } from "../utils/toastUtils";
 
 export default function Register({ setUser }: LoginProps) {
     const navigate = useNavigate();
     const { register, handleSubmit } = useForm<RegisterDTO>();
     const [showPassword, setShowPassword] = useState(false);
     const [showError, setShowError] = useState(false);
+    const { isLoading, toggleLoading } = useLoading(); // Use the useLoading hook
+    const toast = useToast(); // Use the useToast hook
+
+    const handleLoadingButtonClick = () => {
+        toggleLoading(); // Call the toggleLoading function to update isLoading
+        setTimeout(() => {
+            toggleLoading(); // Just for testing purposes, stop loading after 3 seconds
+        }, 1000);
+    };
 
     function toggleShowPassword() {
         setShowPassword(!showPassword);
     }
 
     function onSubmit(data: RegisterDTO) {
+        handleLoadingButtonClick();
         RegisterUser(data)
             .then(
                 (res: AuthenticationResponse) => {
                     if (res.data.accessToken != null) {
+                        showToast(toast, "Success!", "You have successfully logged in.", "success");
                         const user: User = decodeTokenToUser(res.data.accessToken);
                         setUser(user);
                         navigate("/");
