@@ -23,9 +23,9 @@ import DossierDetails from "./pages/dossier/DossierDetails";
 export const UserContext = createContext<User | null>(null);
 
 export function App() {
+    const navigate = useNavigate();
     const [user, setUser] = useState<User | null>(initializeUser());
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(user != null ? true : false);
-    const navigate = useNavigate();
 
     // Check for the token in localStorage.
     function initializeUser() {
@@ -57,7 +57,10 @@ export function App() {
                         path={BaseRoutes.CourseBrowser}
                         element={isLoggedIn == true ? <CourseBrowser /> : <Navigate to={BaseRoutes.Login} />}
                     /> */}
-                    <Route path={BaseRoutes.Login} element={<Login setUser={setUser} />} />
+                    <Route
+                        path={BaseRoutes.Login}
+                        element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn} />}
+                    />
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
                     <Route
                         path={BaseRoutes.ManageableGroup}
