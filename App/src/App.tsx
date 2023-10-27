@@ -27,6 +27,7 @@ import AddingMasterToGroup from "./pages/AddGroupMaster";
 import RemovingMasterFromGroup from "./pages/RemoveGroupMaster";
 import CreateGroup from "./pages/CreateGroup";
 import DeleteCourseEdit from "./pages/DeleteCourseEdit";
+import CourseDetails from "./pages/CourseDetails";
 import Header from "./shared/Header";
 import DossierReview from "./pages/dossier/DossierReview";
 
@@ -144,6 +145,11 @@ export function App() {
                     <Route
                         path={BaseRoutes.DeleteCourseEdit}
                         element={isLoggedIn == true ? <DeleteCourseEdit /> : <Navigate to={BaseRoutes.Login} />}
+                    />   
+
+                    <Route
+                        path={BaseRoutes.CourseDetails}
+                        element={isLoggedIn == true ? <CourseDetails /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
                     {/* whenever none of the other routes match we show the not found page */}
