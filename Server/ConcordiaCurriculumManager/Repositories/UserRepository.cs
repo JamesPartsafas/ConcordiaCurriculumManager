@@ -9,6 +9,8 @@ public interface IUserRepository
     ValueTask<User?> GetUserById(Guid id);
     Task<User?> GetUserByEmail(string email);
     Task<bool> SaveUser(User user);
+    Task<IList<User>> GetAllUsersPageable(Guid id);
+    Task<IList<User>> GetUsersLikeEmailPageable(Guid id, string email);
 }
 
 public class UserRepository : IUserRepository
@@ -33,4 +35,18 @@ public class UserRepository : IUserRepository
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
+
+    public async Task<IList<User>> GetAllUsersPageable(Guid id) => await _dbContext.Users
+        .OrderBy(u => u.Id)
+        .Where(u => u.Id > id)
+        .Take(10)
+        .Select(ObjectSelectors.UserSelector())
+        .ToListAsync();
+
+    public async Task<IList<User>> GetUsersLikeEmailPageable(Guid id, string email) => await _dbContext.Users
+        .OrderBy(u => u.Id)
+        .Where(u => u.Id > id && u.Email.Contains(email))
+        .Take(10)
+        .Select(ObjectSelectors.UserSelector())
+        .ToListAsync();
 }

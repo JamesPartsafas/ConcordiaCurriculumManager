@@ -24,6 +24,9 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
             dbContext = new CCMDbContext(options);
         }
 
+        [ClassCleanup]
+        public static void ClassCleanup() => dbContext.Dispose();
+
         [TestInitialize]
         public void TestInitialize()
         {

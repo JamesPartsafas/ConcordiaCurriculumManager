@@ -83,6 +83,6 @@ public class GroupService : IGroupService
     public async Task<bool> IsGroupMaster(Guid userId, Guid groupId)
     {
         var group = await _groupRepository.GetGroupById(groupId);
-        return group.GroupMasters.Any(gm => gm.Id == userId);
+        return group is not null && group.GroupMasters.Any(gm => gm.Id == userId);
     }
 }
