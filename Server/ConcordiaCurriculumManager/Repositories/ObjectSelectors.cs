@@ -22,6 +22,16 @@ public static class ObjectSelectors
         Roles = (List<Role>)user.Roles.Select(role => new Role
         {
             UserRole = role.UserRole
+        }),
+        Groups = (List<Group>)user.Groups.Select(group => new Group
+        {
+            Id = group.Id,
+            Name = group.Name
+        }),
+        MasteredGroups = (List<Group>)user.MasteredGroups.Select(group => new Group
+        {
+            Id = group.Id,
+            Name = group.Name
         })
     };
 

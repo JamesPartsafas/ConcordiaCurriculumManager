@@ -15,6 +15,10 @@ public static class Claims
     public const string Roles = "roles";
 
     public const string Iat = "iat";
+
+    public const string Group = "group";
+
+    public const string GroupMaster = "groupMaster";
 }
 
 public static class Policies

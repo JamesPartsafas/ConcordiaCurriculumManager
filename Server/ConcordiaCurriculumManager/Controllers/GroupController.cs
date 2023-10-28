@@ -63,10 +63,6 @@ public class GroupController : Controller
     public async Task<IActionResult> GetAllGroups()
     {
         var groups = await _groupService.GetAllGroupsAsync();
-        if (groups == null || !groups.Any())
-        {
-            return NotFound();
-        }
         return Ok(groups);
     }
 
