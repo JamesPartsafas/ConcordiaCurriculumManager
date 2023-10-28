@@ -20,8 +20,3 @@ public static class Claims
 
     public const string GroupMaster = "groupMaster";
 }
-
-public static class Policies
-{
-    public static string Initiator => RoleEnum.Initiator.ToString();
-}
