@@ -107,6 +107,9 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
             {
                 NewCourseId = Guid.NewGuid(),
                 DossierId = Guid.NewGuid(),
+                Rationale = "It's important",
+                ResourceImplication = "Very expensive",
+                Comment = "Not complex"
             };
 
             var result = await dossierRepository.SaveCourseCreationRequest(courseCreationRequest);
@@ -121,6 +124,9 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
             {
                 CourseId = Guid.NewGuid(),
                 DossierId = Guid.NewGuid(),
+                Rationale = "It's important",
+                ResourceImplication = "Very expensive",
+                Comment = "Not complex"
             };
 
             var result = await dossierRepository.SaveCourseModificationRequest(courseModificationRequest);
