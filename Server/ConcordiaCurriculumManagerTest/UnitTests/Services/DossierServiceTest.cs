@@ -62,6 +62,7 @@ public class DossierServiceTest
 
         var dossierDetails = await dossierService.GetDossierDetailsById(Guid.NewGuid());
 
+        Assert.IsNotNull(dossierDetails);
         Assert.AreEqual(dossier.Id, dossierDetails.Id);
     }
 
