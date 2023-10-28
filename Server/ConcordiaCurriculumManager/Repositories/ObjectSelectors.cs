@@ -71,7 +71,10 @@ public static class ObjectSelectors
             ModifiedDate = request.ModifiedDate,
             NewCourseId = request.NewCourseId,
             NewCourse = request.NewCourse,
-            DossierId = request.DossierId
+            DossierId = request.DossierId,
+            ResourceImplication = request.ResourceImplication,
+            Rationale = request.Rationale,
+            Comment = request.Comment
         }),
         CourseModificationRequests = (List<CourseModificationRequest>)dossier.CourseModificationRequests.Select(request => new CourseModificationRequest
         {
@@ -80,7 +83,10 @@ public static class ObjectSelectors
             ModifiedDate = request.ModifiedDate,
             CourseId = request.CourseId,
             Course = request.Course,
-            DossierId = request.DossierId
+            DossierId = request.DossierId,
+            ResourceImplication = request.ResourceImplication,
+            Rationale = request.Rationale,
+            Comment = request.Comment
         })
     };
 }
