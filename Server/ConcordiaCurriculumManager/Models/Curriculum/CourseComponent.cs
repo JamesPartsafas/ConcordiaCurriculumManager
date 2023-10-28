@@ -8,7 +8,7 @@ public class CourseComponent : BaseModel
 
     public required string ComponentName { get; set; }
 
-    public List<Course> Courses { get; set; } = new();
+    public ICollection<CourseCourseComponent>? CourseCourseComponents { get; set; }
 }
 
 public enum ComponentCodeEnum

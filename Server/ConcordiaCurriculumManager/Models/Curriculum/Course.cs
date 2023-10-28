@@ -19,6 +19,8 @@ public class Course : BaseModel
 
     public required string PreReqs { get; set; }
 
+    public required string CourseNotes { get; set; }
+
     public required CourseCareerEnum Career { get; set; }
 
     public string? EquivalentCourses { get; set; }
@@ -29,7 +31,9 @@ public class Course : BaseModel
 
     public required bool Published { get; set; }
 
-    public List<CourseComponent> CourseComponents { get; set; } = new();
+    public ICollection<CourseCourseComponent>? CourseCourseComponents { get; set; }
+
+    public ICollection<SupportingFile>? SupportingFiles { get; set; }
 
     public CourseCreationRequest? CourseCreationRequest { get; set; }
 
