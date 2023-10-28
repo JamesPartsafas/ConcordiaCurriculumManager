@@ -51,8 +51,8 @@ public class DossierRepository : IDossierRepository
 
     public async Task<Dossier?> GetDossierByDossierId(Guid dossierId) => await _dbContext.Dossiers
         .Select(ObjectSelectors.DossierSelector())
-        .Where(d => d.Id == dossierId).FirstOrDefaultAsync();
-
+        .Where(d => d.Id == dossierId)
+        .FirstOrDefaultAsync();
 
     public async Task<bool> SaveDossier(Dossier dossier)
     {
