@@ -14,6 +14,9 @@ public interface IDossierService
     public Task<Dossier> EditDossier(EditDossierDTO dossier, User user);
     public Task DeleteDossier(Guid ID, User user);
     public Task<Dossier> GetDossierDetailsById(Guid id);
+    public Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId);
+    public Task SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
+    public Task SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
 }
 
 public class DossierService : IDossierService
@@ -110,10 +113,46 @@ public class DossierService : IDossierService
     {
         var dossierDetails = await _dossierRepository.GetDossierByDossierId(id);
         if (dossierDetails == null)
+        {
+            _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${id}: does not exist");
             throw new ArgumentException("Dossier could not be found.");
+        }
 
         return dossierDetails;
+    }
 
+    public async Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId)
+    {
+        var dossier = await GetDossierDetailsById(dossierId);
+        if (dossier.InitiatorId != userId)
+        {
+            _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${dossier.Id}: does not belong to user ${typeof(User)} ${userId}");
+            throw new Exception("Error retrieving the dossier: does not belong to the user");
+        }
+
+        return dossier;
+    }
+
+    public async Task SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest)
+    {
+        bool requestCreated = await _dossierRepository.SaveCourseCreationRequest(courseCreationRequest);
+        if (!requestCreated)
+        {
+            _logger.LogWarning($"Error creating ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
+            throw new Exception("Error creating the request");
+        }
+        _logger.LogInformation($"Created ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
+    }
+
+    public async Task SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest)
+    {
+        bool requestCreated = await _dossierRepository.SaveCourseModificationRequest(courseModificationRequest);
+        if (!requestCreated)
+        {
+            _logger.LogWarning($"Error creating ${typeof(CourseModificationRequest)} ${courseModificationRequest.Id}");
+            throw new Exception("Error creating the request");
+        }
+        _logger.LogInformation($"Created ${typeof(CourseModificationRequest)} ${courseModificationRequest.Id}");
     }
 }
 
