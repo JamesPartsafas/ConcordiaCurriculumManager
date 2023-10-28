@@ -91,7 +91,7 @@ public class UserAuthenticationService : IUserAuthenticationService
         {
             var jwtToken = new JwtSecurityToken(token);
             var expiryDate = TimeSpan.FromTicks(jwtToken.ValidTo.Ticks - DateTime.UtcNow.Ticks);
-            return (cacheEntry: token,  expiryDate, neverRemove: true);
+            return (cacheEntry: token, expiryDate, neverRemove: true);
         });
     }
 
@@ -143,6 +143,9 @@ public class UserAuthenticationService : IUserAuthenticationService
         {
             claims.Add(new Claim(Claims.Roles, role.UserRole.ToString()));
         }
+
+        user.Groups.ForEach(group => claims.Add(new(Claims.Group, group.Id.ToString())));
+        user.MasteredGroups.ForEach(group => claims.Add(new(Claims.GroupMaster, group.Id.ToString())));
 
         var time = DateTime.UtcNow - new DateTime(1970, 1, 1);
         var epoch = Convert.ToInt64(time.TotalSeconds);

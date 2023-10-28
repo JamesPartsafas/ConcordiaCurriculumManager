@@ -1,5 +1,6 @@
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
+using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManager.Settings;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
@@ -75,6 +76,84 @@ public class UserAuthenticationServiceTests
         var accessToken = await userService.SigninUser(userEmail, userPassword);
 
         Assert.IsNotNull(accessToken);
+    }
+
+    [TestMethod]
+    public async Task SigninUser_ValidUserWithGroupMemberAndGroupMaster_ReturnsAccessTokenWithGroupAndGroupMasterClaims()
+    {
+        var userEmail = "test@example.com";
+        var userPassword = "password";
+        var hashedPassword = "hashedpassword";
+        var group1 = new Group() { Id = Guid.NewGuid(), Name = "TestGroup1" };
+        var group2 = new Group() { Id = Guid.NewGuid(), Name = "TestGroup2" };
+
+        var user = new User
+        {
+            FirstName = "fname",
+            LastName = "lname",
+            Email = userEmail,
+            Password = hashedPassword,
+            Groups = new List<Group>() { group1, group2 },
+            MasteredGroups = new List<Group> { group1 }
+        };
+
+        userRepository.Setup(repo => repo.GetUserByEmail(userEmail))
+            .ReturnsAsync(user);
+
+        inputHasher.Setup(hasher => hasher.Verify(userPassword, hashedPassword))
+            .Returns(true);
+
+        var accessToken = await userService.SigninUser(userEmail, userPassword);
+        var handler = new JwtSecurityTokenHandler();
+        var jwtSecurityToken = handler.ReadJwtToken(accessToken);
+        var groupClaims = jwtSecurityToken.Claims.Where(c => c.Type == Claims.Group).ToList();
+        var groupMasterClaims = jwtSecurityToken.Claims.Where(c => c.Type == Claims.GroupMaster).ToList();
+
+        Assert.IsNotNull(accessToken);
+        Assert.IsNotNull(groupClaims);
+        Assert.IsNotNull(groupMasterClaims);
+
+        for (int i = 0; i < user.Groups.Count; i++)
+        {
+            Assert.AreEqual(user.Groups[i].Id.ToString(), groupClaims[i].Value);
+        }
+
+        for (int i = 0; i < user.MasteredGroups.Count; i++)
+        {
+            Assert.AreEqual(user.MasteredGroups[i].Id.ToString(), groupMasterClaims[i].Value);
+        }
+    }
+
+    [TestMethod]
+    public async Task SigninUser_ValidUserNotInAnyGroup_ReturnsAccessTokenWithoutGroupAndGroupMasterClaims()
+    {
+        var userEmail = "test@example.com";
+        var userPassword = "password";
+        var hashedPassword = "hashedpassword";
+
+        var user = new User
+        {
+            FirstName = "fname",
+            LastName = "lname",
+            Email = userEmail,
+            Password = hashedPassword
+        };
+
+        userRepository.Setup(repo => repo.GetUserByEmail(userEmail))
+            .ReturnsAsync(user);
+
+        inputHasher.Setup(hasher => hasher.Verify(userPassword, hashedPassword))
+            .Returns(true);
+
+        var accessToken = await userService.SigninUser(userEmail, userPassword);
+        var handler = new JwtSecurityTokenHandler();
+        var jwtSecurityToken = handler.ReadJwtToken(accessToken);
+        var groupClaims = jwtSecurityToken.Claims.Where(c => c.Type == Claims.Group).ToList();
+        var groupMasterClaims = jwtSecurityToken.Claims.Where(c => c.Type == Claims.GroupMaster).ToList();
+
+        Assert.IsNotNull(accessToken);
+        Assert.AreEqual(0, groupClaims.Count);
+        Assert.AreEqual(0, groupMasterClaims.Count);
     }
 
     [TestMethod]
