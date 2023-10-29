@@ -1,4 +1,5 @@
-﻿using ConcordiaCurriculumManager.DTO.Dossiers;
+﻿using ConcordiaCurriculumManager.DTO.Courses;
+using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
@@ -219,6 +220,26 @@ public class CourseServiceTest
         Assert.IsNotNull(courseModificationRequest);
     }
 
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public async Task GetCourseData_CourseDoesNotExist_ThrowsArgumentException()
+    {
+        var courseDTO = GetSampleCourseDTO();
+
+        await courseService.GetCourseData(courseDTO);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public async Task GetCourseData_CourseIsDeleted_ThrowsArgumentException()
+    {
+        var courseDTO = GetSampleCourseDTO();
+        var course = GetSampleCourse();
+        course.CourseState = CourseStateEnum.Deleted;
+        courseRepository.Setup(cr => cr.GetCourseByCourseIdAndLatestVersion(It.IsAny<int>())).ReturnsAsync(course);
+
+        await courseService.GetCourseData(courseDTO);
+    }
 
     private Course GetSampleCourse()
     {
@@ -299,6 +320,15 @@ public class CourseServiceTest
             Title = "Dossier 1",
             Description = "Text description of a dossier.",
             Published = false,
+        };
+    }
+
+    private CourseDTO GetSampleCourseDTO() {
+        return new CourseDTO
+        {
+            CourseID = 1000,
+            Subject = "SOEN",
+            Catalog = "490",
         };
     }
 }

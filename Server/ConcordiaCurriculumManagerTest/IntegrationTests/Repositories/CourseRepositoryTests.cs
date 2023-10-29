@@ -185,4 +185,89 @@ public class CourseRepositoryTests
         Assert.AreEqual(result.CourseID, course.CourseID);
     }
 
+    [TestMethod]
+    public async Task GetCourseData_ReturnsCourse()
+    {
+        var course = new Course
+        {
+            Id = Guid.NewGuid(),
+            CourseID = 1000,
+            Subject = "SOEN",
+            Catalog = "490",
+            Title = "Capstone",
+            Description = "Curriculum manager building simulator",
+            CreditValue = "6",
+            PreReqs = "SOEN 390",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "",
+            CourseState = CourseStateEnum.Accepted,
+            Version = 1,
+            Published = true,
+            CourseComponents = (List<CourseComponent>)ComponentCodeMapping.GetComponentCodeMapping(
+        new ComponentCodeEnum[] { ComponentCodeEnum.LEC, ComponentCodeEnum.CON }
+    )
+        };
+
+        dbContext.Courses.Add(course);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseRepository.GetCourseData(course);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(result.CourseID, course.CourseID);
+    }
+
+    [TestMethod]
+    public async Task GetCourseByCourseIdAndLatestVersion_ReturnsCourseWithLatestVersion()
+    {
+        var course1 = new Course
+        {
+            Id = Guid.NewGuid(),
+            CourseID = 1000,
+            Subject = "SOEN",
+            Catalog = "490",
+            Title = "Capstone",
+            Description = "Curriculum manager building simulator",
+            CreditValue = "6",
+            PreReqs = "SOEN 390",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "",
+            CourseState = CourseStateEnum.Accepted,
+            Version = 3,
+            Published = true,
+            CourseComponents = (List<CourseComponent>)ComponentCodeMapping.GetComponentCodeMapping(
+        new ComponentCodeEnum[] { ComponentCodeEnum.LEC, ComponentCodeEnum.CON }
+    )
+        };
+
+        var course2 = new Course
+        {
+            Id = Guid.NewGuid(),
+            CourseID = 1000,
+            Subject = "SOEN",
+            Catalog = "490",
+            Title = "Capstone",
+            Description = "Curriculum manager building simulator",
+            CreditValue = "6",
+            PreReqs = "SOEN 390",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "",
+            CourseState = CourseStateEnum.Accepted,
+            Version = 4,
+            Published = true,
+            CourseComponents = (List<CourseComponent>)ComponentCodeMapping.GetComponentCodeMapping(
+        new ComponentCodeEnum[] { ComponentCodeEnum.LEC, ComponentCodeEnum.CON }
+    )
+        };
+
+        dbContext.Courses.Add(course1);
+        dbContext.Courses.Add(course2);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseRepository.GetCourseByCourseIdAndLatestVersion(course1.CourseID);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(result.CourseID, course2.CourseID);
+        Assert.AreEqual(result.Version, course2.Version);
+    }
 }
