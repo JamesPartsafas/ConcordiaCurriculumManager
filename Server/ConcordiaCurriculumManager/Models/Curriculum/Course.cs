@@ -3,7 +3,7 @@ using NpgsqlTypes;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum;
 
-public class Course : BaseModel, ISoftDelete
+public class Course : BaseModel
 {
     public required int CourseID { get; set; }
 
