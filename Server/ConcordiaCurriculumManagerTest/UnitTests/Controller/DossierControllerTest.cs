@@ -75,9 +75,9 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
             var editDossier = GetSampleEditDossierDTO();
 
             userService.Setup(u => u.GetCurrentUser()).ReturnsAsync(user);
-            dossierService.Setup(d => d.EditDossier(editDossier, user)).ReturnsAsync(dossier);
+            dossierService.Setup(d => d.EditDossier(editDossier, dossier.Id)).ReturnsAsync(dossier);
 
-            var actionResult = await dossierController.EditDossier(editDossier);
+            var actionResult = await dossierController.EditDossier(dossier.Id, editDossier);
             var objectResult = (ObjectResult)actionResult;
 
             Assert.AreEqual((int)HttpStatusCode.Created, objectResult.StatusCode);
@@ -87,9 +87,9 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         [TestMethod]
         public async Task EditDossier_InvalidCall_Returns400()
         {
-            dossierService.Setup(d => d.EditDossier(It.IsAny<EditDossierDTO>(), It.IsAny<User>())).Throws(new ArgumentException());
+            dossierService.Setup(d => d.EditDossier(It.IsAny<EditDossierDTO>(), It.IsAny<Guid>())).Throws(new ArgumentException());
 
-            var actionResult = await dossierController.EditDossier(GetSampleEditDossierDTO());
+            var actionResult = await dossierController.EditDossier(Guid.NewGuid(), GetSampleEditDossierDTO());
             var objectResult = (ObjectResult)actionResult;
 
             Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
@@ -98,9 +98,9 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         [TestMethod]
         public async Task EditDossier_ServerError_Returns500()
         {
-            dossierService.Setup(d => d.EditDossier(It.IsAny<EditDossierDTO>(), It.IsAny<User>())).Throws(new Exception());
+            dossierService.Setup(d => d.EditDossier(It.IsAny<EditDossierDTO>(), It.IsAny<Guid>())).Throws(new Exception());
 
-            var actionResult = await dossierController.EditDossier(GetSampleEditDossierDTO());
+            var actionResult = await dossierController.EditDossier(Guid.NewGuid(), GetSampleEditDossierDTO());
             var objectResult = (ObjectResult)actionResult;
 
             Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
@@ -136,7 +136,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         [TestMethod]
         public async Task DeleteDossier_InvalidCall_Returns400()
         {
-            dossierService.Setup(d => d.DeleteDossier(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new ArgumentException());
+            dossierService.Setup(d => d.DeleteDossier(It.IsAny<Guid>())).Throws(new ArgumentException());
 
             var actionResult = await dossierController.DeleteDossier(GetSampleDeleteDossierDTO());
             var objectResult = (ObjectResult)actionResult;
@@ -147,7 +147,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         [TestMethod]
         public async Task DeleteDossier_ServerError_Returns500()
         {
-            dossierService.Setup(d => d.DeleteDossier(It.IsAny<Guid>(), It.IsAny<User>())).Throws(new Exception());
+            dossierService.Setup(d => d.DeleteDossier(It.IsAny<Guid>())).Throws(new Exception());
 
             var actionResult = await dossierController.DeleteDossier(GetSampleDeleteDossierDTO());
             var objectResult = (ObjectResult)actionResult;
@@ -181,7 +181,6 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         {
             return new EditDossierDTO
             {
-                Id = Guid.NewGuid(),
                 InitiatorId = Guid.NewGuid(),
                 Title = "test title",
                 Description = "test description"
