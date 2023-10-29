@@ -198,7 +198,80 @@ public class DossierServiceTest
         dossierRepository.Verify(r => r.DeleteDossier(dossier));
     }
 
-    private User GetSampleUser()
+    [TestMethod]
+    public async Task GetDossierForUserOrThrow_ValidInput_ReturnsDossier()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier(user);
+
+        dossierRepository.Setup(d => d.GetDossierByDossierId(user.Id)).ReturnsAsync(dossier);
+
+        var returnedDossier = await dossierService.GetDossierForUserOrThrow(dossier.Id, user.Id);
+
+        Assert.AreEqual(dossier.Id, returnedDossier.Id);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public async Task GetDossierForUserOrThrow_DossierNotFound_Throws()
+    {
+        dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync((Dossier)null!);
+
+        await dossierService.GetDossierForUserOrThrow(Guid.NewGuid(), Guid.NewGuid());
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task GetDossierForUserOrThrow_DossierDoesNotBelongToUser_Throws()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier();
+        dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
+
+        await dossierService.GetDossierForUserOrThrow(Guid.NewGuid(), Guid.NewGuid());
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    public async Task SaveCourseCreationRequest_ValidInput_Saves()
+    {
+        dossierRepository.Setup(d => d.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>())).ReturnsAsync(true);
+
+        await dossierService.SaveCourseCreationRequest(GetSampleCourseCreationRequest());
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task SaveCourseCreationRequest_InvalidInput_Throws()
+    {
+        dossierRepository.Setup(d => d.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>())).ReturnsAsync(false);
+
+        await dossierService.SaveCourseCreationRequest(GetSampleCourseCreationRequest());
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    public async Task SaveCourseModificationRequest_ValidInput_Saves()
+    {
+        dossierRepository.Setup(d => d.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).ReturnsAsync(true);
+
+        await dossierService.SaveCourseModificationRequest(GetSampleCourseModificationRequest());
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task SaveCourseModificationRequest_InvalidInput_Throws()
+    {
+        dossierRepository.Setup(d => d.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).ReturnsAsync(false);
+
+        await dossierService.SaveCourseModificationRequest(GetSampleCourseModificationRequest());
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
+
+    private static User GetSampleUser()
     {
         return new User
         {
@@ -210,7 +283,7 @@ public class DossierServiceTest
         };
     }
 
-    private CreateDossierDTO GetSampleCreateDossierDTO()
+    private static CreateDossierDTO GetSampleCreateDossierDTO()
     {
         return new CreateDossierDTO
         {
@@ -219,7 +292,7 @@ public class DossierServiceTest
         };
     }
 
-    private Dossier GetSampleDossier()
+    private static Dossier GetSampleDossier()
     {
         return new Dossier
         {
@@ -230,13 +303,45 @@ public class DossierServiceTest
         };
     }
 
-    private EditDossierDTO GetSampleEditDossierDTO()
+    private static Dossier GetSampleDossier(User user)
+    {
+        var dossier = GetSampleDossier();
+        dossier.InitiatorId = user.Id;
+
+        return dossier;
+    }
+
+    private static EditDossierDTO GetSampleEditDossierDTO()
     {
         return new EditDossierDTO
         {
             InitiatorId = Guid.NewGuid(),
             Title = "test title",
             Description = "test description"
+        };
+    }
+
+    private static CourseCreationRequest GetSampleCourseCreationRequest()
+    {
+        return new CourseCreationRequest()
+        {
+            DossierId = Guid.NewGuid(),
+            Rationale = "Very reasonable",
+            ResourceImplication = "Very expensive",
+            Comment = "Lots of problems here",
+            NewCourseId = Guid.NewGuid()
+        };
+    }
+
+    private static CourseModificationRequest GetSampleCourseModificationRequest()
+    {
+        return new CourseModificationRequest()
+        {
+            DossierId = Guid.NewGuid(),
+            Rationale = "Very reasonable",
+            ResourceImplication = "Very expensive",
+            Comment = "Lots of problems here",
+            CourseId = Guid.NewGuid()
         };
     }
 }
