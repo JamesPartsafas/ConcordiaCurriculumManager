@@ -45,8 +45,6 @@ public class Course : BaseModel
     public ICollection<CourseReference>? CourseReferenced { get; set; }
 
     public ICollection<CourseReference>? CourseReferencing { get; set; }
-    public bool IsDeleted { get; set; }
-    public DateTime? DeletedAt { get; set; }
 }
 
 public enum CourseCareerEnum
