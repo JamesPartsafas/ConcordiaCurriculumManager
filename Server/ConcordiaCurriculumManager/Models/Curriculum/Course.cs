@@ -23,13 +23,17 @@ public class Course : BaseModel
 
     public string? EquivalentCourses { get; set; }
 
+    public string? CourseNotes { get; set; }
+
     public required CourseStateEnum CourseState { get; set; }
 
     public required int Version { get; set; }
 
     public required bool Published { get; set; }
 
-    public List<CourseComponent> CourseComponents { get; set; } = new();
+    public ICollection<CourseCourseComponent>? CourseCourseComponents { get; set; }
+
+    public ICollection<SupportingFile>? SupportingFiles { get; set; }
 
     public CourseCreationRequest? CourseCreationRequest { get; set; }
 

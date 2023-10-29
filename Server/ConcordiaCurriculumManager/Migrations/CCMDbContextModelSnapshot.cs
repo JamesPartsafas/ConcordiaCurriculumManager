@@ -38,6 +38,9 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Property<int>("CourseID")
                         .HasColumnType("integer");
 
+                    b.Property<string>("CourseNotes")
+                        .HasColumnType("text");
+
                     b.Property<int>("CourseState")
                         .HasColumnType("integer");
 
@@ -105,6 +108,36 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.ToTable("CourseComponents");
                 });
 
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseCourseComponent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ComponentCode")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("HoursPerWeek")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComponentCode");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("CourseCourseComponents");
+                });
+
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseReference", b =>
                 {
                     b.Property<Guid>("Id")
@@ -138,6 +171,10 @@ namespace ConcordiaCurriculumManager.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -149,6 +186,14 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.Property<Guid>("NewCourseId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Rationale")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ResourceImplication")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -166,6 +211,10 @@ namespace ConcordiaCurriculumManager.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<Guid>("CourseId")
                         .HasColumnType("uuid");
 
@@ -177,6 +226,14 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Rationale")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ResourceImplication")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -219,6 +276,36 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasIndex("InitiatorId");
 
                     b.ToTable("Dossiers");
+                });
+
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.SupportingFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ContentBase64")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("SupportingFiles");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Users.Group", b =>
@@ -298,21 +385,6 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("CourseCourseComponent", b =>
-                {
-                    b.Property<Guid>("CourseComponentsId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CoursesId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("CourseComponentsId", "CoursesId");
-
-                    b.HasIndex("CoursesId");
-
-                    b.ToTable("CourseCourseComponent");
-                });
-
             modelBuilder.Entity("GroupUser", b =>
                 {
                     b.Property<Guid>("GroupsId")
@@ -356,6 +428,26 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("RoleUser");
+                });
+
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseCourseComponent", b =>
+                {
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseComponent", "CourseComponent")
+                        .WithMany("CourseCourseComponents")
+                        .HasForeignKey("ComponentCode")
+                        .HasPrincipalKey("ComponentCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Course", "Course")
+                        .WithMany("CourseCourseComponents")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("CourseComponent");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseReference", b =>
@@ -426,19 +518,15 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Navigation("Initiator");
                 });
 
-            modelBuilder.Entity("CourseCourseComponent", b =>
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.SupportingFile", b =>
                 {
-                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseComponent", null)
-                        .WithMany()
-                        .HasForeignKey("CourseComponentsId")
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Course", "Course")
+                        .WithMany("SupportingFiles")
+                        .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Course", null)
-                        .WithMany()
-                        .HasForeignKey("CoursesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("GroupUser", b =>
@@ -488,6 +576,8 @@ namespace ConcordiaCurriculumManager.Migrations
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Course", b =>
                 {
+                    b.Navigation("CourseCourseComponents");
+
                     b.Navigation("CourseCreationRequest");
 
                     b.Navigation("CourseModificationRequest");
@@ -495,6 +585,13 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Navigation("CourseReferenced");
 
                     b.Navigation("CourseReferencing");
+
+                    b.Navigation("SupportingFiles");
+                });
+
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseComponent", b =>
+                {
+                    b.Navigation("CourseCourseComponents");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.Dossier", b =>
