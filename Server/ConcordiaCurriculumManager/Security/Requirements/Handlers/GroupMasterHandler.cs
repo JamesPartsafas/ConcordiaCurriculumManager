@@ -25,7 +25,7 @@ public class GroupMasterHandler : AuthorizationHandler<GroupMasterOrAdminRequire
             || !Guid.TryParse(groupId?.ToString(), out var parsedGroupId))
         {
             // This is not an Http Request or there is no group Id. Abstain
-            _logger.LogWarning("GroupMasterHanlder is possibly called on a http endpoint that does not include a group id as a param");
+            _logger.LogWarning("GroupMasterHandler is possibly called on a http endpoint that does not include a group id as a param");
             return;
         }
 

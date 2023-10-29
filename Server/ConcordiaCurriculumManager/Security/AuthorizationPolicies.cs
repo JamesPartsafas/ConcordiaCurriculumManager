@@ -27,6 +27,6 @@ public static class AuthorizationPolicies
     {
         services.AddScoped<IAuthorizationHandler, AdminHandler>();
         services.AddScoped<IAuthorizationHandler, GroupMasterHandler>();
-        services.AddScoped<IAuthorizationHandler, OwnerOfDossierHanlder>();
+        services.AddScoped<IAuthorizationHandler, OwnerOfDossierHandler>();
     }
 }

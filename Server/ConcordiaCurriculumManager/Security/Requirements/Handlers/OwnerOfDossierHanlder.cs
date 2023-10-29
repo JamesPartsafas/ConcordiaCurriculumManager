@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ConcordiaCurriculumManager.Security.Requirements.Handlers;
 
-public class OwnerOfDossierHanlder : AuthorizationHandler<OwnerOfDossierRequirement>
+public class OwnerOfDossierHandler : AuthorizationHandler<OwnerOfDossierRequirement>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILogger<OwnerOfDossierHanlder> _logger;
+    private readonly ILogger<OwnerOfDossierHandler> _logger;
     private readonly IDossierService _dossierService;
 
-    public OwnerOfDossierHanlder(IHttpContextAccessor httpContextAccessor, ILogger<OwnerOfDossierHanlder> logger, IDossierService dossierService)
+    public OwnerOfDossierHandler(IHttpContextAccessor httpContextAccessor, ILogger<OwnerOfDossierHandler> logger, IDossierService dossierService)
     {
         _httpContextAccessor = httpContextAccessor;
         _logger = logger;
@@ -25,7 +25,7 @@ public class OwnerOfDossierHanlder : AuthorizationHandler<OwnerOfDossierRequirem
             || !Guid.TryParse(dossierId?.ToString(), out var parsedDossierId))
         {
             // This is not an Http Request or there is no group Id. Abstain
-            _logger.LogWarning("OwnerOfDossierHanlder is possibly called on a http endpoint that does not include a dossier id as a param");
+            _logger.LogWarning("OwnerOfDossierHandler is possibly called on a http endpoint that does not include a dossier id as a param");
             return;
         }
 
