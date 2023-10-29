@@ -8,9 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace ConcordiaCurriculumManager.Controllers;
 
 [ApiController]
@@ -56,21 +53,21 @@ public class DossierController : Controller
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{dossierId}")]
     [SwaggerResponse(StatusCodes.Status200OK, "Dossier retrieved successfully", typeof(DossierDetailsDTO))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Dossier not found")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
-    public async Task<IActionResult> GetDossierByDossierId(Guid id)
+    public async Task<IActionResult> GetDossierByDossierId([FromRoute, Required] Guid dossierId)
     {
         try
         {
-            var dossier = await _dossierService.GetDossierDetailsById(id);
+            var dossier = await _dossierService.GetDossierDetailsById(dossierId);
             var dossierDetails = _mapper.Map<DossierDetailsDTO>(dossier);
             return Ok(dossierDetails);
         }
         catch (ArgumentException e)
         {
-            var message = $"Dossier with id {id} could not be found";
+            var message = $"Dossier with id {dossierId} could not be found";
             _logger.LogWarning($"${message}: {e.Message}");
             return Problem(
                 title: message,
@@ -121,16 +118,16 @@ public class DossierController : Controller
         }
     }
 
-    [HttpPut(nameof(EditDossier))]
-    [Authorize(Roles = RoleNames.Initiator)]
+    [HttpPut(nameof(EditDossier) + "/{dossierId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status201Created, "Dossier edited successfully", typeof(DossierDTO))]
-    public async Task<ActionResult> EditDossier([FromBody, Required] EditDossierDTO dossier) {
+    public async Task<ActionResult> EditDossier([FromRoute, Required] Guid dossierId, [FromBody, Required] EditDossierDTO dossier)
+    {
         try
         {
-            var user = await _userService.GetCurrentUser();
-            var editedDossier = await _dossierService.EditDossier(dossier, user);
+            var editedDossier = await _dossierService.EditDossier(dossier, dossierId);
             var editedDossierDTO = _mapper.Map<DossierDTO>(editedDossier);
 
             return Created($"/{nameof(EditDossier)}", editedDossierDTO);
@@ -153,18 +150,16 @@ public class DossierController : Controller
         }
     }
 
-    [HttpDelete(nameof(DeleteDossier) + "/{id}")]
-    [Authorize(Roles = RoleNames.Initiator)]
+    [HttpDelete(nameof(DeleteDossier) + "/{dossierId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status204NoContent, "Dossier deleted successfully")]
-    public async Task<ActionResult> DeleteDossier(Guid id)
+    public async Task<ActionResult> DeleteDossier([FromRoute, Required] Guid dossierId)
     {
         try
         {
-            var user = await _userService.GetCurrentUser();
-            await _dossierService.DeleteDossier(id, user);
-
+            await _dossierService.DeleteDossier(dossierId);
             return NoContent();
         }
         catch (ArgumentException e)

@@ -58,6 +58,7 @@ public class Program
                 options.Events = new TokenValidation();
             });
 
+        builder.Services.AddAuthorizationHandlers();
         builder.Services.AddAuthorization(options => options.AddPolicies());
 
         var dbSetting = builder.Configuration
