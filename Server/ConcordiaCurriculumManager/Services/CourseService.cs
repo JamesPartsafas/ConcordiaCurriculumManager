@@ -67,7 +67,7 @@ public class CourseService : ICourseService
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(initiation.DossierId, userId);
 
-        var course = CreateCourseFromDTOData(initiation, await _courseRepository.GetMaxCourseId(), 1);
+        var course = CreateCourseFromDTOData(initiation, (await _courseRepository.GetMaxCourseId()) + 1, 1);
 
         await SaveCourseForUserOrThrow(course, userId);
 
