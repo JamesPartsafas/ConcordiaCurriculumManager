@@ -19,11 +19,11 @@ public class Course : BaseModel
 
     public required string PreReqs { get; set; }
 
-    public required string CourseNotes { get; set; }
-
     public required CourseCareerEnum Career { get; set; }
 
     public string? EquivalentCourses { get; set; }
+
+    public string? CourseNotes { get; set; }
 
     public required CourseStateEnum CourseState { get; set; }
 

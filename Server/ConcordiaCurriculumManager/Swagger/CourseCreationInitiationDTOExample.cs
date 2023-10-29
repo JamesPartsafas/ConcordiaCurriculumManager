@@ -14,7 +14,7 @@ public class CourseCreationInitiationDTOExample : IExamplesProvider<CourseCreati
             Catalog = "500",
             Title = "Super Capstone for Software Engineers",
             Description = "An advanced capstone project",
-            CourseNotes = "Note: Students will love this course",
+            CourseNotes = "Students will love this course",
             CreditValue = "6.5",
             PreReqs = "SOEN 490 previously or concurrently",
             Rationale = "This course will be lots of fun",

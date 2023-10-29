@@ -1,4 +1,5 @@
 ﻿using NpgsqlTypes;
+using System.ComponentModel.DataAnnotations;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum;
 

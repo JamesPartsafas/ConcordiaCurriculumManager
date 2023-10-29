@@ -69,13 +69,7 @@ public class CourseService : ICourseService
 
         var course = CreateCourseFromDTOData(initiation, await _courseRepository.GetMaxCourseId(), 1);
 
-        bool courseCreated = await _courseRepository.SaveCourse(course);
-        if (!courseCreated)
-        {
-            _logger.LogWarning($"Error inserting ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
-            throw new Exception("Error registering the course");
-        }
-        _logger.LogInformation($"Inserted ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
+        await SaveCourseForUserOrThrow(course, userId);
 
         var courseCreationRequest = new CourseCreationRequest 
         {
