@@ -184,7 +184,7 @@ public class CourseService : ICourseService
         {
             throw new ArgumentException("The course does not exist.");
         }
-        //int latestVersion = await _courseRepository.GetLatestCourseVersion(c.CourseID);
+
         var courseWithLatestVersion = await _courseRepository.GetCourseByCourseIdAndLatestVersion(c.CourseID);
 
         if (courseWithLatestVersion == null)
