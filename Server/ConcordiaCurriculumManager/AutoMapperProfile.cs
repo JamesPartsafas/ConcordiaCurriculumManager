@@ -22,6 +22,7 @@ public class AutoMapper : Profile
         CreateMap<User, UserDTO>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
         CreateMap<Group, GroupDTO>();
+        CreateMap<Course, CourseDataDTO>().ReverseMap();
     }
 
 }

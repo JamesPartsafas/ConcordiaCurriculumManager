@@ -68,5 +68,9 @@ public enum CourseStateEnum
     NewCourseProposal,
 
     [PgName(nameof(CourseChangeProposal))]
-    CourseChangeProposal
+    CourseChangeProposal,
+
+    [PgName(nameof(Deleted))]
+    Deleted,
+
 }

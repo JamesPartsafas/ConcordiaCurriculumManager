@@ -14,6 +14,7 @@ public interface ICourseService
     public Task<IEnumerable<string>> GetAllCourseSubjects();
     public Task<CourseCreationRequest> InitiateCourseCreation(CourseCreationInitiationDTO initiation, Guid userId);
     public Task<CourseModificationRequest> InitiateCourseModification(CourseModificationInitiationDTO modification, Guid userId);
+    public Task<Course?> GetCourseData(CourseDTO course);
 }
 
 public class CourseService : ICourseService
@@ -174,5 +175,29 @@ public class CourseService : ICourseService
         _logger.LogInformation($"Created ${typeof(CourseCreationRequest)} ${courseModificationRequest.Id}");
 
         return courseModificationRequest;
+    }
+
+    public async Task<Course?> GetCourseData(CourseDTO c)
+    {
+        var course = await _courseRepository.GetCourseBySubjectAndCatalog(c.Subject, c.Catalog);
+        if (course == null)
+        {
+            throw new ArgumentException("The course does not exist.");
+        }
+        //int latestVersion = await _courseRepository.GetLatestCourseVersion(c.CourseID);
+        var courseWithLatestVersion = await _courseRepository.GetCourseByCourseIdAndLatestVersion(c.CourseID);
+
+        if (courseWithLatestVersion == null)
+        {
+            throw new ArgumentException("The course does not exist.");
+        }
+
+        if (courseWithLatestVersion.CourseState == CourseStateEnum.Deleted)
+        {
+            throw new ArgumentException("The course is deleted");
+        }
+
+        return await _courseRepository.GetCourseData(courseWithLatestVersion);
+
     }
 }
