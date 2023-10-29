@@ -1,5 +1,4 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers;
-using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
@@ -14,9 +13,6 @@ public interface IDossierService
     public Task<Dossier> EditDossier(EditDossierDTO dossier, Guid dossierId);
     public Task DeleteDossier(Guid dossierId);
     public Task<Dossier?> GetDossierDetailsById(Guid id);
-    public Task<Dossier> EditDossier(EditDossierDTO dossier, User user);
-    public Task DeleteDossier(Guid ID, User user);
-    public Task<Dossier> GetDossierDetailsById(Guid id);
     public Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId);
     public Task SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
@@ -90,21 +86,11 @@ public class DossierService : IDossierService
         _logger.LogInformation($"Deleted ${typeof(Dossier)} ${dossier.Id}");
     }
 
-    public async Task<Dossier> GetDossierDetailsById(Guid id)
-    {
-        var dossierDetails = await _dossierRepository.GetDossierByDossierId(id);
-        if (dossierDetails == null)
-        {
-            _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${id}: does not exist");
-            throw new ArgumentException("Dossier could not be found.");
-        }
-
-        return dossierDetails;
-    }
+    public async Task<Dossier?> GetDossierDetailsById(Guid id) => await _dossierRepository.GetDossierByDossierId(id);
 
     public async Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId)
     {
-        var dossier = await GetDossierDetailsById(dossierId);
+        var dossier = await GetDossierDetailsById(dossierId) ?? throw new ArgumentException("The dossier does not exist.");
         if (dossier.InitiatorId != userId)
         {
             _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${dossier.Id}: does not belong to user ${typeof(User)} ${userId}");
@@ -135,6 +121,4 @@ public class DossierService : IDossierService
         }
         _logger.LogInformation($"Created ${typeof(CourseModificationRequest)} ${courseModificationRequest.Id}");
     }
-    public async Task<Dossier?> GetDossierDetailsById(Guid id) => await _dossierRepository.GetDossierByDossierId(id);
 }
-
