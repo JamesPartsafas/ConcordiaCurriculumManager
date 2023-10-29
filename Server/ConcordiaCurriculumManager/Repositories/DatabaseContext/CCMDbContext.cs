@@ -25,6 +25,8 @@ public class CCMDbContext : DbContext
 
     public DbSet<CourseComponent> CourseComponents { get; set; }
 
+    public DbSet<CourseCourseComponent> CourseCourseComponents { get; set; }
+
     public DbSet<CourseCreationRequest> CourseCreationRequests { get; set; }
 
     public DbSet<CourseModificationRequest> CourseModificationRequests { get; set; }
@@ -67,7 +69,8 @@ public class CCMDbContext : DbContext
         modelBuilder.Entity<CourseComponent>()
             .HasMany(cc => cc.CourseCourseComponents)
             .WithOne(ccc => ccc.CourseComponent)
-            .HasForeignKey(ccc => ccc.ComponentCode);
+            .HasForeignKey(ccc => ccc.ComponentCode)
+            .HasPrincipalKey(cc => cc.ComponentCode);
     }
 
     private static void ConfigureUserRoleRelationship(ModelBuilder modelBuilder)
