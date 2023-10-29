@@ -189,11 +189,6 @@ public class CourseService : ICourseService
 
         if (courseWithLatestVersion == null)
         {
-            throw new ArgumentException("The course does not exist.");
-        }
-
-        if (courseWithLatestVersion.CourseState == CourseStateEnum.Deleted)
-        {
             throw new ArgumentException("The course is deleted");
         }
 
