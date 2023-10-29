@@ -3,7 +3,7 @@ using NpgsqlTypes;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum;
 
-public class Course : BaseModel
+public class Course : BaseModel, ISoftDelete
 {
     public required int CourseID { get; set; }
 
@@ -39,10 +39,14 @@ public class Course : BaseModel
 
     public CourseModificationRequest? CourseModificationRequest { get; set; }
 
+    public CourseDeletionRequest? CourseDeletionRequest { get; set; }
+
     // Self-reference related fields
     public ICollection<CourseReference>? CourseReferenced { get; set; }
 
     public ICollection<CourseReference>? CourseReferencing { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }
 
 public enum CourseCareerEnum
@@ -72,5 +76,14 @@ public enum CourseStateEnum
     NewCourseProposal,
 
     [PgName(nameof(CourseChangeProposal))]
-    CourseChangeProposal
+    CourseChangeProposal,
+
+    [PgName(nameof(CourseDeletionProposal))]
+    CourseDeletionProposal,
+
+    [PgName(nameof(Deleted))]
+    Deleted,
+
+    [PgName(nameof(Rejected))]
+    Rejected,
 }

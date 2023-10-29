@@ -31,6 +31,8 @@ public class CCMDbContext : DbContext
 
     public DbSet<CourseModificationRequest> CourseModificationRequests { get; set; }
 
+    public DbSet<CourseDeletionRequest> CourseDeletionRequests { get; set; }
+
     public DbSet<Dossier> Dossiers { get; set; }
 
     public DbSet<CourseReference> CourseReferences { get; set; }
@@ -96,6 +98,11 @@ public class CCMDbContext : DbContext
             .WithOne(request => request.Course)
             .HasForeignKey<CourseModificationRequest>(dossier => dossier.CourseId);
 
+        modelBuilder.Entity<Course>()
+            .HasOne(course => course.CourseDeletionRequest)
+            .WithOne(request => request.Course)
+            .HasForeignKey<CourseDeletionRequest>(dossier => dossier.CourseId);
+
         modelBuilder.Entity<User>()
           .HasMany(user => user.Dossiers)
           .WithOne(dossier => dossier.Initiator)
@@ -103,6 +110,16 @@ public class CCMDbContext : DbContext
 
         modelBuilder.Entity<Dossier>()
             .HasMany(dossier => dossier.CourseCreationRequests)
+            .WithOne(request => request.Dossier)
+            .HasForeignKey(request => request.DossierId);
+
+        modelBuilder.Entity<Dossier>()
+            .HasMany(dossier => dossier.CourseModificationRequests)
+            .WithOne(request => request.Dossier)
+            .HasForeignKey(request => request.DossierId);
+
+        modelBuilder.Entity<Dossier>()
+            .HasMany(dossier => dossier.CourseDeletionRequests)
             .WithOne(request => request.Dossier)
             .HasForeignKey(request => request.DossierId);
     }
