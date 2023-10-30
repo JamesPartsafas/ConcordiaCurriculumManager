@@ -13,7 +13,6 @@ public interface ICourseRepository
     public Task<bool> SaveCourse(Course course);
     public Task<Course?> GetCourseByCourseId(int id);
     public Task<Course?> GetCourseByCourseIdAndLatestVersion(int courseId);
-    public Task<Course?> GetCourseData(Course course);
 
 }
 
@@ -42,8 +41,6 @@ public class CourseRepository : ICourseRepository
 
     public Task<Course?> GetCourseByCourseIdAndLatestVersion(int courseId) => _dbContext.Courses
     .Where(course => course.CourseID == courseId && course.Version == _dbContext.Courses.Max(course => (int?)course.Version)).FirstOrDefaultAsync();
-
-    public async Task<Course?> GetCourseData(Course course) => await _dbContext.Courses.Where(c => c.CourseID == course.CourseID).FirstOrDefaultAsync();
 
     public async Task<Course?> GetCourseByCourseId(int CourseId) => await _dbContext.Courses.Where(course => course.CourseID == CourseId && course.CourseState == CourseStateEnum.Accepted).FirstOrDefaultAsync(); // TODO: Change to get where version is also max
 }

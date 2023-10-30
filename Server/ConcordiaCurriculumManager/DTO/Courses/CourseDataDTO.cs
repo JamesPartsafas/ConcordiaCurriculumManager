@@ -4,6 +4,8 @@ namespace ConcordiaCurriculumManager.DTO.Courses
 {
     public class CourseDataDTO
     {
+        public required Guid Id { get; set; }
+
         public required int CourseID { get; set; }
 
         public required string Subject { get; set; }
@@ -22,9 +24,13 @@ namespace ConcordiaCurriculumManager.DTO.Courses
 
         public string? EquivalentCourses { get; set; }
 
+        public string? CourseNotes { get; set; }
+
         public required CourseStateEnum CourseState { get; set; }
 
-        public List<CourseComponent> CourseComponents { get; set; } = new();
+        public ICollection<CourseCourseComponent>? CourseCourseComponents { get; set; }
+
+        public ICollection<SupportingFile>? SupportingFiles { get; set; }
     }
 }
 

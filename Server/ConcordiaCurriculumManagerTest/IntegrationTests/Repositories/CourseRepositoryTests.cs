@@ -203,40 +203,6 @@ public class CourseRepositoryTests
     }
 
     [TestMethod]
-    public async Task GetCourseData_ReturnsCourse()
-    {
-        var id = Guid.NewGuid();
-        var course = new Course
-        {
-            Id = Guid.NewGuid(),
-            CourseID = 1000,
-            Subject = "SOEN",
-            Catalog = "490",
-            Title = "Capstone",
-            Description = "Curriculum manager building simulator",
-            CreditValue = "6",
-            PreReqs = "SOEN 390",
-            Career = CourseCareerEnum.UGRD,
-            EquivalentCourses = "",
-            CourseState = CourseStateEnum.Accepted,
-            Version = 1,
-            Published = true,
-            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
-                { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
-                id
-            )
-        };
-
-        dbContext.Courses.Add(course);
-        await dbContext.SaveChangesAsync();
-
-        var result = await courseRepository.GetCourseData(course);
-
-        Assert.IsNotNull(result);
-        Assert.AreEqual(result.CourseID, course.CourseID);
-    }
-
-    [TestMethod]
     public async Task GetCourseByCourseIdAndLatestVersion_ReturnsCourseWithLatestVersion()
     {
         var id1 = Guid.NewGuid();

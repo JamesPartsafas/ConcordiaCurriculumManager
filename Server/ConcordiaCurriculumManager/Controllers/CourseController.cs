@@ -131,14 +131,14 @@ public class CourseController : Controller
         }
     }
 
-    [HttpGet(nameof(GetCourseData))]
+    [HttpGet(nameof(GetCourseData) + "/{subject}" + "/{catalog}")]
     [SwaggerResponse(StatusCodes.Status200OK, "Course data retrieved")]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
-    public async Task<ActionResult> GetCourseData([FromBody, Required] CourseDTO course) {
+    public async Task<ActionResult> GetCourseData([FromRoute, Required] string subject, string catalog) {
         try
         {
-            var courseData = await _courseService.GetCourseData(course);
+            var courseData = await _courseService.GetCourseData(subject, catalog);
             var courseDataDTOs = _mapper.Map<CourseDataDTO>(courseData);
             _logger.LogInformation(string.Join(",", courseDataDTOs));
             return Ok(courseDataDTOs);
