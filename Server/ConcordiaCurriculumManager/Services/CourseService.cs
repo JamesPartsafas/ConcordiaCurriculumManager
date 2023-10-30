@@ -187,9 +187,9 @@ public class CourseService : ICourseService
 
         var courseWithLatestVersion = await _courseRepository.GetCourseByCourseIdAndLatestVersion(c.CourseID);
 
-        if (courseWithLatestVersion == null)
+        if (courseWithLatestVersion == null || courseWithLatestVersion.CourseState == CourseStateEnum.Deleted)
         {
-            throw new ArgumentException("The course is deleted");
+            throw new ArgumentException("The course is deleted.");
         }
 
         return await _courseRepository.GetCourseData(courseWithLatestVersion);
