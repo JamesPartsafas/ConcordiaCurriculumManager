@@ -225,6 +225,7 @@ public class CourseServiceTest
     public async Task GetCourseData_CourseDoesNotExist_ThrowsArgumentException()
     {
         var courseDTO = GetSampleCourseDTO();
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
 
         await courseService.GetCourseData(courseDTO);
     }
@@ -240,6 +241,19 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.GetCourseByCourseIdAndLatestVersion(It.IsAny<int>())).ReturnsAsync(course);
 
         await courseService.GetCourseData(courseDTO);
+    }
+
+    [TestMethod]
+    public async Task GetCourseData_ValidCall_QueriesRepo()
+    {
+        var courseDTO = GetSampleCourseDTO();
+        var course = GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+        courseRepository.Setup(cr => cr.GetCourseByCourseIdAndLatestVersion(It.IsAny<int>())).ReturnsAsync(course);
+
+        await courseService.GetCourseData(courseDTO);
+
+        courseRepository.Verify(cs => cs.GetCourseData(course));
     }
 
     private Course GetSampleCourse()
@@ -327,7 +341,6 @@ public class CourseServiceTest
     private CourseDTO GetSampleCourseDTO() {
         return new CourseDTO
         {
-            CourseID = 1000,
             Subject = "SOEN",
             Catalog = "490",
         };
