@@ -10,6 +10,7 @@ using ConcordiaCurriculumManager.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -226,36 +227,39 @@ public class CourseServiceTest
     [ExpectedException(typeof(ArgumentException))]
     public async Task GetCourseData_CourseDoesNotExist_ThrowsArgumentException()
     {
-        var courseDTO = GetSampleCourseDTO();
+        var subject = "SOEN";
+        var catalog = "490";
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
 
-        await courseService.GetCourseData(courseDTO);
+        await courseService.GetCourseData(subject, catalog);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public async Task GetCourseData_CourseIsDeleted_ThrowsArgumentException()
     {
-        var courseDTO = GetSampleCourseDTO();
+        var subject = "SOEN";
+        var catalog = "490";
         var course = GetSampleCourse();
         course.CourseState = CourseStateEnum.Deleted;
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         courseRepository.Setup(cr => cr.GetCourseByCourseIdAndLatestVersion(It.IsAny<int>())).ReturnsAsync(course);
 
-        await courseService.GetCourseData(courseDTO);
+        await courseService.GetCourseData(subject, catalog);
     }
 
     [TestMethod]
-    public async Task GetCourseData_ValidCall_QueriesRepo()
+    public async Task GetCourseData_ValidCall_Succeeds()
     {
-        var courseDTO = GetSampleCourseDTO();
+        var subject = "SOEN";
+        var catalog = "490";
         var course = GetSampleCourse();
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         courseRepository.Setup(cr => cr.GetCourseByCourseIdAndLatestVersion(It.IsAny<int>())).ReturnsAsync(course);
 
-        await courseService.GetCourseData(courseDTO);
+        var courseData = await courseService.GetCourseData(subject, catalog);
 
-        courseRepository.Verify(cs => cs.GetCourseData(course));
+        Assert.IsNotNull(courseData);
     }
 
     private Course GetSampleCourse()
@@ -349,14 +353,6 @@ public class CourseServiceTest
         };
     }
 
-
-    private CourseDTO GetSampleCourseDTO() {
-        return new CourseDTO
-        {
-            Subject = "SOEN",
-            Catalog = "490",
-        };
-    }
     private CourseCreationRequest GetSampleCourseCreationRequest(Dossier dossier, Course course)
     {
         return new CourseCreationRequest
