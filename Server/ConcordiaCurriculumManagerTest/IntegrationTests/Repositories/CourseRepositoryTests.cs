@@ -205,6 +205,7 @@ public class CourseRepositoryTests
     [TestMethod]
     public async Task GetCourseData_ReturnsCourse()
     {
+        var id = Guid.NewGuid();
         var course = new Course
         {
             Id = Guid.NewGuid(),
@@ -220,9 +221,10 @@ public class CourseRepositoryTests
             CourseState = CourseStateEnum.Accepted,
             Version = 1,
             Published = true,
-            CourseComponents = (List<CourseComponent>)ComponentCodeMapping.GetComponentCodeMapping(
-        new ComponentCodeEnum[] { ComponentCodeEnum.LEC, ComponentCodeEnum.CON }
-    )
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                id
+            )
         };
 
         dbContext.Courses.Add(course);
@@ -237,6 +239,8 @@ public class CourseRepositoryTests
     [TestMethod]
     public async Task GetCourseByCourseIdAndLatestVersion_ReturnsCourseWithLatestVersion()
     {
+        var id1 = Guid.NewGuid();
+        var id2 = Guid.NewGuid();
         var course1 = new Course
         {
             Id = Guid.NewGuid(),
@@ -252,9 +256,10 @@ public class CourseRepositoryTests
             CourseState = CourseStateEnum.Accepted,
             Version = 3,
             Published = true,
-            CourseComponents = (List<CourseComponent>)ComponentCodeMapping.GetComponentCodeMapping(
-        new ComponentCodeEnum[] { ComponentCodeEnum.LEC, ComponentCodeEnum.CON }
-    )
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                id1
+            )
         };
 
         var course2 = new Course
@@ -272,9 +277,10 @@ public class CourseRepositoryTests
             CourseState = CourseStateEnum.Deleted,
             Version = 4,
             Published = true,
-            CourseComponents = (List<CourseComponent>)ComponentCodeMapping.GetComponentCodeMapping(
-        new ComponentCodeEnum[] { ComponentCodeEnum.LEC, ComponentCodeEnum.CON }
-    )
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                id2
+            )
         };
 
         dbContext.Courses.Add(course1);
