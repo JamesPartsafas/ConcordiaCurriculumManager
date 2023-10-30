@@ -252,7 +252,7 @@ public class CourseRepositoryTests
             PreReqs = "SOEN 390",
             Career = CourseCareerEnum.UGRD,
             EquivalentCourses = "",
-            CourseState = CourseStateEnum.Accepted,
+            CourseState = CourseStateEnum.Deleted,
             Version = 4,
             Published = true,
             CourseComponents = (List<CourseComponent>)ComponentCodeMapping.GetComponentCodeMapping(

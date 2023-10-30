@@ -236,6 +236,7 @@ public class CourseServiceTest
         var courseDTO = GetSampleCourseDTO();
         var course = GetSampleCourse();
         course.CourseState = CourseStateEnum.Deleted;
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         courseRepository.Setup(cr => cr.GetCourseByCourseIdAndLatestVersion(It.IsAny<int>())).ReturnsAsync(course);
 
         await courseService.GetCourseData(courseDTO);
