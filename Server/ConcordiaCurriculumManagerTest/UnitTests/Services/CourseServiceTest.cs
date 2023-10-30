@@ -1,5 +1,6 @@
-﻿using ConcordiaCurriculumManager.DTO.Courses;
+using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
+﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
@@ -22,7 +23,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
 public class CourseServiceTest
 {
     private Mock<ICourseRepository> courseRepository = null!;
-    private Mock<IDossierRepository> dossierRepository = null!;
+    private Mock<IDossierService> dossierService = null!;
     private Mock<ILogger<CourseService>> logger = null!;
     private CourseService courseService = null!;
 
@@ -31,9 +32,9 @@ public class CourseServiceTest
     {
         logger = new Mock<ILogger<CourseService>>();
         courseRepository = new Mock<ICourseRepository>();
-        dossierRepository = new Mock<IDossierRepository>();
+        dossierService = new Mock<IDossierService>();
 
-        courseService = new CourseService(logger.Object, courseRepository.Object, dossierRepository.Object);
+        courseService = new CourseService(logger.Object, courseRepository.Object, dossierService.Object);
     }
 
     [TestMethod]
@@ -75,7 +76,7 @@ public class CourseServiceTest
         var user = GetSampleUser();
         var dossier = GetSampleDossier(user);
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
-        dossierRepository.Setup(cr => cr.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        dossierService.Setup(cr => cr.GetDossierForUserOrThrow(It.IsAny<Guid>(), user.Id)).ReturnsAsync(GetSampleDossier(user));
 
         await courseService.InitiateCourseCreation(GetSampleCourseCreationInitiationDTO(dossier), Guid.NewGuid());
 
@@ -107,11 +108,11 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
         courseRepository.Setup(cr => cr.GetMaxCourseId()).ReturnsAsync(5);
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
-        dossierRepository.Setup(cr => cr.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>())).ReturnsAsync(false);
+        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(cr => cr.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>()))
+            .ThrowsAsync(new Exception());
 
         await courseService.InitiateCourseCreation(GetSampleCourseCreationInitiationDTO(dossier), user.Id);
-
-        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
 
     [TestMethod]
@@ -122,8 +123,9 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
         courseRepository.Setup(cr => cr.GetMaxCourseId()).ReturnsAsync(5);
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
-        dossierRepository.Setup(cr => cr.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>())).ReturnsAsync(true);
-        dossierRepository.Setup(cr => cr.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        dossierService.Setup(cr => cr.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>()))
+            .Returns(Task.CompletedTask);
+        dossierService.Setup(cr => cr.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
         
         var courseCreationRequest = await courseService.InitiateCourseCreation(GetSampleCourseCreationInitiationDTO(dossier), user.Id);
 
@@ -163,7 +165,7 @@ public class CourseServiceTest
         var dossier = GetSampleDossier(user);
         var course = GetSampleCourse();
         courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
-        dossierRepository.Setup(cr => cr.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
 
         await courseService.InitiateCourseModification(GetSampleCourseCreationModificationDTO(course, dossier), Guid.NewGuid());
 
@@ -179,7 +181,7 @@ public class CourseServiceTest
         var dossier = GetSampleDossier(user);
         var course = GetSampleCourse();
         courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
-        dossierRepository.Setup(cr => cr.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(false);
 
         await courseService.InitiateCourseModification(GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
@@ -195,13 +197,12 @@ public class CourseServiceTest
         var dossier = GetSampleDossier(user);
         var course = GetSampleCourse();
         courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
-        dossierRepository.Setup(cr => cr.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
-        dossierRepository.Setup(cr => cr.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).ReturnsAsync(false);
+        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(cr => cr.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).ThrowsAsync(new Exception());
 
         await courseService.InitiateCourseModification(GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
-
-        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
 
     [TestMethod]
@@ -211,9 +212,10 @@ public class CourseServiceTest
         var dossier = GetSampleDossier(user);
         var course = GetSampleCourse();
         courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
-        dossierRepository.Setup(cr => cr.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
-        dossierRepository.Setup(cr => cr.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).ReturnsAsync(true);
+        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(cr => cr.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).Returns(Task.CompletedTask);
 
         var courseModificationRequest = await courseService.InitiateCourseModification(GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
 
@@ -258,9 +260,11 @@ public class CourseServiceTest
 
     private Course GetSampleCourse()
     {
+        var id = Guid.NewGuid();
+
         return new Course
         {
-            Id = Guid.NewGuid(),
+            Id = id,
             CourseID = 1000,
             Subject = "SOEN",
             Catalog = "490",
@@ -268,14 +272,13 @@ public class CourseServiceTest
             Description = "Curriculum manager building simulator",
             CreditValue = "6",
             PreReqs = "SOEN 390",
+            CourseNotes = "Lots of fun",
             Career = CourseCareerEnum.UGRD,
             EquivalentCourses = "",
             CourseState = CourseStateEnum.NewCourseProposal,
             Version = 1,
             Published = true,
-            CourseComponents = (List<CourseComponent>)ComponentCodeMapping.GetComponentCodeMapping(
-                new ComponentCodeEnum[] { ComponentCodeEnum.LEC, ComponentCodeEnum.CON }
-            )
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } }, id)
         };
     }
 
@@ -289,9 +292,13 @@ public class CourseServiceTest
             Description = "Curriculum manager building simulator",
             CreditValue = "6",
             PreReqs = "SOEN 390",
+            CourseNotes = "Fun",
+            Rationale = "It's necessary",
+            ResourceImplication = "New prof needed",
             Career = CourseCareerEnum.UGRD,
             EquivalentCourses = "",
-            ComponentCodes = new List<ComponentCodeEnum> { ComponentCodeEnum.LEC, ComponentCodeEnum.CON },
+            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
+            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
             DossierId = dossier.Id,
         };
     }
@@ -306,9 +313,13 @@ public class CourseServiceTest
             Description = "Curriculum manager building simulator",
             CreditValue = "6",
             PreReqs = "SOEN 390",
+            CourseNotes = "Fun",
+            Rationale = "It's necessary",
+            ResourceImplication = "New prof needed",
             Career = CourseCareerEnum.UGRD,
             EquivalentCourses = "",
-            ComponentCodes = new List<ComponentCodeEnum> { ComponentCodeEnum.LEC, ComponentCodeEnum.CON },
+            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
+            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
             DossierId = dossier.Id,
             CourseId = course.CourseID
         };
@@ -338,11 +349,35 @@ public class CourseServiceTest
         };
     }
 
+
     private CourseDTO GetSampleCourseDTO() {
         return new CourseDTO
         {
             Subject = "SOEN",
             Catalog = "490",
+        };
+    }
+    private CourseCreationRequest GetSampleCourseCreationRequest(Dossier dossier, Course course)
+    {
+        return new CourseCreationRequest
+        {
+            DossierId = dossier.Id,
+            NewCourseId = course.Id,
+            Rationale = "Why not?",
+            ResourceImplication = "New prof needed",
+            Comment = "Easy change to make"
+        };
+    }
+
+    private CourseModificationRequest GetSampleCourseModificationRequest(Dossier dossier, Course course)
+    {
+        return new CourseModificationRequest
+        {
+            DossierId = dossier.Id,
+            CourseId = course.Id,
+            Rationale = "Why not?",
+            ResourceImplication = "New prof needed",
+            Comment = "Easy change to make"
         };
     }
 }

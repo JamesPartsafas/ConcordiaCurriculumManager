@@ -40,10 +40,10 @@ public class CourseRepository : ICourseRepository
         return result > 0;
     }
 
-    public async Task<Course?> GetCourseByCourseId(int CourseId) => await _dbContext.Courses.Where(course => course.CourseID == CourseId && course.CourseState == CourseStateEnum.Accepted).FirstOrDefaultAsync();
-
     public Task<Course?> GetCourseByCourseIdAndLatestVersion(int courseId) => _dbContext.Courses
     .Where(course => course.CourseID == courseId && course.Version == _dbContext.Courses.Max(course => (int?)course.Version)).FirstOrDefaultAsync();
 
     public async Task<Course?> GetCourseData(Course course) => await _dbContext.Courses.Where(c => c.CourseID == course.CourseID).FirstOrDefaultAsync();
+
+    public async Task<Course?> GetCourseByCourseId(int CourseId) => await _dbContext.Courses.Where(course => course.CourseID == CourseId && course.CourseState == CourseStateEnum.Accepted).FirstOrDefaultAsync(); // TODO: Change to get where version is also max
 }

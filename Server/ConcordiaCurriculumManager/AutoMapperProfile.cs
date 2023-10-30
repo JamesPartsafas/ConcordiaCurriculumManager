@@ -2,6 +2,7 @@
 using ConcordiaCurriculumManager.DTO;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
@@ -22,6 +23,7 @@ public class AutoMapper : Profile
         CreateMap<User, UserDTO>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
         CreateMap<Group, GroupDTO>();
+        CreateMap<SupportingFile, SupportingFileDTO>();
         CreateMap<Course, CourseDataDTO>().ReverseMap();
     }
 
