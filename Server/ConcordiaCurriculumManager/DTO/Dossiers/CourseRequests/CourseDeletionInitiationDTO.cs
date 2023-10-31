@@ -2,9 +2,7 @@
 
 namespace ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 
-public class CourseDeletionInitiationDTO : CourseRequestInitiationDTO
+public class CourseDeletionInitiationDTO : CourseInitiationDTO
 {
     public required int CourseId { get; set; }
-
-    public override CourseStateEnum GetAssociatedCourseState() => CourseStateEnum.CourseDeletionProposal;
 }

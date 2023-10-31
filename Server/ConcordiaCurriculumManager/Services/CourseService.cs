@@ -118,7 +118,7 @@ public class CourseService : ICourseService
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(deletion.DossierId, userId);
 
-        var newDeletedCourse = CreateCourseFromDTOData(deletion, oldCourse.CourseID, oldCourse.Version + 1);
+        var newDeletedCourse = Course.CloneCourseForDeletionRequest(oldCourse);
 
         await SaveCourseForUserOrThrow(newDeletedCourse, userId);
 
