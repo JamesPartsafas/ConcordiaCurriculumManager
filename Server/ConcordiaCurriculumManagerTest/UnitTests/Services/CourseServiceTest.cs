@@ -383,19 +383,8 @@ public class CourseServiceTest
     {
         return new CourseDeletionInitiationDTO
         {
-            Subject = "SOEN",
-            Catalog = "490",
-            Title = "Capstone",
-            Description = "Curriculum manager building simulator",
-            CreditValue = "6",
-            PreReqs = "SOEN 390",
-            CourseNotes = "Fun",
             Rationale = "It's necessary",
             ResourceImplication = "New prof needed",
-            Career = CourseCareerEnum.UGRD,
-            EquivalentCourses = "",
-            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
-            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
             DossierId = dossier.Id,
             CourseId = course.CourseID
         };
