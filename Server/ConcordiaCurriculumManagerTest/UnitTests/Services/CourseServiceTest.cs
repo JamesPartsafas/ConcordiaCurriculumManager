@@ -262,6 +262,97 @@ public class CourseServiceTest
         Assert.IsNotNull(courseData);
     }
 
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public async Task InitiateCourseDeletion_CourseDoesNotExists_ThrowsArgumentException()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier(user);
+        var course = GetSampleCourse();
+
+        await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task InitiateCourseDeletion_DossierDoesNotExist_LogsAndThrowsException()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier(user);
+        var course = GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
+
+        await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task InitiateCourseDeletion_DossierDoesNotBelongToUser_LogsAndThrowsException()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier(user);
+        var course = GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+
+        await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), Guid.NewGuid());
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task InitiateCourseDeletion_CourseDoesNotSave_LogsAndThrowsException()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier(user);
+        var course = GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(false);
+
+        await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task InitiateCourseDeletion_CourseDeletionRequestDoesNotSave_LogsAndThrowsException()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier(user);
+        var course = GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
+        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(cr => cr.SaveCourseDeletionRequest(It.IsAny<CourseDeletionRequest>())).ThrowsAsync(new Exception());
+
+        await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
+    }
+
+    [TestMethod]
+    public async Task InitiateCourseDeletion_ValidInput_Succeeds()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier(user);
+        var course = GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
+        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(cr => cr.SaveCourseDeletionRequest(It.IsAny<CourseDeletionRequest>())).Returns(Task.CompletedTask);
+
+        var courseDeletionRequest = await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
+
+        Assert.IsNotNull(courseDeletionRequest);
+    }
+
+
     private Course GetSampleCourse()
     {
         var id = Guid.NewGuid();
@@ -324,6 +415,17 @@ public class CourseServiceTest
             EquivalentCourses = "",
             ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
             SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
+            DossierId = dossier.Id,
+            CourseId = course.CourseID
+        };
+    }
+
+    private CourseDeletionInitiationDTO GetSampleCourseCreationDeletionDTO(Course course, Dossier dossier)
+    {
+        return new CourseDeletionInitiationDTO
+        {
+            Rationale = "It's necessary",
+            ResourceImplication = "New prof needed",
             DossierId = dossier.Id,
             CourseId = course.CourseID
         };

@@ -16,6 +16,7 @@ public interface IDossierService
     public Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId);
     public Task SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
+    public Task SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
 }
 
 public class DossierService : IDossierService
@@ -120,5 +121,16 @@ public class DossierService : IDossierService
             throw new Exception("Error creating the request");
         }
         _logger.LogInformation($"Created ${typeof(CourseModificationRequest)} ${courseModificationRequest.Id}");
+    }
+
+    public async Task SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest)
+    {
+        bool requestCreated = await _dossierRepository.SaveCourseDeletionRequest(courseDeletionRequest);
+        if (!requestCreated)
+        {
+            _logger.LogWarning($"Error creating ${typeof(CourseDeletionRequest)} ${courseDeletionRequest.Id}");
+            throw new Exception("Error creating the request");
+        }
+        _logger.LogInformation($"Created ${typeof(CourseDeletionRequest)} ${courseDeletionRequest.Id}");
     }
 }

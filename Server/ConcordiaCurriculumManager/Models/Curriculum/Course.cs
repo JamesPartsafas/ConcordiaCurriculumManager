@@ -39,11 +39,36 @@ public class Course : BaseModel
 
     public CourseModificationRequest? CourseModificationRequest { get; set; }
 
+    public CourseDeletionRequest? CourseDeletionRequest { get; set; }
+
     // Self-reference related fields
     public ICollection<CourseReference>? CourseReferenced { get; set; }
 
     public ICollection<CourseReference>? CourseReferencing { get; set; }
-}
+
+    public static Course CloneCourseForDeletionRequest(Course course)
+    {
+        return new Course
+        {
+            Id = Guid.NewGuid(),
+            CourseID = course.CourseID,
+            Subject = course.Subject,
+            Catalog = course.Catalog,
+            Title = course.Title,
+            Description = course.Description,
+            CreditValue = course.CreditValue,
+            PreReqs = course.PreReqs,
+            Career = course.Career,
+            EquivalentCourses = course.EquivalentCourses,
+            CourseNotes = course.CourseNotes,
+            CourseState = CourseStateEnum.CourseDeletionProposal,
+            Version = course.Version + 1,
+            Published = course.Published,
+            CourseCourseComponents = course.CourseCourseComponents,
+            SupportingFiles = course.SupportingFiles,
+        };
+    }
+}   
 
 public enum CourseCareerEnum
 {
@@ -74,7 +99,12 @@ public enum CourseStateEnum
     [PgName(nameof(CourseChangeProposal))]
     CourseChangeProposal,
 
+    [PgName(nameof(CourseDeletionProposal))]
+    CourseDeletionProposal,
+
     [PgName(nameof(Deleted))]
     Deleted,
 
+    [PgName(nameof(Rejected))]
+    Rejected,
 }

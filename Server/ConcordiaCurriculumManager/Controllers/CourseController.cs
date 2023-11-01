@@ -153,4 +153,37 @@ public class CourseController : Controller
                 statusCode: StatusCodes.Status500InternalServerError);
         }
     }
+
+    [HttpPost(nameof(InitiateCourseDeletion))]
+    [Consumes(typeof(CourseDeletionInitiationDTO), MediaTypeNames.Application.Json)]
+    [Authorize(Roles = RoleNames.Initiator)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Course deletion created successfully", typeof(CourseDeletionRequestDTO))]
+    public async Task<ActionResult> InitiateCourseDeletion([FromBody, Required] CourseDeletionInitiationDTO deletion)
+    {
+        try
+        {
+            Guid userId = Guid.Parse(_userService.GetCurrentUserClaim(Claims.Id));
+            var courseDeletionRequest = await _courseService.InitiateCourseDeletion(deletion, userId);
+            var courseDeletionRequestDTO = _mapper.Map<CourseDeletionRequestDTO>(courseDeletionRequest);
+
+            return Created($"/{nameof(InitiateCourseDeletion)}", courseDeletionRequestDTO);
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"Unexpected error occured while trying to create the deletion request: {e.Message}");
+            return Problem(
+                title: "Unexpected error occured while trying to create the deletion request.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
 }
