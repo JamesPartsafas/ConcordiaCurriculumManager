@@ -202,4 +202,61 @@ public class CourseRepositoryTests
         Assert.AreEqual(result.CourseID, course.CourseID);
     }
 
+    [TestMethod]
+    public async Task GetCourseByCourseIdAndLatestVersion_ReturnsCourseWithLatestVersion()
+    {
+        var id1 = Guid.NewGuid();
+        var id2 = Guid.NewGuid();
+        var course1 = new Course
+        {
+            Id = Guid.NewGuid(),
+            CourseID = 1000,
+            Subject = "SOEN",
+            Catalog = "490",
+            Title = "Capstone",
+            Description = "Curriculum manager building simulator",
+            CreditValue = "6",
+            PreReqs = "SOEN 390",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "",
+            CourseState = CourseStateEnum.Accepted,
+            Version = 3,
+            Published = true,
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                id1
+            )
+        };
+
+        var course2 = new Course
+        {
+            Id = Guid.NewGuid(),
+            CourseID = 1000,
+            Subject = "SOEN",
+            Catalog = "490",
+            Title = "Capstone",
+            Description = "Curriculum manager building simulator",
+            CreditValue = "6",
+            PreReqs = "SOEN 390",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "",
+            CourseState = CourseStateEnum.Deleted,
+            Version = 4,
+            Published = true,
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                id2
+            )
+        };
+
+        dbContext.Courses.Add(course1);
+        dbContext.Courses.Add(course2);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseRepository.GetCourseByCourseIdAndLatestVersion(course1.CourseID);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(result.CourseID, course2.CourseID);
+        Assert.AreEqual(result.Version, course2.Version);
+    }
 }
