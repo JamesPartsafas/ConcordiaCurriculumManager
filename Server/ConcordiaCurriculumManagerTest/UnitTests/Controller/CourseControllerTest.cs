@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Net;
+using ConcordiaCurriculumManager.DTO.Courses;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 
@@ -215,6 +216,31 @@ public class CourseControllerTest
         _courseService.Verify(service => service.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id), Times.Once);
     }
 
+    [TestMethod]
+    public async Task GetCourseData_ValidCall_ReturnsData()
+    {
+        var subject = "SOEN";
+        var catalog = "490";
+        var course = GetSampleCourse();
+       _courseService.Setup(cr => cr.GetCourseData(subject, catalog)).ReturnsAsync(course);
+
+        var actionResult = await _courseController.GetCourseData(subject, catalog);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        _mapper.Verify(mock => mock.Map<CourseDataDTO>(course), Times.Once());
+    }
+
+    [TestMethod]
+    public async Task GetCourseData_ServerError_Returns500()
+    {
+        _courseService.Setup(cr => cr.GetCourseData(It.IsAny<string>(), It.IsAny<string>())).Throws(new Exception());
+
+        var actionResult = await _courseController.GetCourseData(It.IsAny<string>(), It.IsAny<string>());
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+    }
 
     private User GetSampleUser()
     {
