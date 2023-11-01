@@ -2,7 +2,7 @@
 
 namespace ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 
-public abstract class CourseRequestInitiationDTO
+public abstract class CourseRequestInitiationDTO : CourseInitiationDTO
 {
     public required string Subject { get; set; }
 
@@ -18,10 +18,6 @@ public abstract class CourseRequestInitiationDTO
 
     public required string PreReqs { get; set; }
 
-    public required string Rationale { get; set; }
-
-    public required string ResourceImplication { get; set; }
-
     public required CourseCareerEnum Career { get; set; }
 
     public required string EquivalentCourses { get; set; }
@@ -29,8 +25,6 @@ public abstract class CourseRequestInitiationDTO
     public required Dictionary<ComponentCodeEnum, int?> ComponentCodes { get; set; }
 
     public required Dictionary<string, string> SupportingFiles { get; set; }
-
-    public required Guid DossierId { get; set; }
 
     public abstract CourseStateEnum GetAssociatedCourseState();
 }
