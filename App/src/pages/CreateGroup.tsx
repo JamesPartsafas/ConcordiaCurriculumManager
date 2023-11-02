@@ -22,7 +22,6 @@ export default function CreateGroup() {
                 console.log(err);
             });
     }
-
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -80,13 +79,16 @@ export default function CreateGroup() {
                                 </FormControl>
                                 <FormControl>
                                     <FormLabel htmlFor="department">Department</FormLabel>
-                                    <Input
+                                    <Select
                                         id="department"
-                                        type="text"
                                         // {...register("department", {
                                         //     required: true,
                                         // })}
-                                    />
+                                    >
+                                        <option value="department1">Department 1</option>
+                                        <option value="department2">Department 2</option>
+                                        <option value="department3">Department 3</option>
+                                    </Select>
                                 </FormControl>
                             </Stack>
                         </Box>
