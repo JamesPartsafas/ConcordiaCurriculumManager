@@ -354,6 +354,31 @@ public class CourseServiceTest
         Assert.IsNotNull(courseDeletionRequest);
     }
 
+    [TestMethod]
+    public async Task EditCourseCreationRequest_ValidInput_Succeeds()
+    {
+        var courseCreationRequest = GetSampleCourseCreationRequest();
+        var editCourseCreationRequestDTO = GetSampleEditCourseCreationRequestDTO();
+        dossierService.Setup(service => service.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync(courseCreationRequest);
+        dossierRepository.Setup(repository => repository.UpdateCourseCreationRequest(courseCreationRequest)).ReturnsAsync(true);
+
+        var editCourseCreationRequest = await courseService.EditCourseCreationRequest(editCourseCreationRequestDTO);
+
+        Assert.IsNotNull(editCourseCreationRequest);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public async Task EditCourseCreationRequest_CourseDoesNotExist_ThrowsArgumentException()
+    {
+        var courseCreationRequest = GetSampleCourseCreationRequest();
+        courseCreationRequest.NewCourse = null;
+        var editCourseCreationRequestDTO = GetSampleEditCourseCreationRequestDTO();
+        dossierService.Setup(service => service.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync(courseCreationRequest);
+
+        await courseService.EditCourseCreationRequest(editCourseCreationRequestDTO);
+
+    }
 
     private Course GetSampleCourse()
     {
@@ -478,6 +503,41 @@ public class CourseServiceTest
             Rationale = "Why not?",
             ResourceImplication = "New prof needed",
             Comment = "Easy change to make"
+        };
+    }
+
+    private EditCourseCreationRequestDTO GetSampleEditCourseCreationRequestDTO()
+    {
+        return new EditCourseCreationRequestDTO
+        {
+            Id = Guid.NewGuid(),
+            DossierId = Guid.NewGuid(),
+            Rationale = "It's necessary",
+            ResourceImplication = "New prof needed",
+            Subject = "SOEN Modified3",
+            Catalog = "500",
+            Title = "Super Capstone for Software Engineers",
+            Description = "An advanced capstone project for final year software engineering students.",
+            CourseNotes = "Students are required to present their project at the end of the semester.",
+            CreditValue = "6.5",
+            PreReqs = "SOEN 490 previously or concurrently",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "SOEN 499",
+            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
+            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
+        };
+    }
+
+    private CourseCreationRequest GetSampleCourseCreationRequest()
+    {
+        return new CourseCreationRequest
+        {
+            DossierId = Guid.NewGuid(),
+            NewCourseId = Guid.NewGuid(),
+            NewCourse = GetSampleCourse(),
+            Rationale = "It's necessary",
+            ResourceImplication = "New prof needed",
+            Comment = "Fun",
         };
     }
 }
