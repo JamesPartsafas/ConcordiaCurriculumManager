@@ -191,7 +191,7 @@ public class CourseController : Controller
     [Authorize(Policies.IsOwnerOfDossier)]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Course creation request modified successfully", typeof(EditCourseCreationRequestDTO))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course creation request modified successfully", typeof(EditCourseCreationRequestDTO))]
     public async Task<ActionResult> EditCourseCreationRequest([FromBody, Required] EditCourseCreationRequestDTO edit)
     {
         try
