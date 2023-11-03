@@ -114,6 +114,7 @@ public class DossierRepository : IDossierRepository
 
     public async Task<bool> DeleteCourseCreationRequest(CourseCreationRequest courseCreationRequest)
     {
+        _dbContext.Courses.Remove(courseCreationRequest.NewCourse!);
         _dbContext.CourseCreationRequests.Remove(courseCreationRequest);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
