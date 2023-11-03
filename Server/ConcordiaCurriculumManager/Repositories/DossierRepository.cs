@@ -17,6 +17,8 @@ public interface IDossierRepository
     Task<bool> SaveDossier(Dossier dossier);
     Task<bool> UpdateDossier(Dossier dossier);
     Task<bool> DeleteDossier(Dossier dossier);
+    public Task<CourseCreationRequest?> GetCourseCreationRequest(Guid courseRequestId);
+    public Task<bool> UpdateCourseCreationRequest(CourseCreationRequest courseCreationRequest);
 }
 
 public class DossierRepository : IDossierRepository
@@ -80,4 +82,17 @@ public class DossierRepository : IDossierRepository
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
+
+    public async Task<CourseCreationRequest?> GetCourseCreationRequest(Guid courseRequestId)
+    {
+        var courseCreationRequest = await _dbContext.CourseCreationRequests.Where(c => c.Id == courseRequestId).Include(cr => cr.NewCourse).FirstOrDefaultAsync();
+        return courseCreationRequest;
+    }
+
+    public async Task<bool> UpdateCourseCreationRequest(CourseCreationRequest courseCreationRequest)
+    {
+        _dbContext.CourseCreationRequests.Update(courseCreationRequest);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }   
 }

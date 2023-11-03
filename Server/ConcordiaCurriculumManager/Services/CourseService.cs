@@ -16,6 +16,7 @@ public interface ICourseService
     public Task<CourseModificationRequest> InitiateCourseModification(CourseModificationInitiationDTO modification, Guid userId);
     public Task<CourseDeletionRequest> InitiateCourseDeletion(CourseDeletionInitiationDTO deletion, Guid userId);
     public Task<Course?> GetCourseData(string subject, string catalog);
+    public Task<CourseCreationRequest?> EditCourseCreationRequest(EditCourseCreationRequestDTO edit);
 
 }
 
@@ -24,12 +25,14 @@ public class CourseService : ICourseService
     private readonly ILogger<CourseService> _logger;
     private readonly ICourseRepository _courseRepository;
     private readonly IDossierService _dossierService;
+    private readonly IDossierRepository _dossierRepository;
 
-    public CourseService(ILogger<CourseService> logger, ICourseRepository courseRepository, IDossierService dossierService)
+    public CourseService(ILogger<CourseService> logger, ICourseRepository courseRepository, IDossierService dossierService, IDossierRepository dossierRepository)
     {
         _logger = logger;
         _courseRepository = courseRepository;
         _dossierService = dossierService;
+        _dossierRepository = dossierRepository;
     }
 
     public IEnumerable<CourseCareerDTO> GetAllCourseCareers()
@@ -158,13 +161,55 @@ public class CourseService : ICourseService
         return courseDeletionRequest;
     }
 
+    private async Task SaveCourseForUserOrThrow(Course course, Guid userId)
+    {
+        bool courseCreated = await _courseRepository.SaveCourse(course);
+        if (!courseCreated)
+        {
+            _logger.LogWarning($"Error inserting ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
+            throw new Exception("Error registering the course");
+        }
+        _logger.LogInformation($"Inserted ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
+    }
+
+    public async Task<CourseCreationRequest?> EditCourseCreationRequest(EditCourseCreationRequestDTO edit)
+    { 
+        var courseCreationRequest = await _dossierService.GetCourseCreationRequest(edit.Id);
+
+        courseCreationRequest.Rationale = edit.Rationale;
+        courseCreationRequest.ResourceImplication = edit.ResourceImplication;
+        courseCreationRequest.Comment = "Auto-generated comment";
+
+        var newCourse = courseCreationRequest.NewCourse ?? throw new ArgumentException("The course does not exist.");
+
+        ModifyCourseFromDTOData(edit, newCourse);
+        newCourse.Subject = edit.Subject;
+        newCourse.Catalog = edit.Catalog;
+
+        await _dossierRepository.UpdateCourseCreationRequest(courseCreationRequest);
+
+        return courseCreationRequest;
+    }
+
+    private static void ModifyCourseFromDTOData(CourseRequestInitiationDTO initiation, Course course)
+    {
+        course.Title = initiation.Title;
+        course.Description = initiation.Description;
+        course.CourseNotes = initiation.CourseNotes;
+        course.CreditValue = initiation.CreditValue;
+        course.PreReqs = initiation.PreReqs;
+        course.Career = initiation.Career;
+        course.EquivalentCourses = initiation.EquivalentCourses;
+        course.CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(initiation.ComponentCodes, course.Id);
+        course.SupportingFiles = SupportingFile.GetSupportingFileMapping(initiation.SupportingFiles, course.Id);
+    }
+
     private static Course CreateCourseFromDTOData(CourseRequestInitiationDTO initiation, int concordiaCourseId, int version)
     {
-        var internalCourseId = Guid.NewGuid();
-
+        var internalId = Guid.NewGuid();
         return new Course
         {
-            Id = internalCourseId,
+            Id = internalId,
             CourseID = concordiaCourseId,
             Subject = initiation.Subject,
             Catalog = initiation.Catalog,
@@ -178,20 +223,8 @@ public class CourseService : ICourseService
             CourseState = initiation.GetAssociatedCourseState(),
             Version = version,
             Published = false,
-            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(initiation.ComponentCodes, internalCourseId),
-            SupportingFiles = SupportingFile.GetSupportingFileMapping(initiation.SupportingFiles, internalCourseId)
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(initiation.ComponentCodes, internalId),
+            SupportingFiles = SupportingFile.GetSupportingFileMapping(initiation.SupportingFiles, internalId)
         };
     }
-
-    private async Task SaveCourseForUserOrThrow(Course course, Guid userId)
-    {
-        bool courseCreated = await _courseRepository.SaveCourse(course);
-        if (!courseCreated)
-        {
-            _logger.LogWarning($"Error inserting ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
-            throw new Exception("Error registering the course");
-        }
-        _logger.LogInformation($"Inserted ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
-    }
-
 }
