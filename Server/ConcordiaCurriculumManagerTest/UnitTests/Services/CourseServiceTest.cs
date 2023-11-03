@@ -27,6 +27,7 @@ public class CourseServiceTest
     private Mock<IDossierService> dossierService = null!;
     private Mock<ILogger<CourseService>> logger = null!;
     private CourseService courseService = null!;
+    private Mock<IDossierRepository> dossierRepository = null!;
 
     [TestInitialize]
     public void TestInitialize()
@@ -34,8 +35,9 @@ public class CourseServiceTest
         logger = new Mock<ILogger<CourseService>>();
         courseRepository = new Mock<ICourseRepository>();
         dossierService = new Mock<IDossierService>();
+        dossierRepository = new Mock<IDossierRepository>();
 
-        courseService = new CourseService(logger.Object, courseRepository.Object, dossierService.Object);
+        courseService = new CourseService(logger.Object, courseRepository.Object, dossierService.Object, dossierRepository.Object);
     }
 
     [TestMethod]
