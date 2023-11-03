@@ -6,28 +6,36 @@ import Button from "../components/Button";
 import { AddUserToGroup, GetGroupByID, GroupDTO, GroupResponseDTO } from "../services/group";
 import { useLocation } from "react-router-dom";
 import { BaseRoutes } from "../constants";
+import { UserDTO, UserRoleCodes } from "../models/user";
+import { AllUsersResponseDTO } from "../services/user";
+import { getAllUsers } from "../services/user";
 
 export default function AddingUserToGroup() {
-    const userList = [
-        { id: "1", email: "User1@gmail.com", firstName: "User", lastName: "1" },
-        { id: "2", email: "Dave@gmail.com", firstName: "Dave", lastName: "1" },
-        { id: "3", email: "Joe@gmail.com", firstName: "Joe", lastName: "1" },
-        { id: "4", email: "Billy@gmail.com", firstName: "Billy", lastName: "1" },
-        { id: "5", email: "Benjamen@gmail.com", firstName: "Benjamen", lastName: "1" },
-    ];
+    const [users, setUsers] = useState<UserDTO[]>([]);
+    const [nonMembers, setNonMembers] = useState<UserDTO[]>([]);
     const navigate = useNavigate();
     const location = useLocation();
-    const [filteredList, setFilteredList] = useState(userList);
     const [myGroup, setMyGroup] = useState<GroupDTO | null>(null);
     const [locationState, setLocationState] = useState({ gid: "", name: "" });
 
     function getMyGroup(gid: string) {
         console.log("Grabbing group info");
+        console.log(gid);
         GetGroupByID(gid)
             .then((res: GroupResponseDTO) => {
                 setMyGroup(res.data);
-                console.log("this is the name" + res.data.name);
-                console.log("this is the id " + res.data.id);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    function getUsers() {
+        console.log("Grabbing User info");
+        getAllUsers()
+            .then((res: AllUsersResponseDTO) => {
+                console.log(JSON.stringify(res, null, 2));
+                setUsers(res.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -38,25 +46,26 @@ export default function AddingUserToGroup() {
         if (location.state) {
             const _state = location.state as { gid: string; name: string };
             setLocationState(_state);
-            console.log(locationState.gid);
-            getMyGroup(locationState.gid);
+            getMyGroup(location.state.gid);
+            getUsers();
         }
     }, [location]);
 
-    const filterBySearch = (event: { target: { value: string } }) => {
-        const query = event.target.value;
-        let updatedList = [...userList];
-        updatedList = updatedList.filter((item) => {
-            return item.email.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+    useEffect(() => {
+        const filteredUsers = users.filter((user) => {
+            if (user.roles.find((role) => role.userRole === UserRoleCodes.Admin)) return false;
+            if (myGroup.members.find((member) => member.id === user.id)) return false;
+
+            return true;
         });
-        setFilteredList(updatedList);
-    };
+        setNonMembers(filteredUsers);
+    }, [users, myGroup]);
 
     function addingUser(uid: string) {
         AddUserToGroup(myGroup.id, uid)
             .then(
                 () => {
-                    console.log("User Added");
+                    getMyGroup(myGroup.id);
                 },
                 (rej) => {
                     console.log(rej);
@@ -85,12 +94,12 @@ export default function AddingUserToGroup() {
 
                         <FormControl>
                             <FormLabel htmlFor="search-text">Search:</FormLabel>
-                            <Input id="searcher" type="text" onChange={filterBySearch} />
+                            <Input id="searcher" type="text" />
                         </FormControl>
 
                         <div id="item-list">
                             <ol>
-                                {filteredList.map((item, index) => (
+                                {nonMembers.map((item, index) => (
                                     <HStack justify="space-between" key={index}>
                                         <li>{item.email}</li>
                                         <Button

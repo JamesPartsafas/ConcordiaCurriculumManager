@@ -19,6 +19,8 @@ import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
 import DisplayManageableGroups from "./pages/ManageableGroups";
 import EditCourse from "./pages/EditCourse";
+import AddingUserToGroup from "./pages/AddUserToGroup";
+import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -63,7 +65,14 @@ export function App() {
                         path={BaseRoutes.ManageableGroup}
                         element={isLoggedIn == true ? <DisplayManageableGroups /> : <Navigate to={BaseRoutes.Login} />}
                     />
-
+                    <Route
+                        path={BaseRoutes.AddUserToGroup}
+                        element={isLoggedIn == true ? <AddingUserToGroup /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.RemoveUserFromGroup}
+                        element={isLoggedIn == true ? <RemovingUserFromGroup /> : <Navigate to={BaseRoutes.Login} />}
+                    />
                     <Route
                         path={BaseRoutes.Dossiers}
                         element={isLoggedIn == true ? <Dossiers /> : <Navigate to={BaseRoutes.Login} />}
