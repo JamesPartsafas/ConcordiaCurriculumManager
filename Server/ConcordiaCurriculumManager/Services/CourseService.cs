@@ -18,7 +18,7 @@ public interface ICourseService
     public Task<Course?> GetCourseData(string subject, string catalog);
     public Task<CourseCreationRequest?> EditCourseCreationRequest(EditCourseCreationRequestDTO edit);
     public Task<CourseModificationRequest?> EditCourseModificationRequest(EditCourseModificationRequestDTO edit);
-
+    public Task DeleteCourseCreationRequest(Guid courseRequestId);
 }
 
 public class CourseService : ICourseService
@@ -207,6 +207,18 @@ public class CourseService : ICourseService
         await _dossierRepository.UpdateCourseModificationRequest(courseModificationRequest);
 
         return courseModificationRequest;
+    }
+
+    public async Task DeleteCourseCreationRequest(Guid courseRequestId)
+    {
+        var courseCreationRequest = await _dossierService.GetCourseCreationRequest(courseRequestId);
+        bool result = await _dossierRepository.DeleteCourseCreationRequest(courseCreationRequest);
+        if (!result)
+        {
+            _logger.LogWarning($"Error deleting ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
+            throw new Exception("Error deleting the course creation request");
+        }
+        _logger.LogInformation($"Deleted ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
     }
 
     private static void ModifyCourseFromDTOData(CourseInitiationBaseDataDTO initiation, Course course)

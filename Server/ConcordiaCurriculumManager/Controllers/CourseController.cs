@@ -249,4 +249,34 @@ public class CourseController : Controller
                 statusCode: StatusCodes.Status500InternalServerError);
         }
     }
+
+    [HttpDelete(nameof(DeleteCourseCreationRequest) + "/{dossierId}" + "/{courseRequestId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Course creation request deleted successfully")]
+    public async Task<ActionResult> DeleteCourseCreationRequest([FromRoute, Required] Guid courseRequestId)
+    {
+        try
+        {
+            await _courseService.DeleteCourseCreationRequest(courseRequestId);
+            return NoContent();
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            var message = "Unexpected error occured while deleting the course creation request.";
+            _logger.LogWarning($"${message}: {e.Message}");
+            return Problem(
+                title: message,
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
 }
