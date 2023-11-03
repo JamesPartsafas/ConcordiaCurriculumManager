@@ -247,8 +247,10 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
         public async Task DeleteCourseCreationRequest_ReturnsTrue()
         {
             var courseCreationRequest = GetSampleCourseCreationRequest();
+            var course = GetSampleCourse();
 
             dbContext.CourseCreationRequests.Add(courseCreationRequest);
+            dbContext.Courses.Add(course);
             await dbContext.SaveChangesAsync();
 
             var result = await dossierRepository.DeleteCourseCreationRequest(courseCreationRequest);
