@@ -210,9 +210,41 @@ public class CourseController : Controller
         }
         catch (Exception e)
         {
-            _logger.LogWarning($"Unexpected error occured while trying to modify the dossier: {e.Message}");
+            _logger.LogWarning($"Unexpected error occured while trying to edit the course creation request: {e.Message}");
             return Problem(
-                title: "Unexpected error occured while trying to modify the dossier",
+                title: "Unexpected error occured while trying to edit the course creation request",
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
+
+
+    [HttpPut(nameof(EditCourseModificationRequest) + "/{dossierId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course modfication request edited successfully", typeof(EditCourseModificationRequestDTO))]
+    public async Task<ActionResult> EditCourseModificationRequest([FromBody, Required] EditCourseModificationRequestDTO edit)
+    {
+        try
+        {
+            var editedCourseModificationRequest = await _courseService.EditCourseModificationRequest(edit);
+            var editedCourseModificationRequestDTO = _mapper.Map<CourseModificationRequestDTO>(editedCourseModificationRequest);
+
+            return Ok(editedCourseModificationRequestDTO);
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"Unexpected error occured while trying to edit the course modification request: {e.Message}");
+            return Problem(
+                title: "Unexpected error occured while trying to to edit the course modification request",
                 detail: e.Message,
                 statusCode: StatusCodes.Status500InternalServerError);
         }

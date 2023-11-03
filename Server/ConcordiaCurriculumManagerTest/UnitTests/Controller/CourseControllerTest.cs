@@ -290,6 +290,54 @@ public class CourseControllerTest
         _courseService.Verify(service => service.EditCourseCreationRequest(editCourseCreationRequestDTO), Times.Once);
     }
 
+    [TestMethod]
+    public async Task EditCourseModificationRequest_ValidCall_ReturnsData()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier(user);
+        var course = GetSampleCourse();
+        var courseModificationRequestDTO = GetSampleCourseModificationRequestDTO(course, dossier);
+        var courseModificationRequest = GetSampleCourseModificationRequest(course, dossier);
+        var editCourseModificationRequestDTO = GetSampleEditCourseModificationRequestDTO();
+
+        _courseService.Setup(x => x.EditCourseModificationRequest(editCourseModificationRequestDTO)).ReturnsAsync(courseModificationRequest);
+        _mapper.Setup(x => x.Map<CourseModificationRequestDTO>(It.IsAny<CourseModificationRequest>())).Returns(courseModificationRequestDTO);
+
+        var actionResult = await _courseController.EditCourseModificationRequest(editCourseModificationRequestDTO);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        _courseService.Verify(service => service.EditCourseModificationRequest(editCourseModificationRequestDTO), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task EditCourseModificationRequest_InvalidCall_Returns400()
+    {
+        var editCourseModificationRequestDTO = GetSampleEditCourseModificationRequestDTO();
+
+        _courseService.Setup(x => x.EditCourseModificationRequest(editCourseModificationRequestDTO)).Throws(new ArgumentException());
+
+        var actionResult = await _courseController.EditCourseModificationRequest(editCourseModificationRequestDTO);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+        _courseService.Verify(service => service.EditCourseModificationRequest(editCourseModificationRequestDTO), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task EditCourseModificationRequest_ServerError_Returns500()
+    {
+        var editCourseModificationRequestDTO = GetSampleEditCourseModificationRequestDTO();
+
+        _courseService.Setup(x => x.EditCourseModificationRequest(editCourseModificationRequestDTO)).Throws(new Exception());
+
+        var actionResult = await _courseController.EditCourseModificationRequest(editCourseModificationRequestDTO);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        _courseService.Verify(service => service.EditCourseModificationRequest(editCourseModificationRequestDTO), Times.Once);
+    }
+
     private User GetSampleUser()
     {
         return new User
@@ -489,4 +537,23 @@ public class CourseControllerTest
         };
     }
 
+    private EditCourseModificationRequestDTO GetSampleEditCourseModificationRequestDTO()
+    {
+        return new EditCourseModificationRequestDTO
+        {
+            Id = Guid.NewGuid(),
+            DossierId = Guid.NewGuid(),
+            Rationale = "It's necessary",
+            ResourceImplication = "New prof needed",
+            Title = "Super Capstone for Software Engineers",
+            Description = "An advanced capstone project for final year software engineering students.",
+            CourseNotes = "Students are required to present their project at the end of the semester.",
+            CreditValue = "6.5",
+            PreReqs = "SOEN 490 previously or concurrently",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "SOEN 499",
+            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
+            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
+        };
+    }
 }
