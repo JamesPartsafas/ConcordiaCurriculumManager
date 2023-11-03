@@ -242,6 +242,54 @@ public class CourseControllerTest
         Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
     }
 
+    [TestMethod]
+    public async Task EditCourseCreationRequest_ValidCall_ReturnsData()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier(user);
+        var course = GetSampleCourse();
+        var courseCreationRequestDTO = GetSampleCourseCreationRequestDTO(course, dossier);
+        var courseCreationRequest = GetSampleCourseCreationRequest(course, dossier);
+        var editCourseCreationRequestDTO = GetSampleEditCourseCreationRequestDTO();
+;
+        _courseService.Setup(x => x.EditCourseCreationRequest(editCourseCreationRequestDTO)).ReturnsAsync(courseCreationRequest);
+        _mapper.Setup(x => x.Map<CourseCreationRequestDTO>(It.IsAny<CourseCreationRequest>())).Returns(courseCreationRequestDTO);
+
+        var actionResult = await _courseController.EditCourseCreationRequest(editCourseCreationRequestDTO);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        _courseService.Verify(service => service.EditCourseCreationRequest(editCourseCreationRequestDTO), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task EditCourseCreationRequest_InvalidCall_Returns400()
+    {
+        var editCourseCreationRequestDTO = GetSampleEditCourseCreationRequestDTO();
+
+        _courseService.Setup(x => x.EditCourseCreationRequest(editCourseCreationRequestDTO)).Throws(new ArgumentException());
+
+        var actionResult = await _courseController.EditCourseCreationRequest(editCourseCreationRequestDTO);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+        _courseService.Verify(service => service.EditCourseCreationRequest(editCourseCreationRequestDTO), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task EditCourseCreationRequest_ServerError_Returns500()
+    {
+        var editCourseCreationRequestDTO = GetSampleEditCourseCreationRequestDTO();
+
+        _courseService.Setup(x => x.EditCourseCreationRequest(editCourseCreationRequestDTO)).Throws(new Exception());
+
+        var actionResult = await _courseController.EditCourseCreationRequest(editCourseCreationRequestDTO);
+        var objectResult = (ObjectResult)actionResult;
+        
+        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        _courseService.Verify(service => service.EditCourseCreationRequest(editCourseCreationRequestDTO), Times.Once);
+    }
+
     private User GetSampleUser()
     {
         return new User
@@ -416,6 +464,28 @@ public class CourseControllerTest
             Rationale = "It's necessary",
             ResourceImplication = "New prof needed",
             Comment = "Fun",
+        };
+    }
+
+    private EditCourseCreationRequestDTO GetSampleEditCourseCreationRequestDTO()
+    {
+        return new EditCourseCreationRequestDTO
+        {
+            Id = Guid.NewGuid(),
+            DossierId = Guid.NewGuid(),
+            Rationale = "It's necessary",
+            ResourceImplication = "New prof needed",
+            Subject = "SOEN Modified3",
+            Catalog = "500",
+            Title = "Super Capstone for Software Engineers",
+            Description = "An advanced capstone project for final year software engineering students.",
+            CourseNotes = "Students are required to present their project at the end of the semester.",
+            CreditValue = "6.5",
+            PreReqs = "SOEN 490 previously or concurrently",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "SOEN 499",
+            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
+            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
         };
     }
 
