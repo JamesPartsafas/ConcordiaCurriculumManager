@@ -19,6 +19,8 @@ public interface IDossierRepository
     Task<bool> DeleteDossier(Dossier dossier);
     public Task<CourseCreationRequest?> GetCourseCreationRequest(Guid courseRequestId);
     public Task<bool> UpdateCourseCreationRequest(CourseCreationRequest courseCreationRequest);
+    public Task<CourseModificationRequest?> GetCourseModificationRequest(Guid courseRequestId);
+    public Task<bool> UpdateCourseModificationRequest(CourseModificationRequest courseModificatioRequest);
 }
 
 public class DossierRepository : IDossierRepository
@@ -94,5 +96,18 @@ public class DossierRepository : IDossierRepository
         _dbContext.CourseCreationRequests.Update(courseCreationRequest);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
-    }   
+    }
+
+    public async Task<CourseModificationRequest?> GetCourseModificationRequest(Guid courseRequestId)
+    {
+        var courseModificationRequest = await _dbContext.CourseModificationRequests.Where(c => c.Id == courseRequestId).Include(cr => cr.Course).FirstOrDefaultAsync();
+        return courseModificationRequest;
+    }
+
+    public async Task<bool> UpdateCourseModificationRequest(CourseModificationRequest courseModificatioRequest)
+    {
+        _dbContext.CourseModificationRequests.Update(courseModificatioRequest);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
 }

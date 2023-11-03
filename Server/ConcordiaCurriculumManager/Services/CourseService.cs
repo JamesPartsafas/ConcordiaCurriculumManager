@@ -17,6 +17,7 @@ public interface ICourseService
     public Task<CourseDeletionRequest> InitiateCourseDeletion(CourseDeletionInitiationDTO deletion, Guid userId);
     public Task<Course?> GetCourseData(string subject, string catalog);
     public Task<CourseCreationRequest?> EditCourseCreationRequest(EditCourseCreationRequestDTO edit);
+    public Task<CourseModificationRequest?> EditCourseModificationRequest(EditCourseModificationRequestDTO edit);
 
 }
 
@@ -191,7 +192,24 @@ public class CourseService : ICourseService
         return courseCreationRequest;
     }
 
-    private static void ModifyCourseFromDTOData(CourseRequestInitiationDTO initiation, Course course)
+    public async Task<CourseModificationRequest?> EditCourseModificationRequest(EditCourseModificationRequestDTO edit)
+    {
+        var courseModificationRequest = await _dossierService.GetCourseModificationRequest(edit.Id);
+
+        courseModificationRequest.Rationale = edit.Rationale;
+        courseModificationRequest.ResourceImplication = edit.ResourceImplication;
+        courseModificationRequest.Comment = "Auto-generated comment";
+
+        var newCourse = courseModificationRequest.Course ?? throw new ArgumentException("The course does not exist.");
+
+        ModifyCourseFromDTOData(edit, newCourse);
+
+        await _dossierRepository.UpdateCourseModificationRequest(courseModificationRequest);
+
+        return courseModificationRequest;
+    }
+
+    private static void ModifyCourseFromDTOData(CourseInitiationBaseDataDTO initiation, Course course)
     {
         course.Title = initiation.Title;
         course.Description = initiation.Description;
