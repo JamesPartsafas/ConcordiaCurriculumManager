@@ -380,6 +380,32 @@ public class CourseServiceTest
 
     }
 
+    [TestMethod]
+    public async Task EditCourseModificationRequest_ValidInput_Succeeds()
+    {
+        var courseModificationRequest = GetSampleCourseModificationRequest();
+        var editCourseModificationRequestDTO = GetSampleEditCourseModificationRequestDTO();
+        dossierService.Setup(service => service.GetCourseModificationRequest(It.IsAny<Guid>())).ReturnsAsync(courseModificationRequest);
+        dossierRepository.Setup(repository => repository.UpdateCourseModificationRequest(courseModificationRequest)).ReturnsAsync(true);
+
+        var editCourseCreationRequest = await courseService.EditCourseModificationRequest(editCourseModificationRequestDTO);
+
+        Assert.IsNotNull(editCourseCreationRequest);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public async Task EditCourseModificationRequest_CourseDoesNotExist_ThrowsArgumentException()
+    {
+        var courseModificationRequest = GetSampleCourseModificationRequest();
+        courseModificationRequest.Course = null;
+        var editCourseModificationRequestDTO = GetSampleEditCourseModificationRequestDTO();
+        dossierService.Setup(service => service.GetCourseModificationRequest(It.IsAny<Guid>())).ReturnsAsync(courseModificationRequest);
+
+        await courseService.EditCourseModificationRequest(editCourseModificationRequestDTO);
+
+    }
+
     private Course GetSampleCourse()
     {
         var id = Guid.NewGuid();
@@ -528,6 +554,26 @@ public class CourseServiceTest
         };
     }
 
+    private EditCourseModificationRequestDTO GetSampleEditCourseModificationRequestDTO()
+    {
+        return new EditCourseModificationRequestDTO
+        {
+            Id = Guid.NewGuid(),
+            DossierId = Guid.NewGuid(),
+            Rationale = "It's necessary",
+            ResourceImplication = "New prof needed",
+            Title = "Super Capstone for Software Engineers",
+            Description = "An advanced capstone project for final year software engineering students.",
+            CourseNotes = "Students are required to present their project at the end of the semester.",
+            CreditValue = "6.5",
+            PreReqs = "SOEN 490 previously or concurrently",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "SOEN 499",
+            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
+            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
+        };
+    }
+
     private CourseCreationRequest GetSampleCourseCreationRequest()
     {
         return new CourseCreationRequest
@@ -535,6 +581,19 @@ public class CourseServiceTest
             DossierId = Guid.NewGuid(),
             NewCourseId = Guid.NewGuid(),
             NewCourse = GetSampleCourse(),
+            Rationale = "It's necessary",
+            ResourceImplication = "New prof needed",
+            Comment = "Fun",
+        };
+    }
+
+    private CourseModificationRequest GetSampleCourseModificationRequest()
+    {
+        return new CourseModificationRequest
+        {
+            DossierId = Guid.NewGuid(),
+            CourseId = Guid.NewGuid(),
+            Course = GetSampleCourse(),
             Rationale = "It's necessary",
             ResourceImplication = "New prof needed",
             Comment = "Fun",

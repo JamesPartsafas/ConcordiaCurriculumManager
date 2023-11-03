@@ -292,6 +292,26 @@ public class DossierServiceTest
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
 
+    [TestMethod]
+    public async Task GetCourseModificationRequest_ValidInput_ReturnsCourseCreationRequest()
+    {
+        var courseModificationRequest = GetSampleCourseModificationRequest();
+        dossierRepository.Setup(d => d.GetCourseModificationRequest(It.IsAny<Guid>())).ReturnsAsync(courseModificationRequest);
+
+        await dossierService.GetCourseModificationRequest(courseModificationRequest.Id);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task GetCourseModificationRequest_InvalidInput_Throws()
+    {
+        dossierRepository.Setup(d => d.GetCourseModificationRequest(It.IsAny<Guid>())).ReturnsAsync((CourseModificationRequest)null!);
+
+        await dossierService.GetCourseModificationRequest(GetSampleCourseModificationRequest().Id);
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
+
     private static User GetSampleUser()
     {
         return new User
