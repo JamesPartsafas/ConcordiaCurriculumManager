@@ -556,5 +556,4 @@ public class CourseControllerTest
             SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
         };
     }
-
 }
