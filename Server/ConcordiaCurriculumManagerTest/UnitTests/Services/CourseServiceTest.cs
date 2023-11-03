@@ -406,13 +406,12 @@ public class CourseServiceTest
 
     }
 
-    //[TestMethod]
-    //[ExpectedException(typeof(Exception))]
-    //public async Task DeleteCourseCreationRequest_DoesNotExist_ThrowsException()
-    //{
-    //    dossierService.Setup(service => service.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync((CourseCreationRequest?)null);
-    //    await courseService.DeleteCourseCreationRequest(Guid.NewGuid());
-    //}
+    [TestMethod]
+    [ExpectedException(typeof(NullReferenceException))]
+    public async Task DeleteCourseCreationRequest_DoesNotExist_ThrowsNullReferenceException()
+    {
+        await courseService.DeleteCourseCreationRequest(Guid.NewGuid());
+    }
 
 
     [TestMethod]
