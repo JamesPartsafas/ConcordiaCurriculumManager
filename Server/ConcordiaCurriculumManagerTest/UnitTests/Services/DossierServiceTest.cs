@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
@@ -267,6 +268,26 @@ public class DossierServiceTest
         dossierRepository.Setup(d => d.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).ReturnsAsync(false);
 
         await dossierService.SaveCourseModificationRequest(GetSampleCourseModificationRequest());
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    public async Task GetCourseCreationRequest_ValidInput_ReturnsCourseCreationRequest()
+    {
+        var courseCreationRequest = GetSampleCourseCreationRequest();
+        dossierRepository.Setup(d => d.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync(courseCreationRequest);
+
+        await dossierService.GetCourseCreationRequest(courseCreationRequest.Id);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task GetCourseCreationRequest_InvalidInput_Throws()
+    {
+        dossierRepository.Setup(d => d.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync((CourseCreationRequest)null!);
+
+        await dossierService.GetCourseCreationRequest(GetSampleCourseCreationRequest().Id);
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
