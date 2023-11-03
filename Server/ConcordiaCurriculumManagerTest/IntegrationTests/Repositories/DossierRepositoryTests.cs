@@ -210,6 +210,39 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
             Assert.IsTrue(result);
         }
 
+        [TestMethod]
+        public async Task GetCourseModificationRequest_ReturnsCourseModificationRequest()
+        {
+            var courseModificationRequest = GetSampleCourseModificationRequest();
+
+            dbContext.CourseModificationRequests.Add(courseModificationRequest);
+            await dbContext.SaveChangesAsync();
+
+            var result = await dossierRepository.GetCourseModificationRequest(courseModificationRequest.Id);
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task UpdateCourseModificationRequest_ReturnsTrue()
+        {
+            var courseModificationRequest = GetSampleCourseModificationRequest();
+
+            dbContext.CourseModificationRequests.Add(courseModificationRequest);
+            await dbContext.SaveChangesAsync();
+
+            var newRationale = "It's necessary modified";
+            var newResourceImplication = "New prof needed modified";
+
+            courseModificationRequest.Rationale = newRationale;
+            courseModificationRequest.ResourceImplication = newResourceImplication;
+
+            var result = await dossierRepository.UpdateCourseModificationRequest(courseModificationRequest);
+
+            Assert.AreEqual(courseModificationRequest.Rationale, newRationale);
+            Assert.AreEqual(courseModificationRequest.ResourceImplication, newResourceImplication);
+            Assert.IsTrue(result);
+        }
+
         private Course GetSampleCourse()
         {
             var id = Guid.NewGuid();
@@ -247,6 +280,18 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
             };
         }
 
+        private CourseModificationRequest GetSampleCourseModificationRequest()
+        {
+            return new CourseModificationRequest
+            {
+                DossierId = Guid.NewGuid(),
+                CourseId = Guid.NewGuid(),
+                Course = GetSampleCourse(),
+                Rationale = "It's necessary",
+                ResourceImplication = "New prof needed",
+                Comment = "Fun",
+            };
+        }
     }
 }
 
