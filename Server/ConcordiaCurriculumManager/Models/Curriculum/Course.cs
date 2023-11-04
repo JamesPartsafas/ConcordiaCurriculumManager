@@ -63,7 +63,7 @@ public class Course : BaseModel
             CourseNotes = course.CourseNotes,
             CourseState = CourseStateEnum.CourseDeletionProposal,
             Version = course.Version + 1,
-            Published = course.Published,
+            Published = false,
             CourseCourseComponents = course.CourseCourseComponents,
             SupportingFiles = course.SupportingFiles,
         };
