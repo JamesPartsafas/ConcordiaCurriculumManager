@@ -282,7 +282,7 @@ public class CourseServiceTest
         var user = GetSampleUser();
         var dossier = GetSampleDossier(user);
         var course = GetSampleCourse();
-        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
 
         await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
 
@@ -296,7 +296,7 @@ public class CourseServiceTest
         var user = GetSampleUser();
         var dossier = GetSampleDossier(user);
         var course = GetSampleCourse();
-        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
 
         await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), Guid.NewGuid());
@@ -312,7 +312,7 @@ public class CourseServiceTest
         var user = GetSampleUser();
         var dossier = GetSampleDossier(user);
         var course = GetSampleCourse();
-        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(false);
 
@@ -328,7 +328,7 @@ public class CourseServiceTest
         var user = GetSampleUser();
         var dossier = GetSampleDossier(user);
         var course = GetSampleCourse();
-        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
         dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
@@ -343,7 +343,7 @@ public class CourseServiceTest
         var user = GetSampleUser();
         var dossier = GetSampleDossier(user);
         var course = GetSampleCourse();
-        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
         dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
@@ -397,7 +397,7 @@ public class CourseServiceTest
             CourseNotes = "Lots of fun",
             Career = CourseCareerEnum.UGRD,
             EquivalentCourses = "",
-            CourseState = CourseStateEnum.NewCourseProposal,
+            CourseState = CourseStateEnum.Accepted,
             Version = 1,
             Published = true,
             CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } }, id)
@@ -454,7 +454,8 @@ public class CourseServiceTest
             Rationale = "It's necessary",
             ResourceImplication = "New prof needed",
             DossierId = dossier.Id,
-            CourseId = course.CourseID
+            Subject = course.Subject,
+            Catalog = course.Catalog
         };
     }
 
