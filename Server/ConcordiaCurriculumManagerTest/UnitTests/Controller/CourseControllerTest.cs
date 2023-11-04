@@ -374,6 +374,42 @@ public class CourseControllerTest
         Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
     }
 
+    [TestMethod]
+    public async Task DeleteCourseModificationRequest_ValidCall_Returns204()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier(user);
+        var course = GetSampleCourse();
+        var courseModificationRequest = GetSampleCourseModificationRequest(course, dossier);
+
+        var actionResult = await _courseController.DeleteCourseModificationRequest(courseModificationRequest.Id);
+        var objectResult = (NoContentResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.NoContent, objectResult.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task DeleteCourseModificationRequest_InvalidCall_Returns400()
+    {
+        _courseService.Setup(service => service.DeleteCourseModificationRequest(It.IsAny<Guid>())).Throws(new ArgumentException());
+
+        var actionResult = await _courseController.DeleteCourseModificationRequest(It.IsAny<Guid>());
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task DeleteCourseModificationRequest_ServerError_Returns500()
+    {
+        _courseService.Setup(service => service.DeleteCourseModificationRequest(It.IsAny<Guid>())).Throws(new Exception());
+
+        var actionResult = await _courseController.DeleteCourseModificationRequest(It.IsAny<Guid>());
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+    }
+
     private User GetSampleUser()
     {
         return new User
