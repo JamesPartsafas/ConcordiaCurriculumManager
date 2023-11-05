@@ -29,16 +29,23 @@ import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
 import Button from "../components/Button";
 
+/**
+ * @description EditCourse page component that allows the user to edit a course and submit it to the database through the API
+ * @returns JSX.Element
+ * @export Component
+ * @component EditCourse
+ * @path App/src/pages/EditCourse.tsx
+ */
 export default function EditCourse() {
     const toast = useToast();
     // Form managment and error handling states
     const [isLoading, toggleLoading] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
-    const [courseSubjectError, setCourseSubjectError] = useState(true);
-    const [courseCodeError, setCourseCodeError] = useState(true);
-    const [courseNameError, setCourseNameError] = useState(true);
-    const [courseCreditError, setCourseCreditError] = useState(true);
-    const [courseCareersError, setCourseCareersError] = useState(true);
+    const [courseSubjectError, setCourseSubjectError] = useState(false);
+    const [courseCodeError, setCourseCodeError] = useState(false);
+    const [courseNameError, setCourseNameError] = useState(false);
+    const [courseCreditError, setCourseCreditError] = useState(false);
+    const [courseCareersError, setCourseCareersError] = useState(false);
 
     const [selectedComponent, setSelectedComponent] = useState<string>(
         '{"componentCode":0,"componentName":"Conference"}'
@@ -130,7 +137,7 @@ export default function EditCourse() {
             };
             addCourse(course)
                 .then(() => {
-                    showToast(toast, "Success!", "Course added successfully.", "success");
+                    showToast(toast, "Success!", "Course edited successfully.", "success");
                     toggleLoading(false);
                 })
                 .catch(() => {
