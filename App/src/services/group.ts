@@ -7,6 +7,7 @@ export interface GroupDTO {
     id: string;
     name: string;
     members: UserDTO[];
+    groupMasters: UserDTO[];
 }
 
 export interface GroupCreateDTO {
