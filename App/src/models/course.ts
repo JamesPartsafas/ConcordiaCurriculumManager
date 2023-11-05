@@ -35,4 +35,8 @@ export interface Course {
     equivalentCourses: string;
     componentCodes: number[];
     dossierId: string;
+    courseNotes: string;
+    rationale: string;
+    supportingFiles: object;
+    resourceImplication: string;
 }
