@@ -5,12 +5,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { GetGroupByID, GroupDTO, GroupResponseDTO, RemoveUserFromGroup } from "../services/group";
 import { BaseRoutes } from "../constants";
+import { UserDTO } from "../models/user";
 
 export default function RemovingUserFromGroup() {
     const navigate = useNavigate();
     const [locationState, setLocationState] = useState({ gid: "", name: "" });
     const [myGroup, setMyGroup] = useState<GroupDTO | null>(null);
+    const [userList, setUserList] = useState<UserDTO[]>([]);
     const location = useLocation();
+    var event = new Event("change");
 
     function getMyGroup(gid: string) {
         console.log("Grabbing group info");
@@ -18,7 +21,7 @@ export default function RemovingUserFromGroup() {
             .then(
                 (res: GroupResponseDTO) => {
                     setMyGroup(res.data);
-                    console.log(res.data.name);
+                    setUserList(res.data.members);
                 },
                 (rej) => {
                     console.log(rej);
@@ -33,11 +36,19 @@ export default function RemovingUserFromGroup() {
         if (location.state) {
             const _state = location.state as { gid: string; name: string };
             setLocationState(_state);
-            console.log(locationState.gid);
-            getMyGroup(locationState.gid);
+            getMyGroup(location.state.gid);
         }
     }, [location]);
-    const userList = myGroup.members;
+
+    useEffect(() => {
+        const filteredUsers = userList.filter((user) => {
+            if (myGroup.members.find((member) => member.id === user.id)) return true;
+
+            return false;
+        });
+        setUserList(filteredUsers);
+    }, [myGroup]);
+
     const [filteredList, setFilteredList] = useState(userList);
     const filterBySearch = (event: { target: { value: string } }) => {
         const query = event.target.value;
@@ -55,7 +66,8 @@ export default function RemovingUserFromGroup() {
         RemoveUserFromGroup(myGroup.id, uid)
             .then(
                 () => {
-                    console.log("User Added");
+                    console.log("User Removed");
+                    getMyGroup(myGroup.id);
                 },
                 (rej) => {
                     console.log(rej);
@@ -86,7 +98,6 @@ export default function RemovingUserFromGroup() {
                             <FormLabel htmlFor="search-text">Search:</FormLabel>
                             <Input id="groupName" type="text" onChange={filterBySearch} />
                         </FormControl>
-
                         <div id="item-list">
                             <ol>
                                 {filteredList.map((item, index) => (
@@ -98,7 +109,9 @@ export default function RemovingUserFromGroup() {
                                             width="22%"
                                             height="40px"
                                             justifyContent={"flex-end"}
-                                            onClick={() => removingUser(item.id)}
+                                            onClick={() => {
+                                                removingUser(item.id);
+                                            }}
                                         >
                                             Select
                                         </Button>

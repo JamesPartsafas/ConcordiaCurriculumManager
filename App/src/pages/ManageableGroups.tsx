@@ -74,7 +74,10 @@ export default function DisplayManageableGroups() {
                                             </Button>
                                         </Link>
                                         {group.members.length != 0 && (
-                                            <Link to={BaseRoutes.Home} state={{ gid: group.id, name: group.name }}>
+                                            <Link
+                                                to={BaseRoutes.RemoveUserFromGroup}
+                                                state={{ gid: group.id, name: group.name }}
+                                            >
                                                 <Button style="primary" variant="outline" width="50%" height="40px">
                                                     Remove
                                                 </Button>
