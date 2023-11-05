@@ -4,5 +4,7 @@ namespace ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 
 public class CourseDeletionInitiationDTO : CourseInitiationDTO
 {
-    public required int CourseId { get; set; }
+    public required string Subject { get; set; }
+
+    public required string Catalog { get; set; }
 }

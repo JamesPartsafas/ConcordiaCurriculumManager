@@ -1,4 +1,5 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+﻿using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
@@ -176,6 +177,151 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
             Assert.IsTrue(result);
         }
 
+        [TestMethod]
+        public async Task GetCourseCreationRequest_ReturnsCourseCreationRequest()
+        {
+            var courseCreationRequest = GetSampleCourseCreationRequest();
+
+            dbContext.CourseCreationRequests.Add(courseCreationRequest);
+            await dbContext.SaveChangesAsync();
+
+            var result = await dossierRepository.GetCourseCreationRequest(courseCreationRequest.Id);
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task UpdateCourseCreationRequest_ReturnsTrue()
+        {
+            var courseCreationRequest = GetSampleCourseCreationRequest();
+
+            dbContext.CourseCreationRequests.Add(courseCreationRequest);
+            await dbContext.SaveChangesAsync();
+
+            var newRationale = "It's necessary modified";
+            var newResourceImplication = "New prof needed modified";
+
+            courseCreationRequest.Rationale = newRationale;
+            courseCreationRequest.ResourceImplication = newResourceImplication;
+
+            var result = await dossierRepository.UpdateCourseCreationRequest(courseCreationRequest);
+
+            Assert.AreEqual(courseCreationRequest.Rationale, newRationale);
+            Assert.AreEqual(courseCreationRequest.ResourceImplication, newResourceImplication);
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public async Task GetCourseModificationRequest_ReturnsCourseModificationRequest()
+        {
+            var courseModificationRequest = GetSampleCourseModificationRequest();
+
+            dbContext.CourseModificationRequests.Add(courseModificationRequest);
+            await dbContext.SaveChangesAsync();
+
+            var result = await dossierRepository.GetCourseModificationRequest(courseModificationRequest.Id);
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task UpdateCourseModificationRequest_ReturnsTrue()
+        {
+            var courseModificationRequest = GetSampleCourseModificationRequest();
+
+            dbContext.CourseModificationRequests.Add(courseModificationRequest);
+            await dbContext.SaveChangesAsync();
+
+            var newRationale = "It's necessary modified";
+            var newResourceImplication = "New prof needed modified";
+
+            courseModificationRequest.Rationale = newRationale;
+            courseModificationRequest.ResourceImplication = newResourceImplication;
+
+            var result = await dossierRepository.UpdateCourseModificationRequest(courseModificationRequest);
+
+            Assert.AreEqual(courseModificationRequest.Rationale, newRationale);
+            Assert.AreEqual(courseModificationRequest.ResourceImplication, newResourceImplication);
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public async Task DeleteCourseCreationRequest_ReturnsTrue()
+        {
+            var courseCreationRequest = GetSampleCourseCreationRequest();
+            var course = GetSampleCourse();
+
+            dbContext.CourseCreationRequests.Add(courseCreationRequest);
+            dbContext.Courses.Add(course);
+            await dbContext.SaveChangesAsync();
+
+            var result = await dossierRepository.DeleteCourseCreationRequest(courseCreationRequest);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public async Task DeleteCourseModificationRequest_ReturnsTrue()
+        {
+            var courseModificationRequest = GetSampleCourseModificationRequest();
+            var course = GetSampleCourse();
+
+            dbContext.CourseModificationRequests.Add(courseModificationRequest);
+            dbContext.Courses.Add(course);
+            await dbContext.SaveChangesAsync();
+
+            var result = await dossierRepository.DeleteCourseModificationRequest(courseModificationRequest);
+
+            Assert.IsTrue(result);
+        }
+
+        private Course GetSampleCourse()
+        {
+            var id = Guid.NewGuid();
+
+            return new Course
+            {
+                Id = id,
+                CourseID = 1000,
+                Subject = "SOEN",
+                Catalog = "490",
+                Title = "Capstone",
+                Description = "Curriculum manager building simulator",
+                CreditValue = "6",
+                PreReqs = "SOEN 390",
+                CourseNotes = "Lots of fun",
+                Career = CourseCareerEnum.UGRD,
+                EquivalentCourses = "",
+                CourseState = CourseStateEnum.NewCourseProposal,
+                Version = 1,
+                Published = true,
+                CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } }, id)
+            };
+        }
+
+        private CourseCreationRequest GetSampleCourseCreationRequest()
+        {
+            return new CourseCreationRequest
+            {
+                DossierId = Guid.NewGuid(),
+                NewCourseId = Guid.NewGuid(),
+                NewCourse = GetSampleCourse(),
+                Rationale = "It's necessary",
+                ResourceImplication = "New prof needed",
+                Comment = "Fun",
+            };
+        }
+
+        private CourseModificationRequest GetSampleCourseModificationRequest()
+        {
+            return new CourseModificationRequest
+            {
+                DossierId = Guid.NewGuid(),
+                CourseId = Guid.NewGuid(),
+                Course = GetSampleCourse(),
+                Rationale = "It's necessary",
+                ResourceImplication = "New prof needed",
+                Comment = "Fun",
+            };
+        }
     }
 }
 

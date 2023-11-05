@@ -186,4 +186,127 @@ public class CourseController : Controller
                 statusCode: StatusCodes.Status500InternalServerError);
         }
     }
+
+    [HttpPut(nameof(EditCourseCreationRequest) + "/{dossierId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course creation request modified successfully", typeof(EditCourseCreationRequestDTO))]
+    public async Task<ActionResult> EditCourseCreationRequest([FromBody, Required] EditCourseCreationRequestDTO edit)
+    {
+        try
+        {
+            var editedCourseCreatioRequest = await _courseService.EditCourseCreationRequest(edit);
+            var editedCourseCreationRequestDTO = _mapper.Map<CourseCreationRequestDTO>(editedCourseCreatioRequest);
+
+            return Ok(editedCourseCreationRequestDTO);
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"Unexpected error occured while trying to edit the course creation request: {e.Message}");
+            return Problem(
+                title: "Unexpected error occured while trying to edit the course creation request",
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
+
+
+    [HttpPut(nameof(EditCourseModificationRequest) + "/{dossierId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course modfication request edited successfully", typeof(EditCourseModificationRequestDTO))]
+    public async Task<ActionResult> EditCourseModificationRequest([FromBody, Required] EditCourseModificationRequestDTO edit)
+    {
+        try
+        {
+            var editedCourseModificationRequest = await _courseService.EditCourseModificationRequest(edit);
+            var editedCourseModificationRequestDTO = _mapper.Map<CourseModificationRequestDTO>(editedCourseModificationRequest);
+
+            return Ok(editedCourseModificationRequestDTO);
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"Unexpected error occured while trying to edit the course modification request: {e.Message}");
+            return Problem(
+                title: "Unexpected error occured while trying to to edit the course modification request",
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    [HttpDelete(nameof(DeleteCourseCreationRequest) + "/{dossierId}" + "/{courseRequestId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Course creation request deleted successfully")]
+    public async Task<ActionResult> DeleteCourseCreationRequest([FromRoute, Required] Guid courseRequestId)
+    {
+        try
+        {
+            await _courseService.DeleteCourseCreationRequest(courseRequestId);
+            return NoContent();
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            var message = "Unexpected error occured while deleting the course creation request.";
+            _logger.LogWarning($"${message}: {e.Message}");
+            return Problem(
+                title: message,
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    [HttpDelete(nameof(DeleteCourseModificationRequest) + "/{dossierId}" + "/{courseRequestId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Course modification request deleted successfully")]
+    public async Task<ActionResult> DeleteCourseModificationRequest([FromRoute, Required] Guid courseRequestId)
+    {
+        try
+        {
+            await _courseService.DeleteCourseModificationRequest(courseRequestId);
+            return NoContent();
+        }
+        catch (ArgumentException e)
+        {
+            return Problem(
+                title: "One or more validation errors occurred.",
+                detail: e.Message,
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+        catch (Exception e)
+        {
+            var message = "Unexpected error occured while deleting the course modification request.";
+            _logger.LogWarning($"${message}: {e.Message}");
+            return Problem(
+                title: message,
+                detail: e.Message,
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
 }

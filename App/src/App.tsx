@@ -21,6 +21,7 @@ import DisplayManageableGroups from "./pages/ManageableGroups";
 import EditCourse from "./pages/EditCourse";
 import AddingUserToGroup from "./pages/AddUserToGroup";
 import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
+import DeleteCourse from "./pages/DeleteCourse";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -85,6 +86,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.EditCourse + "/:id"}
                         element={isLoggedIn == true ? <EditCourse /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.DeleteCourse}
+                        element={isLoggedIn == true ? <DeleteCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
                     {/* whenever none of the other routes match we show the not found page */}

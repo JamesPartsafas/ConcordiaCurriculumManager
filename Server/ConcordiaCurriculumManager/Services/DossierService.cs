@@ -17,6 +17,8 @@ public interface IDossierService
     public Task SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
     public Task SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
+    public Task<CourseCreationRequest> GetCourseCreationRequest(Guid courseRequestId);
+    public Task<CourseModificationRequest> GetCourseModificationRequest(Guid courseRequestId);
 }
 
 public class DossierService : IDossierService
@@ -132,5 +134,29 @@ public class DossierService : IDossierService
             throw new Exception("Error creating the request");
         }
         _logger.LogInformation($"Created ${typeof(CourseDeletionRequest)} ${courseDeletionRequest.Id}");
+    }
+
+    public async Task<CourseCreationRequest> GetCourseCreationRequest(Guid courseRequestId)
+    {
+        var courseCreationRequest = await _dossierRepository.GetCourseCreationRequest(courseRequestId);
+        if (courseCreationRequest == null)
+        {
+            _logger.LogWarning($"Error retrieving the course creation request with id ${typeof(CourseCreationRequest)} ${courseRequestId}");
+            throw new Exception("Error retrieving the course creation request, it does not exist.");
+        }
+
+        return courseCreationRequest;
+    }
+
+    public async Task<CourseModificationRequest> GetCourseModificationRequest(Guid courseRequestId)
+    {
+        var courseModificationRequest = await _dossierRepository.GetCourseModificationRequest(courseRequestId);
+        if (courseModificationRequest == null)
+        {
+            _logger.LogWarning($"Error retrieving the course modification request with id ${typeof(CourseModificationRequest)} ${courseRequestId}");
+            throw new Exception("Error retrieving the course modification request, it does not exist.");
+        }
+
+        return courseModificationRequest;
     }
 }
