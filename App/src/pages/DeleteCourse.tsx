@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { deleteCourse, getAllCourseSettings } from "../services/course";
-import { AllCourseSettings, CourseCareer } from "../models/course";
+import { AllCourseSettings } from "../models/course";
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils";
 import Button from "../components/Button";
@@ -28,22 +28,13 @@ export default function DeleteCourse() {
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [courseSubjectError, setCourseSubjectError] = useState(true);
     const [courseCatalogError, setCourseCatalogError] = useState(true);
-    const [courseCareersError, setCourseCareersError] = useState(true);
     const [rationaleError, setRationaleError] = useState(true);
 
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
     const [subject, setSubject] = useState("");
     const [catalog, setCatalog] = useState("");
     const [rationale, setRationale] = useState("");
-    const [courseCareer, setCouresCareer] = useState<CourseCareer>(null);
-    const [courseCareers, setCourseCareers] = useState<string[]>([]);
 
-    const handleChangeCourseCareer = (value: string) => {
-        if (value.length === 0) setCourseCareersError(true);
-        else setCourseCareersError(false);
-        const career = allCourseSettings?.courseCareers.find((career) => career.careerName === value);
-        setCouresCareer(career);
-    };
     const handleChangeSubject = (value: string) => {
         if (value.length === 0) setCourseSubjectError(true);
         else setCourseSubjectError(false);
@@ -61,7 +52,7 @@ export default function DeleteCourse() {
     };
     const handleSubmitRequest = () => {
         setFormSubmitted(true);
-        if (courseCatalogError || courseSubjectError || rationaleError || courseCareersError) return;
+        if (courseCatalogError || courseSubjectError || rationaleError) return;
         else {
             toggleLoading(true);
             const courseDeletionRequest = {
@@ -86,8 +77,6 @@ export default function DeleteCourse() {
         getAllCourseSettings()
             .then((res) => {
                 setAllCourseSettings(res.data);
-                const courseCareersTemp = res.data.courseCareers.map((career) => career.careerName);
-                setCourseCareers(courseCareersTemp);
             })
             .catch((err) => {
                 showToast(toast, "Error!", err.message, "error");
@@ -111,16 +100,6 @@ export default function DeleteCourse() {
                                 </Stack>
                                 <Stack>
                                     <Stack>
-                                        <FormControl isInvalid={courseCareersError && formSubmitted}>
-                                            <FormLabel m={0}>Course Career</FormLabel>
-                                            <AutocompleteInput
-                                                options={courseCareers}
-                                                onSelect={handleChangeCourseCareer}
-                                                width="100%"
-                                                placeholder={courseCareer ? courseCareer.careerName : "Select Career"}
-                                            />
-                                            <FormErrorMessage>Course Career is required</FormErrorMessage>
-                                        </FormControl>
                                         <FormControl isInvalid={courseSubjectError && formSubmitted}>
                                             <FormLabel m={0}>Subject</FormLabel>
                                             <AutocompleteInput
