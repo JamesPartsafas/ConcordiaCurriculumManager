@@ -29,7 +29,7 @@ export default function DeleteCourse() {
     const [courseSubjectError, setCourseSubjectError] = useState(true);
     const [courseCatalogError, setCourseCatalogError] = useState(true);
     const [courseCareersError, setCourseCareersError] = useState(true);
-    const [rationalError, setRationalError] = useState(true);
+    const [rationaleError, setRationaleError] = useState(true);
 
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
     const [subject, setSubject] = useState("");
@@ -55,13 +55,13 @@ export default function DeleteCourse() {
         setCatalog(e.currentTarget.value);
     };
     const handleRationale = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        if (e.currentTarget.value.length === 0) setRationalError(true);
-        else setRationalError(false);
+        if (e.currentTarget.value.length === 0) setRationaleError(true);
+        else setRationaleError(false);
         setRationale(e.currentTarget.value);
     };
     const handleSubmitRequest = () => {
         setFormSubmitted(true);
-        if (courseCatalogError || courseSubjectError || rationalError || courseCareersError) return;
+        if (courseCatalogError || courseSubjectError || rationaleError || courseCareersError) return;
         else {
             toggleLoading(true);
             const courseDeletionRequest = {
@@ -153,7 +153,7 @@ export default function DeleteCourse() {
                                         </Heading>
                                     </Center>
                                     <Stack>
-                                        <FormControl isInvalid={rationalError && formSubmitted}>
+                                        <FormControl isInvalid={rationaleError && formSubmitted}>
                                             <Textarea
                                                 value={rationale}
                                                 onChange={handleRationale}
