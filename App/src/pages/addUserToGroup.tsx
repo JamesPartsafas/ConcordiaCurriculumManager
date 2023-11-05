@@ -7,7 +7,7 @@ import { AddUserToGroup, GetGroupByID, GroupDTO, GroupResponseDTO } from "../ser
 import { useLocation } from "react-router-dom";
 import { BaseRoutes } from "../constants";
 import { UserDTO, UserRoleCodes } from "../models/user";
-import { AllUsersResponseDTO } from "../services/user";
+import { AllUsersResponseDTO, updateAllUsers } from "../services/user";
 import { getAllUsers } from "../services/user";
 
 export default function AddingUserToGroup() {
@@ -34,7 +34,6 @@ export default function AddingUserToGroup() {
         console.log("Grabbing User info");
         getAllUsers()
             .then((res: AllUsersResponseDTO) => {
-                console.log(JSON.stringify(res, null, 2));
                 setUsers(res.data);
             })
             .catch((err) => {
@@ -42,6 +41,17 @@ export default function AddingUserToGroup() {
             });
     }
 
+    function updateUsers(uid: string) {
+        console.log("Updating user info");
+        updateAllUsers(uid)
+            .then((res: AllUsersResponseDTO) => {
+                console.log(JSON.stringify(res, null, 2));
+                setUsers(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
     useEffect(() => {
         if (location.state) {
             const _state = location.state as { gid: string; name: string };
@@ -116,16 +126,29 @@ export default function AddingUserToGroup() {
                                 ))}
                             </ol>
                         </div>
+                        <HStack justify="space-between">
+                            <Button
+                                style="primary"
+                                variant="outline"
+                                width="50%"
+                                height="40px"
+                                onClick={() => navigate(BaseRoutes.ManageableGroup)}
+                            >
+                                Back
+                            </Button>
 
-                        <Button
-                            style="primary"
-                            variant="outline"
-                            width="50%"
-                            height="40px"
-                            onClick={() => navigate(BaseRoutes.ManageableGroup)}
-                        >
-                            Back
-                        </Button>
+                            {nonMembers.length != 0 && (
+                                <Button
+                                    style="secondary"
+                                    variant="outline"
+                                    width="22%"
+                                    height="40px"
+                                    onClick={() => updateUsers(nonMembers[nonMembers.length - 1].id)}
+                                >
+                                    Next Page
+                                </Button>
+                            )}
+                        </HStack>
                     </Stack>
                 </Box>
             </Stack>

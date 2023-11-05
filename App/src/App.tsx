@@ -6,7 +6,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import { User } from "./models/user";
+import { User, UserRoleCodes } from "./models/user";
 import { createContext, useState } from "react";
 import Register from "./pages/Register";
 import { decodeTokenToUser } from "./services/auth";
@@ -19,7 +19,7 @@ import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
 import DisplayManageableGroups from "./pages/ManageableGroups";
 import EditCourse from "./pages/EditCourse";
-import AddingUserToGroup from "./pages/AddUserToGroup";
+import AddingUserToGroup from "./pages/addUserToGroup";
 import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
 import DeleteCourse from "./pages/DeleteCourse";
 
@@ -28,6 +28,7 @@ export const UserContext = createContext<User | null>(null);
 export function App() {
     const [user, setUser] = useState<User | null>(initializeUser());
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(user != null ? true : false);
+    const [isAdmin, setIsAdmin] = useState<boolean>(user.roles.includes("Admin") ? true : false);
     const navigate = useNavigate();
 
     // Check for the token in localStorage.
@@ -38,10 +39,12 @@ export function App() {
         if (token != null) {
             const user: User = decodeTokenToUser(token);
             // if token expired logout, and clear token
+            console.log(JSON.stringify(user.roles, null, 2));
             if (user.expiresAtTimestamp * 1000 < Date.now()) {
                 localStorage.removeItem("token");
                 navigate(BaseRoutes.Login);
                 setIsLoggedIn(false);
+                setIsAdmin(false);
             }
 
             return user;
@@ -64,15 +67,33 @@ export function App() {
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
                     <Route
                         path={BaseRoutes.ManageableGroup}
-                        element={isLoggedIn == true ? <DisplayManageableGroups /> : <Navigate to={BaseRoutes.Login} />}
+                        element={
+                            isLoggedIn == true && isAdmin == true ? (
+                                <DisplayManageableGroups />
+                            ) : (
+                                <Navigate to={BaseRoutes.Login} />
+                            )
+                        }
                     />
                     <Route
                         path={BaseRoutes.AddUserToGroup}
-                        element={isLoggedIn == true ? <AddingUserToGroup /> : <Navigate to={BaseRoutes.Login} />}
+                        element={
+                            isLoggedIn == true && isAdmin == true ? (
+                                <AddingUserToGroup />
+                            ) : (
+                                <Navigate to={BaseRoutes.Login} />
+                            )
+                        }
                     />
                     <Route
                         path={BaseRoutes.RemoveUserFromGroup}
-                        element={isLoggedIn == true ? <RemovingUserFromGroup /> : <Navigate to={BaseRoutes.Login} />}
+                        element={
+                            isLoggedIn == true && isAdmin == true ? (
+                                <RemovingUserFromGroup />
+                            ) : (
+                                <Navigate to={BaseRoutes.Login} />
+                            )
+                        }
                     />
                     <Route
                         path={BaseRoutes.Dossiers}
