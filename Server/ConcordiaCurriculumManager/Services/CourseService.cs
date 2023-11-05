@@ -140,7 +140,7 @@ public class CourseService : ICourseService
 
     public async Task<CourseDeletionRequest> InitiateCourseDeletion(CourseDeletionInitiationDTO deletion, Guid userId)
     {
-        var oldCourse = await _courseRepository.GetCourseByCourseId(deletion.CourseId) ?? throw new ArgumentException("The course does not exist.");
+        var oldCourse = await _courseRepository.GetCourseBySubjectAndCatalog(deletion.Subject, deletion.Catalog) ?? throw new ArgumentException("The course does not exist.");
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(deletion.DossierId, userId);
 

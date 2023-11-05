@@ -558,7 +558,8 @@ public class CourseControllerTest
             Rationale = "It's necessary",
             ResourceImplication = "New prof needed",
             DossierId = dossier.Id,
-            CourseId = 1,
+            Subject = "SOEN",
+            Catalog = "490"
         };
     }
 
