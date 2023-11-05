@@ -6,7 +6,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import { User, UserRoleCodes } from "./models/user";
+import { User } from "./models/user";
 import { createContext, useState } from "react";
 import Register from "./pages/Register";
 import { decodeTokenToUser } from "./services/auth";

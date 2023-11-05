@@ -15,7 +15,7 @@ export interface UserDTO {
     firstName: string;
     lastName: string;
     email: string;
-    roles: {userRole: UserRoleCodes}[];
+    roles: { userRole: UserRoleCodes }[];
 }
 
 export enum UserRoles {
@@ -27,5 +27,5 @@ export enum UserRoles {
 export enum UserRoleCodes {
     Initiator = 0,
     Admin = 1,
-    FacultyMember = 2
+    FacultyMember = 2,
 }
