@@ -13,7 +13,6 @@ export default function RemovingUserFromGroup() {
     const [myGroup, setMyGroup] = useState<GroupDTO | null>(null);
     const [userList, setUserList] = useState<UserDTO[]>([]);
     const location = useLocation();
-    var event = new Event("change");
 
     function getMyGroup(gid: string) {
         console.log("Grabbing group info");
@@ -49,19 +48,6 @@ export default function RemovingUserFromGroup() {
         setUserList(filteredUsers);
     }, [myGroup]);
 
-    const [filteredList, setFilteredList] = useState(userList);
-    const filterBySearch = (event: { target: { value: string } }) => {
-        const query = event.target.value;
-
-        let updatedList = [...userList];
-
-        updatedList = updatedList.filter((item) => {
-            return item.email.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-        });
-
-        setFilteredList(updatedList);
-    };
-
     function removingUser(uid: string) {
         RemoveUserFromGroup(myGroup.id, uid)
             .then(
@@ -93,14 +79,9 @@ export default function RemovingUserFromGroup() {
                         <Heading textAlign="center" size="lg">
                             Remove User from Group: {locationState.name}
                         </Heading>
-
-                        <FormControl>
-                            <FormLabel htmlFor="search-text">Search:</FormLabel>
-                            <Input id="groupName" type="text" onChange={filterBySearch} />
-                        </FormControl>
                         <div id="item-list">
                             <ol>
-                                {filteredList.map((item, index) => (
+                                {userList.map((item, index) => (
                                     <HStack justify="space-between" key={index}>
                                         <li>{item.email}</li>
                                         <Button
