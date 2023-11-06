@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import logo from "../assets/logo.png";
-import { Container, Stack, Heading, Box, FormControl, Input, FormLabel, HStack } from "@chakra-ui/react";
+import { Container, Stack, Heading, Box, HStack } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { GetGroupByID, GroupDTO, GroupResponseDTO, RemoveUserFromGroup } from "../services/group";
