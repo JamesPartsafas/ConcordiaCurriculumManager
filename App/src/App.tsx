@@ -28,8 +28,8 @@ export const UserContext = createContext<User | null>(null);
 export function App() {
     const [user, setUser] = useState<User | null>(initializeUser());
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(user != null ? true : false);
-    const [isAdmin, setIsAdmin] = useState<boolean>(
-        user != null ? (user.roles.includes("Admin") ? true : false) : false
+    const [isAdminorGroupMaster, setIsAdminorGroupMaster] = useState<boolean>(
+        user != null ? (user.roles.includes("Admin") || user.masteredGroups != null ? true : false) : false
     );
     const navigate = useNavigate();
 
@@ -41,12 +41,11 @@ export function App() {
         if (token != null) {
             const user: User = decodeTokenToUser(token);
             // if token expired logout, and clear token
-            console.log(JSON.stringify(user.roles, null, 2));
             if (user.expiresAtTimestamp * 1000 < Date.now()) {
                 localStorage.removeItem("token");
                 navigate(BaseRoutes.Login);
                 setIsLoggedIn(false);
-                setIsAdmin(false);
+                setIsAdminorGroupMaster(false);
             }
 
             return user;
@@ -70,7 +69,7 @@ export function App() {
                     <Route
                         path={BaseRoutes.ManageableGroup}
                         element={
-                            isLoggedIn == true && isAdmin == true ? (
+                            isAdminorGroupMaster == true ? (
                                 <DisplayManageableGroups />
                             ) : (
                                 <Navigate to={BaseRoutes.Login} />
@@ -80,17 +79,13 @@ export function App() {
                     <Route
                         path={BaseRoutes.AddUserToGroup}
                         element={
-                            isLoggedIn == true && isAdmin == true ? (
-                                <AddingUserToGroup />
-                            ) : (
-                                <Navigate to={BaseRoutes.Login} />
-                            )
+                            isAdminorGroupMaster == true ? <AddingUserToGroup /> : <Navigate to={BaseRoutes.Login} />
                         }
                     />
                     <Route
                         path={BaseRoutes.RemoveUserFromGroup}
                         element={
-                            isLoggedIn == true && isAdmin == true ? (
+                            isAdminorGroupMaster == true ? (
                                 <RemovingUserFromGroup />
                             ) : (
                                 <Navigate to={BaseRoutes.Login} />

@@ -46,7 +46,7 @@ export default function AddingUserToGroup() {
         updateAllUsers(uid)
             .then((res: AllUsersResponseDTO) => {
                 console.log(JSON.stringify(res, null, 2));
-                setUsers(res.data);
+                setUsers(users.concat(res.data));
             })
             .catch((err) => {
                 console.log(err);
@@ -115,12 +115,12 @@ export default function AddingUserToGroup() {
                                         <Button
                                             style="primary"
                                             variant="outline"
-                                            width="22%"
+                                            width="18%"
                                             height="40px"
                                             justifyContent={"flex-end"}
                                             onClick={() => addingUser(item.id)}
                                         >
-                                            Select
+                                            Add
                                         </Button>
                                     </HStack>
                                 ))}

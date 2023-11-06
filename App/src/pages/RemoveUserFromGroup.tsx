@@ -100,7 +100,7 @@ export default function RemovingUserFromGroup() {
                                             justifyContent={"flex-end"}
                                             onClick={() => removingUser(item.id)}
                                         >
-                                            Select
+                                            Remove
                                         </Button>
                                     </HStack>
                                 ))}
