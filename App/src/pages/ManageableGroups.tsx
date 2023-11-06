@@ -95,11 +95,13 @@ export default function DisplayManageableGroups() {
                             ))}
                         </Tbody>
                     </Table>
-                    <Link to={BaseRoutes.Home}>
-                        <Button style="primary" variant={"solid"} width="100%" height="40px">
-                            Create Group
-                        </Button>
-                    </Link>
+                    {user.roles.includes("Admin") && (
+                        <Link to={BaseRoutes.Home}>
+                            <Button style="primary" variant={"solid"} width="100%" height="40px">
+                                Create Group
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </Container>
         </div>
