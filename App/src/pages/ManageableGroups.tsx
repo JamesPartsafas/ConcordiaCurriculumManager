@@ -3,14 +3,21 @@ import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import { GetAllGroups } from "../services/group";
 import { GroupDTO, MultiGroupResponseDTO } from "../services/group";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BaseRoutes } from "../constants";
 import Header from "../shared/Header";
+import { UserContext } from "../App";
 
 export default function DisplayManageableGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
+    const user = useContext(UserContext);
     useEffect(() => {
-        AllGroups();
+        if (user.roles.includes("Admin")) {
+            AllGroups();
+        } else {
+            AllGroups();
+            setMyGroups(myGroups.filter((group) => user.masteredGroups.includes(group.id)));
+        }
     }, []);
 
     function AllGroups() {
