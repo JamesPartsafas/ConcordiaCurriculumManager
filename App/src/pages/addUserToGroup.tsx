@@ -117,7 +117,6 @@ export default function AddingUserToGroup() {
                                             variant="outline"
                                             width="18%"
                                             height="40px"
-                                            justifyContent={"flex-end"}
                                             onClick={() => addingUser(item.id)}
                                         >
                                             Add
