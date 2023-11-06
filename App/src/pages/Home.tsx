@@ -3,7 +3,7 @@ import { UserContext } from "../App";
 import Button from "../components/Button";
 import { BaseRoutes } from "../constants";
 import { useNavigate } from "react-router-dom";
-import { Container, Flex, HStack } from "@chakra-ui/react";
+import { Container, Flex } from "@chakra-ui/react";
 import Header from "../shared/Header";
 
 export default function Home() {

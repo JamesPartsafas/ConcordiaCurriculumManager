@@ -76,7 +76,7 @@ export function decodeTokenToUser(accessToken: string) {
         issuer: decodedToken.iss,
         audience: decodedToken.aud,
         groups: decodedToken.groups,
-        masteredGroups: decodedToken.masteredGroups
+        masteredGroups: decodedToken.masteredGroups,
     };
 
     return user;
