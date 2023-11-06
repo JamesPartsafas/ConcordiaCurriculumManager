@@ -59,6 +59,7 @@ public class GroupRepository : IGroupRepository
         if (group != null && user != null)
         {
             group.Members.Remove(user);
+            group.GroupMasters.Remove(user);
             return await _dbContext.SaveChangesAsync() > 0;
         }
         return false;
