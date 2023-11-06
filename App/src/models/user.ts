@@ -8,8 +8,8 @@ export interface User {
     expiresAtTimestamp: number;
     issuer: string;
     audience: string;
-    groups: string[];
-    masteredGroups: string[];
+    groups: string[] | null;
+    masteredGroups: string[] | null;
 }
 
 export interface UserDTO {

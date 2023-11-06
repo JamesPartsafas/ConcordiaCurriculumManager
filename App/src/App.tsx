@@ -29,7 +29,7 @@ export function App() {
     const [user, setUser] = useState<User | null>(initializeUser());
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(user != null ? true : false);
     const [isAdminorGroupMaster, setIsAdminorGroupMaster] = useState<boolean>(
-        user != null ? (user.roles.includes("Admin") || user.masteredGroups != null ? true : false) : false
+        user != null ? user.roles.includes("Admin") || user.masteredGroups != null : false
     );
     const navigate = useNavigate();
 

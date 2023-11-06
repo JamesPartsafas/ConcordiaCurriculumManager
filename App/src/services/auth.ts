@@ -24,8 +24,8 @@ export interface DecodedToken {
     exp: number;
     iss: string;
     aud: string;
-    groups: string[];
-    masteredGroups: string[];
+    group: string[] | null;
+    masteredGroup: string[] | null;
 }
 
 export interface LoginDTO {
@@ -75,8 +75,8 @@ export function decodeTokenToUser(accessToken: string) {
         expiresAtTimestamp: decodedToken.exp,
         issuer: decodedToken.iss,
         audience: decodedToken.aud,
-        groups: decodedToken.groups,
-        masteredGroups: decodedToken.masteredGroups,
+        groups: decodedToken.group,
+        masteredGroups: decodedToken.masteredGroup,
     };
 
     return user;
