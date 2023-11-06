@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import { User } from "./models/user";
 import { createContext, useState } from "react";
 import Register from "./pages/Register";
-import { decodeTokenToUser } from "./services/auth";
+import { decodeTokenToUser, isAdminOrGroupMaster } from "./services/auth";
 import AddCourse from "./pages/AddCourse";
 import theme from "../theme"; // Import your custom theme
 import ComponentsList from "./pages/ComponentsList";
@@ -29,7 +29,7 @@ export function App() {
     const [user, setUser] = useState<User | null>(initializeUser());
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(user != null ? true : false);
     const [isAdminorGroupMaster, setIsAdminorGroupMaster] = useState<boolean>(
-        user != null ? user.roles.includes("Admin") || user.masteredGroups != null : false
+        user != null ? isAdminOrGroupMaster(user) : false
     );
     const navigate = useNavigate();
 

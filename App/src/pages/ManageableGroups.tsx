@@ -1,23 +1,30 @@
 import { Container, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
-import { GetAllGroups } from "../services/group";
-import { GroupDTO, MultiGroupResponseDTO } from "../services/group";
-import { useEffect, useState } from "react";
+import { isAdmin } from "../services/auth";
+import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../services/group";
+import { useContext, useEffect, useState } from "react";
 import { BaseRoutes } from "../constants";
 import Header from "../shared/Header";
+import { UserContext } from "../App";
 
 export default function DisplayManageableGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
+    const user = useContext(UserContext);
     useEffect(() => {
-        AllGroups();
-    }, []);
-
-    function AllGroups() {
         GetAllGroups()
             .then(
                 (res: MultiGroupResponseDTO) => {
-                    setMyGroups(res.data);
+                    const groups: GroupDTO[] = res.data;
+                    if (isAdmin(user)) {
+                        setMyGroups(groups);
+                    } else {
+                        setMyGroups(
+                            groups.filter((group) => {
+                                if (user.masteredGroups.includes(group.id)) return group;
+                            })
+                        );
+                    }
                 },
                 (rej) => {
                     console.log(rej);
@@ -26,7 +33,8 @@ export default function DisplayManageableGroups() {
             .catch((err) => {
                 console.log(err);
             });
-    }
+    }, []);
+
     return (
         <div>
             <Header></Header>
@@ -74,7 +82,10 @@ export default function DisplayManageableGroups() {
                                             </Button>
                                         </Link>
                                         {group.members.length != 0 && (
-                                            <Link to={BaseRoutes.Home} state={{ gid: group.id, name: group.name }}>
+                                            <Link
+                                                to={BaseRoutes.RemoveUserFromGroup}
+                                                state={{ gid: group.id, name: group.name }}
+                                            >
                                                 <Button style="primary" variant="outline" width="50%" height="40px">
                                                     Remove
                                                 </Button>
@@ -85,11 +96,13 @@ export default function DisplayManageableGroups() {
                             ))}
                         </Tbody>
                     </Table>
-                    <Link to={BaseRoutes.Home}>
-                        <Button style="primary" variant={"solid"} width="100%" height="40px">
-                            Create Group
-                        </Button>
-                    </Link>
+                    {isAdmin(user) && (
+                        <Link to={BaseRoutes.Home}>
+                            <Button style="primary" variant={"solid"} width="100%" height="40px">
+                                Create Group
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </Container>
         </div>
