@@ -1,8 +1,8 @@
 import { Container, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
-import { GetAllGroups } from "../services/group";
-import { GroupDTO, MultiGroupResponseDTO } from "../services/group";
+import { isAdmin } from "../services/auth";
+import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../services/group";
 import { useContext, useEffect, useState } from "react";
 import { BaseRoutes } from "../constants";
 import Header from "../shared/Header";
@@ -12,19 +12,18 @@ export default function DisplayManageableGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
     const user = useContext(UserContext);
     useEffect(() => {
-        if (user.roles.includes("Admin")) {
-            AllGroups();
-        } else {
-            AllGroups();
-            setMyGroups(myGroups.filter((group) => user.masteredGroups.includes(group.id)));
-        }
-    }, []);
-
-    function AllGroups() {
         GetAllGroups()
             .then(
                 (res: MultiGroupResponseDTO) => {
-                    setMyGroups(res.data);
+                    const groups: GroupDTO[] = res.data;
+                    if (isAdmin(user)) {
+                        setMyGroups(groups);
+                    } else {
+                        setMyGroups(groups.filter((group) => {
+                            if (user.masteredGroups.includes(group.id))
+                                return group;
+                        }));
+                    }
                 },
                 (rej) => {
                     console.log(rej);
@@ -33,7 +32,8 @@ export default function DisplayManageableGroups() {
             .catch((err) => {
                 console.log(err);
             });
-    }
+    }, []);
+
     return (
         <div>
             <Header></Header>
@@ -95,7 +95,7 @@ export default function DisplayManageableGroups() {
                             ))}
                         </Tbody>
                     </Table>
-                    {user.roles.includes("Admin") && (
+                    {isAdmin(user) && (
                         <Link to={BaseRoutes.Home}>
                             <Button style="primary" variant={"solid"} width="100%" height="40px">
                                 Create Group

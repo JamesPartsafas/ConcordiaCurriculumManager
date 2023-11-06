@@ -5,6 +5,7 @@ import { BaseRoutes } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { Container, Flex } from "@chakra-ui/react";
 import Header from "../shared/Header";
+import { isAdminOrGroupMaster } from "../services/auth";
 
 export default function Home() {
     const navigate = useNavigate();
@@ -74,7 +75,7 @@ export default function Home() {
                         </h2>
                     </Flex>
                 </Container>
-                {user.roles.includes("Admin") && (
+                {isAdminOrGroupMaster(user) && (
                     <Container>
                         <Flex align={"center"}>
                             <h2

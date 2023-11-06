@@ -89,7 +89,6 @@ export default function RemovingUserFromGroup() {
                                             variant="outline"
                                             width="22%"
                                             height="40px"
-                                            justifyContent={"flex-end"}
                                             onClick={() => {
                                                 removingUser(item.id);
                                             }}
