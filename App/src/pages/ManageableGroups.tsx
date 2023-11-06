@@ -19,10 +19,11 @@ export default function DisplayManageableGroups() {
                     if (isAdmin(user)) {
                         setMyGroups(groups);
                     } else {
-                        setMyGroups(groups.filter((group) => {
-                            if (user.masteredGroups.includes(group.id))
-                                return group;
-                        }));
+                        setMyGroups(
+                            groups.filter((group) => {
+                                if (user.masteredGroups.includes(group.id)) return group;
+                            })
+                        );
                     }
                 },
                 (rej) => {

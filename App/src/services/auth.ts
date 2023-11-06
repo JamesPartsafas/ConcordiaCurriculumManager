@@ -87,5 +87,5 @@ export function isAdmin(user: User): boolean {
 }
 
 export function isAdminOrGroupMaster(user: User): boolean {
-    return isAdmin(user) || user.masteredGroups != null
+    return isAdmin(user) || user.masteredGroups != null;
 }
