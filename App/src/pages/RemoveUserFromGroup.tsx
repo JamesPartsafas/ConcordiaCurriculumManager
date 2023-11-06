@@ -94,7 +94,7 @@ export default function RemovingUserFromGroup() {
                                                 removingUser(item.id);
                                             }}
                                         >
-                                            Select
+                                            Remove
                                         </Button>
                                     </HStack>
                                 ))}
