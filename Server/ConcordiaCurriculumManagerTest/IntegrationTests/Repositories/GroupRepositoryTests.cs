@@ -116,6 +116,7 @@ public class GroupRepositoryTests
             .Include(g => g.GroupMasters)
             .FirstOrDefaultAsync(g => g.Id == group.Id);
 
+        Assert.IsNotNull(updatedGroup);
         Assert.IsFalse(updatedGroup.Members.Any(u => u.Id == userId));
         Assert.IsFalse(updatedGroup.GroupMasters.Any(u => u.Id == userId));
     }
@@ -184,6 +185,7 @@ public class GroupRepositoryTests
             .Include(g => g.GroupMasters)
             .FirstOrDefaultAsync(g => g.Id == group.Id);
 
+        Assert.IsNotNull(updatedGroup);
         Assert.IsFalse(updatedGroup.Members.Any(u => u.Id == userId));
         Assert.IsFalse(updatedGroup.GroupMasters.Any(u => u.Id == userId));
     }
