@@ -54,7 +54,10 @@ public class GroupRepository : IGroupRepository
 
     public async Task<bool> RemoveUserFromGroup(Guid userId, Guid groupId)
     {
-        var group = await _dbContext.Groups.Include(g => g.Members).FirstOrDefaultAsync(g => g.Id == groupId);
+        var group = await _dbContext.Groups
+                                    .Include(g => g.Members)
+                                    .Include(g => g.GroupMasters)
+                                    .FirstOrDefaultAsync(g => g.Id == groupId);
         var user = group?.Members.FirstOrDefault(u => u.Id == userId);
         if (group != null && user != null)
         {
