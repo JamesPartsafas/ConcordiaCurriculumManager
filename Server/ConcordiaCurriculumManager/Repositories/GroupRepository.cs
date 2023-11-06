@@ -1,5 +1,6 @@
 ﻿using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
+using ConcordiaCurriculumManager.Security.Requirements.Handlers;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConcordiaCurriculumManager.Repositories;
@@ -44,7 +45,7 @@ public class GroupRepository : IGroupRepository
     {
         var group = await _dbContext.Groups.FindAsync(groupId);
         var user = await _dbContext.Users.FindAsync(userId);
-        if (group != null && user != null)
+        if (group != null && user != null && !user.Roles.Any(role => role.UserRole == RoleEnum.Admin))
         {
             group.Members.Add(user);
             return await _dbContext.SaveChangesAsync() > 0;
