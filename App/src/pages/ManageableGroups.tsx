@@ -65,16 +65,21 @@ export default function DisplayManageableGroups() {
                                         {group.members?.length}
                                     </Td>
                                     <Td whiteSpace="nowrap" padding="16px">
-                                        <Link to={BaseRoutes.Home} state={{ gid: group.id, name: group.name }}>
+                                        <Link
+                                            to={BaseRoutes.AddUserToGroup}
+                                            state={{ gid: group.id, name: group.name }}
+                                        >
                                             <Button style="primary" variant="outline" width="50%" height="40px">
                                                 Add
                                             </Button>
                                         </Link>
-                                        <Link to={BaseRoutes.Home} state={{ gid: group.id, name: group.name }}>
-                                            <Button style="primary" variant="outline" width="50%" height="40px">
-                                                Remove
-                                            </Button>
-                                        </Link>
+                                        {group.members.length != 0 && (
+                                            <Link to={BaseRoutes.Home} state={{ gid: group.id, name: group.name }}>
+                                                <Button style="primary" variant="outline" width="50%" height="40px">
+                                                    Remove
+                                                </Button>
+                                            </Link>
+                                        )}
                                     </Td>
                                 </Tr>
                             ))}

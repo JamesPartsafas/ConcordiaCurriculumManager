@@ -19,6 +19,8 @@ import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
 import DisplayManageableGroups from "./pages/ManageableGroups";
 import EditCourse from "./pages/EditCourse";
+import AddingUserToGroup from "./pages/addUserToGroup";
+import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
 import DeleteCourse from "./pages/DeleteCourse";
 
 export const UserContext = createContext<User | null>(null);
@@ -26,6 +28,9 @@ export const UserContext = createContext<User | null>(null);
 export function App() {
     const [user, setUser] = useState<User | null>(initializeUser());
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(user != null ? true : false);
+    const [isAdminorGroupMaster, setIsAdminorGroupMaster] = useState<boolean>(
+        user != null ? user.roles.includes("Admin") || user.masteredGroups != null : false
+    );
     const navigate = useNavigate();
 
     // Check for the token in localStorage.
@@ -40,6 +45,7 @@ export function App() {
                 localStorage.removeItem("token");
                 navigate(BaseRoutes.Login);
                 setIsLoggedIn(false);
+                setIsAdminorGroupMaster(false);
             }
 
             return user;
@@ -62,9 +68,30 @@ export function App() {
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
                     <Route
                         path={BaseRoutes.ManageableGroup}
-                        element={isLoggedIn == true ? <DisplayManageableGroups /> : <Navigate to={BaseRoutes.Login} />}
+                        element={
+                            isAdminorGroupMaster == true ? (
+                                <DisplayManageableGroups />
+                            ) : (
+                                <Navigate to={BaseRoutes.Login} />
+                            )
+                        }
                     />
-
+                    <Route
+                        path={BaseRoutes.AddUserToGroup}
+                        element={
+                            isAdminorGroupMaster == true ? <AddingUserToGroup /> : <Navigate to={BaseRoutes.Login} />
+                        }
+                    />
+                    <Route
+                        path={BaseRoutes.RemoveUserFromGroup}
+                        element={
+                            isAdminorGroupMaster == true ? (
+                                <RemovingUserFromGroup />
+                            ) : (
+                                <Navigate to={BaseRoutes.Login} />
+                            )
+                        }
+                    />
                     <Route
                         path={BaseRoutes.Dossiers}
                         element={isLoggedIn == true ? <Dossiers /> : <Navigate to={BaseRoutes.Login} />}

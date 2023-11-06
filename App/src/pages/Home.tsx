@@ -65,8 +65,8 @@ export default function Home() {
                                 style="primary"
                                 variant="outline"
                                 width="200px"
-                                height="40px"
                                 margin="5%"
+                                height="40px"
                                 onClick={() => navigate(BaseRoutes.Dossiers)}
                             >
                                 View Groups List
@@ -74,6 +74,33 @@ export default function Home() {
                         </h2>
                     </Flex>
                 </Container>
+                {user.roles.includes("Admin") && (
+                    <Container>
+                        <Flex align={"center"}>
+                            <h2
+                                style={{
+                                    margin: "20px",
+                                    fontWeight: "bold",
+                                    fontSize: "24px",
+                                    color: "#FF8888",
+                                    textAlign: "center",
+                                }}
+                            >
+                                Manage Groups{" "}
+                                <Button
+                                    style="primary"
+                                    variant="outline"
+                                    width="240px"
+                                    height="40px"
+                                    margin="10%"
+                                    onClick={() => navigate(BaseRoutes.ManageableGroup)}
+                                >
+                                    View Manageable Groups List
+                                </Button>
+                            </h2>
+                        </Flex>
+                    </Container>
+                )}
             </Container>
         </div>
     );
