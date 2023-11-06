@@ -83,4 +83,130 @@ public class GroupRepositoryTests
 
         Assert.IsTrue(result);
     }
+
+    [TestMethod]
+    public async Task AddUserToGroup_UserNotAdminAndGroupExists_UserAdded()
+    {
+        var userId = Guid.NewGuid();
+        var groupId = Guid.NewGuid();
+        var user = new User
+        {
+            Id = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "john.doe@example.com",
+            Password = "hashedpassword",
+            Roles = new List<Role>()
+        };
+        var group = new Group
+        {
+            Id = groupId,
+            Name = "Test Group",
+            Members = new List<User>()
+        };
+
+        dbContext.Users.Add(user);
+        dbContext.Groups.Add(group);
+        await dbContext.SaveChangesAsync();
+
+        var result = await groupRepository.AddUserToGroup(userId, groupId);
+
+        Assert.IsTrue(result);
+        var updatedGroup = await dbContext.Groups
+            .Include(g => g.Members)
+            .FirstOrDefaultAsync(g => g.Id == groupId);
+
+        Assert.IsNotNull(updatedGroup);
+        Assert.IsTrue(updatedGroup.Members.Any(u => u.Id == userId));
+    }
+
+    [TestMethod]
+    public async Task AddUserToGroup_UserIsAdminAndGroupExists_UserNotAdded()
+    {
+        var userId = Guid.NewGuid();
+        var groupId = Guid.NewGuid();
+        var user = new User
+        {
+            Id = userId,
+            FirstName = "Jane",
+            LastName = "Smith",
+            Email = "jane.smith@example.com",
+            Password = "hashedpassword",
+            Roles = new List<Role> { new Role { UserRole = RoleEnum.Admin } }
+        };
+        var group = new Group
+        {
+            Id = groupId,
+            Name = "Admin Group",
+            Members = new List<User>()
+        };
+
+        dbContext.Users.Add(user);
+        dbContext.Groups.Add(group);
+        await dbContext.SaveChangesAsync();
+
+        var result = await groupRepository.AddUserToGroup(userId, groupId);
+
+        Assert.IsFalse(result);
+        var updatedGroup = await dbContext.Groups
+            .Include(g => g.Members)
+            .FirstOrDefaultAsync(g => g.Id == groupId);
+
+        Assert.IsNotNull(updatedGroup);
+        Assert.IsFalse(updatedGroup.Members.Any(u => u.Id == userId));
+    }
+
+    [TestMethod]
+    public async Task AddUserToGroup_UserDoesNotExist_ReturnsFalse()
+    {
+        var userId = Guid.NewGuid();
+        var groupId = Guid.NewGuid();
+        var group = new Group
+        {
+            Id = groupId,
+            Name = "Nonexistent User Group",
+            Members = new List<User>()
+        };
+
+        dbContext.Groups.Add(group);
+        await dbContext.SaveChangesAsync();
+
+        var result = await groupRepository.AddUserToGroup(userId, groupId);
+
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public async Task AddUserToGroup_GroupDoesNotExist_ReturnsFalse()
+    {
+        var userId = Guid.NewGuid();
+        var groupId = Guid.NewGuid();
+        var user = new User
+        {
+            Id = userId,
+            FirstName = "Alice",
+            LastName = "Johnson",
+            Email = "alice.johnson@example.com",
+            Password = "hashedpassword",
+            Roles = new List<Role>()
+        };
+
+        dbContext.Users.Add(user);
+        await dbContext.SaveChangesAsync();
+
+        var result = await groupRepository.AddUserToGroup(userId, groupId);
+
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public async Task AddUserToGroup_NeitherUserNorGroupExist_ReturnsFalse()
+    {
+        var userId = Guid.NewGuid();
+        var groupId = Guid.NewGuid();
+
+        var result = await groupRepository.AddUserToGroup(userId, groupId);
+
+        Assert.IsFalse(result);
+    }
 }

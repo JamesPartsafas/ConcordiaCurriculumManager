@@ -44,7 +44,10 @@ public class GroupRepository : IGroupRepository
     public async Task<bool> AddUserToGroup(Guid userId, Guid groupId)
     {
         var group = await _dbContext.Groups.FindAsync(groupId);
-        var user = await _dbContext.Users.FindAsync(userId);
+        var user = await _dbContext.Users
+                                   .Include(u => u.Roles)
+                                   .SingleOrDefaultAsync(u => u.Id == userId);
+
         if (group != null && user != null && !user.Roles.Any(role => role.UserRole == RoleEnum.Admin))
         {
             group.Members.Add(user);
