@@ -17,18 +17,29 @@ import {
     Text,
     Textarea,
 } from "@chakra-ui/react";
+import { AllCourseSettings } from "../../models/course";
+import { getAllCourseSettings } from "../../services/course";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
     const [dossierDetails, setDossierDetails] = useState<DossierDetailsDTO | null>(null);
+    const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
 
     useEffect(() => {
         requestDossierDetails(dossierId);
+        requestCourseSettings();
     }, [dossierId]);
 
     function requestDossierDetails(dossierId: string) {
         getDossierDetails(dossierId).then((res: DossierDetailsResponse) => {
             setDossierDetails(res.data);
+            console.log(res.data);
+        });
+    }
+
+    function requestCourseSettings() {
+        getAllCourseSettings().then((res) => {
+            setCourseSettings(res.data);
             console.log(res.data);
         });
     }
@@ -86,7 +97,15 @@ export default function DossierDetails() {
                                                 ? "N/A"
                                                 : courseCreationRequest.newCourse?.equivalentCourses}
                                         </Text>
-                                        <Text>Career: {courseCreationRequest.newCourse?.career} CHANGE THAT</Text>
+                                        <Text>
+                                            Career:
+                                            {" " +
+                                                courseSettings.courseCareers.find(
+                                                    (courseCareer) =>
+                                                        courseCareer.careerCode ===
+                                                        courseCreationRequest.newCourse?.career
+                                                )?.careerName}
+                                        </Text>
                                     </Stack>
                                 </Stack>
                             </CardBody>
@@ -147,7 +166,15 @@ export default function DossierDetails() {
                                                 ? "N/A"
                                                 : courseModificationRequest.course?.equivalentCourses}
                                         </Text>
-                                        <Text>Career: {courseModificationRequest.course?.career}</Text>
+                                        <Text>
+                                            Career:{" "}
+                                            {" " +
+                                                courseSettings.courseCareers.find(
+                                                    (courseCareer) =>
+                                                        courseCareer.careerCode ===
+                                                        courseModificationRequest.course?.career
+                                                )?.careerName}
+                                        </Text>
                                     </Stack>
                                     <Stack alignSelf={"end"} alignItems={"baseline"}>
                                         <Text>
