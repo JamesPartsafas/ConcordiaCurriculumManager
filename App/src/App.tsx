@@ -33,7 +33,6 @@ export function App() {
     const [isAdminorGroupMaster, setIsAdminorGroupMaster] = useState<boolean>(
         user != null ? isAdminOrGroupMaster(user) : false
     );
-    const navigate = useNavigate();
 
     // Check for the token in localStorage.
     function initializeUser() {
