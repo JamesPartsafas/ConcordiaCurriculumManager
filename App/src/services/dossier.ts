@@ -22,7 +22,7 @@ export function deleteDossierById(id: string): Promise<void> {
 }
 
 export function editDossier(dto: DossierDTO) {
-    return axios.put("/Dossier/EditDossier", dto);
+    return axios.put(`/Dossier/EditDossier/${dto.id}`, dto);
 }
 
 export function getDossierDetails(id: string): Promise<DossierDetailsResponse> {
