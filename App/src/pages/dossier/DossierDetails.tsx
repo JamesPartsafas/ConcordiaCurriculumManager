@@ -102,7 +102,7 @@ export default function DossierDetails() {
                                         <Text>
                                             Career:
                                             {" " +
-                                                courseSettings.courseCareers.find(
+                                                courseSettings?.courseCareers.find(
                                                     (courseCareer) =>
                                                         courseCareer.careerCode ===
                                                         courseCreationRequest.newCourse?.career
@@ -183,7 +183,7 @@ export default function DossierDetails() {
                                         <Text>
                                             Career:{" "}
                                             {" " +
-                                                courseSettings.courseCareers.find(
+                                                courseSettings?.courseCareers.find(
                                                     (courseCareer) =>
                                                         courseCareer.careerCode ===
                                                         courseModificationRequest.course?.career
@@ -213,7 +213,15 @@ export default function DossierDetails() {
                 </SimpleGrid>
                 <Divider marginTop={10} marginBottom={2} />
 
-                <Button variant="solid" style="primary" width="100%">
+                <Button
+                    variant="solid"
+                    style="primary"
+                    width="100%"
+                    onClick={() => {
+                        // need to have a modal maybe to select which course to edit
+                        navigate(BaseRoutes.EditCourse.replace(":id", "1").replace(":dossierId", dossierId));
+                    }}
+                >
                     Add Modification Request
                 </Button>
             </Box>

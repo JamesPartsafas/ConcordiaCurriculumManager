@@ -109,7 +109,7 @@ export function App() {
                         element={isLoggedIn == true ? <AddCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
-                        path={BaseRoutes.EditCourse + "/:id"}
+                        path={BaseRoutes.EditCourse}
                         element={isLoggedIn == true ? <EditCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
