@@ -4,8 +4,8 @@ export enum BaseRoutes {
     Register = "/register",
     Dossiers = "/dossiers",
     NotFound = "*",
-    AddCourse = "/add-course",
-    EditCourse = "/edit-course",
+    AddCourse = "/add-course/:dossierId",
+    EditCourse = "/edit-course/:id/:dossierId",
     DeleteCourse = "/delete-course",
     ComponentsList = "/components-list",
     CourseBrowser = "/CourseBrowser",
@@ -14,4 +14,5 @@ export enum BaseRoutes {
     CreateGroup = "/creategroup",
     AddUserToGroup = "/addusertogroup",
     RemoveUserFromGroup = "/removeuserfromgroup",
+    DossierDetails = "/dossierdetails/:dossierId",
 }

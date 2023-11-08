@@ -22,16 +22,17 @@ import EditCourse from "./pages/EditCourse";
 import AddingUserToGroup from "./pages/addUserToGroup";
 import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
 import DeleteCourse from "./pages/DeleteCourse";
+import DossierDetails from "./pages/dossier/DossierDetails";
 
 export const UserContext = createContext<User | null>(null);
 
 export function App() {
+    const navigate = useNavigate();
     const [user, setUser] = useState<User | null>(initializeUser());
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(user != null ? true : false);
     const [isAdminorGroupMaster, setIsAdminorGroupMaster] = useState<boolean>(
         user != null ? isAdminOrGroupMaster(user) : false
     );
-    const navigate = useNavigate();
 
     // Check for the token in localStorage.
     function initializeUser() {
@@ -64,7 +65,10 @@ export function App() {
                         path={BaseRoutes.CourseBrowser}
                         element={isLoggedIn == true ? <CourseBrowser /> : <Navigate to={BaseRoutes.Login} />}
                     /> */}
-                    <Route path={BaseRoutes.Login} element={<Login setUser={setUser} />} />
+                    <Route
+                        path={BaseRoutes.Login}
+                        element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn} />}
+                    />
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
                     <Route
                         path={BaseRoutes.ManageableGroup}
@@ -96,13 +100,16 @@ export function App() {
                         path={BaseRoutes.Dossiers}
                         element={isLoggedIn == true ? <Dossiers /> : <Navigate to={BaseRoutes.Login} />}
                     />
-
+                    <Route
+                        path={BaseRoutes.DossierDetails}
+                        element={isLoggedIn == true ? <DossierDetails /> : <Navigate to={BaseRoutes.Login} />}
+                    />
                     <Route
                         path={BaseRoutes.AddCourse}
                         element={isLoggedIn == true ? <AddCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
-                        path={BaseRoutes.EditCourse + "/:id"}
+                        path={BaseRoutes.EditCourse}
                         element={isLoggedIn == true ? <EditCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route

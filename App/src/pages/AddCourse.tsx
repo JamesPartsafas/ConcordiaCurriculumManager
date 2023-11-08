@@ -55,6 +55,7 @@ export default function AddCourse() {
     const [courseCareer, setCouresCareer] = useState<CourseCareer>(null);
     const [courseCareers, setCourseCareers] = useState<string[]>([]);
     const selectedComponentRef = useRef<HTMLSelectElement>(null);
+    // const { dossierId } = useParams();
 
     const handleChangeCourseCareer = (value: string) => {
         if (value.length === 0) setCourseCareersError(true);

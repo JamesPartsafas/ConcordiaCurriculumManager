@@ -10,10 +10,6 @@ export interface AuthenticationResponse {
     };
 }
 
-export interface LoginProps {
-    setUser: (user: User | null) => void;
-}
-
 export interface DecodedToken {
     id: string;
     fName: string;
