@@ -1,4 +1,4 @@
-import { Box, Container, FormControl, FormLabel, Heading, HStack, Input, Stack, Select } from "@chakra-ui/react";
+import { Box, Container, FormControl, FormLabel, Heading, HStack, Input, Stack } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -6,12 +6,15 @@ import { GroupCreateDTO, GroupResponseDTO } from "../services/group";
 import { CreateGroupCall } from "../services/group";
 import Button from "../components/Button";
 import { BaseRoutes } from "../constants";
+import { useState } from "react";
 
 export default function CreateGroup() {
     const { register, handleSubmit } = useForm<GroupCreateDTO>();
     const navigate = useNavigate();
+    const [groupName, setGroupName] = useState("");
 
     function onSubmit(data: GroupCreateDTO) {
+        data.name = groupName;
         CreateGroupCall(data)
             .then((res: GroupResponseDTO) => {
                 if (res.data != null) {
@@ -42,53 +45,16 @@ export default function CreateGroup() {
                         >
                             <Stack spacing="6">
                                 <FormControl>
-                                    <FormLabel htmlFor="groupType">Group Type</FormLabel>
-                                    <Select
-                                        id="groupType"
-                                        // {...register("groupType", {
-                                        //     required: true,
-                                        // })}
-                                    >
-                                        <option value="option1">Group 1</option>
-                                        <option value="option2">Group 2</option>
-                                        <option value="option3">Group 3</option>
-                                    </Select>
-                                </FormControl>
-                                <FormControl>
                                     <FormLabel>Name</FormLabel>
                                     <Input
                                         id="groupName"
                                         type="text"
-                                        {...register("name", {
-                                            required: true,
-                                        })}
+                                        value={groupName}
+                                        onChange={(e) => {
+                                            setGroupName(e.target.value);
+                                            console.log("Name input value:", e.target.value);
+                                        }}
                                     />
-                                </FormControl>
-                                <FormControl>
-                                    <FormLabel htmlFor="faculty">Faculty/School</FormLabel>
-                                    <Select
-                                        id="faculty"
-                                        // {...register("faculty", {
-                                        //     required: true,
-                                        // })}
-                                    >
-                                        <option value="faculty1">Faculty 1</option>
-                                        <option value="faculty2">Faculty 2</option>
-                                        <option value="faculty3">Faculty 3</option>
-                                    </Select>
-                                </FormControl>
-                                <FormControl>
-                                    <FormLabel htmlFor="department">Department</FormLabel>
-                                    <Select
-                                        id="department"
-                                        // {...register("department", {
-                                        //     required: true,
-                                        // })}
-                                    >
-                                        <option value="department1">Department 1</option>
-                                        <option value="department2">Department 2</option>
-                                        <option value="department3">Department 3</option>
-                                    </Select>
                                 </FormControl>
                             </Stack>
                         </Box>
