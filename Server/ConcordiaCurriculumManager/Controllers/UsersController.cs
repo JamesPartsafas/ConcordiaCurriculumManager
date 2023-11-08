@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO;
-using ConcordiaCurriculumManager.Models.Users;
+using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +11,7 @@ namespace ConcordiaCurriculumManager.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize(Roles = RoleNames.Admin)]
+[Authorize(Policies.IsGroupMasterOrAdmin)]
 public class UsersController : Controller
 {
     private readonly IMapper _mapper;

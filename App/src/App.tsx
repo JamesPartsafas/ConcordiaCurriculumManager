@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import { User } from "./models/user";
 import { createContext, useState } from "react";
 import Register from "./pages/Register";
-import { decodeTokenToUser } from "./services/auth";
+import { decodeTokenToUser, isAdminOrGroupMaster } from "./services/auth";
 import AddCourse from "./pages/AddCourse";
 import theme from "../theme"; // Import your custom theme
 import ComponentsList from "./pages/ComponentsList";
@@ -18,6 +18,10 @@ import { BaseRoutes } from "./constants";
 import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
 import DisplayManageableGroups from "./pages/ManageableGroups";
+import EditCourse from "./pages/EditCourse";
+import AddingUserToGroup from "./pages/addUserToGroup";
+import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
+import DeleteCourse from "./pages/DeleteCourse";
 import DossierDetails from "./pages/dossier/DossierDetails";
 
 export const UserContext = createContext<User | null>(null);
@@ -26,6 +30,10 @@ export function App() {
     const navigate = useNavigate();
     const [user, setUser] = useState<User | null>(initializeUser());
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(user != null ? true : false);
+    const [isAdminorGroupMaster, setIsAdminorGroupMaster] = useState<boolean>(
+        user != null ? isAdminOrGroupMaster(user) : false
+    );
+    const navigate = useNavigate();
 
     // Check for the token in localStorage.
     function initializeUser() {
@@ -39,6 +47,7 @@ export function App() {
                 localStorage.removeItem("token");
                 navigate(BaseRoutes.Login);
                 setIsLoggedIn(false);
+                setIsAdminorGroupMaster(false);
             }
 
             return user;
@@ -64,9 +73,30 @@ export function App() {
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
                     <Route
                         path={BaseRoutes.ManageableGroup}
-                        element={isLoggedIn == true ? <DisplayManageableGroups /> : <Navigate to={BaseRoutes.Login} />}
+                        element={
+                            isAdminorGroupMaster == true ? (
+                                <DisplayManageableGroups />
+                            ) : (
+                                <Navigate to={BaseRoutes.Login} />
+                            )
+                        }
                     />
-
+                    <Route
+                        path={BaseRoutes.AddUserToGroup}
+                        element={
+                            isAdminorGroupMaster == true ? <AddingUserToGroup /> : <Navigate to={BaseRoutes.Login} />
+                        }
+                    />
+                    <Route
+                        path={BaseRoutes.RemoveUserFromGroup}
+                        element={
+                            isAdminorGroupMaster == true ? (
+                                <RemovingUserFromGroup />
+                            ) : (
+                                <Navigate to={BaseRoutes.Login} />
+                            )
+                        }
+                    />
                     <Route
                         path={BaseRoutes.Dossiers}
                         element={isLoggedIn == true ? <Dossiers /> : <Navigate to={BaseRoutes.Login} />}
@@ -78,6 +108,14 @@ export function App() {
                     <Route
                         path={BaseRoutes.AddCourse}
                         element={isLoggedIn == true ? <AddCourse /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.EditCourse + "/:id"}
+                        element={isLoggedIn == true ? <EditCourse /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.DeleteCourse}
+                        element={isLoggedIn == true ? <DeleteCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
                     {/* whenever none of the other routes match we show the not found page */}

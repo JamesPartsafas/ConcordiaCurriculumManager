@@ -48,6 +48,7 @@ export default function Login(props: LoginProps) {
             .then(
                 (res: AuthenticationResponse) => {
                     if (res.data.accessToken != null) {
+                        showToast(toast, "Success!", "You have successfully logged in.", "success");
                         const user: User = decodeTokenToUser(res.data.accessToken);
                         showToast(toast, "Success!", "Logged In", "success");
                         props.setUser(user);

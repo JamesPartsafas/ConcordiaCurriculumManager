@@ -2,17 +2,28 @@ import Register from "../src/pages/Register";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import * as authService from "../src/services/auth";
 import { BrowserRouter } from "react-router-dom";
+import theme from "../theme"; // Import your custom theme
+import { ChakraProvider } from "@chakra-ui/react";
+import { LoadingProvider } from "../src/utils/loadingContext"; // Import the provider
+
+function browserRouterComponent(component) {
+    return render(
+        <BrowserRouter>
+            <ChakraProvider theme={theme}>
+                <LoadingProvider>{component}</LoadingProvider>
+            </ChakraProvider>
+        </BrowserRouter>
+    );
+}
 
 describe("Registration Render Test Case", () => {
     it("validate function should render all elements ", () => {
-        const component = render(
-            <BrowserRouter>
-                <Register
-                    setUser={() => {
-                        throw new Error("Function not implemented.");
-                    }}
-                />
-            </BrowserRouter>
+        const component = browserRouterComponent(
+            <Register
+                setUser={() => {
+                    throw new Error("Function not implemented.");
+                }}
+            />
         );
 
         const labelNode = component.getByText("Email");
@@ -24,11 +35,7 @@ describe("Registration Render Test Case", () => {
         const mockRegisterUser = jest.spyOn(authService, "RegisterUser");
         mockRegisterUser.mockRejectedValue(new Error("Invalid credentials"));
 
-        const { getByText, getByLabelText } = render(
-            <BrowserRouter>
-                <Register setUser={jest.fn()} />
-            </BrowserRouter>
-        );
+        const { getByText, getByLabelText } = browserRouterComponent(<Register setUser={jest.fn()} />);
 
         fireEvent.change(getByLabelText("First Name"), { target: { value: "John" } });
         fireEvent.change(getByLabelText("Last Name"), { target: { value: "Doe" } });

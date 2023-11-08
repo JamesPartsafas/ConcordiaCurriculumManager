@@ -1,16 +1,14 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum;
 using System;
-namespace ConcordiaCurriculumManager.DTO.Dossiers
+namespace ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests
 {
-    public class CourseModificationInitiationDTO
+    public class CourseInitiationBaseDataDTO : CourseInitiationDTO
     {
-        public required string Subject { get; set; }
-
-        public required string Catalog { get; set; }
-
         public required string Title { get; set; }
 
         public required string Description { get; set; }
+
+        public required string CourseNotes { get; set; }
 
         public required string CreditValue { get; set; }
 
@@ -20,11 +18,9 @@ namespace ConcordiaCurriculumManager.DTO.Dossiers
 
         public required string EquivalentCourses { get; set; }
 
-        public required List<ComponentCodeEnum> ComponentCodes { get; set; }
+        public required Dictionary<ComponentCodeEnum, int?> ComponentCodes { get; set; }
 
-        public required Guid DossierId { get; set; }
-
-        public required int CourseId { get; set; }
+        public required Dictionary<string, string> SupportingFiles { get; set; }
     }
 }
 
