@@ -28,7 +28,6 @@ import { AllCourseSettings, Course, CourseCareer, CourseComponent, CourseCompone
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
 import Button from "../components/Button";
-import { useParams } from "react-router-dom";
 
 export default function AddCourse() {
     const toast = useToast();
@@ -56,7 +55,7 @@ export default function AddCourse() {
     const [courseCareer, setCouresCareer] = useState<CourseCareer>(null);
     const [courseCareers, setCourseCareers] = useState<string[]>([]);
     const selectedComponentRef = useRef<HTMLSelectElement>(null);
-    const { dossierId } = useParams();
+    // const { dossierId } = useParams();
 
     const handleChangeCourseCareer = (value: string) => {
         if (value.length === 0) setCourseCareersError(true);
