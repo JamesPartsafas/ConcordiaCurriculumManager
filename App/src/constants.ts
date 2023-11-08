@@ -4,7 +4,7 @@ export enum BaseRoutes {
     Register = "/register",
     Dossiers = "/dossiers",
     NotFound = "*",
-    AddCourse = "/add-course",
+    AddCourse = "/add-course/:dossierId",
     ComponentsList = "/components-list",
     CourseBrowser = "/CourseBrowser",
     ManageableGroup = "/manageablegroup",

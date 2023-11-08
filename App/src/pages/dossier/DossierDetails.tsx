@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { DossierDetailsDTO, DossierDetailsResponse } from "../../models/dossier";
 import { getDossierDetails } from "../../services/dossier";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
     Box,
-    Button,
     ButtonGroup,
     Card,
     CardBody,
@@ -19,11 +18,15 @@ import {
 } from "@chakra-ui/react";
 import { AllCourseSettings } from "../../models/course";
 import { getAllCourseSettings } from "../../services/course";
+import Button from "../../components/Button";
+import { BaseRoutes } from "../../constants";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
     const [dossierDetails, setDossierDetails] = useState<DossierDetailsDTO | null>(null);
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         requestDossierDetails(dossierId);
@@ -33,7 +36,6 @@ export default function DossierDetails() {
     function requestDossierDetails(dossierId: string) {
         getDossierDetails(dossierId).then((res: DossierDetailsResponse) => {
             setDossierDetails(res.data);
-            console.log(res.data);
         });
     }
 
@@ -112,10 +114,10 @@ export default function DossierDetails() {
                             <Divider />
                             <CardFooter>
                                 <ButtonGroup spacing="2">
-                                    <Button variant="solid" colorScheme="blue">
+                                    <Button variant="solid" style="primary">
                                         View
                                     </Button>
-                                    <Button variant="ghost" colorScheme="blue">
+                                    <Button variant="outline" style="secondary">
                                         Delete
                                     </Button>
                                 </ButtonGroup>
@@ -123,6 +125,18 @@ export default function DossierDetails() {
                         </Card>
                     ))}
                 </SimpleGrid>
+
+                <Divider marginTop={10} marginBottom={2} />
+                <Button
+                    variant="solid"
+                    style="secondary"
+                    width="100%"
+                    onClick={() => {
+                        navigate(BaseRoutes.AddCourse.replace(":dossierId", dossierId));
+                    }}
+                >
+                    Add Creation Request
+                </Button>
             </Box>
             <Box backgroundColor="brandBlue" m={"auto"} mt={5} p="3" width={"70%"} borderRadius={"lg"} minH={"400px"}>
                 <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
@@ -186,10 +200,10 @@ export default function DossierDetails() {
                             <Divider />
                             <CardFooter>
                                 <ButtonGroup spacing="2">
-                                    <Button variant="solid" colorScheme="blue">
+                                    <Button variant="solid" style="secondary">
                                         View
                                     </Button>
-                                    <Button variant="ghost" colorScheme="blue">
+                                    <Button variant="outline" style="primary">
                                         Delete
                                     </Button>
                                 </ButtonGroup>
@@ -197,6 +211,11 @@ export default function DossierDetails() {
                         </Card>
                     ))}
                 </SimpleGrid>
+                <Divider marginTop={10} marginBottom={2} />
+
+                <Button variant="solid" style="primary" width="100%">
+                    Add Modification Request
+                </Button>
             </Box>
         </>
     );
