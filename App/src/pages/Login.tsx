@@ -13,42 +13,64 @@ import {
     InputGroup,
     InputRightElement,
     Stack,
+    useToast,
 } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
-import { AuthenticationResponse, decodeTokenToUser, login, LoginDTO, LoginProps } from "../services/auth";
-import { User } from "../services/user";
+import { AuthenticationResponse, decodeTokenToUser, login, LoginDTO } from "../services/auth";
+import { User } from "../models/user";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { BaseRoutes } from "../constants";
+import { showToast } from "../utils/toastUtils";
 
-export default function Login({ setUser }: LoginProps) {
+export interface LoginProps {
+    setUser: (user: User | null) => void;
+    setIsLoggedIn: (isLoggedIn: boolean) => void;
+}
+
+export default function Login(props: LoginProps) {
     const navigate = useNavigate();
     const { register, handleSubmit } = useForm<LoginDTO>();
     const [showPassword, setShowPassword] = useState(false);
     const [showError, setShowError] = useState(false);
+    const toast = useToast(); // Use the useToast hook
+    const [loading, setLoading] = useState<boolean>(false);
 
     function toggleShowPassword() {
         setShowPassword(!showPassword);
     }
 
     function onSubmit(data: LoginDTO) {
+        setLoading(true);
+        setShowError(false);
         login(data)
             .then(
                 (res: AuthenticationResponse) => {
                     if (res.data.accessToken != null) {
+                        showToast(toast, "Success!", "You have successfully logged in.", "success");
                         const user: User = decodeTokenToUser(res.data.accessToken);
-                        setUser(user);
+                        props.setUser(user);
+                        props.setIsLoggedIn(true);
                         navigate("/");
                     }
                 },
                 (rej) => {
                     console.log(rej);
-                    setShowError(true);
+                    //wrong password
+                    if (rej.response?.status === 400) {
+                        setShowError(true);
+                        showToast(toast, "Error!", "Incorrect Credentials", "error");
+                        setLoading(false);
+                    } else {
+                        showToast(toast, "Error!", rej.message, "error");
+                        setLoading(false);
+                    }
                 }
             )
             .catch((err) => {
                 console.log(err);
+                console.log("err");
             });
     }
 
@@ -108,6 +130,8 @@ export default function Login({ setUser }: LoginProps) {
                                 </HStack>
                                 <Stack spacing="6">
                                     <Button
+                                        isLoading={loading}
+                                        loadingText="Sign in"
                                         backgroundColor="#932439"
                                         color="white"
                                         _hover={{ bg: "#7A1D2E" }}

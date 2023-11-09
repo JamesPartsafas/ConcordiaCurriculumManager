@@ -4,6 +4,7 @@ import User from './types/User';
 import { readFile, seedDataBase } from './util';
 import CourseComponents from './types/CourseComponents';
 import Course from './types/Course';
+import CourseReference from './types/CourseReferences';
 
 require('dotenv').config();
 const onlyValidateData: boolean = process.argv[2] === '--validateData';
@@ -25,8 +26,11 @@ const courseComponentsData = readFile(courseComponentsJsonFilePath, CourseCompon
 const coursesJsonFilePath = path.resolve(__dirname, 'data', 'Courses.json');
 const coursesData = readFile(coursesJsonFilePath, Course);
 
+const courseReferencesJsonFilePath = path.resolve(__dirname, 'data', 'CourseReferences.json');
+const courseReferencesData = readFile(courseReferencesJsonFilePath, CourseReference);
+
 if (!onlyValidateData) {
-  seedDataBase(connectionString, [rolesData, usersData, courseComponentsData, coursesData]);
+  seedDataBase(connectionString, [rolesData, usersData, courseComponentsData, coursesData, courseReferencesData]);
 } else {
   console.log('Seeding data is valid!');
 }

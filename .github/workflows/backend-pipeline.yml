@@ -26,7 +26,7 @@ jobs:
       run: dotnet restore Server/ConcordiaCurriculumManager/ConcordiaCurriculumManager.csproj
 
     - name: Run backend tests
-      run: dotnet test Server/ConcordiaCurriculumManagerTest/ConcordiaCurriculumManagerTest.csproj
+      run: dotnet test Server/ConcordiaCurriculumManagerTest/ConcordiaCurriculumManagerTest.csproj /p:TreatWarningsAsErrors=true
 
   deploy-backend:
     needs:

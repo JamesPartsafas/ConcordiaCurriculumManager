@@ -1,16 +1,17 @@
 //This file is used to define group related types and apis
 import axios from "axios";
-import { UserDTO } from "./user";
+import { UserDTO } from "../models/user";
 
 //types
 export interface GroupDTO {
-    id: string | null;
-    name: string | null;
-    members: UserDTO[] | null;
+    id: string;
+    name: string;
+    members: UserDTO[];
+    groupMasters: UserDTO[];
 }
 
 export interface GroupCreateDTO {
-    name: string | null;
+    name: string;
 }
 
 export interface GroupResponseDTO {
@@ -27,7 +28,7 @@ export function CreateGroupCall(dto: GroupCreateDTO): Promise<GroupResponseDTO> 
 }
 
 export function GetGroupByID(id: string): Promise<GroupResponseDTO> {
-    return axios.get("/Group/" + id);
+    return axios.get(`/Group/${id}`);
 }
 
 export function AddUserToGroup(gid: string, uid: string): Promise<void> {

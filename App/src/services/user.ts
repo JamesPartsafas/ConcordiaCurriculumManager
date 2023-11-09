@@ -1,24 +1,19 @@
-export interface User {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    roles: string[];
-    issuedAtTimestamp: number;
-    expiresAtTimestamp: number;
-    issuer: string;
-    audience: string;
+//This file is used to define user related apis that don't relate to authentication
+import axios from "axios";
+import { UserDTO } from "../models/user";
+
+export interface AllUsersResponseDTO {
+    data: UserDTO[];
 }
 
-export interface UserDTO {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
+export function getAllUsers(): Promise<AllUsersResponseDTO> {
+    return axios.get("/Users/GetAllUsersAsync");
 }
 
-export enum UserRoles {
-    Initiator = "Initiator",
-    Admin = "Admin",
-    FacultyMember = "FacultyMember",
+export function updateAllUsers(uid: string): Promise<AllUsersResponseDTO> {
+    return axios.get("/Users/GetAllUsersAsync?lastId=" + uid);
+}
+
+export function searchUsersByEmail(gid: string, email: string): Promise<AllUsersResponseDTO> {
+    return axios.get("/Users/SearchUsersByEmail/" + gid + "/" + email);
 }

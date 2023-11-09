@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ConcordiaCurriculumManager.Models.Users;
+using System.ComponentModel.DataAnnotations;
 
 namespace ConcordiaCurriculumManager.DTO;
 
@@ -9,4 +10,5 @@ public class UserDTO
     public required string LastName { get; set; }
     [EmailAddress]
     public required string Email { get; set; }
+    public required ICollection<Role> Roles { get; set; }
 }

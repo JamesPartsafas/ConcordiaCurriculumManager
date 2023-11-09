@@ -15,9 +15,8 @@ public static class Claims
     public const string Roles = "roles";
 
     public const string Iat = "iat";
-}
 
-public static class Policies
-{
-    public static string Initiator => RoleEnum.Initiator.ToString();
+    public const string Group = "group";
+
+    public const string GroupMaster = "groupMaster";
 }

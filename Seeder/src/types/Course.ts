@@ -1,6 +1,6 @@
 import globalPgq from 'pg-promise';
 import { DataType } from './DataType';
-import CourseComponents from './CourseComponents';
+import { CourseCourseComponent } from './CourseCourseComponent';
 
 export default class Course implements DataType {
   Id: string;
@@ -16,7 +16,7 @@ export default class Course implements DataType {
   CourseState: number;
   Version: number;
   Published: boolean;
-  CourseComponent: CourseComponents[];
+  CourseCourseComponents: CourseCourseComponent[];
   CreatedDate: Date;
   ModifiedDate: Date;
 
@@ -35,14 +35,14 @@ export default class Course implements DataType {
     this.CourseState = obj.CourseState;
     this.Version = obj.Version;
     this.Published = obj.Published;
-    this.CourseComponent = obj.CourseComponent;
+    this.CourseCourseComponents = obj.CourseCourseComponents;
     this.CreatedDate = obj.CreatedDate;
     this.ModifiedDate = obj.ModifiedDate;
   }
 
   CreateQuery(task: globalPgq.ITask<{}>): Promise<null>[] {
     const insertIntoCourse = task.none('INSERT INTO "Courses" ("Id", "CourseID", "Subject", "Catalog", "Title", "Description", "CreditValue", "PreReqs", "Career", "EquivalentCourses", "CourseState", "Version", "Published", "CreatedDate", "ModifiedDate") VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) ON CONFLICT ("Id") DO NOTHING', [this.Id, this.CourseID, this.Subject, this.Catalog, this.Title, this.Description, this.CreditValue, this.PreReqs, this.Career, this.EquivalentCourses, this.CourseState, this.Version, this.Published, this.CreatedDate.toISOString(), this.ModifiedDate.toISOString()]);
-    const insertIntoCourseCourseComponents = this.CourseComponent.map(c => task.none('INSERT INTO "CourseCourseComponent" ("CourseComponentsId", "CoursesId") VALUES($1, $2) ON CONFLICT("CourseComponentsId", "CoursesId") DO NOTHING', [c.Id, this.Id]));
+    const insertIntoCourseCourseComponents = this.CourseCourseComponents.map(c => task.none('INSERT INTO "CourseCourseComponents" ("Id", "CourseId", "ComponentCode", "CreatedDate", "ModifiedDate") VALUES($1, $2, $3, $4, $5) ON CONFLICT("Id") DO NOTHING', [c.Id, this.Id, c.ComponentCode, this.CreatedDate.toISOString(), this.ModifiedDate.toISOString()]));
     return [insertIntoCourse, ...insertIntoCourseCourseComponents];
   }
 
@@ -75,8 +75,8 @@ export default class Course implements DataType {
       throw new Error(`Version must be a number. Passed value is of type ${typeof obj.Version}`);
     if (typeof obj.Published !== 'boolean')
       throw new Error(`Published must be a boolean. Passed value is of type ${typeof obj.Published}`);
-    if (!Array.isArray(obj.CourseComponent) || obj.CourseComponent.some((c: any) => (typeof c.Id !== 'string' || c.Id.trim() === '')))
-      throw new Error(`CourseComponent must be an array of CourseComponents. Passed value is of type ${typeof obj.CourseComponent}`);
+    if (!Array.isArray(obj.CourseCourseComponents) || obj.CourseCourseComponents.some((c: any) => (typeof c.Id !== 'string' || c.Id.trim() === '')))
+      throw new Error(`CourseCourseComponents must be an array of CourseCourseComponent. Passed value is of type ${typeof obj.CourseCourseComponent}`);
     if (!(obj.CreatedDate instanceof Date))
       throw new Error(`CreatedDate must be a date. Passed value is of type ${typeof obj.CreatedDate}`);
     if (!(obj.ModifiedDate instanceof Date))

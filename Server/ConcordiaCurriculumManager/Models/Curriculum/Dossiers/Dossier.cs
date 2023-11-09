@@ -20,6 +20,8 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
         public List<CourseModificationRequest> CourseModificationRequests { get; set; } = new List<CourseModificationRequest>();
 
+        public List<CourseDeletionRequest> CourseDeletionRequests { get; set; } = new List<CourseDeletionRequest>();
+
     }
 }
 

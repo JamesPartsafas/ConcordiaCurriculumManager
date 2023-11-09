@@ -23,23 +23,52 @@ public class Course : BaseModel
 
     public string? EquivalentCourses { get; set; }
 
+    public string? CourseNotes { get; set; }
+
     public required CourseStateEnum CourseState { get; set; }
 
     public required int Version { get; set; }
 
     public required bool Published { get; set; }
 
-    public List<CourseComponent> CourseComponents { get; set; } = new();
+    public ICollection<CourseCourseComponent>? CourseCourseComponents { get; set; }
+
+    public ICollection<SupportingFile>? SupportingFiles { get; set; }
 
     public CourseCreationRequest? CourseCreationRequest { get; set; }
 
     public CourseModificationRequest? CourseModificationRequest { get; set; }
 
+    public CourseDeletionRequest? CourseDeletionRequest { get; set; }
+
     // Self-reference related fields
     public ICollection<CourseReference>? CourseReferenced { get; set; }
 
     public ICollection<CourseReference>? CourseReferencing { get; set; }
-}
+
+    public static Course CloneCourseForDeletionRequest(Course course)
+    {
+        return new Course
+        {
+            Id = Guid.NewGuid(),
+            CourseID = course.CourseID,
+            Subject = course.Subject,
+            Catalog = course.Catalog,
+            Title = course.Title,
+            Description = course.Description,
+            CreditValue = course.CreditValue,
+            PreReqs = course.PreReqs,
+            Career = course.Career,
+            EquivalentCourses = course.EquivalentCourses,
+            CourseNotes = course.CourseNotes,
+            CourseState = CourseStateEnum.CourseDeletionProposal,
+            Version = course.Version + 1,
+            Published = course.Published,
+            CourseCourseComponents = course.CourseCourseComponents,
+            SupportingFiles = course.SupportingFiles,
+        };
+    }
+}   
 
 public enum CourseCareerEnum
 {
@@ -68,5 +97,14 @@ public enum CourseStateEnum
     NewCourseProposal,
 
     [PgName(nameof(CourseChangeProposal))]
-    CourseChangeProposal
+    CourseChangeProposal,
+
+    [PgName(nameof(CourseDeletionProposal))]
+    CourseDeletionProposal,
+
+    [PgName(nameof(Deleted))]
+    Deleted,
+
+    [PgName(nameof(Rejected))]
+    Rejected,
 }

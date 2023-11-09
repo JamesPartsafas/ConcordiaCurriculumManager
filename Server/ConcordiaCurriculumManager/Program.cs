@@ -58,6 +58,7 @@ public class Program
                 options.Events = new TokenValidation();
             });
 
+        builder.Services.AddAuthorizationHandlers();
         builder.Services.AddAuthorization(options => options.AddPolicies());
 
         var dbSetting = builder.Configuration
@@ -81,6 +82,7 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
 
+        builder.Services.Configure<IISServerOptions>(options =>{ options.MaxRequestBodySize = int.MaxValue ; });
         if (env.IsDevelopment())
         {
             builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
@@ -162,6 +164,7 @@ public class Program
         services.AddScoped<ICourseService, CourseService>();
         services.AddScoped<IDossierService, DossierService>();
         services.AddScoped<IGroupService, GroupService>();
+        services.AddScoped<IUserService, UserService>();
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
