@@ -70,6 +70,7 @@ export default function AddCourse() {
     const [fileName, setFileName] = useState("");
     const [fileContent, setFileContent] = useState("");
     const [supportingFiles, setSupportingFiles] = useState({});
+    // const { dossierId } = useParams();
 
     const handleChangeCourseCareer = (value: string) => {
         if (value.length === 0) setCourseCareersError(true);

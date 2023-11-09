@@ -17,14 +17,19 @@ import {
 } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
-import { AuthenticationResponse, decodeTokenToUser, login, LoginDTO, LoginProps } from "../services/auth";
+import { AuthenticationResponse, decodeTokenToUser, login, LoginDTO } from "../services/auth";
 import { User } from "../models/user";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { BaseRoutes } from "../constants";
 import { showToast } from "../utils/toastUtils";
 
-export default function Login({ setUser }: LoginProps) {
+export interface LoginProps {
+    setUser: (user: User | null) => void;
+    setIsLoggedIn: (isLoggedIn: boolean) => void;
+}
+
+export default function Login(props: LoginProps) {
     const navigate = useNavigate();
     const { register, handleSubmit } = useForm<LoginDTO>();
     const [showPassword, setShowPassword] = useState(false);
@@ -45,7 +50,8 @@ export default function Login({ setUser }: LoginProps) {
                     if (res.data.accessToken != null) {
                         showToast(toast, "Success!", "You have successfully logged in.", "success");
                         const user: User = decodeTokenToUser(res.data.accessToken);
-                        setUser(user);
+                        props.setUser(user);
+                        props.setIsLoggedIn(true);
                         navigate("/");
                     }
                 },

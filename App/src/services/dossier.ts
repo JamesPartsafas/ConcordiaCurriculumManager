@@ -1,7 +1,7 @@
 //this file is to define Dossier related types and apis.
 
 import axios from "axios";
-import { DossierDTO, DossierDTOResponse, GetMyDossiersResponse } from "../models/dossier";
+import { DossierDTO, DossierDTOResponse, DossierDetailsResponse, GetMyDossiersResponse } from "../models/dossier";
 
 export interface CreateDossierDTO {
     title: string | null;
@@ -22,5 +22,9 @@ export function deleteDossierById(id: string): Promise<void> {
 }
 
 export function editDossier(dto: DossierDTO) {
-    return axios.put("/Dossier/EditDossier", dto);
+    return axios.put(`/Dossier/EditDossier/${dto.id}`, dto);
+}
+
+export function getDossierDetails(id: string): Promise<DossierDetailsResponse> {
+    return axios.get(`/Dossier/${id}`);
 }

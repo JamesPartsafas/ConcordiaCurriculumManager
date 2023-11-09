@@ -39,6 +39,43 @@ export interface Course {
     rationale: string;
     supportingFiles: object;
     resourceImplication: string;
+    courseID?: number;
+}
+
+export interface newCourse extends Course {
+    id: string;
+    createdDate: Date;
+    modifiedDate: Date;
+    version: number;
+    published: boolean;
+    courseState: number;
+}
+
+export interface ModifiedCourse extends Course {
+    id: string;
+    createdDate: Date;
+    modifiedDate: Date;
+    version: number;
+    published: boolean;
+    courseState: number;
+}
+
+export interface CourseCreationRequest {
+    id: string;
+    dossierId: string;
+    newCourse: newCourse;
+    newCourseId: string;
+    createdDate: Date;
+    modifiedDate: Date;
+}
+
+export interface CourseModificationRequest {
+    id: string;
+    dossierId: string;
+    course: ModifiedCourse;
+    courseId: string;
+    createdDate: Date;
+    modifiedDate: Date;
 }
 
 export const componentMappings = {

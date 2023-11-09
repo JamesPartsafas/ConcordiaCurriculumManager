@@ -18,14 +18,12 @@ public class GroupMasterHandler : AuthorizationHandler<GroupMasterOrAdminRequire
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, GroupMasterOrAdminRequirement requirement)
     {
-        _logger.LogInformation("Evaluting GroupMasterHanlder");
+        _logger.LogInformation("Evaluting GroupMasterHandler");
 
-        if (_httpContextAccessor.HttpContext is null
-            || !_httpContextAccessor.HttpContext.Request.RouteValues.TryGetValue("groupId", out var groupId)
-            || !Guid.TryParse(groupId?.ToString(), out var parsedGroupId))
+        if (_httpContextAccessor.HttpContext is null)
         {
             // This is not an Http Request or there is no group Id. Abstain
-            _logger.LogWarning("GroupMasterHandler is possibly called on a http endpoint that does not include a group id as a param");
+            _logger.LogWarning("Context is null");
             return;
         }
 
@@ -33,6 +31,17 @@ public class GroupMasterHandler : AuthorizationHandler<GroupMasterOrAdminRequire
         {
             context.Fail();
             return;
+        }
+
+        if (!_httpContextAccessor.HttpContext.Request.RouteValues.TryGetValue("groupId", out var groupId))
+        {
+            // There is no groupId in the request, but it might an endpoint that allows any group master
+            var groupsMastered = context.User.Claims.FirstOrDefault(c => c.Type.Equals(Claims.GroupMaster));
+            if (groupsMastered != null)
+            {
+                context.Succeed(requirement);
+                return;
+            }
         }
 
         var userId = context.User.Claims.FirstOrDefault(c => c.Type.Equals(Claims.Id));
@@ -44,6 +53,7 @@ public class GroupMasterHandler : AuthorizationHandler<GroupMasterOrAdminRequire
             return;
         }
 
+        Guid.TryParse(groupId?.ToString(), out var parsedGroupId);
         var isGroupMaster = await _groupService.IsGroupMaster(parsedUserId, parsedGroupId);
 
         if (isGroupMaster)

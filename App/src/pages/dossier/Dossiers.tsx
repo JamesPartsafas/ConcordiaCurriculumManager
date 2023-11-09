@@ -34,11 +34,14 @@ import Button from "../../components/Button";
 import { UserRoles } from "../../models/user";
 import { showToast } from "../../utils/toastUtils";
 import { DossierDTO, GetMyDossiersResponse } from "../../models/dossier";
+import { BaseRoutes } from "../../constants";
+import { useNavigate } from "react-router-dom";
 
 export default function Dossiers() {
     const user = useContext(UserContext);
     const toast = useToast(); // Use the useToast hook
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const navigate = useNavigate();
 
     const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
     const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
@@ -149,6 +152,10 @@ export default function Dossiers() {
         );
     }
 
+    function handleNavigateToDossierDetails(dossierId: string) {
+        navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
+    }
+
     return (
         <>
             <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -215,7 +222,10 @@ export default function Dossiers() {
                                                 ml={2}
                                                 aria-label="Edit"
                                                 icon={<InfoIcon />}
-                                                onClick={() => console.log("view Dossier")}
+                                                onClick={() => {
+                                                    setSelectedDossier(dossier);
+                                                    handleNavigateToDossierDetails(dossier.id);
+                                                }}
                                             />
                                         </Td>
                                     </Tr>

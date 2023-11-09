@@ -1,5 +1,6 @@
 ﻿using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
+using ConcordiaCurriculumManager.Security.Requirements.Handlers;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConcordiaCurriculumManager.Repositories;
@@ -43,8 +44,11 @@ public class GroupRepository : IGroupRepository
     public async Task<bool> AddUserToGroup(Guid userId, Guid groupId)
     {
         var group = await _dbContext.Groups.FindAsync(groupId);
-        var user = await _dbContext.Users.FindAsync(userId);
-        if (group != null && user != null)
+        var user = await _dbContext.Users
+                                   .Include(u => u.Roles)
+                                   .SingleOrDefaultAsync(u => u.Id == userId);
+
+        if (group != null && user != null && !user.Roles.Any(role => role.UserRole == RoleEnum.Admin))
         {
             group.Members.Add(user);
             return await _dbContext.SaveChangesAsync() > 0;
@@ -54,11 +58,15 @@ public class GroupRepository : IGroupRepository
 
     public async Task<bool> RemoveUserFromGroup(Guid userId, Guid groupId)
     {
-        var group = await _dbContext.Groups.Include(g => g.Members).FirstOrDefaultAsync(g => g.Id == groupId);
+        var group = await _dbContext.Groups
+                                    .Include(g => g.Members)
+                                    .Include(g => g.GroupMasters)
+                                    .FirstOrDefaultAsync(g => g.Id == groupId);
         var user = group?.Members.FirstOrDefault(u => u.Id == userId);
         if (group != null && user != null)
         {
             group.Members.Remove(user);
+            group.GroupMasters.Remove(user);
             return await _dbContext.SaveChangesAsync() > 0;
         }
         return false;

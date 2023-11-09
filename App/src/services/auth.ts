@@ -1,17 +1,13 @@
 //this file is to define user related types and apis
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { User } from "../models/user";
+import { User, UserRoles } from "../models/user";
 
 //types
 export interface AuthenticationResponse {
     data: {
         accessToken: string | null;
     };
-}
-
-export interface LoginProps {
-    setUser: (user: User | null) => void;
 }
 
 export interface DecodedToken {
@@ -24,6 +20,8 @@ export interface DecodedToken {
     exp: number;
     iss: string;
     aud: string;
+    group: string[] | null;
+    groupMaster: string[] | null;
 }
 
 export interface LoginDTO {
@@ -73,7 +71,17 @@ export function decodeTokenToUser(accessToken: string) {
         expiresAtTimestamp: decodedToken.exp,
         issuer: decodedToken.iss,
         audience: decodedToken.aud,
+        groups: decodedToken.group,
+        masteredGroups: decodedToken.groupMaster,
     };
 
     return user;
+}
+
+export function isAdmin(user: User): boolean {
+    return user.roles.includes(UserRoles.Admin);
+}
+
+export function isAdminOrGroupMaster(user: User): boolean {
+    return isAdmin(user) || user.masteredGroups != null;
 }
