@@ -23,6 +23,7 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useState, useRef, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { addCourse, getAllCourseSettings } from "../services/course";
 import {
     AllCourseSettings,
@@ -70,7 +71,7 @@ export default function AddCourse() {
     const [fileName, setFileName] = useState("");
     const [fileContent, setFileContent] = useState("");
     const [supportingFiles, setSupportingFiles] = useState({});
-    // const { dossierId } = useParams();
+    const { dossierId } = useParams();
 
     const handleChangeCourseCareer = (value: string) => {
         if (value.length === 0) setCourseCareersError(true);
@@ -149,7 +150,7 @@ export default function AddCourse() {
                 career: courseCareer.careerCode,
                 equivalentCourses: "",
                 componentCodes: getCourseComponentsObject(courseComponents),
-                dossierId: "37581d9d-713f-475c-9668-23971b0e64d0",
+                dossierId: dossierId,
                 courseNotes: courseNotes,
                 rationale: rational,
                 supportingFiles: supportingFiles,
@@ -324,7 +325,7 @@ export default function AddCourse() {
                                 <Stack>
                                     <Center>
                                         <Heading as="h2" size="xl" color="brandRed">
-                                            Description
+                                            Course Description
                                         </Heading>
                                     </Center>
                                     <Stack>
