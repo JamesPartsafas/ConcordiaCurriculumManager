@@ -20,8 +20,12 @@ import { AllCourseSettings } from "../models/course";
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils";
 import Button from "../components/Button";
+import { useNavigate, useParams } from "react-router-dom";
+import { BaseRoutes } from "../constants";
 
 export default function DeleteCourse() {
+    const { dossierId } = useParams();
+    const navigate = useNavigate();
     const toast = useToast();
 
     const [isLoading, toggleLoading] = useState(false);
@@ -56,7 +60,7 @@ export default function DeleteCourse() {
         else {
             toggleLoading(true);
             const courseDeletionRequest = {
-                dossierId: "09a073e7-3f84-4ac8-bc5d-f3b405e25987", // To be changed when dossier details page is done
+                dossierId: dossierId,
                 rationale: "string",
                 resourceImplication: "string",
                 subject: subject,
@@ -66,6 +70,7 @@ export default function DeleteCourse() {
                 .then(() => {
                     showToast(toast, "Success!", "Course deletion request successfully added.", "success");
                     toggleLoading(false);
+                    navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
                 })
                 .catch(() => {
                     showToast(toast, "Error!", "One or more validation errors occurred", "error");

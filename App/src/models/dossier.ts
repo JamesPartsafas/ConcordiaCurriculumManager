@@ -1,4 +1,4 @@
-import { CourseCreationRequest, CourseModificationRequest } from "./course";
+import { CourseCreationRequest, CourseDeletionRequest, CourseModificationRequest } from "./course";
 
 export interface DossierDTO {
     id: string;
@@ -18,6 +18,7 @@ export interface DossierDetailsDTO {
     modifiedDate: Date;
     courseCreationRequests: CourseCreationRequest[];
     courseModificationRequests: CourseModificationRequest[];
+    courseDeletionRequests: CourseDeletionRequest[];
 }
 
 export interface DossierDTOResponse {
