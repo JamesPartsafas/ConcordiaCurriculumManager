@@ -53,8 +53,8 @@ export default function DossierDetails() {
                 <Kbd>{dossierDetails?.id}</Kbd>
                 <Text>{dossierDetails?.description}</Text>
                 <Text>published: {dossierDetails?.published ? "yes" : "no"}</Text>
-                <Text>created: {dossierDetails?.createdDate.toString()}</Text>
-                <Text>updated: {dossierDetails?.modifiedDate.toString()}</Text>
+                <Text>created: {dossierDetails?.createdDate?.toString()}</Text>
+                <Text>updated: {dossierDetails?.modifiedDate?.toString()}</Text>
             </div>
 
             <Box backgroundColor={"brandRed"} m={"auto"} mt={5} p="3" width={"70%"} borderRadius={"lg"} minH={"400px"}>
