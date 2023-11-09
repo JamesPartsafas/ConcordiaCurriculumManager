@@ -33,9 +33,13 @@ export interface Course {
     preReqs: string;
     career: number;
     equivalentCourses: string;
-    componentCodes: number[];
+    componentCodes: object;
     dossierId: string;
-    courseID: number;
+    courseNotes: string;
+    rationale: string;
+    supportingFiles: object;
+    resourceImplication: string;
+    courseID?: number;
 }
 
 export interface newCourse extends Course {
@@ -73,3 +77,25 @@ export interface CourseModificationRequest {
     createdDate: Date;
     modifiedDate: Date;
 }
+
+export const componentMappings = {
+    Conference: "CON",
+    "Field Studies": "FLD",
+    Fieldwork: "FWK",
+    "Independent Study": "IND",
+    Laboratory: "LAB",
+    Lecture: "LEC",
+    Modular: "MOD",
+    Online: "ONL",
+    "Practicum/Internship/Work-Term": "PRA",
+    "Private Studies": "PST",
+    Reading: "REA",
+    Regular: "REG",
+    Research: "RSC",
+    Seminar: "SEM",
+    Studio: "STU",
+    "Thesis Research": "THE",
+    Tutorial: "TUT",
+    "Tutorial/Lab": "TL",
+    Workshop: "WKS",
+};

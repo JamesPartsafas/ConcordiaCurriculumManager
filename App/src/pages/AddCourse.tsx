@@ -24,7 +24,14 @@ import { AddIcon } from "@chakra-ui/icons";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useState, useRef, useEffect } from "react";
 import { addCourse, getAllCourseSettings } from "../services/course";
-import { AllCourseSettings, Course, CourseCareer, CourseComponent, CourseComponents } from "../models/course";
+import {
+    AllCourseSettings,
+    Course,
+    CourseCareer,
+    CourseComponent,
+    CourseComponents,
+    componentMappings,
+} from "../models/course";
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
 import Button from "../components/Button";
@@ -55,6 +62,14 @@ export default function AddCourse() {
     const [courseCareer, setCouresCareer] = useState<CourseCareer>(null);
     const [courseCareers, setCourseCareers] = useState<string[]>([]);
     const selectedComponentRef = useRef<HTMLSelectElement>(null);
+    const [rational, setRational] = useState("");
+    const [courseNotes, setCourseNotes] = useState("");
+    const [resourceImplication, setResourceImplication] = useState("");
+
+    // File upload states
+    const [fileName, setFileName] = useState("");
+    const [fileContent, setFileContent] = useState("");
+    const [supportingFiles, setSupportingFiles] = useState({});
     // const { dossierId } = useParams();
 
     const handleChangeCourseCareer = (value: string) => {
@@ -88,6 +103,11 @@ export default function AddCourse() {
         setCourseDescription(e.currentTarget.value);
     const handleChangeCourseRequesites = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
         setCourseRequesites(e.currentTarget.value);
+    const handleChangeResourceImplication = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+        setResourceImplication(e.currentTarget.value);
+    const handleChangeRational = (e: React.ChangeEvent<HTMLTextAreaElement>) => setRational(e.currentTarget.value);
+    const handleChangeCourseNotes = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+        setCourseNotes(e.currentTarget.value);
     const handleAddComponent = () => {
         const selectedItem: CourseComponent = JSON.parse(selectedComponent) as CourseComponent;
         // check if course component already exists
@@ -114,31 +134,104 @@ export default function AddCourse() {
 
     const handleSubmitCourse = () => {
         setFormSubmitted(true);
-        if (courseCodeError || courseCreditError || courseNameError || courseSubjectError) return;
-        else {
+        if (courseCodeError || courseCreditError || courseNameError || courseSubjectError) {
+            showToast(toast, "Error!", "One or more validation errors occurred", "error");
+            return;
+        } else {
             toggleLoading(true);
             const course: Course = {
                 subject: department,
-                catalog: "1",
+                catalog: courseNumber,
                 title: courseName,
                 description: courseDescription,
                 creditValue: courseCredits,
                 preReqs: courseRequesites,
                 career: courseCareer.careerCode,
                 equivalentCourses: "",
-                componentCodes: courseComponents.map((component) => component.componentCode),
+                componentCodes: getCourseComponentsObject(courseComponents),
                 dossierId: "37581d9d-713f-475c-9668-23971b0e64d0",
+                courseNotes: courseNotes,
+                rationale: rational,
+                supportingFiles: supportingFiles,
+                resourceImplication: resourceImplication,
             };
             addCourse(course)
                 .then(() => {
                     showToast(toast, "Success!", "Course added successfully.", "success");
                     toggleLoading(false);
+                    clearForm();
+                    setFormSubmitted(false);
                 })
-                .catch(() => {
-                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                .catch((e) => {
+                    showToast(toast, "Error!", e.response.data.detail, "error");
                     toggleLoading(false);
                 });
         }
+    };
+    const handleFileNameChange = (event) => {
+        setFileName(event.target.value);
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFileContent(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleSaveFile = () => {
+        if (fileName && fileContent) {
+            setSupportingFiles({
+                ...supportingFiles,
+                [fileName]: fileContent.split(",")[1], // Removes the base64 prefix
+            });
+            setFileName(""); // Reset the filename input
+            setFileContent(""); // Reset the file content
+        }
+    };
+    const handleEditComponentHours = (hours: number, index: number) => {
+        //Check if hours is NaN
+        if (isNaN(hours)) {
+            hours = 0;
+        }
+        const newCourseComponents = [...courseComponents];
+        newCourseComponents[index].hours = hours;
+        setCourseComponents(newCourseComponents);
+    };
+    const getCourseComponentsObject = (courseComponents: CourseComponents[]) => {
+        const courseComponentsObject = {};
+        courseComponents.forEach((component) => {
+            const enumValue = componentMappings[component.componentName];
+            courseComponentsObject[enumValue] = component.hours;
+        });
+        return courseComponentsObject;
+    };
+
+    const clearForm = () => {
+        setCourseSubjectError(true);
+        setCourseCodeError(true);
+        setCourseNameError(true);
+        setCourseCreditError(true);
+        setCourseCareersError(true);
+        setDepartment("");
+        setCourseNumber("");
+        setCourseName("");
+        setCourseCredits("");
+        setCourseDescription("");
+        setCourseRequesites("");
+        setCourseComponents([]);
+        setComponents([]);
+        setCouresCareer(null);
+        setCourseCareers([]);
+        setSelectedComponent('{"componentCode":0,"componentName":"Conference"}');
+        setRational("");
+        setCourseNotes("");
+        setResourceImplication("");
+        setSupportingFiles({});
     };
 
     useEffect(() => {
@@ -155,7 +248,6 @@ export default function AddCourse() {
     }, []);
     return (
         // display if AllCourseSettings is not null
-
         <>
             {allCourseSettings && (
                 <Box>
@@ -194,14 +286,12 @@ export default function AddCourse() {
                                     <Stack>
                                         <FormControl isInvalid={courseCodeError && formSubmitted}>
                                             <FormLabel m={0}>Course Code</FormLabel>
-                                            <NumberInput>
-                                                <NumberInputField
-                                                    placeholder="Course Code"
-                                                    pl="16px"
-                                                    value={courseNumber}
-                                                    onChange={handleChangeCourseNumber}
-                                                />
-                                            </NumberInput>
+                                            <Input
+                                                placeholder="Course Code"
+                                                pl="16px"
+                                                value={courseNumber}
+                                                onChange={handleChangeCourseNumber}
+                                            />
                                             <FormErrorMessage>Course code is required</FormErrorMessage>
                                         </FormControl>
                                     </Stack>
@@ -244,6 +334,88 @@ export default function AddCourse() {
                                             placeholder="Enter course description..."
                                             minH={"200px"}
                                         ></Textarea>
+                                    </Stack>
+                                </Stack>
+                                <Stack>
+                                    <Center>
+                                        <Heading as="h2" size="xl" color="brandRed">
+                                            <Text align="center">Resource Implication</Text>
+                                        </Heading>
+                                    </Center>
+                                    <Stack>
+                                        <Textarea
+                                            value={resourceImplication}
+                                            onChange={handleChangeResourceImplication}
+                                            placeholder="Enter resource implication..."
+                                            minH={"100px"}
+                                        ></Textarea>
+                                    </Stack>
+                                </Stack>
+                                <Stack>
+                                    <Center>
+                                        <Heading as="h2" size="xl" color="brandRed">
+                                            Supporting Files
+                                        </Heading>
+                                    </Center>
+                                    <Stack spacing={4}>
+                                        <Input
+                                            placeholder="Enter file name..."
+                                            value={fileName}
+                                            onChange={handleFileNameChange}
+                                        />
+                                        <Input type="file" onChange={handleFileChange} />
+                                        <Button
+                                            style="primary"
+                                            width="auto"
+                                            height="50px"
+                                            variant="solid"
+                                            onClick={handleSaveFile}
+                                            isDisabled={!fileName || !fileContent}
+                                        >
+                                            Upload File
+                                        </Button>
+                                        <Stack>
+                                            {Object.keys(supportingFiles).map((file, index) => (
+                                                <Box
+                                                    w="100%"
+                                                    p={2}
+                                                    mb={2}
+                                                    rounded="10"
+                                                    border="1px"
+                                                    borderColor="gray.200"
+                                                    key={index}
+                                                >
+                                                    <Flex>
+                                                        <Center w="70%">
+                                                            <Text textAlign="left" width="full" pl="4">
+                                                                {file}
+                                                            </Text>
+                                                        </Center>
+                                                        <Center w="30%">
+                                                            <ButtonGroup
+                                                                size="sm"
+                                                                isAttached
+                                                                variant="outline"
+                                                                ml="10px"
+                                                            >
+                                                                <IconButton
+                                                                    rounded="full"
+                                                                    aria-label="Add to friends"
+                                                                    icon={<MinusIcon />}
+                                                                    onClick={() => {
+                                                                        const newSupportingFiles = {
+                                                                            ...supportingFiles,
+                                                                        };
+                                                                        delete newSupportingFiles[file];
+                                                                        setSupportingFiles(newSupportingFiles);
+                                                                    }}
+                                                                />
+                                                            </ButtonGroup>
+                                                        </Center>
+                                                    </Flex>
+                                                </Box>
+                                            ))}
+                                        </Stack>
                                     </Stack>
                                 </Stack>
                             </Stack>
@@ -325,24 +497,21 @@ export default function AddCourse() {
                                                                         {component.componentName}
                                                                     </Text>
                                                                 </Center>
-                                                                {/* <Center w="35%">
-                                                                <Text mr={2}>Hours:</Text>
-                                                                <NumberInput
-                                                                    max={10}
-                                                                    display={"inline"}
-                                                                    pr={0}
-                                                                    w="50px"
-                                                                    defaultValue={component.hours}
-                                                                    onChange={(e) =>
-                                                                        handleEditComponentHours(
-                                                                            parseInt(e),
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <NumberInputField pr={0} />
-                                                                </NumberInput>
-                                                            </Center> */}
+                                                                <Center w="35%">
+                                                                    <Text mr={2}>Hours:</Text>
+                                                                    <NumberInput
+                                                                        max={10}
+                                                                        display={"inline"}
+                                                                        pr={0}
+                                                                        w="50px"
+                                                                        defaultValue={component.hours}
+                                                                        onChange={(e) =>
+                                                                            handleEditComponentHours(parseInt(e), index)
+                                                                        }
+                                                                    >
+                                                                        <NumberInputField pr={0} />
+                                                                    </NumberInput>
+                                                                </Center>
                                                                 <Center w="30%">
                                                                     <ButtonGroup
                                                                         size="sm"
@@ -424,6 +593,36 @@ export default function AddCourse() {
                                             onChange={handleChangeCourseRequesites}
                                             placeholder="Enter course requirements..."
                                             minH={"200px"}
+                                        ></Textarea>
+                                    </Stack>
+                                </Stack>
+                                <Stack>
+                                    <Center>
+                                        <Heading as="h2" size="xl" color="brandRed">
+                                            <Text align="center">Rationale</Text>
+                                        </Heading>
+                                    </Center>
+                                    <Stack>
+                                        <Textarea
+                                            value={rational}
+                                            onChange={handleChangeRational}
+                                            placeholder="Enter course rationale..."
+                                            minH={"100px"}
+                                        ></Textarea>
+                                    </Stack>
+                                </Stack>
+                                <Stack>
+                                    <Center>
+                                        <Heading as="h2" size="xl" color="brandRed">
+                                            <Text align="center">Notes</Text>
+                                        </Heading>
+                                    </Center>
+                                    <Stack>
+                                        <Textarea
+                                            value={courseNotes}
+                                            onChange={handleChangeCourseNotes}
+                                            placeholder="Enter course notes..."
+                                            minH={"100px"}
                                         ></Textarea>
                                     </Stack>
                                 </Stack>

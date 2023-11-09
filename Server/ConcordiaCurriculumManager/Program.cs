@@ -82,6 +82,7 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
 
+        builder.Services.Configure<IISServerOptions>(options =>{ options.MaxRequestBodySize = int.MaxValue ; });
         if (env.IsDevelopment())
         {
             builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
