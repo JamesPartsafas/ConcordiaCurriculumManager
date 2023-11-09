@@ -24,7 +24,14 @@ import { AddIcon } from "@chakra-ui/icons";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useState, useRef, useEffect } from "react";
 import { addCourse, getAllCourseSettings } from "../services/course";
-import { AllCourseSettings, Course, CourseCareer, CourseComponent, CourseComponents } from "../models/course";
+import {
+    AllCourseSettings,
+    Course,
+    CourseCareer,
+    CourseComponent,
+    CourseComponents,
+    componentMappings,
+} from "../models/course";
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
 import Button from "../components/Button";
@@ -133,29 +140,29 @@ export default function AddCourse() {
             toggleLoading(true);
             const course: Course = {
                 subject: department,
-                catalog: "1",
+                catalog: courseNumber,
                 title: courseName,
                 description: courseDescription,
                 creditValue: courseCredits,
                 preReqs: courseRequesites,
                 career: courseCareer.careerCode,
                 equivalentCourses: "",
-                componentCodes: courseComponents.map((component) => component.componentCode),
+                componentCodes: getCourseComponentsObject(courseComponents),
                 dossierId: "37581d9d-713f-475c-9668-23971b0e64d0",
                 courseNotes: courseNotes,
                 rationale: rational,
                 supportingFiles: supportingFiles,
                 resourceImplication: resourceImplication,
             };
-            console.log(course);
             addCourse(course)
                 .then(() => {
                     showToast(toast, "Success!", "Course added successfully.", "success");
                     toggleLoading(false);
+                    clearForm();
+                    setFormSubmitted(false);
                 })
                 .catch((e) => {
-                    showToast(toast, "Server Error!", "One or more validation errors occurred", "error");
-                    console.log(e);
+                    showToast(toast, "Error!", e.response.data.detail, "error");
                     toggleLoading(false);
                 });
         }
@@ -183,9 +190,49 @@ export default function AddCourse() {
             });
             setFileName(""); // Reset the filename input
             setFileContent(""); // Reset the file content
-            console.log(supportingFiles);
         }
     };
+    const handleEditComponentHours = (hours: number, index: number) => {
+        //Check if hours is NaN
+        if (isNaN(hours)) {
+            hours = 0;
+        }
+        const newCourseComponents = [...courseComponents];
+        newCourseComponents[index].hours = hours;
+        setCourseComponents(newCourseComponents);
+    };
+    const getCourseComponentsObject = (courseComponents: CourseComponents[]) => {
+        const courseComponentsObject = {};
+        courseComponents.forEach((component) => {
+            const enumValue = componentMappings[component.componentName];
+            courseComponentsObject[enumValue] = component.hours;
+        });
+        return courseComponentsObject;
+    };
+
+    const clearForm = () => {
+        setCourseSubjectError(true);
+        setCourseCodeError(true);
+        setCourseNameError(true);
+        setCourseCreditError(true);
+        setCourseCareersError(true);
+        setDepartment("");
+        setCourseNumber("");
+        setCourseName("");
+        setCourseCredits("");
+        setCourseDescription("");
+        setCourseRequesites("");
+        setCourseComponents([]);
+        setComponents([]);
+        setCouresCareer(null);
+        setCourseCareers([]);
+        setSelectedComponent('{"componentCode":0,"componentName":"Conference"}');
+        setRational("");
+        setCourseNotes("");
+        setResourceImplication("");
+        setSupportingFiles({});
+    };
+
     useEffect(() => {
         getAllCourseSettings()
             .then((res) => {
@@ -200,7 +247,6 @@ export default function AddCourse() {
     }, []);
     return (
         // display if AllCourseSettings is not null
-
         <>
             {allCourseSettings && (
                 <Box>
@@ -239,14 +285,12 @@ export default function AddCourse() {
                                     <Stack>
                                         <FormControl isInvalid={courseCodeError && formSubmitted}>
                                             <FormLabel m={0}>Course Code</FormLabel>
-                                            <NumberInput>
-                                                <NumberInputField
-                                                    placeholder="Course Code"
-                                                    pl="16px"
-                                                    value={courseNumber}
-                                                    onChange={handleChangeCourseNumber}
-                                                />
-                                            </NumberInput>
+                                            <Input
+                                                placeholder="Course Code"
+                                                pl="16px"
+                                                value={courseNumber}
+                                                onChange={handleChangeCourseNumber}
+                                            />
                                             <FormErrorMessage>Course code is required</FormErrorMessage>
                                         </FormControl>
                                     </Stack>
@@ -452,24 +496,21 @@ export default function AddCourse() {
                                                                         {component.componentName}
                                                                     </Text>
                                                                 </Center>
-                                                                {/* <Center w="35%">
-                                                                <Text mr={2}>Hours:</Text>
-                                                                <NumberInput
-                                                                    max={10}
-                                                                    display={"inline"}
-                                                                    pr={0}
-                                                                    w="50px"
-                                                                    defaultValue={component.hours}
-                                                                    onChange={(e) =>
-                                                                        handleEditComponentHours(
-                                                                            parseInt(e),
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <NumberInputField pr={0} />
-                                                                </NumberInput>
-                                                            </Center> */}
+                                                                <Center w="35%">
+                                                                    <Text mr={2}>Hours:</Text>
+                                                                    <NumberInput
+                                                                        max={10}
+                                                                        display={"inline"}
+                                                                        pr={0}
+                                                                        w="50px"
+                                                                        defaultValue={component.hours}
+                                                                        onChange={(e) =>
+                                                                            handleEditComponentHours(parseInt(e), index)
+                                                                        }
+                                                                    >
+                                                                        <NumberInputField pr={0} />
+                                                                    </NumberInput>
+                                                                </Center>
                                                                 <Center w="30%">
                                                                     <ButtonGroup
                                                                         size="sm"
