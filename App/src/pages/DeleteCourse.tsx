@@ -33,11 +33,13 @@ export default function DeleteCourse() {
     const [courseSubjectError, setCourseSubjectError] = useState(true);
     const [courseCatalogError, setCourseCatalogError] = useState(true);
     const [rationaleError, setRationaleError] = useState(true);
+    const [resourceImplicationError, setResourceImplicationError] = useState(true);
 
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
     const [subject, setSubject] = useState("");
     const [catalog, setCatalog] = useState("");
     const [rationale, setRationale] = useState("");
+    const [resourceImplication, setResourceImplication] = useState("");
 
     const handleChangeSubject = (value: string) => {
         if (value.length === 0) setCourseSubjectError(true);
@@ -49,20 +51,25 @@ export default function DeleteCourse() {
         else setCourseCatalogError(false);
         setCatalog(e.currentTarget.value);
     };
-    const handleRationale = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleChangeRationale = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         if (e.currentTarget.value.length === 0) setRationaleError(true);
         else setRationaleError(false);
         setRationale(e.currentTarget.value);
     };
+    const handleChangeResourceImplication = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        if (e.currentTarget.value.length === 0) setResourceImplicationError(true);
+        else setResourceImplicationError(false);
+        setResourceImplication(e.currentTarget.value);
+    };
     const handleSubmitRequest = () => {
         setFormSubmitted(true);
-        if (courseCatalogError || courseSubjectError || rationaleError) return;
+        if (courseSubjectError || courseCatalogError || rationaleError || resourceImplicationError) return;
         else {
             toggleLoading(true);
             const courseDeletionRequest = {
                 dossierId: dossierId,
-                rationale: "string",
-                resourceImplication: "string",
+                rationale: rationale,
+                resourceImplication: resourceImplication,
                 subject: subject,
                 catalog: catalog,
             };
@@ -140,11 +147,29 @@ export default function DeleteCourse() {
                                         <FormControl isInvalid={rationaleError && formSubmitted}>
                                             <Textarea
                                                 value={rationale}
-                                                onChange={handleRationale}
+                                                onChange={handleChangeRationale}
                                                 placeholder="Explain reasoning for this course deletion."
                                                 minH={"200px"}
                                             ></Textarea>
                                             <FormErrorMessage>Rationale is required</FormErrorMessage>
+                                        </FormControl>
+                                    </Stack>
+                                </Stack>
+                                <Stack>
+                                    <Center>
+                                        <Heading as="h2" size="xl" color="brandRed">
+                                            <Text align="center">Resource Implication</Text>
+                                        </Heading>
+                                    </Center>
+                                    <Stack>
+                                        <FormControl isInvalid={resourceImplicationError && formSubmitted}>
+                                            <Textarea
+                                                value={resourceImplication}
+                                                onChange={handleChangeResourceImplication}
+                                                placeholder="Explain any resource implications for the course deletion."
+                                                minH={"200px"}
+                                            ></Textarea>
+                                            <FormErrorMessage>Resource Implication is required</FormErrorMessage>
                                         </FormControl>
                                     </Stack>
                                 </Stack>
