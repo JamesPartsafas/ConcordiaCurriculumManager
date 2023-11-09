@@ -37,7 +37,6 @@ export default function DossierDetails() {
         getDossierDetails(dossierId).then((res: DossierDetailsResponse) => {
             setDossierDetails(res.data);
         });
-        console.log(dossierDetails);
     }
 
     function requestCourseSettings() {
