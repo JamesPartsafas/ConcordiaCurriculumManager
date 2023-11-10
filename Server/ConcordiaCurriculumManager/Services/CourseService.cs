@@ -1,5 +1,6 @@
 ﻿using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
@@ -70,7 +71,7 @@ public class CourseService : ICourseService
         var exists = await _courseRepository.GetCourseBySubjectAndCatalog(initiation.Subject, initiation.Catalog) is not null;
         if (exists)
         {
-            throw new ArgumentException("The course already exists");
+            throw new BadRequestException("The course already exists");
         }
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(initiation.DossierId, userId);
@@ -96,7 +97,7 @@ public class CourseService : ICourseService
 
     public async Task<CourseModificationRequest> InitiateCourseModification(CourseModificationInitiationDTO modification, Guid userId)
     {
-        var oldCourse = await _courseRepository.GetCourseByCourseId(modification.CourseId) ?? throw new ArgumentException("The course does not exist.");
+        var oldCourse = await _courseRepository.GetCourseByCourseId(modification.CourseId) ?? throw new NotFoundException("The course does not exist.");
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(modification.DossierId, userId);
 
@@ -121,21 +122,15 @@ public class CourseService : ICourseService
 
     public async Task<Course?> GetCourseData(string subject, string catalog)
     {
-        var course = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog);
-        if (course == null)
-        {
-            throw new ArgumentException("The course does not exist.");
-        }
-
+        var course = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog) ?? throw new NotFoundException($"The course {subject}-{catalog} does not exist.");
         var courseWithLatestVersion = await _courseRepository.GetCourseByCourseIdAndLatestVersion(course.CourseID);
 
         if (courseWithLatestVersion == null || courseWithLatestVersion.CourseState == CourseStateEnum.Deleted)
         {
-            throw new ArgumentException("The course is deleted.");
+            throw new BadRequestException($"The course {subject}-{catalog} is deleted.");
         }
 
         return courseWithLatestVersion;
-
     }
 
     public async Task<CourseDeletionRequest> InitiateCourseDeletion(CourseDeletionInitiationDTO deletion, Guid userId)
@@ -168,8 +163,7 @@ public class CourseService : ICourseService
         bool courseCreated = await _courseRepository.SaveCourse(course);
         if (!courseCreated)
         {
-            _logger.LogWarning($"Error inserting ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
-            throw new Exception("Error registering the course");
+            throw new Exception($"Error inserting ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
         }
         _logger.LogInformation($"Inserted ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
     }
@@ -182,7 +176,7 @@ public class CourseService : ICourseService
         courseCreationRequest.ResourceImplication = edit.ResourceImplication;
         courseCreationRequest.Comment = "Auto-generated comment";
 
-        var newCourse = courseCreationRequest.NewCourse ?? throw new ArgumentException("The course does not exist.");
+        var newCourse = courseCreationRequest.NewCourse ?? throw new NotFoundException($"The course request {edit.Id} does not exist.");
 
         ModifyCourseFromDTOData(edit, newCourse);
         newCourse.Subject = edit.Subject;
@@ -201,7 +195,7 @@ public class CourseService : ICourseService
         courseModificationRequest.ResourceImplication = edit.ResourceImplication;
         courseModificationRequest.Comment = "Auto-generated comment";
 
-        var newCourse = courseModificationRequest.Course ?? throw new ArgumentException("The course does not exist.");
+        var newCourse = courseModificationRequest.Course ?? throw new NotFoundException($"The course request {edit.Id} does not exist.");
 
         ModifyCourseFromDTOData(edit, newCourse);
 
@@ -216,9 +210,9 @@ public class CourseService : ICourseService
         bool result = await _dossierRepository.DeleteCourseCreationRequest(courseCreationRequest);
         if (!result)
         {
-            _logger.LogWarning($"Error deleting ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
-            throw new Exception("Error deleting the course creation request");
+            throw new Exception($"Error deleting ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
         }
+        
         _logger.LogInformation($"Deleted ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
     }
 
@@ -228,9 +222,9 @@ public class CourseService : ICourseService
         bool result = await _dossierRepository.DeleteCourseModificationRequest(courseModificationRequest);
         if (!result)
         {
-            _logger.LogWarning($"Error deleting ${typeof(CourseModificationRequest)} ${courseModificationRequest.Id}");
-            throw new Exception("Error deleting the course modification request");
+            throw new Exception($"Error deleting ${typeof(CourseModificationRequest)} ${courseModificationRequest.Id}");
         }
+
         _logger.LogInformation($"Deleted ${typeof(CourseModificationRequest)} ${courseModificationRequest.Id}");
     }
 
