@@ -56,11 +56,9 @@ public class DossierRepository : IDossierRepository
     }
 
     public async Task<List<Dossier>> GetDossiersByID(Guid userId) {
-        var dbDossiers = await _dbContext.Dossiers
+        return await _dbContext.Dossiers
             .Where(d => d.InitiatorId.Equals(userId))
             .ToListAsync();
-        return dbDossiers;
-            
     }
 
     public async Task<Dossier?> GetDossierByDossierId(Guid dossierId) => await _dbContext.Dossiers

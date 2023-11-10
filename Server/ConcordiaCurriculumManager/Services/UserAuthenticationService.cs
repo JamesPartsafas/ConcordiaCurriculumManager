@@ -1,4 +1,5 @@
-﻿using ConcordiaCurriculumManager.Models.Users;
+﻿using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Settings;
@@ -51,7 +52,7 @@ public class UserAuthenticationService : IUserAuthenticationService
 
         if (savedUser is null || !_inputHasher.Verify(password, savedUser.Password))
         {
-            throw new ArgumentException("Email and/or password are incorrect");
+            throw new BadRequestException("Email and/or password are incorrect");
         }
 
         return GenerateAccessToken(savedUser);
@@ -63,7 +64,7 @@ public class UserAuthenticationService : IUserAuthenticationService
 
         if (exists)
         {
-            throw new ArgumentException("The user already exists");
+            throw new BadRequestException("The user already exists");
         }
 
         var hashedPassword = _inputHasher.Hash(user.Password);
@@ -85,8 +86,8 @@ public class UserAuthenticationService : IUserAuthenticationService
 
     public async Task SignoutUser()
     {
-        var httpContext = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("Method can only be used in http(s) scope");
-        var token = await httpContext.GetTokenAsync("access_token") ?? throw new InvalidOperationException("Method can only be used to signout authenticated users");
+        var httpContext = _httpContextAccessor.HttpContext ?? throw new BadRequestException("Method can only be used in http(s) scope");
+        var token = await httpContext.GetTokenAsync("access_token") ?? throw new BadRequestException("Method can only be used to signout authenticated users");
         _ = _cacheService.GetOrCreate(token, () =>
         {
             var jwtToken = new JwtSecurityToken(token);
@@ -99,18 +100,12 @@ public class UserAuthenticationService : IUserAuthenticationService
     {
         if (_httpContextAccessor.HttpContext == null)
         {
-            throw new NullReferenceException("HttpContext is null");
+            throw new BadRequestException("HttpContext is null");
         }
 
         string email = _httpContextAccessor.HttpContext.User.Claims.First(i => i.Type == ClaimTypes.Email).Value;
 
-        User? user = await _userRepository.GetUserByEmail(email);
-
-        if (user == null)
-        {
-            throw new NullReferenceException($"User with email {email} could not be found");
-        }
-
+        User user = await _userRepository.GetUserByEmail(email) ?? throw new NotFoundException($"User with email {email} could not be found");
         return user;
     }
 
@@ -118,7 +113,7 @@ public class UserAuthenticationService : IUserAuthenticationService
     {
         if (_httpContextAccessor.HttpContext == null)
         {
-            throw new NullReferenceException("HttpContext is null");
+            throw new BadRequestException("HttpContext is null");
         }
 
         return _httpContextAccessor.HttpContext.User.Claims.First(i => i.Type.ToString() == claim).Value;
