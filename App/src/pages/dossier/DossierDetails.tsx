@@ -17,8 +17,12 @@ import {
     Textarea,
     useToast,
 } from "@chakra-ui/react";
-import { AllCourseSettings, CourseCreationRequest } from "../../models/course";
-import { deleteCourseCreationRequest, getAllCourseSettings } from "../../services/course";
+import { AllCourseSettings, CourseCreationRequest, CourseModificationRequest } from "../../models/course";
+import {
+    deleteCourseCreationRequest,
+    deleteCourseModificationRequest,
+    getAllCourseSettings,
+} from "../../services/course";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { showToast } from "../../utils/toastUtils";
@@ -50,7 +54,6 @@ export default function DossierDetails() {
     }
 
     function deleteCreationRequest(courseCreationRequest: CourseCreationRequest) {
-        //call api to delete course creation request
         deleteCourseCreationRequest(dossierId, courseCreationRequest.id)
             .then(
                 () => {
@@ -70,6 +73,29 @@ export default function DossierDetails() {
             )
             .catch(() => {
                 showToast(toast, "Error!", "Course creation request could not be deleted.", "error");
+            });
+    }
+
+    function deleteModificationRequest(courseModificationRequest: CourseModificationRequest) {
+        deleteCourseModificationRequest(dossierId, courseModificationRequest.id)
+            .then(
+                () => {
+                    showToast(toast, "Success!", "Course Modification request deleted.", "success");
+                    setDossierDetails((prevDetails) => {
+                        // Create a new array without the deleted course creation request
+                        const updatedRequests = prevDetails.courseModificationRequests.filter(
+                            (c) => c.id !== courseModificationRequest.id
+                        );
+                        // Return a new object for the state with the updated array
+                        return { ...prevDetails, courseModificationRequests: updatedRequests };
+                    });
+                },
+                () => {
+                    showToast(toast, "Error!", "Course modification request could not be deleted.", "error");
+                }
+            )
+            .catch(() => {
+                showToast(toast, "Error!", "Course modification request could not be deleted.", "error");
             });
     }
 
@@ -236,7 +262,11 @@ export default function DossierDetails() {
                                     <Button variant="solid" style="secondary">
                                         View
                                     </Button>
-                                    <Button variant="outline" style="primary">
+                                    <Button
+                                        variant="outline"
+                                        style="primary"
+                                        onClick={() => deleteModificationRequest(courseModificationRequest)}
+                                    >
                                         Delete
                                     </Button>
                                 </ButtonGroup>
