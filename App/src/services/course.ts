@@ -17,6 +17,7 @@ const CourseAPIEndpoints = {
     GetAllCourseSettings: "/Course/GetAllCourseSettings",
     AddCourse: "/Course/InitiateCourseCreation",
     DeleteCourse: "/Course/InitiateCourseDeletion",
+    DeleteCourseCreationRequest: "/Course/DeleteCourseCreationRequest",
 };
 
 export function getAllCourseSettings(): Promise<GetAllCourseSettingsResponse> {
@@ -29,4 +30,8 @@ export function addCourse(course: Course): Promise<unknown> {
 
 export function deleteCourse(courseDeletionRequest: CourseDeletionRequestDTO): Promise<unknown> {
     return axios.post(CourseAPIEndpoints.DeleteCourse, courseDeletionRequest);
+}
+
+export function deleteCourseCreationRequest(dossierId: string, courseId: string): Promise<unknown> {
+    return axios.delete(`${CourseAPIEndpoints.DeleteCourseCreationRequest}/${dossierId}/${courseId}`);
 }
