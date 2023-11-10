@@ -128,6 +128,8 @@ export default function DossierDetails() {
 
                 <Divider marginTop={10} marginBottom={2} />
                 <Button
+                    backgroundColor="brandRed100"
+                    _hover={{ bg: "brandRed600" }}
                     variant="solid"
                     style="secondary"
                     width="100%"
@@ -214,6 +216,8 @@ export default function DossierDetails() {
                 <Divider marginTop={10} marginBottom={2} />
 
                 <Button
+                    backgroundColor="brandBlue100"
+                    _hover={{ bg: "brandBlue" }}
                     variant="solid"
                     style="primary"
                     width="100%"
@@ -223,6 +227,93 @@ export default function DossierDetails() {
                     }}
                 >
                     Add Modification Request
+                </Button>
+            </Box>
+            <Box backgroundColor="brandGray" m={"auto"} mt={5} p="3" width={"70%"} borderRadius={"lg"} minH={"400px"}>
+                <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
+                    Course Deletion Requests
+                </Heading>
+                <SimpleGrid
+                    templateColumns="repeat(auto-fill, minmax(200px, 400px))"
+                    spacing={4}
+                    justifyContent={"center"}
+                >
+                    {dossierDetails?.courseDeletionRequests?.map((courseDeletionRequest) => (
+                        <Card key={courseDeletionRequest.id} boxShadow={"xl"}>
+                            <CardBody>
+                                <Stack spacing="4">
+                                    <Heading size="md" color={"brandBlue"}>
+                                        {courseDeletionRequest.course?.title}
+                                    </Heading>
+                                    <Stack>
+                                        <Kbd width={"fit-content"}>
+                                            Course ID: {courseDeletionRequest.course?.courseID}
+                                        </Kbd>
+                                        <Kbd width={"fit-content"}>
+                                            Subject: {courseDeletionRequest.course?.subject}
+                                        </Kbd>
+                                        <Kbd width={"fit-content"}>
+                                            Catalog: {courseDeletionRequest.course?.catalog}
+                                        </Kbd>
+                                    </Stack>
+                                    <Textarea
+                                        isReadOnly
+                                        variant={"filled"}
+                                        value={courseDeletionRequest.course?.description}
+                                    />
+                                    <Stack>
+                                        <Text>Credits: {courseDeletionRequest.course?.creditValue}</Text>
+                                        <Text>Prerequisites: {courseDeletionRequest.course?.preReqs}</Text>
+                                        <Text>
+                                            Equivalent Courses:{" "}
+                                            {courseDeletionRequest.course.equivalentCourses === null ||
+                                            courseDeletionRequest.course?.equivalentCourses === ""
+                                                ? "N/A"
+                                                : courseDeletionRequest.course?.equivalentCourses}
+                                        </Text>
+                                        <Text>
+                                            Career:{" "}
+                                            {" " +
+                                                courseSettings?.courseCareers.find(
+                                                    (courseCareer) =>
+                                                        courseCareer.careerCode === courseDeletionRequest.course?.career
+                                                )?.careerName}
+                                        </Text>
+                                    </Stack>
+                                    <Stack alignSelf={"end"} alignItems={"baseline"}>
+                                        <Text>
+                                            Version: <Kbd>{courseDeletionRequest.course?.version}</Kbd>
+                                        </Text>
+                                    </Stack>
+                                </Stack>
+                            </CardBody>
+                            <Divider />
+                            <CardFooter>
+                                <ButtonGroup spacing="2">
+                                    <Button variant="solid" style="secondary">
+                                        View
+                                    </Button>
+                                    <Button variant="outline" style="primary">
+                                        Delete
+                                    </Button>
+                                </ButtonGroup>
+                            </CardFooter>
+                        </Card>
+                    ))}
+                </SimpleGrid>
+                <Divider marginTop={10} marginBottom={2} />
+
+                <Button
+                    backgroundColor="brandGray500"
+                    _hover={{ bg: "brandGray" }}
+                    variant="solid"
+                    style="secondary"
+                    width="100%"
+                    onClick={() => {
+                        navigate(BaseRoutes.DeleteCourse.replace(":dossierId", dossierId));
+                    }}
+                >
+                    Add Deletion Request
                 </Button>
             </Box>
         </>

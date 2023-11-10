@@ -60,22 +60,38 @@ export interface ModifiedCourse extends Course {
     courseState: number;
 }
 
-export interface CourseCreationRequest {
+export interface DeletedCourse extends Course {
+    id: string;
+    createdDate: Date;
+    modifiedDate: Date;
+    version: number;
+    published: boolean;
+    courseState: number;
+}
+
+export interface CourseRequest {
     id: string;
     dossierId: string;
-    newCourse: newCourse;
-    newCourseId: string;
+    rationale: string;
+    resourceImplication: string;
+    comment: string;
     createdDate: Date;
     modifiedDate: Date;
 }
 
-export interface CourseModificationRequest {
-    id: string;
-    dossierId: string;
+export interface CourseCreationRequest extends CourseRequest {
+    newCourse: newCourse;
+    newCourseId: string;
+}
+
+export interface CourseModificationRequest extends CourseRequest {
     course: ModifiedCourse;
     courseId: string;
-    createdDate: Date;
-    modifiedDate: Date;
+}
+
+export interface CourseDeletionRequest extends CourseRequest {
+    course: DeletedCourse;
+    courseId: string;
 }
 
 export const componentMappings = {

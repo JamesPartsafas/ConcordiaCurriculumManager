@@ -20,8 +20,12 @@ import { AllCourseSettings } from "../models/course";
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils";
 import Button from "../components/Button";
+import { useNavigate, useParams } from "react-router-dom";
+import { BaseRoutes } from "../constants";
 
 export default function DeleteCourse() {
+    const { dossierId } = useParams();
+    const navigate = useNavigate();
     const toast = useToast();
 
     const [isLoading, toggleLoading] = useState(false);
@@ -29,11 +33,13 @@ export default function DeleteCourse() {
     const [courseSubjectError, setCourseSubjectError] = useState(true);
     const [courseCatalogError, setCourseCatalogError] = useState(true);
     const [rationaleError, setRationaleError] = useState(true);
+    const [resourceImplicationError, setResourceImplicationError] = useState(true);
 
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
     const [subject, setSubject] = useState("");
     const [catalog, setCatalog] = useState("");
     const [rationale, setRationale] = useState("");
+    const [resourceImplication, setResourceImplication] = useState("");
 
     const handleChangeSubject = (value: string) => {
         if (value.length === 0) setCourseSubjectError(true);
@@ -45,20 +51,25 @@ export default function DeleteCourse() {
         else setCourseCatalogError(false);
         setCatalog(e.currentTarget.value);
     };
-    const handleRationale = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleChangeRationale = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         if (e.currentTarget.value.length === 0) setRationaleError(true);
         else setRationaleError(false);
         setRationale(e.currentTarget.value);
     };
+    const handleChangeResourceImplication = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        if (e.currentTarget.value.length === 0) setResourceImplicationError(true);
+        else setResourceImplicationError(false);
+        setResourceImplication(e.currentTarget.value);
+    };
     const handleSubmitRequest = () => {
         setFormSubmitted(true);
-        if (courseCatalogError || courseSubjectError || rationaleError) return;
+        if (courseSubjectError || courseCatalogError || rationaleError || resourceImplicationError) return;
         else {
             toggleLoading(true);
             const courseDeletionRequest = {
-                dossierId: "09a073e7-3f84-4ac8-bc5d-f3b405e25987", // To be changed when dossier details page is done
-                rationale: "string",
-                resourceImplication: "string",
+                dossierId: dossierId,
+                rationale: rationale,
+                resourceImplication: resourceImplication,
                 subject: subject,
                 catalog: catalog,
             };
@@ -66,6 +77,7 @@ export default function DeleteCourse() {
                 .then(() => {
                     showToast(toast, "Success!", "Course deletion request successfully added.", "success");
                     toggleLoading(false);
+                    navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
                 })
                 .catch(() => {
                     showToast(toast, "Error!", "One or more validation errors occurred", "error");
@@ -135,11 +147,29 @@ export default function DeleteCourse() {
                                         <FormControl isInvalid={rationaleError && formSubmitted}>
                                             <Textarea
                                                 value={rationale}
-                                                onChange={handleRationale}
+                                                onChange={handleChangeRationale}
                                                 placeholder="Explain reasoning for this course deletion."
                                                 minH={"200px"}
                                             ></Textarea>
                                             <FormErrorMessage>Rationale is required</FormErrorMessage>
+                                        </FormControl>
+                                    </Stack>
+                                </Stack>
+                                <Stack>
+                                    <Center>
+                                        <Heading as="h2" size="xl" color="brandRed">
+                                            <Text align="center">Resource Implication</Text>
+                                        </Heading>
+                                    </Center>
+                                    <Stack>
+                                        <FormControl isInvalid={resourceImplicationError && formSubmitted}>
+                                            <Textarea
+                                                value={resourceImplication}
+                                                onChange={handleChangeResourceImplication}
+                                                placeholder="Explain any resource implications for the course deletion."
+                                                minH={"200px"}
+                                            ></Textarea>
+                                            <FormErrorMessage>Resource Implication is required</FormErrorMessage>
                                         </FormControl>
                                     </Stack>
                                 </Stack>

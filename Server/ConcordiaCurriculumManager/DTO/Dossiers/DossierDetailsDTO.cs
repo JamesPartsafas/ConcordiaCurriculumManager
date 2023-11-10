@@ -18,6 +18,8 @@ public class DossierDetailsDTO
 
     public List<CourseModificationRequest> CourseModificationRequests { get; set; } = new List<CourseModificationRequest>();
 
+    public List<CourseDeletionRequest> CourseDeletionRequests { get; set; } = new List<CourseDeletionRequest>();
+
     public required DateTime CreatedDate { get; set; }
 
     public required DateTime ModifiedDate { get; set; }
