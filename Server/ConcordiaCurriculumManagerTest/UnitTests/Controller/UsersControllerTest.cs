@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.Controllers;
 using ConcordiaCurriculumManager.DTO;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -58,10 +59,10 @@ public class UsersControllerTest
     }
 
     [TestMethod]
-    public async Task SearchUsersByEmail_WithNullEmail_ReturnsBadRequestResult()
+    [ExpectedException(typeof(InvalidInputException))]
+    public async Task SearchUsersByEmail_WithNullEmail_ThrowsException()
     {
-        var result = await usersController.SearchUsersByEmail(null, null!);
-        Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+        await usersController.SearchUsersByEmail(null, null!);
     }
 
     [TestMethod]

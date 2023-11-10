@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
@@ -28,6 +29,7 @@ public class DossierServiceTest
     [TestMethod]
     public async Task GetDossiersByID_ValidCall_QueriesRepo()
     {
+        dossierRepository.Setup(d => d.GetDossiersByID(It.IsAny<Guid>())).ReturnsAsync(new List<Dossier>() { GetSampleDossier(GetSampleUser()) });
         await dossierService.GetDossiersByID(GetSampleUser().Id);
 
         dossierRepository.Verify(d => d.GetDossiersByID(GetSampleUser().Id));
@@ -222,7 +224,7 @@ public class DossierServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(Exception))]
+    [ExpectedException(typeof(BadRequestException))]
     public async Task GetDossierForUserOrThrow_DossierDoesNotBelongToUser_Throws()
     {
         var user = GetSampleUser();
@@ -282,7 +284,7 @@ public class DossierServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(Exception))]
+    [ExpectedException(typeof(NotFoundException))]
     public async Task GetCourseCreationRequest_InvalidInput_Throws()
     {
         dossierRepository.Setup(d => d.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync((CourseCreationRequest)null!);
@@ -302,7 +304,7 @@ public class DossierServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(Exception))]
+    [ExpectedException(typeof(NotFoundException))]
     public async Task GetCourseModificationRequest_InvalidInput_Throws()
     {
         dossierRepository.Setup(d => d.GetCourseModificationRequest(It.IsAny<Guid>())).ReturnsAsync((CourseModificationRequest)null!);

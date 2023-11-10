@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System.Net;
 using ConcordiaCurriculumManager.DTO.Courses;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 
@@ -55,7 +56,8 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task InitiatiateCourseCreation_InvalidCall_Returns400()
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task InitiatiateCourseCreation_InvalidCall_ThrowsException()
     {
         var user = GetSampleUser();
         var dossier = GetSampleDossier(user);
@@ -65,32 +67,9 @@ public class CourseControllerTest
         var courseCreationRequest = GetSampleCourseCreationRequest(course, dossier);
 
         _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
-        _courseService.Setup(x => x.InitiateCourseCreation(courseCreationInitiationDTO, user.Id)).Throws(new ArgumentException());
+        _courseService.Setup(x => x.InitiateCourseCreation(courseCreationInitiationDTO, user.Id)).Throws(new BadRequestException());
 
-        var actionResult = await _courseController.InitiateCourseCreation(courseCreationInitiationDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-        _courseService.Verify(service => service.InitiateCourseCreation(courseCreationInitiationDTO, user.Id), Times.Once);
-    }
-
-    [TestMethod]
-    public async Task InitiatiateCourseCreation_ServerError_Returns500()
-    {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseCreationInitiationDTO = GetSampleCourseCreationInitiationDTO(course, dossier);
-        var courseCreationRequestDTO = GetSampleCourseCreationRequestDTO(course, dossier);
-        var courseCreationRequest = GetSampleCourseCreationRequest(course, dossier);
-
-        _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
-        _courseService.Setup(x => x.InitiateCourseCreation(courseCreationInitiationDTO, user.Id)).Throws(new Exception());
-
-        var actionResult = await _courseController.InitiateCourseCreation(courseCreationInitiationDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        await _courseController.InitiateCourseCreation(courseCreationInitiationDTO);
         _courseService.Verify(service => service.InitiateCourseCreation(courseCreationInitiationDTO, user.Id), Times.Once);
     }
 
@@ -116,7 +95,8 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task InitiatiateCourseModification_InvalidCall_Returns400()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task InitiatiateCourseModification_InvalidCall_ThrowsException()
     {
         var user = GetSampleUser();
         var dossier = GetSampleDossier(user);
@@ -126,32 +106,9 @@ public class CourseControllerTest
         var courseModificationRequest = GetSampleCourseModificationRequest(course, dossier);
 
         _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
-        _courseService.Setup(x => x.InitiateCourseModification(courseModificationInitiationDTO, user.Id)).Throws(new ArgumentException());
+        _courseService.Setup(x => x.InitiateCourseModification(courseModificationInitiationDTO, user.Id)).Throws(new NotFoundException());
 
-        var actionResult = await _courseController.InitiateCourseModification(courseModificationInitiationDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-        _courseService.Verify(service => service.InitiateCourseModification(courseModificationInitiationDTO, user.Id), Times.Once);
-    }
-
-    [TestMethod]
-    public async Task InitiatiateCourseModification_ServerError_Returns500()
-    {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseModificationInitiationDTO = GetSampleCourseModificationInitiationDTO(course, dossier);
-        var courseModificationRequestDTO = GetSampleCourseModificationRequestDTO(course, dossier);
-        var courseModificationRequest = GetSampleCourseModificationRequest(course, dossier);
-
-        _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
-        _courseService.Setup(x => x.InitiateCourseModification(courseModificationInitiationDTO, user.Id)).Throws(new Exception());
-
-        var actionResult = await _courseController.InitiateCourseModification(courseModificationInitiationDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        await _courseController.InitiateCourseModification(courseModificationInitiationDTO);
         _courseService.Verify(service => service.InitiateCourseModification(courseModificationInitiationDTO, user.Id), Times.Once);
     }
 
@@ -177,7 +134,8 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task InitiatiateCourseDeletion_InvalidCall_Returns400()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task InitiatiateCourseDeletion_InvalidCall_ThrowsException()
     {
         var user = GetSampleUser();
         var dossier = GetSampleDossier(user);
@@ -187,32 +145,12 @@ public class CourseControllerTest
         var courseDeletionRequest = GetSampleCourseDeletionRequest(course, dossier);
 
         _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
-        _courseService.Setup(x => x.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id)).Throws(new ArgumentException());
+        _courseService.Setup(x => x.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id)).Throws(new NotFoundException());
 
         var actionResult = await _courseController.InitiateCourseDeletion(courseDeletionInitiationDTO);
         var objectResult = (ObjectResult)actionResult;
 
         Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-        _courseService.Verify(service => service.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id), Times.Once);
-    }
-
-    [TestMethod]
-    public async Task InitiatiateCourseDeletion_ServerError_Returns500()
-    {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseDeletionInitiationDTO = GetSampleCourseDeletionInitiationDTO(course, dossier);
-        var courseDeletionRequestDTO = GetSampleCourseDeletionRequestDTO(course, dossier);
-        var courseDeletionRequest = GetSampleCourseDeletionRequest(course, dossier);
-
-        _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
-        _courseService.Setup(x => x.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id)).Throws(new Exception());
-
-        var actionResult = await _courseController.InitiateCourseDeletion(courseDeletionInitiationDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
         _courseService.Verify(service => service.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id), Times.Once);
     }
 
@@ -232,9 +170,10 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task GetCourseData_ServerError_Returns500()
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task GetCourseData_ServerError_ThrowsTheSameExceptionAsCourseService()
     {
-        _courseService.Setup(cr => cr.GetCourseData(It.IsAny<string>(), It.IsAny<string>())).Throws(new Exception());
+        _courseService.Setup(cr => cr.GetCourseData(It.IsAny<string>(), It.IsAny<string>())).Throws(new BadRequestException());
 
         var actionResult = await _courseController.GetCourseData(It.IsAny<string>(), It.IsAny<string>());
         var objectResult = (ObjectResult)actionResult;
@@ -263,30 +202,14 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task EditCourseCreationRequest_InvalidCall_Returns400()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditCourseCreationRequest_InvalidCall_ThrowsException()
     {
         var editCourseCreationRequestDTO = GetSampleEditCourseCreationRequestDTO();
 
-        _courseService.Setup(x => x.EditCourseCreationRequest(editCourseCreationRequestDTO)).Throws(new ArgumentException());
+        _courseService.Setup(x => x.EditCourseCreationRequest(editCourseCreationRequestDTO)).Throws(new NotFoundException());
 
-        var actionResult = await _courseController.EditCourseCreationRequest(editCourseCreationRequestDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-        _courseService.Verify(service => service.EditCourseCreationRequest(editCourseCreationRequestDTO), Times.Once);
-    }
-
-    [TestMethod]
-    public async Task EditCourseCreationRequest_ServerError_Returns500()
-    {
-        var editCourseCreationRequestDTO = GetSampleEditCourseCreationRequestDTO();
-
-        _courseService.Setup(x => x.EditCourseCreationRequest(editCourseCreationRequestDTO)).Throws(new Exception());
-
-        var actionResult = await _courseController.EditCourseCreationRequest(editCourseCreationRequestDTO);
-        var objectResult = (ObjectResult)actionResult;
-        
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        await _courseController.EditCourseCreationRequest(editCourseCreationRequestDTO);
         _courseService.Verify(service => service.EditCourseCreationRequest(editCourseCreationRequestDTO), Times.Once);
     }
 
@@ -311,30 +234,17 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task EditCourseModificationRequest_InvalidCall_Returns400()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditCourseModificationRequest_InvalidCall_ThrowsException()
     {
         var editCourseModificationRequestDTO = GetSampleEditCourseModificationRequestDTO();
 
-        _courseService.Setup(x => x.EditCourseModificationRequest(editCourseModificationRequestDTO)).Throws(new ArgumentException());
+        _courseService.Setup(x => x.EditCourseModificationRequest(editCourseModificationRequestDTO)).Throws(new NotFoundException());
 
         var actionResult = await _courseController.EditCourseModificationRequest(editCourseModificationRequestDTO);
         var objectResult = (ObjectResult)actionResult;
 
         Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-        _courseService.Verify(service => service.EditCourseModificationRequest(editCourseModificationRequestDTO), Times.Once);
-    }
-
-    [TestMethod]
-    public async Task EditCourseModificationRequest_ServerError_Returns500()
-    {
-        var editCourseModificationRequestDTO = GetSampleEditCourseModificationRequestDTO();
-
-        _courseService.Setup(x => x.EditCourseModificationRequest(editCourseModificationRequestDTO)).Throws(new Exception());
-
-        var actionResult = await _courseController.EditCourseModificationRequest(editCourseModificationRequestDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
         _courseService.Verify(service => service.EditCourseModificationRequest(editCourseModificationRequestDTO), Times.Once);
     }
 
@@ -353,25 +263,12 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task DeleteCourseCreationRequest_InvalidCall_Returns400()
-    {
-        _courseService.Setup(service => service.DeleteCourseCreationRequest(It.IsAny<Guid>())).Throws(new ArgumentException());
-
-        var actionResult = await _courseController.DeleteCourseCreationRequest(It.IsAny<Guid>());
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-    }
-
-    [TestMethod]
-    public async Task DeleteCourseCreationRequest_ServerError_Returns500()
+    [ExpectedException(typeof(Exception))]
+    public async Task DeleteCourseCreationRequest_InvalidCall_ThrowsException()
     {
         _courseService.Setup(service => service.DeleteCourseCreationRequest(It.IsAny<Guid>())).Throws(new Exception());
 
-        var actionResult = await _courseController.DeleteCourseCreationRequest(It.IsAny<Guid>());
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        await _courseController.DeleteCourseCreationRequest(It.IsAny<Guid>());
     }
 
     [TestMethod]
@@ -389,26 +286,14 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task DeleteCourseModificationRequest_InvalidCall_Returns400()
-    {
-        _courseService.Setup(service => service.DeleteCourseModificationRequest(It.IsAny<Guid>())).Throws(new ArgumentException());
-
-        var actionResult = await _courseController.DeleteCourseModificationRequest(It.IsAny<Guid>());
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-    }
-
-    [TestMethod]
-    public async Task DeleteCourseModificationRequest_ServerError_Returns500()
+    [ExpectedException(typeof(Exception))]
+    public async Task DeleteCourseModificationRequest_InvalidCall_ThrowsException()
     {
         _courseService.Setup(service => service.DeleteCourseModificationRequest(It.IsAny<Guid>())).Throws(new Exception());
 
-        var actionResult = await _courseController.DeleteCourseModificationRequest(It.IsAny<Guid>());
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        await _courseController.DeleteCourseModificationRequest(It.IsAny<Guid>());
     }
+
 
     private User GetSampleUser()
     {
