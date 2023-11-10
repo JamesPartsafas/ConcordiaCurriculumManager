@@ -15,14 +15,21 @@ import {
     Stack,
     Text,
     Textarea,
+    useToast,
 } from "@chakra-ui/react";
-import { AllCourseSettings } from "../../models/course";
-import { getAllCourseSettings } from "../../services/course";
+import { AllCourseSettings, CourseCreationRequest, CourseModificationRequest } from "../../models/course";
+import {
+    deleteCourseCreationRequest,
+    deleteCourseModificationRequest,
+    getAllCourseSettings,
+} from "../../services/course";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
+import { showToast } from "../../utils/toastUtils";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
+    const toast = useToast(); // Use the useToast hook
     const [dossierDetails, setDossierDetails] = useState<DossierDetailsDTO | null>(null);
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
 
@@ -44,6 +51,52 @@ export default function DossierDetails() {
             setCourseSettings(res.data);
             console.log(res.data);
         });
+    }
+
+    function deleteCreationRequest(courseCreationRequest: CourseCreationRequest) {
+        deleteCourseCreationRequest(dossierId, courseCreationRequest.id)
+            .then(
+                () => {
+                    showToast(toast, "Success!", "Course creation request deleted.", "success");
+                    setDossierDetails((prevDetails) => {
+                        // Create a new array without the deleted course creation request
+                        const updatedRequests = prevDetails.courseCreationRequests.filter(
+                            (c) => c.id !== courseCreationRequest.id
+                        );
+                        // Return a new object for the state with the updated array
+                        return { ...prevDetails, courseCreationRequests: updatedRequests };
+                    });
+                },
+                () => {
+                    showToast(toast, "Error!", "Course creation request could not be deleted.", "error");
+                }
+            )
+            .catch(() => {
+                showToast(toast, "Error!", "Course creation request could not be deleted.", "error");
+            });
+    }
+
+    function deleteModificationRequest(courseModificationRequest: CourseModificationRequest) {
+        deleteCourseModificationRequest(dossierId, courseModificationRequest.id)
+            .then(
+                () => {
+                    showToast(toast, "Success!", "Course Modification request deleted.", "success");
+                    setDossierDetails((prevDetails) => {
+                        // Create a new array without the deleted course creation request
+                        const updatedRequests = prevDetails.courseModificationRequests.filter(
+                            (c) => c.id !== courseModificationRequest.id
+                        );
+                        // Return a new object for the state with the updated array
+                        return { ...prevDetails, courseModificationRequests: updatedRequests };
+                    });
+                },
+                () => {
+                    showToast(toast, "Error!", "Course modification request could not be deleted.", "error");
+                }
+            )
+            .catch(() => {
+                showToast(toast, "Error!", "Course modification request could not be deleted.", "error");
+            });
     }
 
     return (
@@ -115,9 +168,13 @@ export default function DossierDetails() {
                             <CardFooter>
                                 <ButtonGroup spacing="2">
                                     <Button variant="solid" style="primary">
-                                        View
+                                        Edit
                                     </Button>
-                                    <Button variant="outline" style="secondary">
+                                    <Button
+                                        variant="outline"
+                                        style="secondary"
+                                        onClick={() => deleteCreationRequest(courseCreationRequest)}
+                                    >
                                         Delete
                                     </Button>
                                 </ButtonGroup>
@@ -205,7 +262,11 @@ export default function DossierDetails() {
                                     <Button variant="solid" style="secondary">
                                         View
                                     </Button>
-                                    <Button variant="outline" style="primary">
+                                    <Button
+                                        variant="outline"
+                                        style="primary"
+                                        onClick={() => deleteModificationRequest(courseModificationRequest)}
+                                    >
                                         Delete
                                     </Button>
                                 </ButtonGroup>
