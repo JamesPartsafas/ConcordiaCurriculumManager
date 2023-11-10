@@ -1,3 +1,4 @@
+using ConcordiaCurriculumManager.Filters;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using ConcordiaCurriculumManager.Security;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Npgsql;
+using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text;
@@ -74,12 +76,22 @@ public class Program
             options.UseNpgsql(dbDataSource);
         });
 
+        builder.Host.UseSerilog((context, logger) =>
+        {
+            logger
+            .ReadFrom.Configuration(context.Configuration)
+            .Enrich.FromLogContext();
+        });
+        
         AddServices(builder.Services);
 
         builder.Services.AddMemoryCache();
         builder.Services.AddAutoMapper(typeof(Program));
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(options => {
+            options.Filters.Add<ExceptionHandlerFilter>();
+        });
+
         builder.Services.AddEndpointsApiExplorer();
 
         if (env.IsDevelopment())
@@ -147,6 +159,7 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseMiddleware<EnrichLogContextMiddleware>();
 
         app.MapControllers();
 
