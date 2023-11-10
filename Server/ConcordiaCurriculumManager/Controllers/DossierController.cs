@@ -34,23 +34,10 @@ public class DossierController : Controller
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     public async Task<ActionResult> GetDossiersByID()
     {
-        try
-        {
-            Guid userId = Guid.Parse(_userService.GetCurrentUserClaim(Claims.Id));
-            var dossiers = await _dossierService.GetDossiersByID(userId);
-            var dossiersDTOs = _mapper.Map<List<DossierDTO>>(dossiers);
-            _logger.LogInformation(string.Join(",", dossiersDTOs));
-            return Ok(dossiersDTOs);
-        }
-        catch (Exception e)
-        {
-            var message = "Unexpected error occured while retrieving the dossier.";
-            _logger.LogWarning($"${message}: {e.Message}");
-            return Problem(
-                title: message,
-                detail: e.Message,
-                statusCode: StatusCodes.Status500InternalServerError);
-        }
+        Guid userId = Guid.Parse(_userService.GetCurrentUserClaim(Claims.Id));
+        var dossiers = await _dossierService.GetDossiersByID(userId);
+        var dossiersDTOs = _mapper.Map<List<DossierDTO>>(dossiers);
+        return Ok(dossiersDTOs);
     }
 
     [HttpGet("{dossierId}")]
@@ -59,124 +46,46 @@ public class DossierController : Controller
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     public async Task<IActionResult> GetDossierByDossierId([FromRoute, Required] Guid dossierId)
     {
-        try
-        {
-            var dossier = await _dossierService.GetDossierDetailsById(dossierId);
-            var dossierDetails = _mapper.Map<DossierDetailsDTO>(dossier);
-            return Ok(dossierDetails);
-        }
-        catch (ArgumentException e)
-        {
-            var message = $"Dossier with id {dossierId} could not be found";
-            _logger.LogWarning($"${message}: {e.Message}");
-            return Problem(
-                title: message,
-                detail: e.Message,
-                statusCode: StatusCodes.Status404NotFound);
-        }
-        catch (Exception e)
-        {
-            var message = "Unexpected error occured while retrieving the dossier.";
-            _logger.LogWarning($"${message}: {e.Message}");
-            return Problem(
-                title: message,
-                detail: e.Message,
-                statusCode: StatusCodes.Status500InternalServerError);
-        }
+        var dossier = await _dossierService.GetDossierDetailsById(dossierId);
+        var dossierDetails = _mapper.Map<DossierDetailsDTO>(dossier);
+        return Ok(dossierDetails);
     }
 
     [HttpPost(nameof(CreateDossierForUser))]
     [Authorize(Roles = RoleNames.Initiator)]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status201Created, "Dossier created successfully", typeof(DossierDTO))]
     public async Task<ActionResult> CreateDossierForUser([FromBody, Required] CreateDossierDTO dossier)
     {
-        try
-        {
-            var user = await _userService.GetCurrentUser();
-            var createdDossier = await _dossierService.CreateDossierForUser(dossier, user);
-            var createdDossierDTO = _mapper.Map<DossierDTO>(createdDossier);
+        var user = await _userService.GetCurrentUser();
+        var createdDossier = await _dossierService.CreateDossierForUser(dossier, user);
+        var createdDossierDTO = _mapper.Map<DossierDTO>(createdDossier);
 
-            return Created($"/{nameof(CreateDossierForUser)}", createdDossierDTO);
-        }
-        catch (ArgumentException e)
-        {
-            return Problem(
-                title: "One or more validation errors occurred.",
-                detail: e.Message,
-                statusCode: StatusCodes.Status400BadRequest);
-        }
-        catch (Exception e)
-        {
-            var message = "Unexpected error occured while creating the dossier.";
-            _logger.LogWarning($"${message}: {e.Message}");
-            return Problem(
-                title: message,
-                detail: e.Message,
-                statusCode: StatusCodes.Status500InternalServerError);
-        }
+        return Created($"/{nameof(CreateDossierForUser)}", createdDossierDTO);
     }
 
     [HttpPut(nameof(EditDossier) + "/{dossierId}")]
     [Authorize(Policies.IsOwnerOfDossier)]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status201Created, "Dossier edited successfully", typeof(DossierDTO))]
     public async Task<ActionResult> EditDossier([FromRoute, Required] Guid dossierId, [FromBody, Required] EditDossierDTO dossier)
     {
-        try
-        {
-            var editedDossier = await _dossierService.EditDossier(dossier, dossierId);
-            var editedDossierDTO = _mapper.Map<DossierDTO>(editedDossier);
+        var editedDossier = await _dossierService.EditDossier(dossier, dossierId);
+        var editedDossierDTO = _mapper.Map<DossierDTO>(editedDossier);
 
-            return Created($"/{nameof(EditDossier)}", editedDossierDTO);
-        }
-        catch (ArgumentException e)
-        {
-            return Problem(
-                title: "One or more validation errors occurred.",
-                detail: e.Message,
-                statusCode: StatusCodes.Status400BadRequest);
-        }
-        catch (Exception e)
-        {
-            var message = "Unexpected error occured while editing the dossier.";
-            _logger.LogWarning($"${message}: {e.Message}");
-            return Problem(
-                title: message,
-                detail: e.Message,
-                statusCode: StatusCodes.Status500InternalServerError);
-        }
+        return Created($"/{nameof(EditDossier)}", editedDossierDTO);
     }
 
     [HttpDelete(nameof(DeleteDossier) + "/{dossierId}")]
     [Authorize(Policies.IsOwnerOfDossier)]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status204NoContent, "Dossier deleted successfully")]
     public async Task<ActionResult> DeleteDossier([FromRoute, Required] Guid dossierId)
     {
-        try
-        {
-            await _dossierService.DeleteDossier(dossierId);
-            return NoContent();
-        }
-        catch (ArgumentException e)
-        {
-            return Problem(
-                title: "One or more validation errors occurred.",
-                detail: e.Message,
-                statusCode: StatusCodes.Status400BadRequest);
-        }
-        catch (Exception e)
-        {
-            var message = "Unexpected error occured while deleting the dossier.";
-            _logger.LogWarning($"${message}: {e.Message}");
-            return Problem(
-                title: message,
-                detail: e.Message,
-                statusCode: StatusCodes.Status500InternalServerError);
-        }
+        await _dossierService.DeleteDossier(dossierId);
+        return NoContent();
     }
 }
