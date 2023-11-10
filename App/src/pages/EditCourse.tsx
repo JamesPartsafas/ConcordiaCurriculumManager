@@ -23,7 +23,7 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useState, useRef, useEffect } from "react";
-import { addCourse, getAllCourseSettings } from "../services/course";
+import { addCourse, getAllCourseSettings, getCourse } from "../services/course";
 import { AllCourseSettings, Course, CourseCareer, CourseComponent, CourseComponents } from "../models/course";
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
@@ -174,6 +174,13 @@ export default function EditCourse() {
         setCourseComponents(courseComponentsTemp || []);
     };
     useEffect(() => {
+        getCourse("COMP", "335")
+            .then((res) => {
+                console.log(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
         getAllCourseSettings()
             .then((res) => {
                 setAllCourseSettings(res.data);
