@@ -33,9 +33,13 @@ export interface Course {
     preReqs: string;
     career: number;
     equivalentCourses: string;
-    componentCodes: number[];
+    componentCodes: object;
     dossierId: string;
-    courseID: number;
+    courseNotes: string;
+    rationale: string;
+    supportingFiles: object;
+    resourceImplication: string;
+    courseID?: number;
 }
 
 export interface newCourse extends Course {
@@ -56,20 +60,58 @@ export interface ModifiedCourse extends Course {
     courseState: number;
 }
 
-export interface CourseCreationRequest {
+export interface DeletedCourse extends Course {
+    id: string;
+    createdDate: Date;
+    modifiedDate: Date;
+    version: number;
+    published: boolean;
+    courseState: number;
+}
+
+export interface CourseRequest {
     id: string;
     dossierId: string;
-    newCourse: newCourse;
-    newCourseId: string;
+    rationale: string;
+    resourceImplication: string;
+    comment: string;
     createdDate: Date;
     modifiedDate: Date;
 }
 
-export interface CourseModificationRequest {
-    id: string;
-    dossierId: string;
+export interface CourseCreationRequest extends CourseRequest {
+    newCourse: newCourse;
+    newCourseId: string;
+}
+
+export interface CourseModificationRequest extends CourseRequest {
     course: ModifiedCourse;
     courseId: string;
-    createdDate: Date;
-    modifiedDate: Date;
 }
+
+export interface CourseDeletionRequest extends CourseRequest {
+    course: DeletedCourse;
+    courseId: string;
+}
+
+export const componentMappings = {
+    Conference: "CON",
+    "Field Studies": "FLD",
+    Fieldwork: "FWK",
+    "Independent Study": "IND",
+    Laboratory: "LAB",
+    Lecture: "LEC",
+    Modular: "MOD",
+    Online: "ONL",
+    "Practicum/Internship/Work-Term": "PRA",
+    "Private Studies": "PST",
+    Reading: "REA",
+    Regular: "REG",
+    Research: "RSC",
+    Seminar: "SEM",
+    Studio: "STU",
+    "Thesis Research": "THE",
+    Tutorial: "TUT",
+    "Tutorial/Lab": "TL",
+    Workshop: "WKS",
+};

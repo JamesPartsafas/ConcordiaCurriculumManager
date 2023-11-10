@@ -15,14 +15,21 @@ import {
     Stack,
     Text,
     Textarea,
+    useToast,
 } from "@chakra-ui/react";
-import { AllCourseSettings } from "../../models/course";
-import { getAllCourseSettings } from "../../services/course";
+import { AllCourseSettings, CourseCreationRequest, CourseModificationRequest } from "../../models/course";
+import {
+    deleteCourseCreationRequest,
+    deleteCourseModificationRequest,
+    getAllCourseSettings,
+} from "../../services/course";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
+import { showToast } from "../../utils/toastUtils";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
+    const toast = useToast(); // Use the useToast hook
     const [dossierDetails, setDossierDetails] = useState<DossierDetailsDTO | null>(null);
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
 
@@ -46,6 +53,52 @@ export default function DossierDetails() {
         });
     }
 
+    function deleteCreationRequest(courseCreationRequest: CourseCreationRequest) {
+        deleteCourseCreationRequest(dossierId, courseCreationRequest.id)
+            .then(
+                () => {
+                    showToast(toast, "Success!", "Course creation request deleted.", "success");
+                    setDossierDetails((prevDetails) => {
+                        // Create a new array without the deleted course creation request
+                        const updatedRequests = prevDetails.courseCreationRequests.filter(
+                            (c) => c.id !== courseCreationRequest.id
+                        );
+                        // Return a new object for the state with the updated array
+                        return { ...prevDetails, courseCreationRequests: updatedRequests };
+                    });
+                },
+                () => {
+                    showToast(toast, "Error!", "Course creation request could not be deleted.", "error");
+                }
+            )
+            .catch(() => {
+                showToast(toast, "Error!", "Course creation request could not be deleted.", "error");
+            });
+    }
+
+    function deleteModificationRequest(courseModificationRequest: CourseModificationRequest) {
+        deleteCourseModificationRequest(dossierId, courseModificationRequest.id)
+            .then(
+                () => {
+                    showToast(toast, "Success!", "Course Modification request deleted.", "success");
+                    setDossierDetails((prevDetails) => {
+                        // Create a new array without the deleted course creation request
+                        const updatedRequests = prevDetails.courseModificationRequests.filter(
+                            (c) => c.id !== courseModificationRequest.id
+                        );
+                        // Return a new object for the state with the updated array
+                        return { ...prevDetails, courseModificationRequests: updatedRequests };
+                    });
+                },
+                () => {
+                    showToast(toast, "Error!", "Course modification request could not be deleted.", "error");
+                }
+            )
+            .catch(() => {
+                showToast(toast, "Error!", "Course modification request could not be deleted.", "error");
+            });
+    }
+
     return (
         <>
             <div style={{ margin: "auto", width: "fit-content" }}>
@@ -53,8 +106,8 @@ export default function DossierDetails() {
                 <Kbd>{dossierDetails?.id}</Kbd>
                 <Text>{dossierDetails?.description}</Text>
                 <Text>published: {dossierDetails?.published ? "yes" : "no"}</Text>
-                <Text>created: {dossierDetails?.createdDate.toString()}</Text>
-                <Text>updated: {dossierDetails?.modifiedDate.toString()}</Text>
+                <Text>created: {dossierDetails?.createdDate?.toString()}</Text>
+                <Text>updated: {dossierDetails?.modifiedDate?.toString()}</Text>
             </div>
 
             <Box backgroundColor={"brandRed"} m={"auto"} mt={5} p="3" width={"70%"} borderRadius={"lg"} minH={"400px"}>
@@ -115,9 +168,13 @@ export default function DossierDetails() {
                             <CardFooter>
                                 <ButtonGroup spacing="2">
                                     <Button variant="solid" style="primary">
-                                        View
+                                        Edit
                                     </Button>
-                                    <Button variant="outline" style="secondary">
+                                    <Button
+                                        variant="outline"
+                                        style="secondary"
+                                        onClick={() => deleteCreationRequest(courseCreationRequest)}
+                                    >
                                         Delete
                                     </Button>
                                 </ButtonGroup>
@@ -128,6 +185,8 @@ export default function DossierDetails() {
 
                 <Divider marginTop={10} marginBottom={2} />
                 <Button
+                    backgroundColor="brandRed100"
+                    _hover={{ bg: "brandRed600" }}
                     variant="solid"
                     style="secondary"
                     width="100%"
@@ -203,6 +262,98 @@ export default function DossierDetails() {
                                     <Button variant="solid" style="secondary">
                                         View
                                     </Button>
+                                    <Button
+                                        variant="outline"
+                                        style="primary"
+                                        onClick={() => deleteModificationRequest(courseModificationRequest)}
+                                    >
+                                        Delete
+                                    </Button>
+                                </ButtonGroup>
+                            </CardFooter>
+                        </Card>
+                    ))}
+                </SimpleGrid>
+                <Divider marginTop={10} marginBottom={2} />
+
+                <Button
+                    backgroundColor="brandBlue100"
+                    _hover={{ bg: "brandBlue" }}
+                    variant="solid"
+                    style="primary"
+                    width="100%"
+                    onClick={() => {
+                        // need to have a modal maybe to select which course to edit
+                        navigate(BaseRoutes.EditCourse.replace(":id", "1").replace(":dossierId", dossierId));
+                    }}
+                >
+                    Add Modification Request
+                </Button>
+            </Box>
+            <Box backgroundColor="brandGray" m={"auto"} mt={5} p="3" width={"70%"} borderRadius={"lg"} minH={"400px"}>
+                <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
+                    Course Deletion Requests
+                </Heading>
+                <SimpleGrid
+                    templateColumns="repeat(auto-fill, minmax(200px, 400px))"
+                    spacing={4}
+                    justifyContent={"center"}
+                >
+                    {dossierDetails?.courseDeletionRequests?.map((courseDeletionRequest) => (
+                        <Card key={courseDeletionRequest.id} boxShadow={"xl"}>
+                            <CardBody>
+                                <Stack spacing="4">
+                                    <Heading size="md" color={"brandBlue"}>
+                                        {courseDeletionRequest.course?.title}
+                                    </Heading>
+                                    <Stack>
+                                        <Kbd width={"fit-content"}>
+                                            Course ID: {courseDeletionRequest.course?.courseID}
+                                        </Kbd>
+                                        <Kbd width={"fit-content"}>
+                                            Subject: {courseDeletionRequest.course?.subject}
+                                        </Kbd>
+                                        <Kbd width={"fit-content"}>
+                                            Catalog: {courseDeletionRequest.course?.catalog}
+                                        </Kbd>
+                                    </Stack>
+                                    <Textarea
+                                        isReadOnly
+                                        variant={"filled"}
+                                        value={courseDeletionRequest.course?.description}
+                                    />
+                                    <Stack>
+                                        <Text>Credits: {courseDeletionRequest.course?.creditValue}</Text>
+                                        <Text>Prerequisites: {courseDeletionRequest.course?.preReqs}</Text>
+                                        <Text>
+                                            Equivalent Courses:{" "}
+                                            {courseDeletionRequest.course.equivalentCourses === null ||
+                                            courseDeletionRequest.course?.equivalentCourses === ""
+                                                ? "N/A"
+                                                : courseDeletionRequest.course?.equivalentCourses}
+                                        </Text>
+                                        <Text>
+                                            Career:{" "}
+                                            {" " +
+                                                courseSettings?.courseCareers.find(
+                                                    (courseCareer) =>
+                                                        courseCareer.careerCode === courseDeletionRequest.course?.career
+                                                )?.careerName}
+                                        </Text>
+                                    </Stack>
+                                    <Stack alignSelf={"end"} alignItems={"baseline"}>
+                                        <Text>
+                                            Version: <Kbd>{courseDeletionRequest.course?.version}</Kbd>
+                                        </Text>
+                                    </Stack>
+                                </Stack>
+                            </CardBody>
+                            <Divider />
+                            <CardFooter>
+                                <ButtonGroup spacing="2">
+                                    <Button variant="solid" style="secondary">
+                                        View
+                                    </Button>
                                     <Button variant="outline" style="primary">
                                         Delete
                                     </Button>
@@ -214,15 +365,16 @@ export default function DossierDetails() {
                 <Divider marginTop={10} marginBottom={2} />
 
                 <Button
+                    backgroundColor="brandGray500"
+                    _hover={{ bg: "brandGray" }}
                     variant="solid"
-                    style="primary"
+                    style="secondary"
                     width="100%"
                     onClick={() => {
-                        // need to have a modal maybe to select which course to edit
-                        navigate(BaseRoutes.EditCourse.replace(":id", "1").replace(":dossierId", dossierId));
+                        navigate(BaseRoutes.DeleteCourse.replace(":dossierId", dossierId));
                     }}
                 >
-                    Add Modification Request
+                    Add Deletion Request
                 </Button>
             </Box>
         </>

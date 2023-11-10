@@ -23,6 +23,7 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useState, useRef, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { addCourse, getAllCourseSettings } from "../services/course";
 import { AllCourseSettings, Course, CourseCareer, CourseComponent, CourseComponents } from "../models/course";
 import AutocompleteInput from "../components/Select";
@@ -55,6 +56,7 @@ export default function EditCourse() {
     const [courseCareer, setCouresCareer] = useState<CourseCareer>(null);
     const [courseCareers, setCourseCareers] = useState<string[]>([]);
     const selectedComponentRef = useRef<HTMLSelectElement>(null);
+    const { dossierId } = useParams();
 
     const handleChangeCourseCareer = (value: string) => {
         if (value.length === 0) setCourseCareersError(true);
@@ -126,7 +128,7 @@ export default function EditCourse() {
                 career: courseCareer.careerCode,
                 equivalentCourses: "",
                 componentCodes: courseComponents.map((component) => component.componentCode),
-                dossierId: "37581d9d-713f-475c-9668-23971b0e64d0",
+                dossierId: dossierId,
             };
             addCourse(course)
                 .then(() => {
@@ -264,7 +266,7 @@ export default function EditCourse() {
                                 <Stack>
                                     <Center>
                                         <Heading as="h2" size="xl" color="brandRed">
-                                            Description
+                                            Course Description
                                         </Heading>
                                     </Center>
                                     <Stack>

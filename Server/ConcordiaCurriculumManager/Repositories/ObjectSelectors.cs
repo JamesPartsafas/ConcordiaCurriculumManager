@@ -98,6 +98,18 @@ public static class ObjectSelectors
             ResourceImplication = request.ResourceImplication,
             Rationale = request.Rationale,
             Comment = request.Comment
+        }),
+        CourseDeletionRequests = (List<CourseDeletionRequest>)dossier.CourseDeletionRequests.Select(request => new CourseDeletionRequest
+        {
+            Id = request.Id,
+            CreatedDate = request.CreatedDate,
+            ModifiedDate = request.ModifiedDate,
+            CourseId = request.CourseId,
+            Course = request.Course,
+            DossierId = request.DossierId,
+            ResourceImplication = request.ResourceImplication,
+            Rationale = request.Rationale,
+            Comment = request.Comment
         })
     };
 }
