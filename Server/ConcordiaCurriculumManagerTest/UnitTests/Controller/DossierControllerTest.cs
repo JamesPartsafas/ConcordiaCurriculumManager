@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.Controllers;
 using ConcordiaCurriculumManager.DTO.Dossiers;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Services;
@@ -46,25 +47,12 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         }
 
         [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
         public async Task GetDossiersByID_InvalidCall_Returns404()
         {
-            dossierService.Setup(d => d.GetDossierDetailsById(It.IsAny<Guid>())).Throws(new ArgumentException());
+            dossierService.Setup(d => d.GetDossierDetailsById(It.IsAny<Guid>())).Throws(new NotFoundException());
 
-            var actionResult = await dossierController.GetDossierByDossierId(Guid.NewGuid());
-            var objectResult = (ObjectResult)actionResult;
-
-            Assert.AreEqual((int)HttpStatusCode.NotFound, objectResult.StatusCode);
-        }
-
-        [TestMethod]
-        public async Task GetDossiersByID_ServerError_Returns500()
-        {
-            dossierService.Setup(d => d.GetDossierDetailsById(It.IsAny<Guid>())).Throws(new Exception());
-
-            var actionResult = await dossierController.GetDossierByDossierId(Guid.NewGuid());
-            var objectResult = (ObjectResult)actionResult;
-
-            Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+            await dossierController.GetDossierByDossierId(Guid.NewGuid());
         }
 
         [TestMethod]
@@ -85,25 +73,12 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         }
 
         [TestMethod]
-        public async Task EditDossier_InvalidCall_Returns400()
-        {
-            dossierService.Setup(d => d.EditDossier(It.IsAny<EditDossierDTO>(), It.IsAny<Guid>())).Throws(new ArgumentException());
-
-            var actionResult = await dossierController.EditDossier(Guid.NewGuid(), GetSampleEditDossierDTO());
-            var objectResult = (ObjectResult)actionResult;
-
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-        }
-
-        [TestMethod]
-        public async Task EditDossier_ServerError_Returns500()
+        [ExpectedException(typeof(Exception))]
+        public async Task EditDossier_InvalidCall_ThrowsException()
         {
             dossierService.Setup(d => d.EditDossier(It.IsAny<EditDossierDTO>(), It.IsAny<Guid>())).Throws(new Exception());
 
-            var actionResult = await dossierController.EditDossier(Guid.NewGuid(), GetSampleEditDossierDTO());
-            var objectResult = (ObjectResult)actionResult;
-
-            Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+            await dossierController.EditDossier(Guid.NewGuid(), GetSampleEditDossierDTO());
         }
 
         [TestMethod]
@@ -134,9 +109,10 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         }
 
         [TestMethod]
-        public async Task DeleteDossier_InvalidCall_Returns400()
+        [ExpectedException(typeof(Exception))]
+        public async Task DeleteDossier_InvalidCall_ThrowsException()
         {
-            dossierService.Setup(d => d.DeleteDossier(It.IsAny<Guid>())).Throws(new ArgumentException());
+            dossierService.Setup(d => d.DeleteDossier(It.IsAny<Guid>())).Throws(new Exception());
 
             var actionResult = await dossierController.DeleteDossier(GetSampleDeleteDossierDTO());
             var objectResult = (ObjectResult)actionResult;
@@ -145,7 +121,8 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         }
 
         [TestMethod]
-        public async Task DeleteDossier_ServerError_Returns500()
+        [ExpectedException(typeof(Exception))]
+        public async Task DeleteDossier_ServerError_ThrowsException()
         {
             dossierService.Setup(d => d.DeleteDossier(It.IsAny<Guid>())).Throws(new Exception());
 

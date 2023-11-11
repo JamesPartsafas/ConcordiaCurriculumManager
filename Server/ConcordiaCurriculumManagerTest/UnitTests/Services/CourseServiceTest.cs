@@ -1,22 +1,12 @@
-using ConcordiaCurriculumManager.DTO.Courses;
-using ConcordiaCurriculumManager.DTO.Dossiers;
-﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Services;
-using ConcordiaCurriculumManager.Settings;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
 
@@ -49,7 +39,7 @@ public class CourseServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
+    [ExpectedException(typeof(BadRequestException))]
     public async Task InitiateCourseCreation_CourseExists_ThrowsArgumentException()
     {
         var user = GetSampleUser();
@@ -136,7 +126,7 @@ public class CourseServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
+    [ExpectedException(typeof(NotFoundException))]
     public async Task InitiateCourseModification_CourseDoesNotExists_ThrowsArgumentException()
     {
         var user = GetSampleUser();
@@ -148,7 +138,7 @@ public class CourseServiceTest
 
     [TestMethod]
     [ExpectedException(typeof(Exception))]
-    public async Task InitiateCourseModification_DossierDoesNotExist_LogsAndThrowsException()
+    public async Task InitiateCourseModification_DossierDoesNotExist_ThrowsException()
     {
         var user = GetSampleUser();
         var dossier = GetSampleDossier(user);
@@ -156,13 +146,11 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
 
         await courseService.InitiateCourseModification(GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
-
-        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
 
     [TestMethod]
     [ExpectedException(typeof(Exception))]
-    public async Task InitiateCourseModification_DossierDoesNotBelongToUser_LogsAndThrowsException()
+    public async Task InitiateCourseModification_DossierDoesNotBelongToUser_ThrowsException()
     {
         var user = GetSampleUser();
         var dossier = GetSampleDossier(user);
@@ -171,9 +159,6 @@ public class CourseServiceTest
         dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
 
         await courseService.InitiateCourseModification(GetSampleCourseCreationModificationDTO(course, dossier), Guid.NewGuid());
-
-        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
-
     }
 
     [TestMethod]
@@ -226,8 +211,8 @@ public class CourseServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public async Task GetCourseData_CourseDoesNotExist_ThrowsArgumentException()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task GetCourseData_CourseDoesNotExist_ThrowsNotFoundException()
     {
         var subject = "SOEN";
         var catalog = "490";
@@ -237,7 +222,7 @@ public class CourseServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
+    [ExpectedException(typeof(BadRequestException))]
     public async Task GetCourseData_CourseIsDeleted_ThrowsArgumentException()
     {
         var subject = "SOEN";
@@ -368,8 +353,8 @@ public class CourseServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public async Task EditCourseCreationRequest_CourseDoesNotExist_ThrowsArgumentException()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditCourseCreationRequest_CourseDoesNotExist_ThrowsNotFoundException()
     {
         var courseCreationRequest = GetSampleCourseCreationRequest();
         courseCreationRequest.NewCourse = null;
@@ -377,7 +362,6 @@ public class CourseServiceTest
         dossierService.Setup(service => service.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync(courseCreationRequest);
 
         await courseService.EditCourseCreationRequest(editCourseCreationRequestDTO);
-
     }
 
     [TestMethod]
@@ -394,8 +378,8 @@ public class CourseServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public async Task EditCourseModificationRequest_CourseDoesNotExist_ThrowsArgumentException()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditCourseModificationRequest_CourseDoesNotExist_ThrowsNotFoundException()
     {
         var courseModificationRequest = GetSampleCourseModificationRequest();
         courseModificationRequest.Course = null;

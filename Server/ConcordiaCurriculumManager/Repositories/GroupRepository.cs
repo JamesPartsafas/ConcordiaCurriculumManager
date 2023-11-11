@@ -53,6 +53,7 @@ public class GroupRepository : IGroupRepository
             group.Members.Add(user);
             return await _dbContext.SaveChangesAsync() > 0;
         }
+
         return false;
     }
 
@@ -69,6 +70,7 @@ public class GroupRepository : IGroupRepository
             group.GroupMasters.Remove(user);
             return await _dbContext.SaveChangesAsync() > 0;
         }
+
         return false;
     }
 
