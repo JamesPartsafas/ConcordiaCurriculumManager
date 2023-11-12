@@ -90,7 +90,7 @@ public class CourseController : Controller
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     public async Task<ActionResult> GetCourseData([FromRoute, Required] string subject, string catalog)
     {
-        var courseData = await _courseService.GetCourseData(subject, catalog);
+        var courseData = await _courseService.GetCourseDataOrThrowOnDeleted(subject, catalog);
         var courseDataDTOs = _mapper.Map<CourseDataDTO>(courseData);
         _logger.LogInformation(string.Join(",", courseDataDTOs));
         return Ok(courseDataDTOs);
