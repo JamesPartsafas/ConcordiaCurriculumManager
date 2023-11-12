@@ -16,7 +16,7 @@ public interface ICourseService
     public Task<CourseCreationRequest> InitiateCourseCreation(CourseCreationInitiationDTO initiation, Guid userId);
     public Task<CourseModificationRequest> InitiateCourseModification(CourseModificationInitiationDTO modification, Guid userId);
     public Task<CourseDeletionRequest> InitiateCourseDeletion(CourseDeletionInitiationDTO deletion, Guid userId);
-    public Task<Course?> GetCourseData(string subject, string catalog);
+    public Task<Course> GetCourseDataOrThrowOnDeleted(string subject, string catalog);
     public Task<CourseCreationRequest?> EditCourseCreationRequest(EditCourseCreationRequestDTO edit);
     public Task<CourseModificationRequest?> EditCourseModificationRequest(EditCourseModificationRequestDTO edit);
     public Task DeleteCourseCreationRequest(Guid courseRequestId);
@@ -66,17 +66,30 @@ public class CourseService : ICourseService
         return await _courseRepository.GetUniqueCourseSubjects();
     }
 
+    public async Task<Course> GetCourseDataOrThrowOnDeleted(string subject, string catalog)
+    {
+        var course = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog) 
+            ?? throw new BadRequestException($"The course {subject}-{catalog} does not exist.");
+
+        if (course.CourseState == CourseStateEnum.Deleted)
+        {
+            throw new BadRequestException($"The course {subject}-{catalog} is deleted.");
+        }
+
+        return course;
+    }
+
     public async Task<CourseCreationRequest> InitiateCourseCreation(CourseCreationInitiationDTO initiation, Guid userId)
     {
-        var exists = await _courseRepository.GetCourseBySubjectAndCatalog(initiation.Subject, initiation.Catalog) is not null;
-        if (exists)
+        var courseFromDb = await _courseRepository.GetCourseBySubjectAndCatalog(initiation.Subject, initiation.Catalog);
+        if (courseFromDb != null && courseFromDb.CourseState == CourseStateEnum.Accepted)
         {
-            throw new BadRequestException("The course already exists");
+            throw new BadRequestException("The course already exists and is accepted");
         }
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(initiation.DossierId, userId);
 
-        var course = Course.CreateCourseFromDTOData(initiation, (await _courseRepository.GetMaxCourseId()) + 1, 1);
+        var course = Course.CreateCourseFromDTOData(initiation, (await _courseRepository.GetMaxCourseId()) + 1, null);
 
         await SaveCourseForUserOrThrow(course, userId);
 
@@ -98,11 +111,11 @@ public class CourseService : ICourseService
 
     public async Task<CourseModificationRequest> InitiateCourseModification(CourseModificationInitiationDTO modification, Guid userId)
     {
-        var oldCourse = await _courseRepository.GetCourseByCourseId(modification.CourseId) ?? throw new NotFoundException("The course does not exist.");
+        var oldCourse = await GetCourseDataOrThrowOnDeleted(modification.Subject, modification.Catalog);
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(modification.DossierId, userId);
 
-        var newModifiedCourse = Course.CreateCourseFromDTOData(modification, oldCourse.CourseID, oldCourse.Version + 1);
+        var newModifiedCourse = Course.CreateCourseFromDTOData(modification, oldCourse.CourseID, null);
 
         await SaveCourseForUserOrThrow(newModifiedCourse, userId);
 
@@ -122,22 +135,9 @@ public class CourseService : ICourseService
         return courseModificationRequest;
     }
 
-    public async Task<Course?> GetCourseData(string subject, string catalog)
-    {
-        var course = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog) ?? throw new NotFoundException($"The course {subject}-{catalog} does not exist.");
-        var courseWithLatestVersion = await _courseRepository.GetCourseByCourseIdAndLatestVersion(course.CourseID);
-
-        if (courseWithLatestVersion == null || courseWithLatestVersion.CourseState == CourseStateEnum.Deleted)
-        {
-            throw new BadRequestException($"The course {subject}-{catalog} is deleted.");
-        }
-
-        return courseWithLatestVersion;
-    }
-
     public async Task<CourseDeletionRequest> InitiateCourseDeletion(CourseDeletionInitiationDTO deletion, Guid userId)
     {
-        var oldCourse = await _courseRepository.GetCourseBySubjectAndCatalog(deletion.Subject, deletion.Catalog) ?? throw new ArgumentException("The course does not exist.");
+        var oldCourse = await GetCourseDataOrThrowOnDeleted(deletion.Subject, deletion.Catalog);
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(deletion.DossierId, userId);
 
@@ -161,30 +161,15 @@ public class CourseService : ICourseService
         return courseDeletionRequest;
     }
 
-    private async Task SaveCourseForUserOrThrow(Course course, Guid userId)
-    {
-        bool courseCreated = await _courseRepository.SaveCourse(course);
-        if (!courseCreated)
-        {
-            throw new Exception($"Error inserting ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
-        }
-        _logger.LogInformation($"Inserted ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
-    }
-
     public async Task<CourseCreationRequest?> EditCourseCreationRequest(EditCourseCreationRequestDTO edit)
     { 
         var courseCreationRequest = await _dossierService.GetCourseCreationRequest(edit.Id);
 
-        courseCreationRequest.Rationale = edit.Rationale;
-        courseCreationRequest.ResourceImplication = edit.ResourceImplication;
-        courseCreationRequest.Comment = edit.Comment;
-        courseCreationRequest.Conflict = "Auto-generated comment"; // TODO: Correctly autogenerate comment to indicate potential issues
+        courseCreationRequest.EditRequestData(edit);
 
         var newCourse = courseCreationRequest.NewCourse ?? throw new NotFoundException($"The course request {edit.Id} does not exist.");
 
         newCourse.ModifyCourseFromDTOData(edit);
-        newCourse.Subject = edit.Subject;
-        newCourse.Catalog = edit.Catalog;
 
         await _dossierRepository.UpdateCourseCreationRequest(courseCreationRequest);
 
@@ -195,10 +180,7 @@ public class CourseService : ICourseService
     {
         var courseModificationRequest = await _dossierService.GetCourseModificationRequest(edit.Id);
 
-        courseModificationRequest.Rationale = edit.Rationale;
-        courseModificationRequest.ResourceImplication = edit.ResourceImplication;
-        courseModificationRequest.Comment = edit.Comment;
-        courseModificationRequest.Conflict = "Auto-generated comment"; // TODO: Correctly autogenerate comment to indicate potential issues
+        courseModificationRequest.EditRequestData(edit);
 
         var newCourse = courseModificationRequest.Course ?? throw new NotFoundException($"The course request {edit.Id} does not exist.");
 
@@ -231,5 +213,15 @@ public class CourseService : ICourseService
         }
 
         _logger.LogInformation($"Deleted ${typeof(CourseModificationRequest)} ${courseModificationRequest.Id}");
+    }
+
+    private async Task SaveCourseForUserOrThrow(Course course, Guid userId)
+    {
+        bool courseCreated = await _courseRepository.SaveCourse(course);
+        if (!courseCreated)
+        {
+            throw new Exception($"Error inserting ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
+        }
+        _logger.LogInformation($"Inserted ${typeof(Course)} ${course.Id} by {typeof(User)} ${userId}");
     }
 }
