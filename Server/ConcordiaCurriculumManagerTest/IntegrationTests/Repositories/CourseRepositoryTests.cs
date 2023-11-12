@@ -256,7 +256,7 @@ public class CourseRepositoryTests
         var result = await courseRepository.GetCourseByCourseIdAndLatestVersion(course1.CourseID);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(result.CourseID, course2.CourseID);
-        Assert.AreEqual(result.Version, course2.Version);
+        Assert.AreEqual(course1.CourseID, result.CourseID);
+        Assert.AreEqual(course1.Version, result.Version);
     }
 }
