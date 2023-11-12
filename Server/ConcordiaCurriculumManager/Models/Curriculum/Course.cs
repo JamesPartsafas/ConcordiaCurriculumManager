@@ -1,4 +1,5 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using NpgsqlTypes;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum;
@@ -45,6 +46,43 @@ public class Course : BaseModel
     public ICollection<CourseReference>? CourseReferenced { get; set; }
 
     public ICollection<CourseReference>? CourseReferencing { get; set; }
+
+    public void ModifyCourseFromDTOData(CourseInitiationBaseDataDTO initiation)
+    {
+        Title = initiation.Title;
+        Description = initiation.Description;
+        CourseNotes = initiation.CourseNotes;
+        CreditValue = initiation.CreditValue;
+        PreReqs = initiation.PreReqs;
+        Career = initiation.Career;
+        EquivalentCourses = initiation.EquivalentCourses;
+        CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(initiation.ComponentCodes, Id);
+        SupportingFiles = SupportingFile.GetSupportingFileMapping(initiation.SupportingFiles, Id);
+    }
+
+    public static Course CreateCourseFromDTOData(CourseRequestInitiationDTO initiation, int concordiaCourseId, int version)
+    {
+        var internalId = Guid.NewGuid();
+        return new Course
+        {
+            Id = internalId,
+            CourseID = concordiaCourseId,
+            Subject = initiation.Subject,
+            Catalog = initiation.Catalog,
+            Title = initiation.Title,
+            Description = initiation.Description,
+            CourseNotes = initiation.CourseNotes,
+            CreditValue = initiation.CreditValue,
+            PreReqs = initiation.PreReqs,
+            Career = initiation.Career,
+            EquivalentCourses = initiation.EquivalentCourses,
+            CourseState = initiation.GetAssociatedCourseState(),
+            Version = version,
+            Published = false,
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(initiation.ComponentCodes, internalId),
+            SupportingFiles = SupportingFile.GetSupportingFileMapping(initiation.SupportingFiles, internalId)
+        };
+    }
 
     public static Course CloneCourseForDeletionRequest(Course course)
     {

@@ -5,6 +5,7 @@ using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Services;
+using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -36,7 +37,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         [TestMethod]
         public async Task GetDossiersByID_ValidCall_ReturnsData()
         {
-            var dossier = GetSampleDossier();
+            var dossier = TestData.GetSampleDossier();
             dossierService.Setup(d => d.GetDossierDetailsById(dossier.Id)).ReturnsAsync(dossier);
 
             var actionResult = await dossierController.GetDossierByDossierId(dossier.Id);
@@ -58,9 +59,9 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         [TestMethod]
         public async Task EditDossier_ValidCall_ReturnsData()
         {
-            var user = GetSampleUser();
-            var dossier = GetSampleDossier();
-            var editDossier = GetSampleEditDossierDTO();
+            var user = TestData.GetSampleUser();
+            var dossier = TestData.GetSampleDossier();
+            var editDossier = TestData.GetSampleEditDossierDTO();
 
             userService.Setup(u => u.GetCurrentUser()).ReturnsAsync(user);
             dossierService.Setup(d => d.EditDossier(editDossier, dossier.Id)).ReturnsAsync(dossier);
@@ -78,13 +79,13 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         {
             dossierService.Setup(d => d.EditDossier(It.IsAny<EditDossierDTO>(), It.IsAny<Guid>())).Throws(new Exception());
 
-            await dossierController.EditDossier(Guid.NewGuid(), GetSampleEditDossierDTO());
+            await dossierController.EditDossier(Guid.NewGuid(), TestData.GetSampleEditDossierDTO());
         }
 
         [TestMethod]
         public async Task GetDossiersByID_ValidCall_ReturnsDatatest()
         {
-            var dossier = GetSampleDossier();
+            var dossier = TestData.GetSampleDossier();
             dossierService.Setup(d => d.GetDossierDetailsById(dossier.Id)).ReturnsAsync(dossier);
 
             var actionResult = await dossierController.GetDossierByDossierId(dossier.Id);
@@ -97,8 +98,8 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         [TestMethod]
         public async Task DeleteDossier_ValidCall_Returns204()
         {
-            var user = GetSampleUser();
-            var deleteDossier = GetSampleDeleteDossierDTO();
+            var user = TestData.GetSampleUser();
+            var deleteDossier = TestData.GetSampleDeleteDossierDTO();
 
             userService.Setup(u => u.GetCurrentUser()).ReturnsAsync(user);
 
@@ -114,7 +115,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         {
             dossierService.Setup(d => d.DeleteDossier(It.IsAny<Guid>())).Throws(new Exception());
 
-            var actionResult = await dossierController.DeleteDossier(GetSampleDeleteDossierDTO());
+            var actionResult = await dossierController.DeleteDossier(TestData.GetSampleDeleteDossierDTO());
             var objectResult = (ObjectResult)actionResult;
 
             Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
@@ -126,47 +127,10 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
         {
             dossierService.Setup(d => d.DeleteDossier(It.IsAny<Guid>())).Throws(new Exception());
 
-            var actionResult = await dossierController.DeleteDossier(GetSampleDeleteDossierDTO());
+            var actionResult = await dossierController.DeleteDossier(TestData.GetSampleDeleteDossierDTO());
             var objectResult = (ObjectResult)actionResult;
 
             Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
-        }
-        private Dossier GetSampleDossier()
-        {
-            return new Dossier
-            {
-                InitiatorId = Guid.NewGuid(),
-                Published = false,
-                Title = "test title",
-                Description = "test description"
-            };
-        }
-
-        private User GetSampleUser()
-        {
-            return new User
-            {
-                Id = new Guid(),
-                FirstName = "Joe",
-                LastName = "Smith",
-                Email = "jsmith@ccm.com",
-                Password = "Password123!"
-            };
-        }
-
-        private EditDossierDTO GetSampleEditDossierDTO()
-        {
-            return new EditDossierDTO
-            {
-                InitiatorId = Guid.NewGuid(),
-                Title = "test title",
-                Description = "test description"
-            };
-        }
-
-        private Guid GetSampleDeleteDossierDTO()
-        {
-            return Guid.NewGuid();
         }
     }
 }
