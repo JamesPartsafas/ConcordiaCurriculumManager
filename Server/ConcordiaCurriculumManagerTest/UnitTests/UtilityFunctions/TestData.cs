@@ -42,10 +42,28 @@ public static class TestData
             Career = CourseCareerEnum.UGRD,
             EquivalentCourses = "",
             CourseState = CourseStateEnum.NewCourseProposal,
-            Version = 1,
-            Published = true,
+            Version = null,
+            Published = false,
             CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } }, id)
         };
+    }
+
+    public static Course GetSampleAcceptedCourse()
+    {
+        var course = GetSampleCourse(); ;
+        course.Version = 2;
+        course.CourseState = CourseStateEnum.Accepted;
+
+        return course;
+    }
+
+    public static Course GetSampleDeletedCourse()
+    {
+        var course = GetSampleCourse(); ;
+        course.Version = 2;
+        course.CourseState = CourseStateEnum.Deleted;
+
+        return course;
     }
 
     // REQUEST DATA
