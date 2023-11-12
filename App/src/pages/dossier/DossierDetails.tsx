@@ -249,11 +249,6 @@ export default function DossierDetails() {
                                                 )?.careerName}
                                         </Text>
                                     </Stack>
-                                    <Stack alignSelf={"end"} alignItems={"baseline"}>
-                                        <Text>
-                                            Version: <Kbd>{courseModificationRequest.course?.version}</Kbd>
-                                        </Text>
-                                    </Stack>
                                 </Stack>
                             </CardBody>
                             <Divider />
@@ -339,11 +334,6 @@ export default function DossierDetails() {
                                                     (courseCareer) =>
                                                         courseCareer.careerCode === courseDeletionRequest.course?.career
                                                 )?.careerName}
-                                        </Text>
-                                    </Stack>
-                                    <Stack alignSelf={"end"} alignItems={"baseline"}>
-                                        <Text>
-                                            Version: <Kbd>{courseDeletionRequest.course?.version}</Kbd>
                                         </Text>
                                     </Stack>
                                 </Stack>
