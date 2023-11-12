@@ -1,4 +1,4 @@
-﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
+﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using Swashbuckle.AspNetCore.Filters;
 

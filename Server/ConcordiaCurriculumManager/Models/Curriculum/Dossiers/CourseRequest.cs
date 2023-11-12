@@ -10,5 +10,7 @@ public abstract class CourseRequest : BaseModel
 
     public required string ResourceImplication { get; set; }
 
-    public required string Comment { get; set; }
+    public string? Comment { get; set; }
+
+    public string? Conflict { get; set; }
 }

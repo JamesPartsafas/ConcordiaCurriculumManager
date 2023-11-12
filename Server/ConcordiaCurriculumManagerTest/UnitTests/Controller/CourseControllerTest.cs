@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.Controllers;
-using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Users;
@@ -11,6 +10,8 @@ using Moq;
 using System.Net;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 

@@ -1,4 +1,4 @@
-﻿namespace ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
+﻿namespace ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 
 public class CourseCreationRequestDTO : CourseRequestDTO
 {
