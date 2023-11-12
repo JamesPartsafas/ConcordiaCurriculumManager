@@ -69,7 +69,7 @@ public class CourseService : ICourseService
     public async Task<Course> GetCourseDataOrThrowOnDeleted(string subject, string catalog)
     {
         var course = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog) 
-            ?? throw new BadRequestException($"The course {subject}-{catalog} does not exist.");
+            ?? throw new InvalidInputException($"The course {subject}-{catalog} does not exist.");
 
         if (course.CourseState == CourseStateEnum.Deleted)
         {

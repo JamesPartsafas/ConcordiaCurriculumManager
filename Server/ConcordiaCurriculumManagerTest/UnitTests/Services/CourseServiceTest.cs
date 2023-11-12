@@ -143,8 +143,8 @@ public class CourseServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(BadRequestException))]
-    public async Task InitiateCourseModification_CourseDoesNotExists_ThrowsArgumentException()
+    [ExpectedException(typeof(InvalidInputException))]
+    public async Task InitiateCourseModification_CourseDoesNotExists_ThrowsInvalidInputException()
     {
         var user = TestData.GetSampleUser();
         var dossier = TestData.GetSampleDossier(user);
@@ -240,8 +240,8 @@ public class CourseServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(BadRequestException))]
-    public async Task GetCourseData_CourseDoesNotExist_ThrowsNotFoundException()
+    [ExpectedException(typeof(InvalidInputException))]
+    public async Task GetCourseData_CourseDoesNotExist_ThrowsInvalidInputException()
     {
         var subject = "SOEN";
         var catalog = "490";
@@ -279,8 +279,8 @@ public class CourseServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(BadRequestException))]
-    public async Task InitiateCourseDeletion_CourseDoesNotExists_ThrowsArgumentException()
+    [ExpectedException(typeof(InvalidInputException))]
+    public async Task InitiateCourseDeletion_CourseDoesNotExists_ThrowsInvalidInputException()
     {
         var user = TestData.GetSampleUser();
         var dossier = TestData.GetSampleDossier(user);
