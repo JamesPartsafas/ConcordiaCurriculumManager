@@ -1,5 +1,6 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Settings;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,8 @@ public class CCMDbContext : DbContext
 
     public DbSet<Dossier> Dossiers { get; set; }
 
+    public DbSet<ApprovalStage> ApprovalStages { get; set; }
+
     public DbSet<CourseReference> CourseReferences { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -44,6 +47,7 @@ public class CCMDbContext : DbContext
         ConfigureDossiersRelationship(modelBuilder);
         ConfigureCourseReferencesRelationship(modelBuilder);
         ConfigureGroupUserRelationship(modelBuilder);
+        ConfigureDossierReviewRelationships(modelBuilder);
     }
 
     private static void ConfigureCourseReferencesRelationship(ModelBuilder modelBuilder)
@@ -133,5 +137,18 @@ public class CCMDbContext : DbContext
         modelBuilder.Entity<Group>()
             .HasMany(group => group.GroupMasters)
             .WithMany(user => user.MasteredGroups);
+    }
+
+    private static void ConfigureDossierReviewRelationships(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Dossier>()
+            .HasMany(dossier => dossier.ApprovalStages)
+            .WithOne(stage => stage.Dossier)
+            .HasForeignKey(stage => stage.DossierId);
+
+        modelBuilder.Entity<Group>()
+            .HasMany(group => group.ApprovalStages)
+            .WithOne(stage => stage.Group)
+            .HasForeignKey(stage => stage.GroupId);
     }
 }
