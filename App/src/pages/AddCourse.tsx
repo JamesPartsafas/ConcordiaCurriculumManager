@@ -281,13 +281,11 @@ export default function AddCourse() {
                                     <Stack>
                                         <FormControl isInvalid={errors.creditValue && true}>
                                             <FormLabel m={0}>Credits</FormLabel>
-                                            <NumberInput>
-                                                <NumberInputField
-                                                    placeholder="Credits"
-                                                    pl="16px"
-                                                    {...register("creditValue", { required: true })}
-                                                />
-                                            </NumberInput>
+                                            <Input
+                                                type="number"
+                                                placeholder="Credits"
+                                                {...register("creditValue", { required: true })}
+                                            />
                                             <FormErrorMessage>Course credit is required</FormErrorMessage>
                                         </FormControl>
                                     </Stack>
