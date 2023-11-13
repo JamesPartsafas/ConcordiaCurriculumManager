@@ -12,6 +12,7 @@ public interface IDossierService
     public Task<Dossier> EditDossier(EditDossierDTO dossier, Guid dossierId);
     public Task DeleteDossier(Guid dossierId);
     public Task<Dossier?> GetDossierDetailsById(Guid id);
+    public Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id);
     public Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId);
     public Task SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
@@ -93,6 +94,9 @@ public class DossierService : IDossierService
     }
 
     public async Task<Dossier?> GetDossierDetailsById(Guid id) => await _dossierRepository.GetDossierByDossierId(id);
+
+    public async Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id) => await _dossierRepository.GetDossierByDossierId(id) 
+        ?? throw new NotFoundException("The dossier does not exist.");
 
     public async Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId)
     {
