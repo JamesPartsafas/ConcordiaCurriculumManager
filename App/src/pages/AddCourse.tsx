@@ -69,8 +69,6 @@ export default function AddCourse() {
     } = useForm<Course>({
         defaultValues: {
             title: null,
-            creditValue: null,
-
             subject: null,
             catalog: null,
             career: null,
