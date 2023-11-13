@@ -42,18 +42,14 @@ export default function AddCourse() {
     const toast = useToast();
     // Form managment and error handling states
     const [isLoading, toggleLoading] = useState(false);
-    const [formSubmitted, setFormSubmitted] = useState(false);
-    const [courseSubjectError, setCourseSubjectError] = useState(true);
-    const [courseCareersError, setCourseCareersError] = useState(true);
 
     const [selectedComponent, setSelectedComponent] = useState<string>(
         '{"componentCode":0,"componentName":"Conference"}'
     );
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
-    const [department, setDepartment] = useState("");
+
     const [courseComponents, setCourseComponents] = useState<CourseComponents[]>([]); // [ {type: "lecture", hours: 3}, {type: "lab", hours: 2} ]
     const [components, setComponents] = useState<CourseComponents[]>([]);
-    const [courseCareer, setCouresCareer] = useState<CourseCareer>(null);
     const [courseCareers, setCourseCareers] = useState<string[]>([]);
     const selectedComponentRef = useRef<HTMLSelectElement>(null);
 
@@ -67,11 +63,17 @@ export default function AddCourse() {
         register,
         handleSubmit,
         watch,
+        setValue,
+        reset,
         formState: { isValid, errors },
     } = useForm<Course>({
         defaultValues: {
             title: null,
-            description: null,
+            creditValue: null,
+
+            subject: null,
+            catalog: null,
+            career: null,
         },
     });
 
@@ -80,18 +82,15 @@ export default function AddCourse() {
     const courseCredits = watch("creditValue");
     const courseDescription = watch("description");
     const courseRequesites = watch("preReqs");
+    const department = watch("subject");
+    const courseCareer = allCourseSettings?.courseCareers.find(
+        (career) => career.careerCode === watch("career")
+    ) as CourseCareer;
 
     const handleChangeCourseCareer = (value: string) => {
-        if (value.length === 0) setCourseCareersError(true);
-        else setCourseCareersError(false);
         // Find course carrer code
         const career = allCourseSettings?.courseCareers.find((career) => career.careerName === value);
-        setCouresCareer(career);
-    };
-    const handleChangeDepartment = (value: string) => {
-        if (value.length === 0) setCourseSubjectError(true);
-        else setCourseSubjectError(false);
-        setDepartment(value);
+        setValue("career", career?.careerCode, { shouldValidate: true });
     };
 
     const handleAddComponent = () => {
@@ -119,20 +118,19 @@ export default function AddCourse() {
     };
 
     function onSubmit(data: Course) {
-        setFormSubmitted(true);
-        if (!isValid || courseSubjectError) {
+        if (!isValid) {
             showToast(toast, "Error!", "One or more validation errors occurred", "error");
             return;
         } else {
             toggleLoading(true);
             const course: Course = {
-                subject: department,
+                subject: data.subject,
                 catalog: data.catalog,
                 title: data.title,
                 description: data.description,
                 creditValue: data.creditValue,
                 preReqs: data.preReqs,
-                career: courseCareer.careerCode,
+                career: data.career,
                 equivalentCourses: "",
                 componentCodes: getCourseComponentsObject(courseComponents),
                 dossierId: dossierId,
@@ -146,7 +144,7 @@ export default function AddCourse() {
                     showToast(toast, "Success!", "Course added successfully.", "success");
                     toggleLoading(false);
                     clearForm();
-                    setFormSubmitted(false);
+                    reset();
                 })
                 .catch((e) => {
                     showToast(toast, "Error!", e.response.data.detail, "error");
@@ -198,13 +196,9 @@ export default function AddCourse() {
     };
 
     const clearForm = () => {
-        setCourseSubjectError(true);
-        setCourseCareersError(true);
-        setDepartment("");
         setCourseComponents([]);
         setComponents([]);
-        setCouresCareer(null);
-        setCourseCareers([]);
+        // setCourseCareers([]);
         setSelectedComponent('{"componentCode":0,"componentName":"Conference"}');
         setSupportingFiles({});
     };
@@ -239,22 +233,26 @@ export default function AddCourse() {
                                 </Stack>
                                 <Stack>
                                     <Stack>
-                                        <FormControl isInvalid={courseCareersError && formSubmitted}>
+                                        <FormControl isInvalid={!!errors.career}>
                                             <FormLabel m={0}>Course Career</FormLabel>
 
                                             <AutocompleteInput
                                                 options={courseCareers}
                                                 onSelect={handleChangeCourseCareer}
+                                                {...register("career", { required: true })}
                                                 width="100%"
                                             ></AutocompleteInput>
 
-                                            <FormErrorMessage>Subject is required</FormErrorMessage>
+                                            <FormErrorMessage>Career is required</FormErrorMessage>
                                         </FormControl>
-                                        <FormControl isInvalid={courseSubjectError && formSubmitted}>
+                                        <FormControl isInvalid={!!errors.subject}>
                                             <FormLabel m={0}>Subject</FormLabel>
                                             <AutocompleteInput
                                                 options={allCourseSettings?.courseSubjects}
-                                                onSelect={handleChangeDepartment}
+                                                onSelect={(value) =>
+                                                    setValue("subject", value, { shouldValidate: true })
+                                                }
+                                                {...register("subject", { required: true })}
                                                 width="100%"
                                             />
                                             <FormErrorMessage>Subject is required</FormErrorMessage>
@@ -303,16 +301,16 @@ export default function AddCourse() {
                                         </Heading>
                                     </Center>
                                     <Stack>
-                                        <FormControl isInvalid={errors.description && true}>
-                                            <Textarea
-                                                placeholder="Enter course description..."
-                                                minH={"200px"}
-                                                {...register("description", { required: true })}
-                                            ></Textarea>
-                                            {errors.description && (
-                                                <FormErrorMessage>Course description is required</FormErrorMessage>
-                                            )}
-                                        </FormControl>
+                                        {/* <FormControl isInvalid={errors.description && true}> */}
+                                        <Textarea
+                                            placeholder="Enter course description..."
+                                            minH={"200px"}
+                                            {...register("description")}
+                                        ></Textarea>
+                                        {/* {errors.description && (
+                                            <FormErrorMessage>Course description is required</FormErrorMessage>
+                                        )} */}
+                                        {/* </FormControl> */}
                                     </Stack>
                                 </Stack>
                                 <Stack>
