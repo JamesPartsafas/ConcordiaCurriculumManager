@@ -33,10 +33,10 @@ import {
     CourseComponents,
     componentMappings,
 } from "../models/course";
-import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
 import Button from "../components/Button";
 import { useForm } from "react-hook-form";
+import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from "@choc-ui/chakra-autocomplete";
 
 export default function AddCourse() {
     const toast = useToast();
@@ -84,11 +84,12 @@ export default function AddCourse() {
     const courseCareer = allCourseSettings?.courseCareers.find(
         (career) => career.careerCode === watch("career")
     ) as CourseCareer;
+    const subject = watch("subject");
 
     const handleChangeCourseCareer = (value: string) => {
         // Find course carrer code
         const career = allCourseSettings?.courseCareers.find((career) => career.careerName === value);
-        setValue("career", career?.careerCode, { shouldValidate: true });
+        if (career) setValue("career", career?.careerCode, { shouldValidate: true });
     };
 
     const handleAddComponent = () => {
@@ -145,7 +146,7 @@ export default function AddCourse() {
                     reset();
                 })
                 .catch((e) => {
-                    showToast(toast, "Error!", e.response.data.detail, "error");
+                    showToast(toast, "Error!", e.response?.data.detail, "error");
                     toggleLoading(false);
                 });
         }
@@ -234,25 +235,62 @@ export default function AddCourse() {
                                         <FormControl isInvalid={!!errors.career}>
                                             <FormLabel m={0}>Course Career</FormLabel>
 
-                                            <AutocompleteInput
-                                                options={courseCareers}
-                                                onSelect={handleChangeCourseCareer}
-                                                {...register("career", { required: true })}
-                                                width="100%"
-                                            ></AutocompleteInput>
+                                            <AutoComplete
+                                                onChange={(val) => {
+                                                    handleChangeCourseCareer(val);
+                                                }}
+                                                openOnFocus
+                                            >
+                                                <AutoCompleteInput
+                                                    width={"100%"}
+                                                    placeholder={courseCareer ? courseCareer.careerName : ""}
+                                                    register={register("career", { required: true })}
+                                                />
+                                                <AutoCompleteList>
+                                                    {courseCareers.map((option, index) => (
+                                                        <AutoCompleteItem
+                                                            key={`option-${index}`}
+                                                            value={option}
+                                                            textTransform="capitalize"
+                                                            _focus={{ bg: "brandRed100", color: "white" }}
+                                                        >
+                                                            {option}
+                                                        </AutoCompleteItem>
+                                                    ))}
+                                                </AutoCompleteList>
+                                            </AutoComplete>
 
                                             <FormErrorMessage>Career is required</FormErrorMessage>
                                         </FormControl>
                                         <FormControl isInvalid={!!errors.subject}>
                                             <FormLabel m={0}>Subject</FormLabel>
-                                            <AutocompleteInput
-                                                options={allCourseSettings?.courseSubjects}
-                                                onSelect={(value) =>
-                                                    setValue("subject", value, { shouldValidate: true })
-                                                }
-                                                {...register("subject", { required: true })}
-                                                width="100%"
-                                            />
+
+                                            <AutoComplete
+                                                onChange={(val) => {
+                                                    setValue("subject", val, { shouldValidate: true });
+                                                }}
+                                                openOnFocus
+                                            >
+                                                <AutoCompleteInput
+                                                    width={"100%"}
+                                                    placeholder={null}
+                                                    value={subject ? subject : ""}
+                                                    {...register("subject", { required: true })}
+                                                />
+                                                <AutoCompleteList>
+                                                    {allCourseSettings?.courseSubjects.map((option, index) => (
+                                                        <AutoCompleteItem
+                                                            key={`option-${index}`}
+                                                            value={option}
+                                                            textTransform="capitalize"
+                                                            _focus={{ bg: "brandRed100", color: "white" }}
+                                                        >
+                                                            {option}
+                                                        </AutoCompleteItem>
+                                                    ))}
+                                                </AutoCompleteList>
+                                            </AutoComplete>
+
                                             <FormErrorMessage>Subject is required</FormErrorMessage>
                                         </FormControl>
                                     </Stack>
