@@ -23,7 +23,7 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Form, useParams } from "react-router-dom";
 import { addCourse, getAllCourseSettings } from "../services/course";
 import {
     AllCourseSettings,
@@ -36,6 +36,7 @@ import {
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
 import Button from "../components/Button";
+import { useForm } from "react-hook-form";
 
 export default function AddCourse() {
     const toast = useToast();
@@ -43,9 +44,6 @@ export default function AddCourse() {
     const [isLoading, toggleLoading] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [courseSubjectError, setCourseSubjectError] = useState(true);
-    const [courseCodeError, setCourseCodeError] = useState(true);
-    const [courseNameError, setCourseNameError] = useState(true);
-    const [courseCreditError, setCourseCreditError] = useState(true);
     const [courseCareersError, setCourseCareersError] = useState(true);
 
     const [selectedComponent, setSelectedComponent] = useState<string>(
@@ -53,25 +51,35 @@ export default function AddCourse() {
     );
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
     const [department, setDepartment] = useState("");
-    const [courseNumber, setCourseNumber] = useState("");
-    const [courseName, setCourseName] = useState("");
-    const [courseCredits, setCourseCredits] = useState("");
-    const [courseDescription, setCourseDescription] = useState("");
-    const [courseRequesites, setCourseRequesites] = useState("");
     const [courseComponents, setCourseComponents] = useState<CourseComponents[]>([]); // [ {type: "lecture", hours: 3}, {type: "lab", hours: 2} ]
     const [components, setComponents] = useState<CourseComponents[]>([]);
     const [courseCareer, setCouresCareer] = useState<CourseCareer>(null);
     const [courseCareers, setCourseCareers] = useState<string[]>([]);
     const selectedComponentRef = useRef<HTMLSelectElement>(null);
-    const [rational, setRational] = useState("");
-    const [courseNotes, setCourseNotes] = useState("");
-    const [resourceImplication, setResourceImplication] = useState("");
 
     // File upload states
     const [fileName, setFileName] = useState("");
     const [fileContent, setFileContent] = useState("");
     const [supportingFiles, setSupportingFiles] = useState({});
     const { dossierId } = useParams();
+
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { isValid, errors },
+    } = useForm<Course>({
+        defaultValues: {
+            title: null,
+            description: null,
+        },
+    });
+
+    const courseName = watch("title");
+    const courseCode = watch("catalog");
+    const courseCredits = watch("creditValue");
+    const courseDescription = watch("description");
+    const courseRequesites = watch("preReqs");
 
     const handleChangeCourseCareer = (value: string) => {
         if (value.length === 0) setCourseCareersError(true);
@@ -85,30 +93,7 @@ export default function AddCourse() {
         else setCourseSubjectError(false);
         setDepartment(value);
     };
-    const handleChangeCourseNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.currentTarget.value.length === 0) setCourseCodeError(true);
-        else setCourseCodeError(false);
-        setCourseNumber(e.currentTarget.value);
-    };
-    const handleChangeCourseName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.currentTarget.value.length === 0) setCourseNameError(true);
-        else setCourseNameError(false);
-        setCourseName(e.currentTarget.value);
-    };
-    const handleChangeCourseCredits = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.currentTarget.value.length === 0) setCourseCreditError(true);
-        else setCourseCreditError(false);
-        setCourseCredits(e.currentTarget.value);
-    };
-    const handleChangeCourseDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-        setCourseDescription(e.currentTarget.value);
-    const handleChangeCourseRequesites = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-        setCourseRequesites(e.currentTarget.value);
-    const handleChangeResourceImplication = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-        setResourceImplication(e.currentTarget.value);
-    const handleChangeRational = (e: React.ChangeEvent<HTMLTextAreaElement>) => setRational(e.currentTarget.value);
-    const handleChangeCourseNotes = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-        setCourseNotes(e.currentTarget.value);
+
     const handleAddComponent = () => {
         const selectedItem: CourseComponent = JSON.parse(selectedComponent) as CourseComponent;
         // check if course component already exists
@@ -133,28 +118,28 @@ export default function AddCourse() {
         setCourseComponents(courseComponents.filter((_component, componentIndex) => componentIndex !== index));
     };
 
-    const handleSubmitCourse = () => {
+    function onSubmit(data: Course) {
         setFormSubmitted(true);
-        if (courseCodeError || courseCreditError || courseNameError || courseSubjectError) {
+        if (!isValid || courseSubjectError) {
             showToast(toast, "Error!", "One or more validation errors occurred", "error");
             return;
         } else {
             toggleLoading(true);
             const course: Course = {
                 subject: department,
-                catalog: courseNumber,
-                title: courseName,
-                description: courseDescription,
-                creditValue: courseCredits,
-                preReqs: courseRequesites,
+                catalog: data.catalog,
+                title: data.title,
+                description: data.description,
+                creditValue: data.creditValue,
+                preReqs: data.preReqs,
                 career: courseCareer.careerCode,
                 equivalentCourses: "",
                 componentCodes: getCourseComponentsObject(courseComponents),
                 dossierId: dossierId,
-                courseNotes: courseNotes,
-                rationale: rational,
+                courseNotes: data.courseNotes,
+                rationale: data.rationale,
                 supportingFiles: supportingFiles,
-                resourceImplication: resourceImplication,
+                resourceImplication: data.resourceImplication,
             };
             addCourse(course)
                 .then(() => {
@@ -168,7 +153,7 @@ export default function AddCourse() {
                     toggleLoading(false);
                 });
         }
-    };
+    }
     const handleFileNameChange = (event) => {
         setFileName(event.target.value);
     };
@@ -214,24 +199,13 @@ export default function AddCourse() {
 
     const clearForm = () => {
         setCourseSubjectError(true);
-        setCourseCodeError(true);
-        setCourseNameError(true);
-        setCourseCreditError(true);
         setCourseCareersError(true);
         setDepartment("");
-        setCourseNumber("");
-        setCourseName("");
-        setCourseCredits("");
-        setCourseDescription("");
-        setCourseRequesites("");
         setCourseComponents([]);
         setComponents([]);
         setCouresCareer(null);
         setCourseCareers([]);
         setSelectedComponent('{"componentCode":0,"componentName":"Conference"}');
-        setRational("");
-        setCourseNotes("");
-        setResourceImplication("");
         setSupportingFiles({});
     };
 
@@ -253,7 +227,7 @@ export default function AddCourse() {
             {allCourseSettings && (
                 <Box>
                     <Header></Header>
-                    <form>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         <Flex>
                             <Stack w="35%" p={8}>
                                 <Stack>
@@ -267,11 +241,13 @@ export default function AddCourse() {
                                     <Stack>
                                         <FormControl isInvalid={courseCareersError && formSubmitted}>
                                             <FormLabel m={0}>Course Career</FormLabel>
+
                                             <AutocompleteInput
                                                 options={courseCareers}
                                                 onSelect={handleChangeCourseCareer}
                                                 width="100%"
-                                            />
+                                            ></AutocompleteInput>
+
                                             <FormErrorMessage>Subject is required</FormErrorMessage>
                                         </FormControl>
                                         <FormControl isInvalid={courseSubjectError && formSubmitted}>
@@ -285,37 +261,35 @@ export default function AddCourse() {
                                         </FormControl>
                                     </Stack>
                                     <Stack>
-                                        <FormControl isInvalid={courseCodeError && formSubmitted}>
+                                        <FormControl isInvalid={errors.catalog && true}>
                                             <FormLabel m={0}>Course Code</FormLabel>
                                             <Input
                                                 placeholder="Course Code"
                                                 pl="16px"
-                                                value={courseNumber}
-                                                onChange={handleChangeCourseNumber}
+                                                {...register("catalog", { required: true })}
                                             />
-                                            <FormErrorMessage>Course code is required</FormErrorMessage>
+                                            {errors.catalog && (
+                                                <FormErrorMessage>Course code is required</FormErrorMessage>
+                                            )}
                                         </FormControl>
                                     </Stack>
                                     <Stack>
-                                        <FormControl isInvalid={courseNameError && formSubmitted}>
+                                        <FormControl isInvalid={errors.title && true}>
                                             <FormLabel m={0}>Name</FormLabel>
-                                            <Input
-                                                placeholder="Name"
-                                                value={courseName}
-                                                onChange={handleChangeCourseName}
-                                            />
-                                            <FormErrorMessage>Course name is required</FormErrorMessage>
+                                            <Input placeholder="Name" {...register("title", { required: true })} />
+                                            {errors.title && (
+                                                <FormErrorMessage>Course name is required</FormErrorMessage>
+                                            )}
                                         </FormControl>
                                     </Stack>
                                     <Stack>
-                                        <FormControl isInvalid={courseCreditError && formSubmitted}>
+                                        <FormControl isInvalid={errors.creditValue && true}>
                                             <FormLabel m={0}>Credits</FormLabel>
                                             <NumberInput>
                                                 <NumberInputField
                                                     placeholder="Credits"
                                                     pl="16px"
-                                                    value={courseCredits}
-                                                    onChange={handleChangeCourseCredits}
+                                                    {...register("creditValue", { required: true })}
                                                 />
                                             </NumberInput>
                                             <FormErrorMessage>Course credit is required</FormErrorMessage>
@@ -329,12 +303,16 @@ export default function AddCourse() {
                                         </Heading>
                                     </Center>
                                     <Stack>
-                                        <Textarea
-                                            value={courseDescription}
-                                            onChange={handleChangeCourseDescription}
-                                            placeholder="Enter course description..."
-                                            minH={"200px"}
-                                        ></Textarea>
+                                        <FormControl isInvalid={errors.description && true}>
+                                            <Textarea
+                                                placeholder="Enter course description..."
+                                                minH={"200px"}
+                                                {...register("description", { required: true })}
+                                            ></Textarea>
+                                            {errors.description && (
+                                                <FormErrorMessage>Course description is required</FormErrorMessage>
+                                            )}
+                                        </FormControl>
                                     </Stack>
                                 </Stack>
                                 <Stack>
@@ -345,10 +323,9 @@ export default function AddCourse() {
                                     </Center>
                                     <Stack>
                                         <Textarea
-                                            value={resourceImplication}
-                                            onChange={handleChangeResourceImplication}
                                             placeholder="Enter resource implication..."
                                             minH={"100px"}
+                                            {...register("resourceImplication", { required: false })}
                                         ></Textarea>
                                     </Stack>
                                 </Stack>
@@ -432,7 +409,7 @@ export default function AddCourse() {
                                             <CardBody>
                                                 <Box bg={"gray.200"} p={2}>
                                                     <Heading size="xl">
-                                                        {department} {courseNumber} {courseName}{" "}
+                                                        {department} {courseCode} {courseName}{" "}
                                                         {courseCredits === "" ? null : (
                                                             <Text display={"inline"}>
                                                                 {"("}
@@ -590,8 +567,7 @@ export default function AddCourse() {
                                     </Center>
                                     <Stack>
                                         <Textarea
-                                            value={courseRequesites}
-                                            onChange={handleChangeCourseRequesites}
+                                            {...register("preReqs", { required: false })}
                                             placeholder="Enter course requirements..."
                                             minH={"200px"}
                                         ></Textarea>
@@ -605,8 +581,7 @@ export default function AddCourse() {
                                     </Center>
                                     <Stack>
                                         <Textarea
-                                            value={rational}
-                                            onChange={handleChangeRational}
+                                            {...register("rationale", { required: false })}
                                             placeholder="Enter course rationale..."
                                             minH={"100px"}
                                         ></Textarea>
@@ -620,8 +595,7 @@ export default function AddCourse() {
                                     </Center>
                                     <Stack>
                                         <Textarea
-                                            value={courseNotes}
-                                            onChange={handleChangeCourseNotes}
+                                            {...register("courseNotes", { required: false })}
                                             placeholder="Enter course notes..."
                                             minH={"100px"}
                                         ></Textarea>
@@ -633,7 +607,7 @@ export default function AddCourse() {
                                         width="auto"
                                         height="50px"
                                         variant="solid"
-                                        onClick={() => handleSubmitCourse()}
+                                        type="submit"
                                         isLoading={isLoading}
                                     >
                                         Submit
