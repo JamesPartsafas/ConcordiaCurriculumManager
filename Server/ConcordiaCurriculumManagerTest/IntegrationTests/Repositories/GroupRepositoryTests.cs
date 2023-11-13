@@ -4,6 +4,7 @@ using ConcordiaCurriculumManager.Repositories;
 using Microsoft.EntityFrameworkCore;
 using ConcordiaCurriculumManager.Settings;
 using Microsoft.Extensions.Options;
+using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 
 namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories;
 
@@ -315,5 +316,21 @@ public class GroupRepositoryTests
         var result = await groupRepository.AddUserToGroup(userId, groupId);
 
         Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public async Task GetValidGroupIds_WithInputtedData_ReturnsAllIds()
+    {
+        var group1 = TestData.GetSampleGroup();
+        var group2 = TestData.GetSampleGroup();
+
+        dbContext.Groups.Add(group1);
+        dbContext.Groups.Add(group2);
+        await dbContext.SaveChangesAsync();
+
+        var validIds = await groupRepository.GetValidGroupIds();
+
+        Assert.IsTrue(validIds.Contains(group1.Id));
+        Assert.IsTrue(validIds.Contains(group2.Id));
     }
 }

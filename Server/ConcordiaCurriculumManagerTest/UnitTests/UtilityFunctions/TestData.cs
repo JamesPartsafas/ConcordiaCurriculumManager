@@ -4,6 +4,7 @@ using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.DTO.Dossiers;
+using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 public static class TestData
@@ -305,5 +306,25 @@ public static class TestData
     public static Guid GetSampleDeleteDossierDTO()
     {
         return Guid.NewGuid();
+    }
+
+    // DOSSIER REVIEWS
+    public static DossierSubmissionDTO GetSampleDossierSubmissionDTO()
+    {
+        return new DossierSubmissionDTO
+        {
+            DossierId = GetSampleDossier().Id,
+            GroupIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() }
+        };
+    }
+
+    // GROUPS
+    public static Group GetSampleGroup()
+    {
+        return new Group
+        {
+            Id = Guid.NewGuid(),
+            Name = "Senate"
+        };
     }
 }
