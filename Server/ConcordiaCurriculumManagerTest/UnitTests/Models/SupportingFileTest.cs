@@ -33,4 +33,31 @@ public class SupportingFileTest
 
         Assert.AreEqual(mapping.Count, 0);
     }
+
+
+    [TestMethod]
+    public void GetSupportingFilesDictionary_ValidData_ReturnsDictionary()
+    {
+        var supportingFile = new List<SupportingFile>
+        {
+            new SupportingFile
+            {
+                CourseId = Guid.NewGuid(),
+                FileName = "file1.pdf",
+                ContentBase64 = "JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PAovVHlwZSAvUGFn...",
+            }
+        };
+
+        var mapping = SupportingFile.GetSupportingFilesDictionary(supportingFile);
+        Assert.IsTrue(mapping.ContainsKey("file1.pdf"));
+        Assert.IsTrue(mapping.ContainsValue("JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PAovVHlwZSAvUGFn..."));
+    }
+
+    [TestMethod]
+    public void GetSupportingFilesDictionary_EmptyData_ReturnsEmptyDictionary()
+    {
+        var mapping = SupportingFile.GetSupportingFilesDictionary(new List<SupportingFile>());
+
+        Assert.AreEqual(0, mapping.Count);
+    }
 }
