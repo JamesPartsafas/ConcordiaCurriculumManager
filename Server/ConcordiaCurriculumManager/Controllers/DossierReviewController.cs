@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -25,8 +26,11 @@ public class DossierReviewController : Controller
     [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status200OK, "Dossier successfully submitted for review")]
-    public async Task<ActionResult> SubmitDossierForReview([FromBody, Required] DossierSubmissionDTO dto)
+    public async Task<ActionResult> SubmitDossierForReview([FromBody, Required] DossierSubmissionDTO dto, [FromRoute, Required] Guid dossierId)
     {
+        if (dossierId != dto.DossierId)
+            throw new InvalidInputException("The provided dossierId in the route must match the one in the DTO");
+
         await _dossierReviewService.SubmitDossierForReview(dto);
 
         return Ok();
