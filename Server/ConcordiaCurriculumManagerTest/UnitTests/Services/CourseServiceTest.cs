@@ -488,4 +488,43 @@ public class CourseServiceTest
 
         dossierRepository.Verify(r => r.DeleteCourseModificationRequest(courseModificationRequest));
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(InvalidInputException))]
+    public async Task GetCourseDataWithSupportingFilesOrThrowOnDeleted_CourseDoesNotExist_ThrowsInvalidInputException()
+    {
+        var subject = "SOEN";
+        var catalog = "490";
+        courseRepository.Setup(cr => cr.GetCourseWithSupportingFilesBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
+
+        await courseService.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task GetCourseDataWithSupportingFilesOrThrowOnDeleted_CourseIsDeleted_ThrowsBadRequestException()
+    {
+        var subject = "SOEN";
+        var catalog = "490";
+        var course = TestData.GetSampleCourse();
+        course.CourseState = CourseStateEnum.Deleted;
+        courseRepository.Setup(cr => cr.GetCourseWithSupportingFilesBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+        courseRepository.Setup(cr => cr.GetCourseByCourseIdAndLatestVersion(It.IsAny<int>())).ReturnsAsync(course);
+
+        await courseService.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog);
+    }
+
+    [TestMethod]
+    public async Task GetCourseDataWithSupportingFilesOrThrowOnDeleted_ValidCall_Succeeds()
+    {
+        var subject = "SOEN";
+        var catalog = "490";
+        var course = TestData.GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseWithSupportingFilesBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+        courseRepository.Setup(cr => cr.GetCourseByCourseIdAndLatestVersion(It.IsAny<int>())).ReturnsAsync(course);
+
+        var courseData = await courseService.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog);
+
+        Assert.IsNotNull(courseData);
+    }
 }
