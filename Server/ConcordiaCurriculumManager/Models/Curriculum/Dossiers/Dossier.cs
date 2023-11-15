@@ -1,4 +1,5 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+﻿using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
@@ -22,6 +23,30 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
         public List<CourseDeletionRequest> CourseDeletionRequests { get; set; } = new List<CourseDeletionRequest>();
 
+        public IList<ApprovalStage> ApprovalStages { get; set; } = new List<ApprovalStage>();
+
+        public IList<ApprovalStage> PrepareForPublishing(DossierSubmissionDTO dto)
+        {
+            List<ApprovalStage> stages = dto.GroupIds.Select((Guid groupId, int index) =>
+            {
+                return new ApprovalStage
+                {
+                    Id = Guid.NewGuid(),
+                    GroupId = groupId,
+                    DossierId = this.Id,
+                    StageIndex = index,
+                    IsCurrentStage = false,
+                    IsFinalStage = false
+                };
+            }).ToList();
+
+            stages.First().IsCurrentStage = true;
+            stages.Last().IsFinalStage = true;
+
+            this.Published = true;
+
+            return stages;
+        }
     }
 }
 

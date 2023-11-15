@@ -15,6 +15,7 @@ public interface IGroupService
     Task<bool> AddGroupMaster(Guid userId, Guid groupId);
     Task<bool> RemoveGroupMaster(Guid userId, Guid groupId);
     Task<bool> IsGroupMaster(Guid userId, Guid groupId);
+    Task<bool> IsGroupIdListValid(IList<Guid> groupIds);
 }
 
 public class GroupService : IGroupService
@@ -65,5 +66,12 @@ public class GroupService : IGroupService
     {
         var group = await _groupRepository.GetGroupById(groupId);
         return group is not null && group.GroupMasters.Any(gm => gm.Id == userId);
+    }
+
+    public async Task<bool> IsGroupIdListValid(IList<Guid> groupIds)
+    {
+        var validGroupIds = await _groupRepository.GetValidGroupIds();
+
+        return groupIds.All(groupId => validGroupIds.Contains(groupId));
     }
 }

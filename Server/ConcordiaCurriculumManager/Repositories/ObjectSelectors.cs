@@ -1,5 +1,5 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
 using System.Data;
 using System.Linq.Expressions;
@@ -110,6 +110,15 @@ public static class ObjectSelectors
             ResourceImplication = request.ResourceImplication,
             Rationale = request.Rationale,
             Comment = request.Comment
+        }),
+        ApprovalStages = (List<ApprovalStage>)dossier.ApprovalStages.Select(stage => new ApprovalStage
+        {
+            Id = stage.Id,
+            GroupId = stage.GroupId,
+            DossierId = stage.DossierId,
+            StageIndex = stage.StageIndex,
+            IsCurrentStage = stage.IsCurrentStage,
+            IsFinalStage = stage.IsFinalStage
         })
     };
 }

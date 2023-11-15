@@ -80,6 +80,29 @@ public class DossierServiceTest
     }
 
     [TestMethod]
+    public async Task RetrieveDossierDetailsOrThrow_ValidId_ReturnsDossier()
+    {
+        var dossier = GetSampleDossier();
+        dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
+
+        var dossierDetails = await dossierService.GetDossierDetailsByIdOrThrow(Guid.NewGuid());
+
+        Assert.IsNotNull(dossierDetails);
+        Assert.AreEqual(dossier.Id, dossierDetails.Id);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task RetrieveDossierDetailsOrThrow_InvalidId_Throws()
+    {
+        dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync((Dossier)null!);
+
+        var result = await dossierService.GetDossierDetailsByIdOrThrow(Guid.NewGuid());
+
+        Assert.IsNull(result);
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public async Task EditDossier_InvalidInput_ThrowsArgumentException()
     {
