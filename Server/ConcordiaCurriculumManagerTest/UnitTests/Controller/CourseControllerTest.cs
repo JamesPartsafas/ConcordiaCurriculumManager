@@ -159,7 +159,7 @@ public class CourseControllerTest
         var subject = "SOEN";
         var catalog = "490";
         var course = TestData.GetSampleCourse();
-       _courseService.Setup(cr => cr.GetCourseDataOrThrowOnDeleted(subject, catalog)).ReturnsAsync(course);
+       _courseService.Setup(cr => cr.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog)).ReturnsAsync(course);
 
         var actionResult = await _courseController.GetCourseData(subject, catalog);
         var objectResult = (ObjectResult)actionResult;
@@ -172,7 +172,7 @@ public class CourseControllerTest
     [ExpectedException(typeof(BadRequestException))]
     public async Task GetCourseData_ServerError_ThrowsTheSameExceptionAsCourseService()
     {
-        _courseService.Setup(cr => cr.GetCourseDataOrThrowOnDeleted(It.IsAny<string>(), It.IsAny<string>())).Throws(new BadRequestException());
+        _courseService.Setup(cr => cr.GetCourseDataWithSupportingFilesOrThrowOnDeleted(It.IsAny<string>(), It.IsAny<string>())).Throws(new BadRequestException());
 
         var actionResult = await _courseController.GetCourseData(It.IsAny<string>(), It.IsAny<string>());
         var objectResult = (ObjectResult)actionResult;
