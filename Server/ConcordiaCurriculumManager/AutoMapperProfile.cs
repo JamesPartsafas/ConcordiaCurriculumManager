@@ -26,7 +26,10 @@ public class AutoMapper : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
         CreateMap<Group, GroupDTO>();
         CreateMap<SupportingFile, SupportingFileDTO>();
-        CreateMap<Course, CourseDataDTO>().ReverseMap();
+        CreateMap<Course, CourseDataDTO>()
+            .ForMember(dest => dest.SupportingFiles, opt => opt.MapFrom<SupportingFilesResolver>())
+            .ForMember(dest => dest.ComponentCodes, opt => opt.MapFrom<ComponentCodeResolver>())
+            .ReverseMap();
     }
 
 }

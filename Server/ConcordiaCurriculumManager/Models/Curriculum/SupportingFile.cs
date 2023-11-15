@@ -21,4 +21,19 @@ public class SupportingFile : BaseModel
 
         return mapping;
     }
+
+    public static Dictionary<string, string> GetSupportingFilesDictionary(ICollection<SupportingFile> supportingFiles)
+    {
+        var dictionary = new Dictionary<string, string>();
+
+        if (supportingFiles != null)
+        {
+            foreach (var file in supportingFiles)
+            {
+                dictionary[file.FileName] = file.ContentBase64;
+            }
+        }
+
+        return dictionary;
+    }
 }

@@ -13,6 +13,7 @@ public interface ICourseRepository
     public Task<bool> SaveCourse(Course course);
     public Task<Course?> GetCourseByCourseId(int courseId);
     public Task<Course?> GetCourseByCourseIdAndLatestVersion(int courseId);
+    public Task<Course?> GetCourseWithSupportingFilesBySubjectAndCatalog(string subject, string catalog);
 }
 
 public class CourseRepository : ICourseRepository
@@ -53,6 +54,16 @@ public class CourseRepository : ICourseRepository
 
     public async Task<Course?> GetCourseByCourseId(int courseId) => await _dbContext.Courses
         .Where(course => course.CourseID == courseId && course.CourseState == CourseStateEnum.Accepted)
+        .OrderByDescending(course => course.Version)
+        .FirstOrDefaultAsync();
+
+    public Task<Course?> GetCourseWithSupportingFilesBySubjectAndCatalog(string subject, string catalog) => _dbContext.Courses
+        .Where(course =>
+            course.Subject == subject
+            && course.Catalog == catalog
+            && (course.CourseState == CourseStateEnum.Accepted || course.CourseState == CourseStateEnum.Deleted))
+        .Include(course => course.SupportingFiles)
+        .Include(course => course.CourseCourseComponents)
         .OrderByDescending(course => course.Version)
         .FirstOrDefaultAsync();
 }

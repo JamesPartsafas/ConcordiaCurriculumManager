@@ -2,6 +2,7 @@
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
+using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
@@ -90,7 +91,7 @@ public class CourseController : Controller
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     public async Task<ActionResult> GetCourseData([FromRoute, Required] string subject, string catalog)
     {
-        var courseData = await _courseService.GetCourseDataOrThrowOnDeleted(subject, catalog);
+        var courseData = await _courseService.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog);
         var courseDataDTOs = _mapper.Map<CourseDataDTO>(courseData);
         _logger.LogInformation(string.Join(",", courseDataDTOs));
         return Ok(courseDataDTOs);
