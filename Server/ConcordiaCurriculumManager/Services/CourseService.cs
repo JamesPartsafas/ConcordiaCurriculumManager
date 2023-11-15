@@ -21,6 +21,7 @@ public interface ICourseService
     public Task<CourseModificationRequest?> EditCourseModificationRequest(EditCourseModificationRequestDTO edit);
     public Task DeleteCourseCreationRequest(Guid courseRequestId);
     public Task DeleteCourseModificationRequest(Guid courseRequestId);
+    public Task<Course> GetCourseDataWithSupportingFilesOrThrowOnDeleted(string subject, string catalog);
 }
 
 public class CourseService : ICourseService
@@ -69,6 +70,19 @@ public class CourseService : ICourseService
     public async Task<Course> GetCourseDataOrThrowOnDeleted(string subject, string catalog)
     {
         var course = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog) 
+            ?? throw new InvalidInputException($"The course {subject}-{catalog} does not exist.");
+
+        if (course.CourseState == CourseStateEnum.Deleted)
+        {
+            throw new BadRequestException($"The course {subject}-{catalog} is deleted.");
+        }
+
+        return course;
+    }
+
+    public async Task<Course> GetCourseDataWithSupportingFilesOrThrowOnDeleted(string subject, string catalog)
+    {
+        var course = await _courseRepository.GetCourseWithSupportingFilesBySubjectAndCatalog(subject, catalog)
             ?? throw new InvalidInputException($"The course {subject}-{catalog} does not exist.");
 
         if (course.CourseState == CourseStateEnum.Deleted)
