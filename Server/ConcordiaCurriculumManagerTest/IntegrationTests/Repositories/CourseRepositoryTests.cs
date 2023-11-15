@@ -259,4 +259,45 @@ public class CourseRepositoryTests
         Assert.AreEqual(course1.CourseID, result.CourseID);
         Assert.AreEqual(course1.Version, result.Version);
     }
+
+    [TestMethod]
+    public async Task GetCourseWithSupportingFilesBySubjectAndCatalog_ValidSubjectAndCatalog_ReturnsCourseWithSupportingFiles()
+    {
+        var id = Guid.NewGuid();
+        var course = new Course
+        {
+            Id = Guid.NewGuid(),
+            CourseID = 1000,
+            Subject = "SOEN",
+            Catalog = "490",
+            Title = "Capstone",
+            Description = "Curriculum manager building simulator",
+            CreditValue = "6",
+            PreReqs = "SOEN 390",
+            CourseNotes = "Lots of fun",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "",
+            CourseState = CourseStateEnum.Accepted,
+            Version = 1,
+            Published = true,
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                id
+            ),
+            SupportingFiles = SupportingFile.GetSupportingFileMapping(new Dictionary<string, string>
+                { { "test.pdf", "test"} },
+                id
+            ),
+        };
+
+        dbContext.Courses.Add(course);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseRepository.GetCourseWithSupportingFilesBySubjectAndCatalog("SOEN", "490");
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(result.CourseID, course.CourseID);
+        Assert.IsNotNull(result.CourseCourseComponents);
+        Assert.IsNotNull(result.SupportingFiles);
+    }
 }
