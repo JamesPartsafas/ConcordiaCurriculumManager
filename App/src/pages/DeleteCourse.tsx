@@ -108,6 +108,15 @@ export default function DeleteCourse() {
                     <form>
                         <Flex>
                             <Stack w="60%" p={8} m="auto">
+                                <Button
+                                    style="primary"
+                                    variant="outline"
+                                    width="10%"
+                                    height="40px"
+                                    onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
+                                >
+                                    Back
+                                </Button>
                                 <Stack>
                                     <Center>
                                         <Heading as="h1" size="2xl" color="brandRed">
