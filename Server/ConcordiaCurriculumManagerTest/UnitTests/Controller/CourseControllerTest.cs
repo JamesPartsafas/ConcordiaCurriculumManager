@@ -10,6 +10,7 @@ using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 
@@ -119,7 +120,7 @@ public class CourseControllerTest
         var course = TestData.GetSampleCourse();
         var courseDeletionInitiationDTO = TestData.GetSampleCourseCreationDeletionDTO(course, dossier);
         var courseDeletionnRequestDTO = TestData.GetSampleCourseDeletionRequestDTO(course, dossier);
-        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest(course, dossier);
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
 
         _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
         _courseService.Setup(x => x.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id)).ReturnsAsync(courseDeletionRequest);
@@ -141,7 +142,7 @@ public class CourseControllerTest
         var course = TestData.GetSampleCourse();
         var courseDeletionInitiationDTO = TestData.GetSampleCourseCreationDeletionDTO(course, dossier);
         var courseDeletionnRequestDTO = TestData.GetSampleCourseDeletionRequestDTO(course, dossier);
-        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest(course, dossier);
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
 
         _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
         _courseService.Setup(x => x.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id)).Throws(new NotFoundException());
@@ -245,6 +246,41 @@ public class CourseControllerTest
 
         Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
         _courseService.Verify(service => service.EditCourseModificationRequest(editCourseModificationRequestDTO), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task EditCourseDeletionRequest_ValidCall_ReturnsData()
+    {
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseDeletionRequestDTO = TestData.GetSampleCourseDeletionRequestDTO(course, dossier);
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+        var editCourseDeletionRequestDTO = TestData.GetSampleEditCourseDeletionRequestDTO();
+
+        _courseService.Setup(x => x.EditCourseDeletionRequest(editCourseDeletionRequestDTO)).ReturnsAsync(courseDeletionRequest);
+        _mapper.Setup(x => x.Map<CourseDeletionRequestDTO>(It.IsAny<CourseDeletionRequest>())).Returns(courseDeletionRequestDTO);
+
+        var actionResult = await _courseController.EditCourseDeletionRequest(editCourseDeletionRequestDTO);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        _courseService.Verify(service => service.EditCourseDeletionRequest(editCourseDeletionRequestDTO), Times.Once);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditCourseDeletionRequest_InvalidCall_ThrowsException()
+    {
+        var editCourseDeletionRequestDTO = TestData.GetSampleEditCourseDeletionRequestDTO();
+
+        _courseService.Setup(x => x.EditCourseDeletionRequest(editCourseDeletionRequestDTO)).Throws(new NotFoundException());
+
+        var actionResult = await _courseController.EditCourseDeletionRequest(editCourseDeletionRequestDTO);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+        _courseService.Verify(service => service.EditCourseDeletionRequest(editCourseDeletionRequestDTO), Times.Once);
     }
 
     [TestMethod]

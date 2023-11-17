@@ -1,3 +1,4 @@
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
@@ -416,7 +417,19 @@ public class CourseServiceTest
         dossierService.Setup(service => service.GetCourseModificationRequest(It.IsAny<Guid>())).ReturnsAsync(courseModificationRequest);
 
         await courseService.EditCourseModificationRequest(editCourseModificationRequestDTO);
+    }
 
+    [TestMethod]
+    public async Task EditCourseDeletionRequest_ValidInput_Succeeds()
+    {
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+        var editCourseDeletionRequestDTO = TestData.GetSampleEditCourseDeletionRequestDTO();
+        dossierService.Setup(service => service.GetCourseDeletionRequest(It.IsAny<Guid>())).ReturnsAsync(courseDeletionRequest);
+        dossierRepository.Setup(repository => repository.UpdateCourseDeletionRequest(courseDeletionRequest)).ReturnsAsync(true);
+
+        var editCourseCreationRequest = await courseService.EditCourseDeletionRequest(editCourseDeletionRequestDTO);
+
+        Assert.IsNotNull(editCourseCreationRequest);
     }
 
     [TestMethod]

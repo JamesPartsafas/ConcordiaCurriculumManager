@@ -339,5 +339,24 @@ public class DossierServiceTest
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
 
+    [TestMethod]
+    public async Task GetCourseDeletionRequest_ValidInput_ReturnsCourseCreationRequest()
+    {
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+        dossierRepository.Setup(d => d.GetCourseDeletionRequest(It.IsAny<Guid>())).ReturnsAsync(courseDeletionRequest);
+
+        await dossierService.GetCourseDeletionRequest(courseDeletionRequest.Id);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task GetCourseDeletionRequest_InvalidInput_Throws()
+    {
+        dossierRepository.Setup(d => d.GetCourseDeletionRequest(It.IsAny<Guid>())).ReturnsAsync((CourseDeletionRequest)null!);
+
+        await dossierService.GetCourseDeletionRequest(TestData.GetSampleCourseDeletionRequest().Id);
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
 }
 
