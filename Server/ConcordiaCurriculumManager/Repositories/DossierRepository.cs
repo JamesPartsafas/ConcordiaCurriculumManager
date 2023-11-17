@@ -21,6 +21,8 @@ public interface IDossierRepository
     public Task<bool> UpdateCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task<CourseModificationRequest?> GetCourseModificationRequest(Guid courseRequestId);
     public Task<bool> UpdateCourseModificationRequest(CourseModificationRequest courseModificatioRequest);
+    public Task<CourseDeletionRequest?> GetCourseDeletionRequest(Guid courseRequestId);
+    public Task<bool> UpdateCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
     public Task<bool> DeleteCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task<bool> DeleteCourseModificationRequest(CourseModificationRequest courseModificationRequest);
 }
@@ -107,6 +109,19 @@ public class DossierRepository : IDossierRepository
     public async Task<bool> UpdateCourseModificationRequest(CourseModificationRequest courseModificatioRequest)
     {
         _dbContext.CourseModificationRequests.Update(courseModificatioRequest);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<CourseDeletionRequest?> GetCourseDeletionRequest(Guid courseRequestId)
+    {
+        var courseDeletionRequest = await _dbContext.CourseDeletionRequests.Where(c => c.Id == courseRequestId).FirstOrDefaultAsync();
+        return courseDeletionRequest;
+    }
+
+    public async Task<bool> UpdateCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest)
+    {
+        _dbContext.CourseDeletionRequests.Update(courseDeletionRequest);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }

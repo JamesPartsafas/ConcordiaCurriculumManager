@@ -19,6 +19,7 @@ public interface ICourseService
     public Task<Course> GetCourseDataOrThrowOnDeleted(string subject, string catalog);
     public Task<CourseCreationRequest?> EditCourseCreationRequest(EditCourseCreationRequestDTO edit);
     public Task<CourseModificationRequest?> EditCourseModificationRequest(EditCourseModificationRequestDTO edit);
+    public Task<CourseDeletionRequest?> EditCourseDeletionRequest(EditCourseDeletionRequestDTO edit);
     public Task DeleteCourseCreationRequest(Guid courseRequestId);
     public Task DeleteCourseModificationRequest(Guid courseRequestId);
     public Task<Course> GetCourseDataWithSupportingFilesOrThrowOnDeleted(string subject, string catalog);
@@ -203,6 +204,17 @@ public class CourseService : ICourseService
         await _dossierRepository.UpdateCourseModificationRequest(courseModificationRequest);
 
         return courseModificationRequest;
+    }
+
+    public async Task<CourseDeletionRequest?> EditCourseDeletionRequest(EditCourseDeletionRequestDTO edit)
+    {
+        var courseDeletionRequest = await _dossierService.GetCourseDeletionRequest(edit.Id);
+
+        courseDeletionRequest.EditRequestData(edit);
+
+        await _dossierRepository.UpdateCourseDeletionRequest(courseDeletionRequest);
+
+        return courseDeletionRequest;
     }
 
     public async Task DeleteCourseCreationRequest(Guid courseRequestId)

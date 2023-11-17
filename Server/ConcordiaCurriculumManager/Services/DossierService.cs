@@ -19,6 +19,7 @@ public interface IDossierService
     public Task SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
     public Task<CourseCreationRequest> GetCourseCreationRequest(Guid courseRequestId);
     public Task<CourseModificationRequest> GetCourseModificationRequest(Guid courseRequestId);
+    public Task<CourseDeletionRequest> GetCourseDeletionRequest(Guid courseRequestId);
 }
 
 public class DossierService : IDossierService
@@ -152,5 +153,11 @@ public class DossierService : IDossierService
     {
         var courseModificationRequest = await _dossierRepository.GetCourseModificationRequest(courseRequestId) ?? throw new NotFoundException($"Error retrieving the course modification request with id ${typeof(CourseModificationRequest)} ${courseRequestId}");
         return courseModificationRequest;
+    }
+
+    public async Task<CourseDeletionRequest> GetCourseDeletionRequest(Guid courseRequestId)
+    {
+        var courseDeletionRequest = await _dossierRepository.GetCourseDeletionRequest(courseRequestId) ?? throw new NotFoundException($"Error retrieving the course deletion request with id ${typeof(CourseDeletionRequest)} ${courseRequestId}");
+        return courseDeletionRequest;
     }
 }

@@ -139,6 +139,19 @@ public class CourseController : Controller
         return Ok(editedCourseModificationRequestDTO);
     }
 
+    [HttpPut(nameof(EditCourseDeletionRequest) + "/{dossierId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course deletion request edited successfully", typeof(EditCourseDeletionRequestDTO))]
+    public async Task<ActionResult> EditCourseDeletionRequest([FromBody, Required] EditCourseDeletionRequestDTO edit)
+    {
+        var editedCourseDeletionRequest = await _courseService.EditCourseDeletionRequest(edit);
+        var editedCourseDeletionRequestDTO = _mapper.Map<CourseDeletionRequestDTO>(editedCourseDeletionRequest);
+
+        return Ok(editedCourseDeletionRequestDTO);
+    }
+
     [HttpDelete(nameof(DeleteCourseCreationRequest) + "/{dossierId}" + "/{courseRequestId}")]
     [Authorize(Policies.IsOwnerOfDossier)]
     [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
