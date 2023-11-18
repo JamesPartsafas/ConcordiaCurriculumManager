@@ -173,4 +173,15 @@ public class CourseController : Controller
         await _courseService.DeleteCourseModificationRequest(courseRequestId);
         return NoContent();
     }
+
+    [HttpDelete(nameof(DeleteCourseDeletionRequest) + "/{dossierId}" + "/{courseRequestId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Course deletion request deleted successfully")]
+    public async Task<ActionResult> DeleteCourseDeletionRequest([FromRoute, Required] Guid courseRequestId)
+    {
+        await _courseService.DeleteCourseDeletionRequest(courseRequestId);
+        return NoContent();
+    }
 }

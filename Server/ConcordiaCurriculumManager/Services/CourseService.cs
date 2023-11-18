@@ -22,6 +22,7 @@ public interface ICourseService
     public Task<CourseDeletionRequest?> EditCourseDeletionRequest(EditCourseDeletionRequestDTO edit);
     public Task DeleteCourseCreationRequest(Guid courseRequestId);
     public Task DeleteCourseModificationRequest(Guid courseRequestId);
+    public Task DeleteCourseDeletionRequest(Guid courseRequestId);
     public Task<Course> GetCourseDataWithSupportingFilesOrThrowOnDeleted(string subject, string catalog);
 }
 
@@ -239,6 +240,18 @@ public class CourseService : ICourseService
         }
 
         _logger.LogInformation($"Deleted ${typeof(CourseModificationRequest)} ${courseModificationRequest.Id}");
+    }
+
+    public async Task DeleteCourseDeletionRequest(Guid courseRequestId)
+    {
+        var courseDeletionRequest = await _dossierService.GetCourseDeletionRequest(courseRequestId);
+        bool result = await _dossierRepository.DeleteCourseDeletionRequest(courseDeletionRequest);
+        if (!result)
+        {
+            throw new Exception($"Error deleting ${typeof(CourseDeletionRequest)} ${courseDeletionRequest.Id}");
+        }
+
+        _logger.LogInformation($"Deleted ${typeof(CourseDeletionRequest)} ${courseDeletionRequest.Id}");
     }
 
     private async Task SaveCourseForUserOrThrow(Course course, Guid userId)
