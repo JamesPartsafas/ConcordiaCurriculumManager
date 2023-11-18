@@ -213,18 +213,30 @@ public static class TestData
         };
     }
 
-    public static CourseDeletionRequest GetSampleCourseDeletionRequest(Course course, Dossier dossier)
+    public static CourseDeletionRequest GetSampleCourseDeletionRequest()
     {
         return new CourseDeletionRequest
         {
-            DossierId = dossier.Id,
-            CourseId = course.Id,
+            DossierId = Guid.NewGuid(),
+            CourseId = Guid.NewGuid(),
+            Course = GetSampleCourse(),
             Rationale = "It's necessary",
             ResourceImplication = "New prof needed",
             Comment = "Fun",
         };
     }
 
+    public static CourseDeletionRequest GetSampleCourseDeletionRequest(Dossier dossier, Course course)
+    {
+        return new CourseDeletionRequest
+        {
+            DossierId = dossier.Id,
+            CourseId = course.Id,
+            Rationale = "Why not?",
+            ResourceImplication = "New prof needed",
+            Comment = "Easy change to make"
+        };
+    }
     public static EditCourseCreationRequestDTO GetSampleEditCourseCreationRequestDTO()
     {
         return new EditCourseCreationRequestDTO
@@ -269,6 +281,18 @@ public static class TestData
         };
     }
 
+    public static EditCourseDeletionRequestDTO GetSampleEditCourseDeletionRequestDTO()
+    {
+        return new EditCourseDeletionRequestDTO
+        {
+            Id = Guid.NewGuid(),
+            DossierId = Guid.NewGuid(),
+            Rationale = "It's necessary",
+            ResourceImplication = "New prof needed",
+            Comment = "No comment",
+        };
+    }
+
     // DOSSIER DATA
     public static Dossier GetSampleDossier()
     {
@@ -290,6 +314,15 @@ public static class TestData
             Title = "Dossier 1",
             Description = "Text description of a dossier.",
             Published = false,
+        };
+    }
+
+    public static CreateDossierDTO GetSampleCreateDossierDTO()
+    {
+        return new CreateDossierDTO
+        {
+            Title = "test title",
+            Description = "test description"
         };
     }
 

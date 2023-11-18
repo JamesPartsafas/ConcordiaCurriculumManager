@@ -245,6 +245,39 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
         }
 
         [TestMethod]
+        public async Task GetCourseDeletionRequest_ReturnsCourseDeletionRequest()
+        {
+            var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+
+            dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
+            await dbContext.SaveChangesAsync();
+
+            var result = await dossierRepository.GetCourseDeletionRequest(courseDeletionRequest.Id);
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task UpdateCourseDeletionRequest_ReturnsTrue()
+        {
+            var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+
+            dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
+            await dbContext.SaveChangesAsync();
+
+            var newRationale = "It's necessary modified";
+            var newResourceImplication = "New prof needed modified";
+
+            courseDeletionRequest.Rationale = newRationale;
+            courseDeletionRequest.ResourceImplication = newResourceImplication;
+
+            var result = await dossierRepository.UpdateCourseDeletionRequest(courseDeletionRequest);
+
+            Assert.AreEqual(courseDeletionRequest.Rationale, newRationale);
+            Assert.AreEqual(courseDeletionRequest.ResourceImplication, newResourceImplication);
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
         public async Task DeleteCourseCreationRequest_ReturnsTrue()
         {
             var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
@@ -270,6 +303,21 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
             await dbContext.SaveChangesAsync();
 
             var result = await dossierRepository.DeleteCourseModificationRequest(courseModificationRequest);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public async Task DeleteCourseDeletionRequest_ReturnsTrue()
+        {
+            var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+            var course = TestData.GetSampleCourse();
+
+            dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
+            dbContext.Courses.Add(course);
+            await dbContext.SaveChangesAsync();
+
+            var result = await dossierRepository.DeleteCourseDeletionRequest(courseDeletionRequest);
 
             Assert.IsTrue(result);
         }
