@@ -328,4 +328,27 @@ public class CourseControllerTest
 
         await _courseController.DeleteCourseModificationRequest(It.IsAny<Guid>());
     }
+
+    [TestMethod]
+    public async Task DeleteCourseDeletionRequest_ValidCall_Returns204()
+    {
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest(dossier, course);
+
+        var actionResult = await _courseController.DeleteCourseDeletionRequest(courseDeletionRequest.Id);
+        var objectResult = (NoContentResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.NoContent, objectResult.StatusCode);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task DeleteCourseDeletionRequest_InvalidCall_ThrowsException()
+    {
+        _courseService.Setup(service => service.DeleteCourseDeletionRequest(It.IsAny<Guid>())).Throws(new Exception());
+
+        await _courseController.DeleteCourseDeletionRequest(It.IsAny<Guid>());
+    }
 }

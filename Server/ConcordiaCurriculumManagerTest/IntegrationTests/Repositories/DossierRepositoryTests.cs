@@ -306,6 +306,21 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
 
             Assert.IsTrue(result);
         }
+
+        [TestMethod]
+        public async Task DeleteCourseDeletionRequest_ReturnsTrue()
+        {
+            var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+            var course = TestData.GetSampleCourse();
+
+            dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
+            dbContext.Courses.Add(course);
+            await dbContext.SaveChangesAsync();
+
+            var result = await dossierRepository.DeleteCourseDeletionRequest(courseDeletionRequest);
+
+            Assert.IsTrue(result);
+        }
     }
 }
 

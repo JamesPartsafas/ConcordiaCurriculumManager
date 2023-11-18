@@ -219,12 +219,24 @@ public static class TestData
         {
             DossierId = Guid.NewGuid(),
             CourseId = Guid.NewGuid(),
+            Course = GetSampleCourse(),
             Rationale = "It's necessary",
             ResourceImplication = "New prof needed",
             Comment = "Fun",
         };
     }
 
+    public static CourseDeletionRequest GetSampleCourseDeletionRequest(Dossier dossier, Course course)
+    {
+        return new CourseDeletionRequest
+        {
+            DossierId = dossier.Id,
+            CourseId = course.Id,
+            Rationale = "Why not?",
+            ResourceImplication = "New prof needed",
+            Comment = "Easy change to make"
+        };
+    }
     public static EditCourseCreationRequestDTO GetSampleEditCourseCreationRequestDTO()
     {
         return new EditCourseCreationRequestDTO

@@ -503,6 +503,41 @@ public class CourseServiceTest
     }
 
     [TestMethod]
+    [ExpectedException(typeof(NullReferenceException))]
+    public async Task DeleteCourseDeletionRequest_DoesNotExist_ThrowsNullReferenceException()
+    {
+        await courseService.DeleteCourseDeletionRequest(Guid.NewGuid());
+    }
+
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task DeleteCourseDeletionRequest_DoesNotDelete_LogsAndThrowsException()
+    {
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+
+        dossierService.Setup(service => service.GetCourseDeletionRequest(It.IsAny<Guid>())).ReturnsAsync(courseDeletionRequest);
+        dossierRepository.Setup(repository => repository.DeleteCourseDeletionRequest(courseDeletionRequest)).ReturnsAsync(false);
+
+        await courseService.DeleteCourseDeletionRequest(Guid.NewGuid());
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    public async Task DeleteCourseDeletionnRequest_ValidInput_Succeeds()
+    {
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+
+        dossierService.Setup(service => service.GetCourseDeletionRequest(It.IsAny<Guid>())).ReturnsAsync(courseDeletionRequest);
+        dossierRepository.Setup(repository => repository.DeleteCourseDeletionRequest(courseDeletionRequest)).ReturnsAsync(true);
+
+        await courseService.DeleteCourseDeletionRequest(courseDeletionRequest.Id);
+
+        dossierRepository.Verify(r => r.DeleteCourseDeletionRequest(courseDeletionRequest));
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(InvalidInputException))]
     public async Task GetCourseDataWithSupportingFilesOrThrowOnDeleted_CourseDoesNotExist_ThrowsInvalidInputException()
     {
