@@ -58,6 +58,7 @@ export default function DisplayManageableGroups() {
                                 <Th whiteSpace="nowrap">Applications to Approve</Th>
                                 <Th whiteSpace="nowrap">Number of Members</Th>
                                 <Th whiteSpace="nowrap">Manage Members</Th>
+                                {isAdmin(user) && <Th whiteSpace="nowrap">Manage Masters</Th>}
                             </Tr>
                         </Thead>
                         <Tbody>
@@ -92,6 +93,28 @@ export default function DisplayManageableGroups() {
                                             </Link>
                                         )}
                                     </Td>
+                                    {isAdmin(user) && (
+                                        <Td whiteSpace="nowrap" padding="16px" textAlign={"center"}>
+                                            <Link
+                                                to={BaseRoutes.AddGroupMaster}
+                                                state={{ gid: group.id, name: group.name }}
+                                            >
+                                                <Button style="primary" variant="outline" width="50%" height="40px">
+                                                    Add
+                                                </Button>
+                                            </Link>
+                                            {group.groupMasters.length != 0 && (
+                                                <Link
+                                                    to={BaseRoutes.RemoveGroupMaster}
+                                                    state={{ gid: group.id, name: group.name }}
+                                                >
+                                                    <Button style="primary" variant="outline" width="50%" height="40px">
+                                                        Remove
+                                                    </Button>
+                                                </Link>
+                                            )}
+                                        </Td>
+                                    )}
                                 </Tr>
                             ))}
                         </Tbody>
@@ -103,6 +126,11 @@ export default function DisplayManageableGroups() {
                             </Button>
                         </Link>
                     )}
+                    <Link to={BaseRoutes.Home}>
+                        <Button style="primary" variant={"solid"} width="100%" height="40px">
+                            Back to Home Page
+                        </Button>
+                    </Link>
                 </div>
             </Container>
         </div>
