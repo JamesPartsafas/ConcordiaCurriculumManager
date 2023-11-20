@@ -15,23 +15,37 @@ import {
     Stack,
     Text,
     Textarea,
+    useDisclosure,
     useToast,
 } from "@chakra-ui/react";
-import { AllCourseSettings, CourseCreationRequest, CourseModificationRequest } from "../../models/course";
+import {
+    AllCourseSettings,
+    CourseCreationRequest,
+    CourseDeletionRequest,
+    CourseModificationRequest,
+} from "../../models/course";
 import {
     deleteCourseCreationRequest,
+    deleteCourseDeletionRequest,
     deleteCourseModificationRequest,
     getAllCourseSettings,
 } from "../../services/course";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { showToast } from "../../utils/toastUtils";
+import DeleteAlert from "../../shared/DeleteAlert";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
     const toast = useToast(); // Use the useToast hook
     const [dossierDetails, setDossierDetails] = useState<DossierDetailsDTO | null>(null);
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [selectedCourseCreationRequest, setSelectedCourseCreationRequest] = useState<CourseCreationRequest>(null);
+    const [selectedCourseModificationRequest, setSelectedCourseModificationRequest] =
+        useState<CourseModificationRequest>(null);
+    const [selectedCourseDeletionRequest, setSelectedCourseDeletionRequest] = useState<CourseDeletionRequest>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -53,7 +67,55 @@ export default function DossierDetails() {
         });
     }
 
+    function deleteRequestAlert() {
+        if (selectedCourseCreationRequest) {
+            return (
+                <DeleteAlert
+                    isOpen={isOpen}
+                    onClose={handleOnClose}
+                    loading={loading}
+                    headerTitle="Delete Course Creation Request"
+                    title={selectedCourseCreationRequest?.newCourse.title}
+                    item={selectedCourseCreationRequest}
+                    onDelete={deleteCreationRequest}
+                />
+            );
+        } else if (selectedCourseModificationRequest) {
+            return (
+                <DeleteAlert
+                    isOpen={isOpen}
+                    onClose={handleOnClose}
+                    loading={loading}
+                    headerTitle="Delete Course Modification Request"
+                    title={selectedCourseModificationRequest?.course.title}
+                    item={selectedCourseModificationRequest}
+                    onDelete={deleteModificationRequest}
+                />
+            );
+        } else if (selectedCourseDeletionRequest) {
+            return (
+                <DeleteAlert
+                    isOpen={isOpen}
+                    onClose={handleOnClose}
+                    loading={loading}
+                    headerTitle="Delete Course Deletion Request"
+                    title={selectedCourseDeletionRequest?.course.title}
+                    item={selectedCourseDeletionRequest}
+                    onDelete={deleteDeletionRequest}
+                />
+            );
+        }
+    }
+
+    function handleOnClose() {
+        setSelectedCourseCreationRequest(null);
+        setSelectedCourseModificationRequest(null);
+        setSelectedCourseDeletionRequest(null);
+        onClose();
+    }
+
     function deleteCreationRequest(courseCreationRequest: CourseCreationRequest) {
+        setLoading(true);
         deleteCourseCreationRequest(dossierId, courseCreationRequest.id)
             .then(
                 () => {
@@ -66,17 +128,24 @@ export default function DossierDetails() {
                         // Return a new object for the state with the updated array
                         return { ...prevDetails, courseCreationRequests: updatedRequests };
                     });
+                    setLoading(false);
+                    setSelectedCourseCreationRequest(null);
                 },
                 () => {
                     showToast(toast, "Error!", "Course creation request could not be deleted.", "error");
+                    setLoading(false);
+                    setSelectedCourseCreationRequest(null);
                 }
             )
             .catch(() => {
                 showToast(toast, "Error!", "Course creation request could not be deleted.", "error");
+                setLoading(false);
+                setSelectedCourseCreationRequest(null);
             });
     }
 
     function deleteModificationRequest(courseModificationRequest: CourseModificationRequest) {
+        setLoading(true);
         deleteCourseModificationRequest(dossierId, courseModificationRequest.id)
             .then(
                 () => {
@@ -89,18 +158,55 @@ export default function DossierDetails() {
                         // Return a new object for the state with the updated array
                         return { ...prevDetails, courseModificationRequests: updatedRequests };
                     });
+                    setLoading(false);
+                    setSelectedCourseModificationRequest(null);
                 },
                 () => {
                     showToast(toast, "Error!", "Course modification request could not be deleted.", "error");
+                    setLoading(false);
+                    setSelectedCourseModificationRequest(null);
                 }
             )
             .catch(() => {
                 showToast(toast, "Error!", "Course modification request could not be deleted.", "error");
+                setLoading(false);
+                setSelectedCourseModificationRequest(null);
+            });
+    }
+
+    function deleteDeletionRequest(courseDeletionRequest: CourseDeletionRequest) {
+        setLoading(true);
+        deleteCourseDeletionRequest(dossierId, courseDeletionRequest.id)
+            .then(
+                () => {
+                    showToast(toast, "Success!", "Course deletion request deleted.", "success");
+                    setDossierDetails((prevDetails) => {
+                        // Create a new array without the deleted course creation request
+                        const updatedRequests = prevDetails.courseDeletionRequests.filter(
+                            (c) => c.id !== courseDeletionRequest.id
+                        );
+                        // Return a new object for the state with the updated array
+                        return { ...prevDetails, courseDeletionRequests: updatedRequests };
+                    });
+                    setLoading(false);
+                    setSelectedCourseDeletionRequest(null);
+                },
+                () => {
+                    showToast(toast, "Error!", "Course deletion request could not be deleted.", "error");
+                    setLoading(false);
+                    setSelectedCourseDeletionRequest(null);
+                }
+            )
+            .catch(() => {
+                showToast(toast, "Error!", "Course deletion request could not be deleted.", "error");
+                setLoading(false);
+                setSelectedCourseDeletionRequest(null);
             });
     }
 
     return (
         <>
+            {deleteRequestAlert()}
             <div style={{ margin: "auto", width: "fit-content" }}>
                 <Heading color={"brandRed"}>{dossierDetails?.title}</Heading>
                 <Kbd>{dossierDetails?.id}</Kbd>
@@ -173,7 +279,10 @@ export default function DossierDetails() {
                                     <Button
                                         variant="outline"
                                         style="secondary"
-                                        onClick={() => deleteCreationRequest(courseCreationRequest)}
+                                        onClick={() => {
+                                            setSelectedCourseCreationRequest(courseCreationRequest);
+                                            onOpen();
+                                        }}
                                     >
                                         Delete
                                     </Button>
@@ -260,7 +369,10 @@ export default function DossierDetails() {
                                     <Button
                                         variant="outline"
                                         style="primary"
-                                        onClick={() => deleteModificationRequest(courseModificationRequest)}
+                                        onClick={() => {
+                                            setSelectedCourseModificationRequest(courseModificationRequest);
+                                            onOpen();
+                                        }}
                                     >
                                         Delete
                                     </Button>
@@ -344,7 +456,14 @@ export default function DossierDetails() {
                                     <Button variant="solid" style="secondary">
                                         View
                                     </Button>
-                                    <Button variant="outline" style="primary">
+                                    <Button
+                                        variant="outline"
+                                        style="primary"
+                                        onClick={() => {
+                                            setSelectedCourseDeletionRequest(courseDeletionRequest);
+                                            onOpen();
+                                        }}
+                                    >
                                         Delete
                                     </Button>
                                 </ButtonGroup>
