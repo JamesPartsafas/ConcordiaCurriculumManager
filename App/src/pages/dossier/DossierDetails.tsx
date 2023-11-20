@@ -129,17 +129,19 @@ export default function DossierDetails() {
                         return { ...prevDetails, courseCreationRequests: updatedRequests };
                     });
                     setLoading(false);
+                    setSelectedCourseCreationRequest(null);
                 },
                 () => {
                     showToast(toast, "Error!", "Course creation request could not be deleted.", "error");
                     setLoading(false);
+                    setSelectedCourseCreationRequest(null);
                 }
             )
             .catch(() => {
                 showToast(toast, "Error!", "Course creation request could not be deleted.", "error");
                 setLoading(false);
+                setSelectedCourseCreationRequest(null);
             });
-        setSelectedCourseCreationRequest(null);
     }
 
     function deleteModificationRequest(courseModificationRequest: CourseModificationRequest) {
@@ -157,17 +159,19 @@ export default function DossierDetails() {
                         return { ...prevDetails, courseModificationRequests: updatedRequests };
                     });
                     setLoading(false);
+                    setSelectedCourseModificationRequest(null);
                 },
                 () => {
                     showToast(toast, "Error!", "Course modification request could not be deleted.", "error");
                     setLoading(false);
+                    setSelectedCourseModificationRequest(null);
                 }
             )
             .catch(() => {
                 showToast(toast, "Error!", "Course modification request could not be deleted.", "error");
                 setLoading(false);
+                setSelectedCourseModificationRequest(null);
             });
-        setSelectedCourseModificationRequest(null);
     }
 
     function deleteDeletionRequest(courseDeletionRequest: CourseDeletionRequest) {
@@ -185,17 +189,19 @@ export default function DossierDetails() {
                         return { ...prevDetails, courseDeletionRequests: updatedRequests };
                     });
                     setLoading(false);
+                    setSelectedCourseDeletionRequest(null);
                 },
                 () => {
                     showToast(toast, "Error!", "Course deletion request could not be deleted.", "error");
                     setLoading(false);
+                    setSelectedCourseDeletionRequest(null);
                 }
             )
             .catch(() => {
                 showToast(toast, "Error!", "Course deletion request could not be deleted.", "error");
                 setLoading(false);
+                setSelectedCourseDeletionRequest(null);
             });
-        setSelectedCourseDeletionRequest(null);
     }
 
     return (
