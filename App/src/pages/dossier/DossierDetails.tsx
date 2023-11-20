@@ -72,7 +72,7 @@ export default function DossierDetails() {
             return (
                 <DeleteAlert
                     isOpen={isOpen}
-                    onClose={onClose}
+                    onClose={handleOnClose}
                     loading={loading}
                     headerTitle="Delete Course Creation Request"
                     title={selectedCourseCreationRequest?.newCourse.title}
@@ -84,7 +84,7 @@ export default function DossierDetails() {
             return (
                 <DeleteAlert
                     isOpen={isOpen}
-                    onClose={onClose}
+                    onClose={handleOnClose}
                     loading={loading}
                     headerTitle="Delete Course Modification Request"
                     title={selectedCourseModificationRequest?.course.title}
@@ -96,7 +96,7 @@ export default function DossierDetails() {
             return (
                 <DeleteAlert
                     isOpen={isOpen}
-                    onClose={onClose}
+                    onClose={handleOnClose}
                     loading={loading}
                     headerTitle="Delete Course Deletion Request"
                     title={selectedCourseDeletionRequest?.course.title}
@@ -105,6 +105,13 @@ export default function DossierDetails() {
                 />
             );
         }
+    }
+
+    function handleOnClose(){
+        setSelectedCourseCreationRequest(null);
+        setSelectedCourseModificationRequest(null);
+        setSelectedCourseDeletionRequest(null);
+        onClose();
     }
 
     function deleteCreationRequest(courseCreationRequest: CourseCreationRequest) {
