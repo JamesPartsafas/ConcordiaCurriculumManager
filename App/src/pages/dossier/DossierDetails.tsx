@@ -107,7 +107,7 @@ export default function DossierDetails() {
         }
     }
 
-    function handleOnClose(){
+    function handleOnClose() {
         setSelectedCourseCreationRequest(null);
         setSelectedCourseModificationRequest(null);
         setSelectedCourseDeletionRequest(null);
