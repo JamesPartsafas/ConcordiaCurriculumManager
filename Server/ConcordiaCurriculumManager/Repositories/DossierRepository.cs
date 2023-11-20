@@ -107,7 +107,11 @@ public class DossierRepository : IDossierRepository
 
     public async Task<CourseModificationRequest?> GetCourseModificationRequest(Guid courseRequestId)
     {
-        var courseModificationRequest = await _dbContext.CourseModificationRequests.Where(c => c.Id == courseRequestId).Include(cr => cr.Course).FirstOrDefaultAsync();
+        var courseModificationRequest = await _dbContext.CourseModificationRequests.Where(c => c.Id == courseRequestId)
+            .Include(cr => cr.Course)
+            .Include(cr => cr.Course!.SupportingFiles)
+            .Include(cr => cr.Course!.CourseCourseComponents)
+            .FirstOrDefaultAsync();
         return courseModificationRequest;
     }
 
