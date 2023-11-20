@@ -380,4 +380,30 @@ public class CourseControllerTest
 
         Assert.AreEqual((int)HttpStatusCode.NotFound, objectResult.StatusCode);
     }
+
+    [TestMethod]
+    public async Task GetCourseModificationRequest_ValidCall_ReturnsData()
+    {
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
+
+        _dossierService.Setup(service => service.GetCourseModificationRequest(It.IsAny<Guid>())).ReturnsAsync(courseModificationRequest);
+
+        var actionResult = await _courseController.GetCourseModificationRequest(It.IsAny<Guid>());
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        _mapper.Verify(mock => mock.Map<CourseModificationRequestCourseDetailsDTO>(courseModificationRequest), Times.Once());
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task GetCourseModificationRequest_InvalidCall_ThrowsException()
+    {
+        _dossierService.Setup(service => service.GetCourseModificationRequest(It.IsAny<Guid>())).Throws(new NotFoundException());
+
+        var actionResult = await _courseController.GetCourseModificationRequest(It.IsAny<Guid>());
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.NotFound, objectResult.StatusCode);
+    }
 }
