@@ -11,6 +11,7 @@ using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
+using ConcordiaCurriculumManager.Repositories;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 
@@ -22,6 +23,7 @@ public class CourseControllerTest
     private Mock<ICourseService> _courseService = null!;
     private Mock<IUserAuthenticationService> _userAuthenticationService = null!;
     private CourseController _courseController = null!;
+    private Mock<IDossierService> _dossierService = null!;
 
     [TestInitialize]
     public void TestInitialize()
@@ -30,8 +32,9 @@ public class CourseControllerTest
         _mapper = new Mock<IMapper>();
         _courseService = new Mock<ICourseService>();
         _userAuthenticationService = new Mock<IUserAuthenticationService>();
+        _dossierService = new Mock<IDossierService>();
 
-        _courseController = new CourseController(_mapper.Object, _logger.Object, _courseService.Object, _userAuthenticationService.Object);
+        _courseController = new CourseController(_mapper.Object, _logger.Object, _courseService.Object, _userAuthenticationService.Object, _dossierService.Object);
     }
 
     [TestMethod]
@@ -350,5 +353,31 @@ public class CourseControllerTest
         _courseService.Setup(service => service.DeleteCourseDeletionRequest(It.IsAny<Guid>())).Throws(new Exception());
 
         await _courseController.DeleteCourseDeletionRequest(It.IsAny<Guid>());
+    }
+
+    [TestMethod]
+    public async Task GetCourseCreationRequest_ValidCall_ReturnsData()
+    {
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
+
+        _dossierService.Setup(service => service.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync(courseCreationRequest);
+
+        var actionResult = await _courseController.GetCourseCreationRequest(It.IsAny<Guid>());
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        _mapper.Verify(mock => mock.Map<CourseCreationRequestCourseDetailsDTO>(courseCreationRequest), Times.Once());
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task GetCourseCreationRequest_InvalidCall_ThrowsException()
+    {
+        _dossierService.Setup(service => service.GetCourseCreationRequest(It.IsAny<Guid>())).Throws(new NotFoundException());
+
+        var actionResult = await _courseController.GetCourseCreationRequest(It.IsAny<Guid>());
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.NotFound, objectResult.StatusCode);
     }
 }

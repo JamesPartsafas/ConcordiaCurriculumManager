@@ -90,7 +90,11 @@ public class DossierRepository : IDossierRepository
 
     public async Task<CourseCreationRequest?> GetCourseCreationRequest(Guid courseRequestId)
     {
-        var courseCreationRequest = await _dbContext.CourseCreationRequests.Where(c => c.Id == courseRequestId).Include(cr => cr.NewCourse).FirstOrDefaultAsync();
+        var courseCreationRequest = await _dbContext.CourseCreationRequests.Where(c => c.Id == courseRequestId)
+            .Include(cr => cr.NewCourse)
+            .Include(cr => cr.NewCourse!.SupportingFiles)
+            .Include(cr => cr.NewCourse!.CourseCourseComponents)
+            .FirstOrDefaultAsync();
         return courseCreationRequest;
     }
 

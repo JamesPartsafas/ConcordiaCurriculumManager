@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO.Courses;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManager.Models.Curriculum;
@@ -25,13 +26,15 @@ public class CourseController : Controller
     private readonly ILogger<CourseController> _logger;
     private readonly ICourseService _courseService;
     private readonly IUserAuthenticationService _userService;
+    private readonly IDossierService _dossierService;
 
-    public CourseController(IMapper mapper, ILogger<CourseController> logger, ICourseService courseService, IUserAuthenticationService userService)
+    public CourseController(IMapper mapper, ILogger<CourseController> logger, ICourseService courseService, IUserAuthenticationService userService, IDossierService dossierService)
     {
         _mapper = mapper;
         _logger = logger;
         _courseService = courseService;
         _userService = userService;
+        _dossierService = dossierService;
     }
 
     [HttpGet(nameof(GetAllCourseSettings))]
@@ -183,5 +186,17 @@ public class CourseController : Controller
     {
         await _courseService.DeleteCourseDeletionRequest(courseRequestId);
         return NoContent();
+    }
+
+    [HttpGet(nameof(GetCourseCreationRequest) + "/{courseRequestId}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course creation request retrieved")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetCourseCreationRequest([FromRoute, Required] Guid courseRequestId)
+    {
+        var courseCreationRequest = await _dossierService.GetCourseCreationRequest(courseRequestId);
+        var courseCreationRequestDTOs = _mapper.Map<CourseCreationRequestCourseDetailsDTO>(courseCreationRequest);
+        _logger.LogInformation(string.Join(",", courseCreationRequestDTOs));
+        return Ok(courseCreationRequestDTOs);
     }
 }
