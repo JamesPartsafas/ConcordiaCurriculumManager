@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import { User } from "./models/user";
 import { createContext, useState } from "react";
 import Register from "./pages/Register";
-import { decodeTokenToUser, isAdminOrGroupMaster } from "./services/auth";
+import { decodeTokenToUser, isAdmin, isAdminOrGroupMaster } from "./services/auth";
 import AddCourse from "./pages/AddCourse";
 import theme from "../theme"; // Import your custom theme
 import ComponentsList from "./pages/ComponentsList";
@@ -23,6 +23,8 @@ import AddingUserToGroup from "./pages/addUserToGroup";
 import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
 import DeleteCourse from "./pages/DeleteCourse";
 import DossierDetails from "./pages/dossier/DossierDetails";
+import AddingMasterToGroup from "./pages/AddGroupMaster";
+import RemovingMasterFromGroup from "./pages/RemoveGroupMaster";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -94,6 +96,16 @@ export function App() {
                             ) : (
                                 <Navigate to={BaseRoutes.Login} />
                             )
+                        }
+                    />
+                    <Route
+                        path={BaseRoutes.AddGroupMaster}
+                        element={isAdmin(user) == true ? <AddingMasterToGroup /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.RemoveGroupMaster}
+                        element={
+                            isAdmin(user) == true ? <RemovingMasterFromGroup /> : <Navigate to={BaseRoutes.Login} />
                         }
                     />
                     <Route

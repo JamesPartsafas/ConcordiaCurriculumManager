@@ -42,3 +42,11 @@ export function RemoveUserFromGroup(gid: string, uid: string): Promise<void> {
 export function GetAllGroups(): Promise<MultiGroupResponseDTO> {
     return axios.get("/Group/GetAllGroups");
 }
+
+export function AddGroupMaster(gid: string, uid: string): Promise<void> {
+    return axios.post("/Group/" + gid + "/masters/" + uid);
+}
+
+export function RemoveGroupMaster(gid: string, uid: string): Promise<void> {
+    return axios.delete("/Group/" + gid + "/masters/" + uid);
+}
