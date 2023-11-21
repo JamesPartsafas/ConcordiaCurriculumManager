@@ -199,4 +199,16 @@ public class CourseController : Controller
         _logger.LogInformation(string.Join(",", courseCreationRequestDTOs));
         return Ok(courseCreationRequestDTOs);
     }
+
+    [HttpGet(nameof(GetCourseModificationRequest) + "/{courseRequestId}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course modification request retrieved")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetCourseModificationRequest([FromRoute, Required] Guid courseRequestId)
+    {
+        var courseModificationRequest = await _dossierService.GetCourseModificationRequest(courseRequestId);
+        var courseModificationRequestDTOs = _mapper.Map<CourseModificationRequestCourseDetailsDTO>(courseModificationRequest);
+        _logger.LogInformation(string.Join(",", courseModificationRequestDTOs));
+        return Ok(courseModificationRequestDTOs);
+    }
 }
