@@ -46,10 +46,12 @@ export default function DisplayManageableGroups() {
                     <Table variant="simple" size="lg">
                         <Thead>
                             <Tr>
-                                <Th>Group Name</Th>
+                                <Th whiteSpace="nowrap">Group Name</Th>
                                 <Th whiteSpace="nowrap">Applications to Approve</Th>
                                 <Th whiteSpace="nowrap">Number of Members</Th>
                                 <Th whiteSpace="nowrap">Manage Members</Th>
+                                <Th whiteSpace="nowrap">Edit Group</Th>
+                                <Th whiteSpace="nowrap">Delete Group</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
@@ -79,6 +81,20 @@ export default function DisplayManageableGroups() {
                                         >
                                             <Button style="primary" variant="outline" width="50%" height="40px">
                                                 Remove
+                                            </Button>
+                                        </Link>
+                                    </Td>
+                                    <Td whiteSpace="nowrap" padding="16px">
+                                        <Link to={BaseRoutes.ManageableGroup}>
+                                            <Button style="primary" variant="outline" width="50%" height="40px">
+                                                Edit
+                                            </Button>
+                                        </Link>
+                                    </Td>
+                                    <Td whiteSpace="nowrap" padding="16px">
+                                        <Link to={BaseRoutes.ManageableGroup}>
+                                            <Button style="primary" variant="outline" width="50%" height="40px">
+                                                Delete
                                             </Button>
                                         </Link>
                                     </Td>
