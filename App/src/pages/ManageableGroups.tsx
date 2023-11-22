@@ -107,6 +107,11 @@ export default function DisplayManageableGroups() {
                             Create Group
                         </Button>
                     </Link>
+                    <Link to={BaseRoutes.Home}>
+                        <Button style="primary" variant={"outline"} width="25%" height="40px">
+                            Home
+                        </Button>
+                    </Link>
                 </div>
             </Container>
         </div>
