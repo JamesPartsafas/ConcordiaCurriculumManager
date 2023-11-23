@@ -9,6 +9,7 @@ export default class Course implements DataType {
   Catalog: string;
   Title: string;
   Description: string;
+  CourseNotes: string;
   CreditValue: string;
   PreReqs: string;
   Career: number;
@@ -28,6 +29,7 @@ export default class Course implements DataType {
     this.Catalog = obj.Catalog;
     this.Title = obj.Title;
     this.Description = obj.Description;
+    this.CourseNotes = obj.CourseNotes;
     this.CreditValue = obj.CreditValue;
     this.PreReqs = obj.PreReqs;
     this.Career = obj.Career;
@@ -41,7 +43,7 @@ export default class Course implements DataType {
   }
 
   CreateQuery(task: globalPgq.ITask<{}>): Promise<null>[] {
-    const insertIntoCourse = task.none('INSERT INTO "Courses" ("Id", "CourseID", "Subject", "Catalog", "Title", "Description", "CreditValue", "PreReqs", "Career", "EquivalentCourses", "CourseState", "Version", "Published", "CreatedDate", "ModifiedDate") VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) ON CONFLICT ("Id") DO NOTHING', [this.Id, this.CourseID, this.Subject, this.Catalog, this.Title, this.Description, this.CreditValue, this.PreReqs, this.Career, this.EquivalentCourses, this.CourseState, this.Version, this.Published, this.CreatedDate.toISOString(), this.ModifiedDate.toISOString()]);
+    const insertIntoCourse = task.none('INSERT INTO "Courses" ("Id", "CourseID", "Subject", "Catalog", "Title", "Description", "CourseNotes", "CreditValue", "PreReqs", "Career", "EquivalentCourses", "CourseState", "Version", "Published", "CreatedDate", "ModifiedDate") VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) ON CONFLICT ("Id") DO NOTHING', [this.Id, this.CourseID, this.Subject, this.Catalog, this.Title, this.Description, this.CourseNotes, this.CreditValue, this.PreReqs, this.Career, this.EquivalentCourses, this.CourseState, this.Version, this.Published, this.CreatedDate.toISOString(), this.ModifiedDate.toISOString()]);
     const insertIntoCourseCourseComponents = this.CourseCourseComponents.map(c => task.none('INSERT INTO "CourseCourseComponents" ("Id", "CourseId", "ComponentCode", "CreatedDate", "ModifiedDate") VALUES($1, $2, $3, $4, $5) ON CONFLICT("Id") DO NOTHING', [c.Id, this.Id, c.ComponentCode, this.CreatedDate.toISOString(), this.ModifiedDate.toISOString()]));
     return [insertIntoCourse, ...insertIntoCourseCourseComponents];
   }
@@ -61,6 +63,8 @@ export default class Course implements DataType {
       throw new Error(`Title must be a non-empty string. Passed value is of type ${typeof obj.Title}`);
     if (typeof obj.Description !== 'string')
       throw new Error(`Description must be a string. Passed value is of type ${typeof obj.Description}`);
+    if (typeof obj.CourseNotes !== 'string')
+      throw new Error(`CourseNotes must be a string. Passed value is of type ${typeof obj.CourseNotes}`);
     if (typeof obj.CreditValue !== 'string' || obj.CreditValue.trim() === '')
       throw new Error(`CreditValue must be a non-empty string. Passed value is of type ${typeof obj.CreditValue}`);
     if (typeof obj.PreReqs !== 'string')
