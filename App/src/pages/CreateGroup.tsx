@@ -18,7 +18,7 @@ export default function CreateGroup() {
         CreateGroupCall(data)
             .then((res: GroupResponseDTO) => {
                 if (res.data != null) {
-                    navigate("/manageablegroup");
+                    navigate(BaseRoutes.ManageableGroup);
                 }
             })
             .catch((err) => {

@@ -42,7 +42,7 @@ public class GroupController : Controller
             throw new Exception("An error occured while creating a group");
         }
 
-        return CreatedAtAction(nameof(GetGroupById), new { id = group.Id }, group);
+        return CreatedAtAction(nameof(CreateGroup), new { id = group.Id }, group);
     }
 
     [HttpGet("{groupId}")]
