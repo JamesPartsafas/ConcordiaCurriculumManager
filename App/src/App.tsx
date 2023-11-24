@@ -26,6 +26,7 @@ import DossierDetails from "./pages/dossier/DossierDetails";
 import AddingMasterToGroup from "./pages/AddGroupMaster";
 import RemovingMasterFromGroup from "./pages/RemoveGroupMaster";
 import CreateGroup from "./pages/CreateGroup";
+import DeleteCourseEdit from "./pages/DeleteCourseEdit";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -132,6 +133,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.CreateGroup}
                         element={isAdmin(user) == true ? <CreateGroup /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.DeleteCourseEdit}
+                        element={isLoggedIn == true ? <DeleteCourseEdit /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
                     {/* whenever none of the other routes match we show the not found page */}

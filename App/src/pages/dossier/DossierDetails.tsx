@@ -453,8 +453,16 @@ export default function DossierDetails() {
                             <Divider />
                             <CardFooter>
                                 <ButtonGroup spacing="2">
-                                    <Button variant="solid" style="secondary">
-                                        View
+                                    <Button
+                                        variant="solid"
+                                        style="primary"
+                                        onClick={() => {
+                                            navigate(BaseRoutes.DeleteCourseEdit.replace(":dossierId", dossierId), {
+                                                state: { key: courseDeletionRequest },
+                                            });
+                                        }}
+                                    >
+                                        Edit
                                     </Button>
                                     <Button
                                         variant="outline"
