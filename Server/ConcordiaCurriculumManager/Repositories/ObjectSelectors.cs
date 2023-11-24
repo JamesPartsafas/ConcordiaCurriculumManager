@@ -151,15 +151,6 @@ public static class ObjectSelectors
             CourseId = component.CourseId,
             HoursPerWeek = component.HoursPerWeek
         }) : null,
-        SupportingFiles = course.SupportingFiles != null ? (ICollection<SupportingFile>)course.SupportingFiles.Select(supportingFile => new SupportingFile
-        {
-            Id = supportingFile.Id,
-            CreatedDate = supportingFile.CreatedDate,
-            ModifiedDate = supportingFile.ModifiedDate,
-            CourseId = supportingFile.CourseId,
-            FileName = supportingFile.FileName,
-            ContentBase64 = supportingFile.ContentBase64
-        }) : null,
         CourseCreationRequest = course.CourseCreationRequest != null ? new CourseCreationRequest
         {
             Id = course.CourseCreationRequest.Id,
