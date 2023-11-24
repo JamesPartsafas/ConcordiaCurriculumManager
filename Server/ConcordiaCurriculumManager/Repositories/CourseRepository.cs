@@ -68,6 +68,5 @@ public class CourseRepository : ICourseRepository
         .Include(course => course.SupportingFiles)
         .Include(course => course.CourseCourseComponents)
         .OrderByDescending(course => course.Version)
-        .Select(ObjectSelectors.CourseSelector())
         .FirstOrDefaultAsync();
 }
