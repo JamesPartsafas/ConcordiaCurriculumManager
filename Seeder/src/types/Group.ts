@@ -19,7 +19,7 @@ export default class Group implements DataType {
     this.ModifiedDate = obj.ModifiedDate;
   }
 
-  CreateQuery(task: globalPg.ITask<{}>): Promise<null>[] {
+  CreateQuery(task: globalPgq.ITask<{}>): Promise<null>[] {
     const insertIntoGroupTable = task.none(
       'INSERT INTO "Groups" ("Id", "Name", "CreatedDate", "ModifiedDate") VALUES($1, $2, $3, $4) ON CONFLICT ("Id") DO NOTHING',
       [this.Id, this.Name, this.CreatedDate.toISOString(), this.ModifiedDate.toISOString()]
