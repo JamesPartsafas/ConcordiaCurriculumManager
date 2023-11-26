@@ -25,6 +25,126 @@
         "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
         "c8b69129-6320-4cfe-9766-4417061fbb9a"
       ]
-    }
+    },
+	{
+      "Id": "0b64bafa-a6aa-4b15-8c0b-70cf40125183",
+      "FirstName": "One",
+      "LastName": "User",
+      "Email": "one.user@ccm.ca",
+      "Password": "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788",
+      "Unhased-Password": "JoePassword123!",
+      "Roles": [
+        "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
+        "c8b69129-6320-4cfe-9766-4417061fbb9a"
+      ]
+    },
+	{
+      "Id": "52f2f549-37cf-4f13-a1c9-862b2bb98dbe",
+      "FirstName": "Two",
+      "LastName": "User",
+      "Email": "two.user@ccm.ca",
+      "Password": "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788",
+      "Unhased-Password": "JoePassword123!",
+      "Roles": [
+        "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
+        "c8b69129-6320-4cfe-9766-4417061fbb9a"
+      ]
+    },
+	{
+      "Id": "c5f1da99-3697-4aea-82e9-8ba79e4ffdcf",
+      "FirstName": "Three",
+      "LastName": "User",
+      "Email": "three.user@ccm.ca",
+      "Password": "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788",
+      "Unhased-Password": "JoePassword123!",
+      "Roles": [
+        "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
+        "c8b69129-6320-4cfe-9766-4417061fbb9a"
+      ]
+    },
+	{
+      "Id": "d85cf413-4f3a-40a9-bb28-8038754428a0",
+      "FirstName": "Four",
+      "LastName": "User",
+      "Email": "four.user@ccm.ca",
+      "Password": "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788",
+      "Unhased-Password": "JoePassword123!",
+      "Roles": [
+        "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
+        "c8b69129-6320-4cfe-9766-4417061fbb9a"
+      ]
+    },
+	{
+      "Id": "d97516df-86de-47a7-b520-a3c8d82f97e8",
+      "FirstName": "Five",
+      "LastName": "User",
+      "Email": "five.user@ccm.ca",
+      "Password": "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788",
+      "Unhased-Password": "JoePassword123!",
+      "Roles": [
+        "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
+        "c8b69129-6320-4cfe-9766-4417061fbb9a"
+      ]
+    },
+	{
+      "Id": "6ed7aecf-e7f7-4054-9780-66296191ada5",
+      "FirstName": "Six",
+      "LastName": "User",
+      "Email": "six.user@ccm.ca",
+      "Password": "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788",
+      "Unhased-Password": "JoePassword123!",
+      "Roles": [
+        "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
+        "c8b69129-6320-4cfe-9766-4417061fbb9a"
+      ]
+    },
+	{
+      "Id": "5e4e89db-5200-411c-ba99-5e293972cab1",
+      "FirstName": "Seven",
+      "LastName": "User",
+      "Email": "seven.user@ccm.ca",
+      "Password": "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788",
+      "Unhased-Password": "JoePassword123!",
+      "Roles": [
+        "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
+        "c8b69129-6320-4cfe-9766-4417061fbb9a"
+      ]
+    },
+	{
+      "Id": "1a41c5d2-7bdd-41f9-a079-57dc070798a7",
+      "FirstName": "Eight",
+      "LastName": "User",
+      "Email": "eight.user@ccm.ca",
+      "Password": "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788",
+      "Unhased-Password": "JoePassword123!",
+      "Roles": [
+        "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
+        "c8b69129-6320-4cfe-9766-4417061fbb9a"
+      ]
+    },
+	{
+      "Id": "fee786d3-76ab-41e3-849c-244ad5c93ec5",
+      "FirstName": "Nine",
+      "LastName": "User",
+      "Email": "nine.user@ccm.ca",
+      "Password": "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788",
+      "Unhased-Password": "JoePassword123!",
+      "Roles": [
+        "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
+        "c8b69129-6320-4cfe-9766-4417061fbb9a"
+      ]
+    },
+	{
+      "Id": "6be471f4-6805-4ef7-94a9-277fab206359",
+      "FirstName": "Ten",
+      "LastName": "User",
+      "Email": "ten.user@ccm.ca",
+      "Password": "DAFBF72A150765D4DDDB5089E2D8516F5C68A00DD77930F2F4C013CB89DB8E77:B497E6DD99B7DD2ED2632F5A136A8788",
+      "Unhased-Password": "JoePassword123!",
+      "Roles": [
+        "41e6ae67-7ad8-4407-a5dd-c4f5ebd9786c",
+        "c8b69129-6320-4cfe-9766-4417061fbb9a"
+      ]
+    },
   ]
 }
