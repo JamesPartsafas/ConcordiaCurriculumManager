@@ -1,0 +1,49 @@
+{
+  "TableName": "Groups and GroupUsers and GroupMasters",
+  "AutoGenerateCreatedDate": true,
+  "AutoGenerateModifiedDate": true,
+  "Data": [
+    {
+      "Id": "cc11d4d5-20f8-45c2-abee-8aa5271ea014",
+      "Name": "Department Curriculum Committee",
+      "Members": ["0b64bafa-a6aa-4b15-8c0b-70cf40125183", "d97516df-86de-47a7-b520-a3c8d82f97e8", "52f2f549-37cf-4f13-a1c9-862b2bb98dbe"],
+      "GroupMasters": ["0b64bafa-a6aa-4b15-8c0b-70cf40125183"]
+    },
+    {
+      "Id": "d82cd640-0cec-4bc3-8421-86adca26ff01",
+      "Name": "Department Consul",
+      "Members": ["c5f1da99-3697-4aea-82e9-8ba79e4ffdcf", "d85cf413-4f3a-40a9-bb28-8038754428a0", "d97516df-86de-47a7-b520-a3c8d82f97e8"],
+      "GroupMasters": ["c5f1da99-3697-4aea-82e9-8ba79e4ffdcf"]
+    },
+    {
+      "Id": "5b8b7e96-67ae-406f-a953-01c3f8ffd014",
+      "Name": "Faculty Undergraduate Committee",
+      "Members": ["6ed7aecf-e7f7-4054-9780-66296191ada5", "5e4e89db-5200-411c-ba99-5e293972cab1", "1a41c5d2-7bdd-41f9-a079-57dc070798a7"],
+      "GroupMasters": ["6ed7aecf-e7f7-4054-9780-66296191ada5"]
+    },
+    {
+      "Id": "cba6c66f-970f-4d1f-9f46-83db08874128",
+      "Name": "Faculty Graduate Studies Committee",
+      "Members": ["fee786d3-76ab-41e3-849c-244ad5c93ec5", "6be471f4-6805-4ef7-94a9-277fab206359", "d97516df-86de-47a7-b520-a3c8d82f97e8"],
+      "GroupMasters": ["fee786d3-76ab-41e3-849c-244ad5c93ec5"]
+    },
+    {
+      "Id": "b5e7845a-3f4d-45a4-a99a-34b0bdf7c963",
+      "Name": "Faculty Council",
+      "Members": ["d85cf413-4f3a-40a9-bb28-8038754428a0", "1a41c5d2-7bdd-41f9-a079-57dc070798a7", "0b64bafa-a6aa-4b15-8c0b-70cf40125183"],
+      "GroupMasters": ["d85cf413-4f3a-40a9-bb28-8038754428a0"]
+    },
+    {
+      "Id": "79fdbfac-6560-48eb-98e3-3c653a687985",
+      "Name": "APC Committee",
+      "Members": ["6ed7aecf-e7f7-4054-9780-66296191ada5", "fee786d3-76ab-41e3-849c-244ad5c93ec5", "d85cf413-4f3a-40a9-bb28-8038754428a0"],
+      "GroupMasters": ["6ed7aecf-e7f7-4054-9780-66296191ada5"]
+    },
+    {
+      "Id": "8e2f3cd8-9876-4512-9dc7-96f16ff5f5c0",
+      "Name": "Senate",
+      "Members": ["52f2f549-37cf-4f13-a1c9-862b2bb98dbe", "d85cf413-4f3a-40a9-bb28-8038754428a0", "d97516df-86de-47a7-b520-a3c8d82f97e8"],
+      "GroupMasters": ["52f2f549-37cf-4f13-a1c9-862b2bb98dbe"]
+    }
+  ]
+}
