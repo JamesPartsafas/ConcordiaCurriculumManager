@@ -27,14 +27,14 @@ export default class Group implements DataType {
 
     const insertIntoGroupUserTable = this.Members.map(memberId => 
       task.none(
-        'INSERT INTO "GroupUsers" ("GroupId", "UserId") VALUES($1, $2) ON CONFLICT ("GroupId", "UserId") DO NOTHING',
+        'INSERT INTO "GroupUser" ("GroupsId", "MembersId") VALUES($1, $2) ON CONFLICT ("GroupsId", "MembersId") DO NOTHING',
         [this.Id, memberId]
       )
     );
 
     const insertIntoGroupMastersTable = this.GroupMasters.map(masterId => 
       task.none(
-        'INSERT INTO "GroupMasters" ("GroupId", "MasterId") VALUES($1, $2) ON CONFLICT ("GroupId", "MasterId") DO NOTHING',
+        'INSERT INTO "GroupUser1" ("MasteredGroupsId", "GroupMastersId") VALUES($1, $2) ON CONFLICT ("MasteredGroupsId", "GroupMastersId") DO NOTHING',
         [this.Id, masterId]
       )
     );
