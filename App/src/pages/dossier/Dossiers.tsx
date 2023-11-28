@@ -22,7 +22,7 @@ import {
     Tooltip,
     useToast,
 } from "@chakra-ui/react";
-import { Button as ChakraButton } from "@chakra-ui/react";
+import { Button as ChakraButton, Container } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, EditIcon, InfoIcon } from "@chakra-ui/icons";
 
 import { useContext, useEffect, useState } from "react";
@@ -158,6 +158,17 @@ export default function Dossiers() {
 
     return (
         <>
+            <Container maxW={"5xl"} mt={5}>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="100px"
+                    onClick={() => navigate(BaseRoutes.Home)}
+                >
+                    Back
+                </Button>
+            </Container>
             <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                 {user?.firstName + "'s"} Dossiers
             </Text>

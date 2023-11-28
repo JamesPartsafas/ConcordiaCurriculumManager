@@ -8,6 +8,7 @@ import {
     Card,
     CardBody,
     CardFooter,
+    Container,
     Divider,
     Heading,
     Kbd,
@@ -207,6 +208,18 @@ export default function DossierDetails() {
     return (
         <>
             {deleteRequestAlert()}
+            <Container maxW={"70%"} mt={5} mb={2}>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="100px"
+                    onClick={() => navigate(BaseRoutes.Dossiers)}
+                >
+                    Back
+                </Button>
+            </Container>
+
             <div style={{ margin: "auto", width: "fit-content" }}>
                 <Heading color={"brandRed"}>{dossierDetails?.title}</Heading>
                 <Kbd>{dossierDetails?.id}</Kbd>
