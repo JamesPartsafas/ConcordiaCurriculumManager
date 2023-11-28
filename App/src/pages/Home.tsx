@@ -4,7 +4,6 @@ import Button from "../components/Button";
 import { BaseRoutes } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { Container, Flex } from "@chakra-ui/react";
-import Header from "../shared/Header";
 import { isAdminOrGroupMaster } from "../services/auth";
 
 export default function Home() {
@@ -12,7 +11,6 @@ export default function Home() {
     const user = useContext(UserContext);
     return (
         <div>
-            <Header></Header>
             <Container maxW="80%" py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>
                 <h1
                     style={{

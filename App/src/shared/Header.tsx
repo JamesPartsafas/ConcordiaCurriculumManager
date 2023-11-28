@@ -11,6 +11,7 @@ import {
     PopoverContent,
     useColorModeValue,
     useDisclosure,
+    useToast,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { logout } from "../services/auth";
@@ -19,8 +20,15 @@ import logo from "../assets/logo.png";
 import Button from "../components/Button";
 import { BaseRoutes } from "../constants";
 import { useNavigate } from "react-router-dom";
+import { User } from "../models/user";
+import { showToast } from "../utils/toastUtils";
 
-export default function Header() {
+export interface HeaderProps {
+    setUser: (user: User | null) => void;
+    setIsLoggedIn: (isLoggedIn: boolean) => void;
+}
+
+export default function Header(props: HeaderProps) {
     const { isOpen, onToggle } = useDisclosure();
 
     return (
@@ -45,7 +53,7 @@ export default function Header() {
                 </Flex>
                 <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
                     <Image src={logo} width="50px" marginRight="200px" />
-                    <DesktopNav />
+                    <DesktopNav setUser={props.setUser} setIsLoggedIn={props.setIsLoggedIn} />
                 </Flex>
             </Flex>
 
@@ -56,14 +64,26 @@ export default function Header() {
     );
 }
 
-const DesktopNav = () => {
+const DesktopNav = (props: HeaderProps) => {
     const linkHoverColor = useColorModeValue("gray.800", "white");
     const popoverContentBgColor = useColorModeValue("white", "gray.800");
     const navigate = useNavigate();
+    const toast = useToast(); // Use the useToast hook
+
     function loggingOut() {
-        logout();
-        navigate(BaseRoutes.Login);
+        logout().then(
+            () => {
+                props.setUser(null);
+                props.setIsLoggedIn(false);
+                navigate(BaseRoutes.Login);
+                showToast(toast, "Success!", "You have successfully logged out.", "success");
+            },
+            (rej) => {
+                showToast(toast, "Error!", rej.message, "error");
+            }
+        );
     }
+
     return (
         <Stack direction={"row"} spacing={8}>
             {NAV_ITEMS.map((navItem) => (
