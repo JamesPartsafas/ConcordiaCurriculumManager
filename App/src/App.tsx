@@ -147,7 +147,6 @@ export function App() {
                         path={BaseRoutes.DeleteCourseEdit}
                         element={isLoggedIn == true ? <DeleteCourseEdit /> : <Navigate to={BaseRoutes.Login} />}
                     />   
-
                     <Route
                         path={BaseRoutes.CourseDetails}
                         element={isLoggedIn == true ? <CourseDetails /> : <Navigate to={BaseRoutes.Login} />}

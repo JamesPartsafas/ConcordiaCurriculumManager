@@ -15,10 +15,10 @@ const SUBJECT_ITEMS: Array<SubjectItem> = [
     { value: "ENGR", label: "ENGR" },
 ];
 
-interface CatalogItem {
-    value: string;
-    label: string;
-}
+// interface CatalogItem {
+//     value: string;
+//     label: string;
+// }
 
 const CourseSelector1: React.FC<{ onChange: (selectedOption: SubjectItem | null) => void }> = ({ onChange }) => (
     <Select options={SUBJECT_ITEMS} onChange={onChange} />
