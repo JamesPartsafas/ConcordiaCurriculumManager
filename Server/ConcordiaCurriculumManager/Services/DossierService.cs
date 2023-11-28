@@ -1,11 +1,10 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 
-
 namespace ConcordiaCurriculumManager.Services;
-
 public interface IDossierService
 {
     public Task<List<Dossier>> GetDossiersByID(Guid ID);
@@ -13,12 +12,14 @@ public interface IDossierService
     public Task<Dossier> EditDossier(EditDossierDTO dossier, Guid dossierId);
     public Task DeleteDossier(Guid dossierId);
     public Task<Dossier?> GetDossierDetailsById(Guid id);
+    public Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id);
     public Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId);
     public Task SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
     public Task SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
     public Task<CourseCreationRequest> GetCourseCreationRequest(Guid courseRequestId);
     public Task<CourseModificationRequest> GetCourseModificationRequest(Guid courseRequestId);
+    public Task<CourseDeletionRequest> GetCourseDeletionRequest(Guid courseRequestId);
 }
 
 public class DossierService : IDossierService
@@ -30,12 +31,18 @@ public class DossierService : IDossierService
     {
         _logger = logger;
         _dossierRepository = dossierRepository;
-
     }
 
     public async Task<List<Dossier>> GetDossiersByID(Guid ID)
     { 
-        return await _dossierRepository.GetDossiersByID(ID);
+        var dossiers = await _dossierRepository.GetDossiersByID(ID);
+
+        if (dossiers.Count == 0)
+        {
+            throw new NotFoundException($"Dossiers with Id {ID} does not exists");
+        }
+
+        return dossiers;
     }
 
     public async Task<Dossier> CreateDossierForUser(CreateDossierDTO d, User user) {
@@ -51,11 +58,10 @@ public class DossierService : IDossierService
         bool dossierCreated = await _dossierRepository.SaveDossier(dossier);
         if (!dossierCreated)
         {
-            _logger.LogWarning($"Error creating ${typeof(Dossier)} ${dossier.Id}");
-            throw new Exception("Error creating the dossier");
+            throw new Exception($"Error creating ${typeof(Dossier)} ${dossier.Id}");
         }
-        _logger.LogInformation($"Created ${typeof(Dossier)} ${dossier.Id}");
 
+        _logger.LogInformation($"Created {typeof(Dossier)} {dossier.Id}");
         return dossier;
     }
 
@@ -68,11 +74,10 @@ public class DossierService : IDossierService
         bool editedDossier = await _dossierRepository.UpdateDossier(dossier);
         if (!editedDossier)
         {
-            _logger.LogWarning($"Error editing ${typeof(Dossier)} ${dossier.Id}");
-            throw new Exception("Error editing the dossier");
+            throw new Exception($"Error editing {typeof(Dossier)} {dossier.Id}");
         }
         
-        _logger.LogInformation($"Edited ${typeof(Dossier)} ${dossier.Id}");
+        _logger.LogInformation($"Edited {typeof(Dossier)} {dossier.Id}");
         return dossier;
     }
 
@@ -83,21 +88,23 @@ public class DossierService : IDossierService
         bool editedDossier = await _dossierRepository.DeleteDossier(dossier);
         if (!editedDossier)
         {
-            _logger.LogWarning($"Error deleting ${typeof(Dossier)} ${dossier.Id}");
-            throw new Exception("Error deleting the dossier");
+            throw new Exception($"Error deleting {typeof(Dossier)} {dossier.Id}");
         }
-        _logger.LogInformation($"Deleted ${typeof(Dossier)} ${dossier.Id}");
+
+        _logger.LogInformation($"Deleted {typeof(Dossier)} {dossier.Id}");
     }
 
     public async Task<Dossier?> GetDossierDetailsById(Guid id) => await _dossierRepository.GetDossierByDossierId(id);
+
+    public async Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id) => await _dossierRepository.GetDossierByDossierId(id) 
+        ?? throw new NotFoundException("The dossier does not exist.");
 
     public async Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId)
     {
         var dossier = await GetDossierDetailsById(dossierId) ?? throw new ArgumentException("The dossier does not exist.");
         if (dossier.InitiatorId != userId)
         {
-            _logger.LogWarning($"Error retrieving the dossier ${typeof(Dossier)} ${dossier.Id}: does not belong to user ${typeof(User)} ${userId}");
-            throw new Exception("Error retrieving the dossier: does not belong to the user");
+            throw new BadRequestException($"Error retrieving the dossier {typeof(Dossier)} {dossier.Id}: does not belong to the user");
         }
 
         return dossier;
@@ -108,10 +115,10 @@ public class DossierService : IDossierService
         bool requestCreated = await _dossierRepository.SaveCourseCreationRequest(courseCreationRequest);
         if (!requestCreated)
         {
-            _logger.LogWarning($"Error creating ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
-            throw new Exception("Error creating the request");
+            throw new Exception($"Error creating {typeof(CourseCreationRequest)} {courseCreationRequest.Id}");
         }
-        _logger.LogInformation($"Created ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
+
+        _logger.LogInformation($"Created {typeof(CourseCreationRequest)} {courseCreationRequest.Id}");
     }
 
     public async Task SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest)
@@ -119,10 +126,10 @@ public class DossierService : IDossierService
         bool requestCreated = await _dossierRepository.SaveCourseModificationRequest(courseModificationRequest);
         if (!requestCreated)
         {
-            _logger.LogWarning($"Error creating ${typeof(CourseModificationRequest)} ${courseModificationRequest.Id}");
-            throw new Exception("Error creating the request");
+            throw new Exception($"Error creating {typeof(CourseModificationRequest)} {courseModificationRequest.Id}");
         }
-        _logger.LogInformation($"Created ${typeof(CourseModificationRequest)} ${courseModificationRequest.Id}");
+
+        _logger.LogInformation($"Created {typeof(CourseModificationRequest)} {courseModificationRequest.Id}");
     }
 
     public async Task SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest)
@@ -130,33 +137,27 @@ public class DossierService : IDossierService
         bool requestCreated = await _dossierRepository.SaveCourseDeletionRequest(courseDeletionRequest);
         if (!requestCreated)
         {
-            _logger.LogWarning($"Error creating ${typeof(CourseDeletionRequest)} ${courseDeletionRequest.Id}");
-            throw new Exception("Error creating the request");
+            throw new Exception($"Error creating {typeof(CourseDeletionRequest)} {courseDeletionRequest.Id}");
         }
-        _logger.LogInformation($"Created ${typeof(CourseDeletionRequest)} ${courseDeletionRequest.Id}");
+
+        _logger.LogInformation($"Created {typeof(CourseDeletionRequest)} {courseDeletionRequest.Id}");
     }
 
     public async Task<CourseCreationRequest> GetCourseCreationRequest(Guid courseRequestId)
     {
-        var courseCreationRequest = await _dossierRepository.GetCourseCreationRequest(courseRequestId);
-        if (courseCreationRequest == null)
-        {
-            _logger.LogWarning($"Error retrieving the course creation request with id ${typeof(CourseCreationRequest)} ${courseRequestId}");
-            throw new Exception("Error retrieving the course creation request, it does not exist.");
-        }
-
+        var courseCreationRequest = await _dossierRepository.GetCourseCreationRequest(courseRequestId) ?? throw new NotFoundException($"Error retrieving the course creation request with id {typeof(CourseCreationRequest)} {courseRequestId}");
         return courseCreationRequest;
     }
 
     public async Task<CourseModificationRequest> GetCourseModificationRequest(Guid courseRequestId)
     {
-        var courseModificationRequest = await _dossierRepository.GetCourseModificationRequest(courseRequestId);
-        if (courseModificationRequest == null)
-        {
-            _logger.LogWarning($"Error retrieving the course modification request with id ${typeof(CourseModificationRequest)} ${courseRequestId}");
-            throw new Exception("Error retrieving the course modification request, it does not exist.");
-        }
-
+        var courseModificationRequest = await _dossierRepository.GetCourseModificationRequest(courseRequestId) ?? throw new NotFoundException($"Error retrieving the course modification request with id ${typeof(CourseModificationRequest)} ${courseRequestId}");
         return courseModificationRequest;
+    }
+
+    public async Task<CourseDeletionRequest> GetCourseDeletionRequest(Guid courseRequestId)
+    {
+        var courseDeletionRequest = await _dossierRepository.GetCourseDeletionRequest(courseRequestId) ?? throw new NotFoundException($"Error retrieving the course deletion request with id ${typeof(CourseDeletionRequest)} ${courseRequestId}");
+        return courseDeletionRequest;
     }
 }

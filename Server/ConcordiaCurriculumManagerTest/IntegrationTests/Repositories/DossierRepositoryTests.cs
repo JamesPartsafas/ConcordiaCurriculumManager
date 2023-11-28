@@ -4,6 +4,7 @@ using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using ConcordiaCurriculumManager.Settings;
+using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -180,7 +181,7 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
         [TestMethod]
         public async Task GetCourseCreationRequest_ReturnsCourseCreationRequest()
         {
-            var courseCreationRequest = GetSampleCourseCreationRequest();
+            var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
 
             dbContext.CourseCreationRequests.Add(courseCreationRequest);
             await dbContext.SaveChangesAsync();
@@ -192,7 +193,7 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
         [TestMethod]
         public async Task UpdateCourseCreationRequest_ReturnsTrue()
         {
-            var courseCreationRequest = GetSampleCourseCreationRequest();
+            var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
 
             dbContext.CourseCreationRequests.Add(courseCreationRequest);
             await dbContext.SaveChangesAsync();
@@ -213,7 +214,7 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
         [TestMethod]
         public async Task GetCourseModificationRequest_ReturnsCourseModificationRequest()
         {
-            var courseModificationRequest = GetSampleCourseModificationRequest();
+            var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
 
             dbContext.CourseModificationRequests.Add(courseModificationRequest);
             await dbContext.SaveChangesAsync();
@@ -225,7 +226,7 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
         [TestMethod]
         public async Task UpdateCourseModificationRequest_ReturnsTrue()
         {
-            var courseModificationRequest = GetSampleCourseModificationRequest();
+            var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
 
             dbContext.CourseModificationRequests.Add(courseModificationRequest);
             await dbContext.SaveChangesAsync();
@@ -244,10 +245,43 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
         }
 
         [TestMethod]
+        public async Task GetCourseDeletionRequest_ReturnsCourseDeletionRequest()
+        {
+            var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+
+            dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
+            await dbContext.SaveChangesAsync();
+
+            var result = await dossierRepository.GetCourseDeletionRequest(courseDeletionRequest.Id);
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task UpdateCourseDeletionRequest_ReturnsTrue()
+        {
+            var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+
+            dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
+            await dbContext.SaveChangesAsync();
+
+            var newRationale = "It's necessary modified";
+            var newResourceImplication = "New prof needed modified";
+
+            courseDeletionRequest.Rationale = newRationale;
+            courseDeletionRequest.ResourceImplication = newResourceImplication;
+
+            var result = await dossierRepository.UpdateCourseDeletionRequest(courseDeletionRequest);
+
+            Assert.AreEqual(courseDeletionRequest.Rationale, newRationale);
+            Assert.AreEqual(courseDeletionRequest.ResourceImplication, newResourceImplication);
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
         public async Task DeleteCourseCreationRequest_ReturnsTrue()
         {
-            var courseCreationRequest = GetSampleCourseCreationRequest();
-            var course = GetSampleCourse();
+            var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
+            var course = TestData.GetSampleCourse();
 
             dbContext.CourseCreationRequests.Add(courseCreationRequest);
             dbContext.Courses.Add(course);
@@ -261,8 +295,8 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
         [TestMethod]
         public async Task DeleteCourseModificationRequest_ReturnsTrue()
         {
-            var courseModificationRequest = GetSampleCourseModificationRequest();
-            var course = GetSampleCourse();
+            var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
+            var course = TestData.GetSampleCourse();
 
             dbContext.CourseModificationRequests.Add(courseModificationRequest);
             dbContext.Courses.Add(course);
@@ -273,54 +307,19 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
             Assert.IsTrue(result);
         }
 
-        private Course GetSampleCourse()
+        [TestMethod]
+        public async Task DeleteCourseDeletionRequest_ReturnsTrue()
         {
-            var id = Guid.NewGuid();
+            var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+            var course = TestData.GetSampleCourse();
 
-            return new Course
-            {
-                Id = id,
-                CourseID = 1000,
-                Subject = "SOEN",
-                Catalog = "490",
-                Title = "Capstone",
-                Description = "Curriculum manager building simulator",
-                CreditValue = "6",
-                PreReqs = "SOEN 390",
-                CourseNotes = "Lots of fun",
-                Career = CourseCareerEnum.UGRD,
-                EquivalentCourses = "",
-                CourseState = CourseStateEnum.NewCourseProposal,
-                Version = 1,
-                Published = true,
-                CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } }, id)
-            };
-        }
+            dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
+            dbContext.Courses.Add(course);
+            await dbContext.SaveChangesAsync();
 
-        private CourseCreationRequest GetSampleCourseCreationRequest()
-        {
-            return new CourseCreationRequest
-            {
-                DossierId = Guid.NewGuid(),
-                NewCourseId = Guid.NewGuid(),
-                NewCourse = GetSampleCourse(),
-                Rationale = "It's necessary",
-                ResourceImplication = "New prof needed",
-                Comment = "Fun",
-            };
-        }
+            var result = await dossierRepository.DeleteCourseDeletionRequest(courseDeletionRequest);
 
-        private CourseModificationRequest GetSampleCourseModificationRequest()
-        {
-            return new CourseModificationRequest
-            {
-                DossierId = Guid.NewGuid(),
-                CourseId = Guid.NewGuid(),
-                Course = GetSampleCourse(),
-                Rationale = "It's necessary",
-                ResourceImplication = "New prof needed",
-                Comment = "Fun",
-            };
+            Assert.IsTrue(result);
         }
     }
 }

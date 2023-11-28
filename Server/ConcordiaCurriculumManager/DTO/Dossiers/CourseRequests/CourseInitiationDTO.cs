@@ -8,4 +8,5 @@ public abstract class CourseInitiationDTO
 
     public required string ResourceImplication { get; set; }
 
+    public string? Comment { get; set; }
 }

@@ -1,3 +1,4 @@
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Security;
@@ -157,7 +158,7 @@ public class UserAuthenticationServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
+    [ExpectedException(typeof(BadRequestException))]
     public async Task SigninUser_InvalidUser_ThrowsArgumentException()
     {
         var userEmail = "test@example.com";
@@ -196,7 +197,7 @@ public class UserAuthenticationServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
+    [ExpectedException(typeof(BadRequestException))]
     public async Task CreateUserAsync_ExistingUser_ThrowsArgumentException()
     {
         var existingUser = new User
@@ -270,7 +271,7 @@ public class UserAuthenticationServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
+    [ExpectedException(typeof(BadRequestException))]
     public async Task SignoutUser_InvalidHttpContext_ThrowsInvalidOperationException()
     {
         httpContextAccessor.Setup(a => a.HttpContext)
@@ -280,7 +281,7 @@ public class UserAuthenticationServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
+    [ExpectedException(typeof(BadRequestException))]
     public async Task SignoutUser_NullToken_ThrowsInvalidOperationException()
     {
         var httpContextAccessor = new Mock<IHttpContextAccessor>();

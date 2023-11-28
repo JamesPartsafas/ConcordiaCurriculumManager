@@ -13,6 +13,7 @@ public interface ICourseRepository
     public Task<bool> SaveCourse(Course course);
     public Task<Course?> GetCourseByCourseId(int courseId);
     public Task<Course?> GetCourseByCourseIdAndLatestVersion(int courseId);
+    public Task<Course?> GetCourseWithSupportingFilesBySubjectAndCatalog(string subject, string catalog);
 }
 
 public class CourseRepository : ICourseRepository
@@ -29,22 +30,40 @@ public class CourseRepository : ICourseRepository
     public async Task<int> GetMaxCourseId() => (await _dbContext.Courses.MaxAsync(course => (int?)course.CourseID)) ?? 0;
 
     public Task<Course?> GetCourseBySubjectAndCatalog(string subject, string catalog) => _dbContext.Courses
-        .Where(course => course.Subject == subject && course.Catalog == catalog && course.CourseState == CourseStateEnum.Accepted)
+        .Where(course => 
+            course.Subject == subject 
+            && course.Catalog == catalog 
+            && (course.CourseState == CourseStateEnum.Accepted || course.CourseState == CourseStateEnum.Deleted))
         .OrderByDescending(course => course.Version)
         .FirstOrDefaultAsync();
 
     public async Task<bool> SaveCourse(Course course)
     {
+        course.VerifyCourseIsValidOrThrow();
         await _dbContext.Courses.AddAsync(course);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
 
     public Task<Course?> GetCourseByCourseIdAndLatestVersion(int courseId) => _dbContext.Courses
-    .Where(course => course.CourseID == courseId && course.Version == _dbContext.Courses.Max(course => (int?)course.Version)).FirstOrDefaultAsync();
+    .Where(course => 
+        course.CourseID == courseId 
+        && course.CourseState == CourseStateEnum.Accepted)
+    .OrderByDescending(course => course.Version)
+    .FirstOrDefaultAsync();
 
     public async Task<Course?> GetCourseByCourseId(int courseId) => await _dbContext.Courses
         .Where(course => course.CourseID == courseId && course.CourseState == CourseStateEnum.Accepted)
+        .OrderByDescending(course => course.Version)
+        .FirstOrDefaultAsync();
+
+    public Task<Course?> GetCourseWithSupportingFilesBySubjectAndCatalog(string subject, string catalog) => _dbContext.Courses
+        .Where(course =>
+            course.Subject == subject
+            && course.Catalog == catalog
+            && (course.CourseState == CourseStateEnum.Accepted || course.CourseState == CourseStateEnum.Deleted))
+        .Include(course => course.SupportingFiles)
+        .Include(course => course.CourseCourseComponents)
         .OrderByDescending(course => course.Version)
         .FirstOrDefaultAsync();
 }

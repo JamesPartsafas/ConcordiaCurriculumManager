@@ -1,32 +1,30 @@
-﻿using AutoMapper;
-using ConcordiaCurriculumManager.Models.Users;
+﻿using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.DTO;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 
 namespace ConcordiaCurriculumManager.Services;
 
 public interface IGroupService
 {
-    Task<GroupDTO?> GetGroupByIdAsync(Guid id);
-    Task<List<GroupDTO>> GetAllGroupsAsync();
+    Task<Group> GetGroupByIdAsync(Guid id);
+    Task<List<Group>> GetAllGroupsAsync();
     Task<bool> CreateGroupAsync(Group group);
     Task<bool> AddUserToGroup(Guid userId, Guid groupId);
     Task<bool> RemoveUserFromGroup(Guid userId, Guid groupId);
     Task<bool> AddGroupMaster(Guid userId, Guid groupId);
     Task<bool> RemoveGroupMaster(Guid userId, Guid groupId);
     Task<bool> IsGroupMaster(Guid userId, Guid groupId);
-
+    Task<bool> IsGroupIdListValid(IList<Guid> groupIds);
 }
 
 public class GroupService : IGroupService
 {
     private readonly IGroupRepository _groupRepository;
-    private readonly IMapper _mapper;
 
-    public GroupService(IGroupRepository groupRepository, IMapper mapper)
+    public GroupService(IGroupRepository groupRepository)
     {
         _groupRepository = groupRepository;
-        _mapper = mapper;
     }
 
     public async Task<bool> CreateGroupAsync(Group group)
@@ -34,30 +32,14 @@ public class GroupService : IGroupService
         return await _groupRepository.SaveGroup(group);
     }
 
-    public async Task<GroupDTO?> GetGroupByIdAsync(Guid id)
+    public async Task<Group> GetGroupByIdAsync(Guid id)
     {
-        var group = await _groupRepository.GetGroupById(id);
-        if (group == null)
-        {
-            return null;
-        }
-        else
-        {
-            return _mapper.Map<GroupDTO>(group);
-        }
+        return await _groupRepository.GetGroupById(id) ?? throw new NotFoundException($"Group {id} does not exist");
     }
 
-    public async Task<List<GroupDTO>> GetAllGroupsAsync()
+    public async Task<List<Group>> GetAllGroupsAsync()
     {
-        var groups = await _groupRepository.GetAllGroups();
-        if (groups == null || !groups.Any())
-        {
-            return new List<GroupDTO>();
-        }
-        else
-        {
-            return _mapper.Map<List<GroupDTO>>(groups);
-        }
+        return await _groupRepository.GetAllGroups();
     }
 
     public async Task<bool> AddUserToGroup(Guid userId, Guid groupId)
@@ -84,5 +66,12 @@ public class GroupService : IGroupService
     {
         var group = await _groupRepository.GetGroupById(groupId);
         return group is not null && group.GroupMasters.Any(gm => gm.Id == userId);
+    }
+
+    public async Task<bool> IsGroupIdListValid(IList<Guid> groupIds)
+    {
+        var validGroupIds = await _groupRepository.GetValidGroupIds();
+
+        return groupIds.All(groupId => validGroupIds.Contains(groupId));
     }
 }

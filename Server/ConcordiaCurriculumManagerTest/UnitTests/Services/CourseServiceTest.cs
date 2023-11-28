@@ -1,22 +1,12 @@
-using ConcordiaCurriculumManager.DTO.Courses;
-using ConcordiaCurriculumManager.DTO.Dossiers;
-﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
-using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Services;
-using ConcordiaCurriculumManager.Settings;
-using Microsoft.AspNetCore.Http;
+using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
 
@@ -49,25 +39,26 @@ public class CourseServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
+    [ExpectedException(typeof(BadRequestException))]
     public async Task InitiateCourseCreation_CourseExists_ThrowsArgumentException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(GetSampleCourse());
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var dto = TestData.GetSampleCourseCreationInitiationDTO(dossier);
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(TestData.GetSampleAcceptedCourse());
 
-        await courseService.InitiateCourseCreation(GetSampleCourseCreationInitiationDTO(dossier), user.Id);
+        await courseService.InitiateCourseCreation(dto, user.Id);
     }
 
     [TestMethod]
     [ExpectedException(typeof(Exception))]
     public async Task InitiateCourseCreation_DossierDoesNotExist_LogsAndThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
 
-        await courseService.InitiateCourseCreation(GetSampleCourseCreationInitiationDTO(dossier), user.Id);
+        await courseService.InitiateCourseCreation(TestData.GetSampleCourseCreationInitiationDTO(dossier), user.Id);
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
@@ -76,12 +67,12 @@ public class CourseServiceTest
     [ExpectedException(typeof(Exception))]
     public async Task InitiateCourseCreation_DossierDoesNotBelongToUser_LogsAndThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
-        dossierService.Setup(cr => cr.GetDossierForUserOrThrow(It.IsAny<Guid>(), user.Id)).ReturnsAsync(GetSampleDossier(user));
+        dossierService.Setup(cr => cr.GetDossierForUserOrThrow(It.IsAny<Guid>(), user.Id)).ReturnsAsync(TestData.GetSampleDossier(user));
 
-        await courseService.InitiateCourseCreation(GetSampleCourseCreationInitiationDTO(dossier), Guid.NewGuid());
+        await courseService.InitiateCourseCreation(TestData.GetSampleCourseCreationInitiationDTO(dossier), Guid.NewGuid());
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
 
@@ -91,13 +82,13 @@ public class CourseServiceTest
     [ExpectedException(typeof(Exception))]
     public async Task InitiateCourseCreation_CourseDoesNotAdd_LogsAndThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
         courseRepository.Setup(cr => cr.GetMaxCourseId()).ReturnsAsync(5);
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(false);
 
-        await courseService.InitiateCourseCreation(GetSampleCourseCreationInitiationDTO(dossier), user.Id);
+        await courseService.InitiateCourseCreation(TestData.GetSampleCourseCreationInitiationDTO(dossier), user.Id);
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
@@ -106,8 +97,8 @@ public class CourseServiceTest
     [ExpectedException(typeof(Exception))]
     public async Task InitiateCourseCreation_DossierDoesNotSave_LogsAndThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
         courseRepository.Setup(cr => cr.GetMaxCourseId()).ReturnsAsync(5);
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
@@ -115,14 +106,14 @@ public class CourseServiceTest
         dossierService.Setup(cr => cr.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>()))
             .ThrowsAsync(new Exception());
 
-        await courseService.InitiateCourseCreation(GetSampleCourseCreationInitiationDTO(dossier), user.Id);
+        await courseService.InitiateCourseCreation(TestData.GetSampleCourseCreationInitiationDTO(dossier), user.Id);
     }
 
     [TestMethod]
     public async Task InitiateCourseCreation_ValidInput_Succeeds()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
         courseRepository.Setup(cr => cr.GetMaxCourseId()).ReturnsAsync(5);
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
@@ -130,64 +121,76 @@ public class CourseServiceTest
             .Returns(Task.CompletedTask);
         dossierService.Setup(cr => cr.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
         
-        var courseCreationRequest = await courseService.InitiateCourseCreation(GetSampleCourseCreationInitiationDTO(dossier), user.Id);
+        var courseCreationRequest = await courseService.InitiateCourseCreation(TestData.GetSampleCourseCreationInitiationDTO(dossier), user.Id);
 
         Assert.IsNotNull(courseCreationRequest);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public async Task InitiateCourseModification_CourseDoesNotExists_ThrowsArgumentException()
+    public async Task InitiateCourseCreation_ValidInputWithDeletedCourse_Succeeds()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(TestData.GetSampleDeletedCourse());
+        courseRepository.Setup(cr => cr.GetMaxCourseId()).ReturnsAsync(5);
+        courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
+        dossierService.Setup(cr => cr.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>()))
+            .Returns(Task.CompletedTask);
+        dossierService.Setup(cr => cr.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
 
-        await courseService.InitiateCourseModification(GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
+        var courseCreationRequest = await courseService.InitiateCourseCreation(TestData.GetSampleCourseCreationInitiationDTO(dossier), user.Id);
+
+        Assert.IsNotNull(courseCreationRequest);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(InvalidInputException))]
+    public async Task InitiateCourseModification_CourseDoesNotExists_ThrowsInvalidInputException()
+    {
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+
+        await courseService.InitiateCourseModification(TestData.GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
     }
 
     [TestMethod]
     [ExpectedException(typeof(Exception))]
-    public async Task InitiateCourseModification_DossierDoesNotExist_LogsAndThrowsException()
+    public async Task InitiateCourseModification_DossierDoesNotExist_ThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
 
-        await courseService.InitiateCourseModification(GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
-
-        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+        await courseService.InitiateCourseModification(TestData.GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
     }
 
     [TestMethod]
     [ExpectedException(typeof(Exception))]
-    public async Task InitiateCourseModification_DossierDoesNotBelongToUser_LogsAndThrowsException()
+    public async Task InitiateCourseModification_DossierDoesNotBelongToUser_ThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
-        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
 
-        await courseService.InitiateCourseModification(GetSampleCourseCreationModificationDTO(course, dossier), Guid.NewGuid());
-
-        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
-
+        await courseService.InitiateCourseModification(TestData.GetSampleCourseCreationModificationDTO(course, dossier), Guid.NewGuid());
     }
 
     [TestMethod]
     [ExpectedException(typeof(Exception))]
     public async Task InitiateCourseModification_CourseDoesNotSave_LogsAndThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
-        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(false);
 
-        await courseService.InitiateCourseModification(GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
+        await courseService.InitiateCourseModification(TestData.GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
@@ -196,58 +199,70 @@ public class CourseServiceTest
     [ExpectedException(typeof(Exception))]
     public async Task InitiateCourseModification_CourseModificationRequestDoesNotSave_LogsAndThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
-        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
         dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
         dossierService.Setup(cr => cr.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).ThrowsAsync(new Exception());
 
-        await courseService.InitiateCourseModification(GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
+        await courseService.InitiateCourseModification(TestData.GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
     }
 
     [TestMethod]
     public async Task InitiateCourseModification_ValidInput_Succeeds()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        courseRepository.Setup(cr => cr.GetCourseByCourseId(It.IsAny<int>())).ReturnsAsync(course);
-        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleAcceptedCourse();
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
         dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
         dossierService.Setup(cr => cr.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).Returns(Task.CompletedTask);
 
-        var courseModificationRequest = await courseService.InitiateCourseModification(GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
+        var courseModificationRequest = await courseService.InitiateCourseModification(TestData.GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
 
         Assert.IsNotNull(courseModificationRequest);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public async Task GetCourseData_CourseDoesNotExist_ThrowsArgumentException()
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task InitiateCourseModification_ValidInputWithDeletedCourse_Throws()
+    {
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleDeletedCourse();
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+
+        var courseModificationRequest = await courseService.InitiateCourseModification(TestData.GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(InvalidInputException))]
+    public async Task GetCourseData_CourseDoesNotExist_ThrowsInvalidInputException()
     {
         var subject = "SOEN";
         var catalog = "490";
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
 
-        await courseService.GetCourseData(subject, catalog);
+        await courseService.GetCourseDataOrThrowOnDeleted(subject, catalog);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public async Task GetCourseData_CourseIsDeleted_ThrowsArgumentException()
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task GetCourseData_CourseIsDeleted_ThrowsBadRequestException()
     {
         var subject = "SOEN";
         var catalog = "490";
-        var course = GetSampleCourse();
+        var course = TestData.GetSampleCourse();
         course.CourseState = CourseStateEnum.Deleted;
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         courseRepository.Setup(cr => cr.GetCourseByCourseIdAndLatestVersion(It.IsAny<int>())).ReturnsAsync(course);
 
-        await courseService.GetCourseData(subject, catalog);
+        await courseService.GetCourseDataOrThrowOnDeleted(subject, catalog);
     }
 
     [TestMethod]
@@ -255,36 +270,36 @@ public class CourseServiceTest
     {
         var subject = "SOEN";
         var catalog = "490";
-        var course = GetSampleCourse();
+        var course = TestData.GetSampleCourse();
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         courseRepository.Setup(cr => cr.GetCourseByCourseIdAndLatestVersion(It.IsAny<int>())).ReturnsAsync(course);
 
-        var courseData = await courseService.GetCourseData(subject, catalog);
+        var courseData = await courseService.GetCourseDataOrThrowOnDeleted(subject, catalog);
 
         Assert.IsNotNull(courseData);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public async Task InitiateCourseDeletion_CourseDoesNotExists_ThrowsArgumentException()
+    [ExpectedException(typeof(InvalidInputException))]
+    public async Task InitiateCourseDeletion_CourseDoesNotExists_ThrowsInvalidInputException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
 
-        await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
+        await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
     }
 
     [TestMethod]
     [ExpectedException(typeof(Exception))]
     public async Task InitiateCourseDeletion_DossierDoesNotExist_LogsAndThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
 
-        await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
+        await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
@@ -293,13 +308,13 @@ public class CourseServiceTest
     [ExpectedException(typeof(Exception))]
     public async Task InitiateCourseDeletion_DossierDoesNotBelongToUser_LogsAndThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
-        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
 
-        await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), Guid.NewGuid());
+        await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), Guid.NewGuid());
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
 
@@ -309,14 +324,14 @@ public class CourseServiceTest
     [ExpectedException(typeof(Exception))]
     public async Task InitiateCourseDeletion_CourseDoesNotSave_LogsAndThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
-        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(false);
 
-        await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
+        await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
@@ -325,31 +340,31 @@ public class CourseServiceTest
     [ExpectedException(typeof(Exception))]
     public async Task InitiateCourseDeletion_CourseDeletionRequestDoesNotSave_LogsAndThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
-        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
         dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
         dossierService.Setup(cr => cr.SaveCourseDeletionRequest(It.IsAny<CourseDeletionRequest>())).ThrowsAsync(new Exception());
 
-        await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
+        await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
     }
 
     [TestMethod]
     public async Task InitiateCourseDeletion_ValidInput_Succeeds()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
-        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(GetSampleDossier(user));
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
         dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
         dossierService.Setup(cr => cr.SaveCourseDeletionRequest(It.IsAny<CourseDeletionRequest>())).Returns(Task.CompletedTask);
 
-        var courseDeletionRequest = await courseService.InitiateCourseDeletion(GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
+        var courseDeletionRequest = await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
 
         Assert.IsNotNull(courseDeletionRequest);
     }
@@ -357,8 +372,8 @@ public class CourseServiceTest
     [TestMethod]
     public async Task EditCourseCreationRequest_ValidInput_Succeeds()
     {
-        var courseCreationRequest = GetSampleCourseCreationRequest();
-        var editCourseCreationRequestDTO = GetSampleEditCourseCreationRequestDTO();
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
+        var editCourseCreationRequestDTO = TestData.GetSampleEditCourseCreationRequestDTO();
         dossierService.Setup(service => service.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync(courseCreationRequest);
         dossierRepository.Setup(repository => repository.UpdateCourseCreationRequest(courseCreationRequest)).ReturnsAsync(true);
 
@@ -368,23 +383,22 @@ public class CourseServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public async Task EditCourseCreationRequest_CourseDoesNotExist_ThrowsArgumentException()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditCourseCreationRequest_CourseDoesNotExist_ThrowsNotFoundException()
     {
-        var courseCreationRequest = GetSampleCourseCreationRequest();
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
         courseCreationRequest.NewCourse = null;
-        var editCourseCreationRequestDTO = GetSampleEditCourseCreationRequestDTO();
+        var editCourseCreationRequestDTO = TestData.GetSampleEditCourseCreationRequestDTO();
         dossierService.Setup(service => service.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync(courseCreationRequest);
 
         await courseService.EditCourseCreationRequest(editCourseCreationRequestDTO);
-
     }
 
     [TestMethod]
     public async Task EditCourseModificationRequest_ValidInput_Succeeds()
     {
-        var courseModificationRequest = GetSampleCourseModificationRequest();
-        var editCourseModificationRequestDTO = GetSampleEditCourseModificationRequestDTO();
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
+        var editCourseModificationRequestDTO = TestData.GetSampleEditCourseModificationRequestDTO();
         dossierService.Setup(service => service.GetCourseModificationRequest(It.IsAny<Guid>())).ReturnsAsync(courseModificationRequest);
         dossierRepository.Setup(repository => repository.UpdateCourseModificationRequest(courseModificationRequest)).ReturnsAsync(true);
 
@@ -394,16 +408,28 @@ public class CourseServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public async Task EditCourseModificationRequest_CourseDoesNotExist_ThrowsArgumentException()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditCourseModificationRequest_CourseDoesNotExist_ThrowsNotFoundException()
     {
-        var courseModificationRequest = GetSampleCourseModificationRequest();
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
         courseModificationRequest.Course = null;
-        var editCourseModificationRequestDTO = GetSampleEditCourseModificationRequestDTO();
+        var editCourseModificationRequestDTO = TestData.GetSampleEditCourseModificationRequestDTO();
         dossierService.Setup(service => service.GetCourseModificationRequest(It.IsAny<Guid>())).ReturnsAsync(courseModificationRequest);
 
         await courseService.EditCourseModificationRequest(editCourseModificationRequestDTO);
+    }
 
+    [TestMethod]
+    public async Task EditCourseDeletionRequest_ValidInput_Succeeds()
+    {
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+        var editCourseDeletionRequestDTO = TestData.GetSampleEditCourseDeletionRequestDTO();
+        dossierService.Setup(service => service.GetCourseDeletionRequest(It.IsAny<Guid>())).ReturnsAsync(courseDeletionRequest);
+        dossierRepository.Setup(repository => repository.UpdateCourseDeletionRequest(courseDeletionRequest)).ReturnsAsync(true);
+
+        var editCourseCreationRequest = await courseService.EditCourseDeletionRequest(editCourseDeletionRequestDTO);
+
+        Assert.IsNotNull(editCourseCreationRequest);
     }
 
     [TestMethod]
@@ -418,7 +444,7 @@ public class CourseServiceTest
     [ExpectedException(typeof(Exception))]
     public async Task DeleteCourseCreationRequest_DoesNotDelete_LogsAndThrowsException()
     {
-        var courseCreationRequest = GetSampleCourseCreationRequest();
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
 
         dossierService.Setup(service => service.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync(courseCreationRequest);
         dossierRepository.Setup(repository => repository.DeleteCourseCreationRequest(courseCreationRequest)).ReturnsAsync(false);
@@ -431,7 +457,7 @@ public class CourseServiceTest
     [TestMethod]
     public async Task DeleteCourseCreationRequest_ValidInput_Succeeds()
     {
-        var courseCreationRequest = GetSampleCourseCreationRequest();
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
 
         dossierService.Setup(service => service.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync(courseCreationRequest);
         dossierRepository.Setup(repository => repository.DeleteCourseCreationRequest(courseCreationRequest)).ReturnsAsync(true);
@@ -453,7 +479,7 @@ public class CourseServiceTest
     [ExpectedException(typeof(Exception))]
     public async Task DeleteCourseModificationRequest_DoesNotDelete_LogsAndThrowsException()
     {
-        var courseModificationRequest = GetSampleCourseModificationRequest();
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
 
         dossierService.Setup(service => service.GetCourseModificationRequest(It.IsAny<Guid>())).ReturnsAsync(courseModificationRequest);
         dossierRepository.Setup(repository => repository.DeleteCourseModificationRequest(courseModificationRequest)).ReturnsAsync(false);
@@ -466,7 +492,7 @@ public class CourseServiceTest
     [TestMethod]
     public async Task DeleteCourseModificationRequest_ValidInput_Succeeds()
     {
-        var courseModificationRequest = GetSampleCourseModificationRequest();
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
 
         dossierService.Setup(service => service.GetCourseModificationRequest(It.IsAny<Guid>())).ReturnsAsync(courseModificationRequest);
         dossierRepository.Setup(repository => repository.DeleteCourseModificationRequest(courseModificationRequest)).ReturnsAsync(true);
@@ -476,198 +502,77 @@ public class CourseServiceTest
         dossierRepository.Verify(r => r.DeleteCourseModificationRequest(courseModificationRequest));
     }
 
-    private Course GetSampleCourse()
+    [TestMethod]
+    [ExpectedException(typeof(NullReferenceException))]
+    public async Task DeleteCourseDeletionRequest_DoesNotExist_ThrowsNullReferenceException()
     {
-        var id = Guid.NewGuid();
-
-        return new Course
-        {
-            Id = id,
-            CourseID = 1000,
-            Subject = "SOEN",
-            Catalog = "490",
-            Title = "Capstone",
-            Description = "Curriculum manager building simulator",
-            CreditValue = "6",
-            PreReqs = "SOEN 390",
-            CourseNotes = "Lots of fun",
-            Career = CourseCareerEnum.UGRD,
-            EquivalentCourses = "",
-            CourseState = CourseStateEnum.Accepted,
-            Version = 1,
-            Published = true,
-            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } }, id)
-        };
+        await courseService.DeleteCourseDeletionRequest(Guid.NewGuid());
     }
 
-    private CourseCreationInitiationDTO GetSampleCourseCreationInitiationDTO(Dossier dossier)
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task DeleteCourseDeletionRequest_DoesNotDelete_LogsAndThrowsException()
     {
-        return new CourseCreationInitiationDTO
-        {
-            Subject = "SOEN",
-            Catalog = "490",
-            Title = "Capstone",
-            Description = "Curriculum manager building simulator",
-            CreditValue = "6",
-            PreReqs = "SOEN 390",
-            CourseNotes = "Fun",
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Career = CourseCareerEnum.UGRD,
-            EquivalentCourses = "",
-            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
-            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
-            DossierId = dossier.Id,
-        };
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+
+        dossierService.Setup(service => service.GetCourseDeletionRequest(It.IsAny<Guid>())).ReturnsAsync(courseDeletionRequest);
+        dossierRepository.Setup(repository => repository.DeleteCourseDeletionRequest(courseDeletionRequest)).ReturnsAsync(false);
+
+        await courseService.DeleteCourseDeletionRequest(Guid.NewGuid());
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
 
-    private CourseModificationInitiationDTO GetSampleCourseCreationModificationDTO(Course course, Dossier dossier)
+    [TestMethod]
+    public async Task DeleteCourseDeletionnRequest_ValidInput_Succeeds()
     {
-        return new CourseModificationInitiationDTO
-        {
-            Subject = "SOEN",
-            Catalog = "490",
-            Title = "Capstone",
-            Description = "Curriculum manager building simulator",
-            CreditValue = "6",
-            PreReqs = "SOEN 390",
-            CourseNotes = "Fun",
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Career = CourseCareerEnum.UGRD,
-            EquivalentCourses = "",
-            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
-            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
-            DossierId = dossier.Id,
-            CourseId = course.CourseID
-        };
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+
+        dossierService.Setup(service => service.GetCourseDeletionRequest(It.IsAny<Guid>())).ReturnsAsync(courseDeletionRequest);
+        dossierRepository.Setup(repository => repository.DeleteCourseDeletionRequest(courseDeletionRequest)).ReturnsAsync(true);
+
+        await courseService.DeleteCourseDeletionRequest(courseDeletionRequest.Id);
+
+        dossierRepository.Verify(r => r.DeleteCourseDeletionRequest(courseDeletionRequest));
     }
 
-    private CourseDeletionInitiationDTO GetSampleCourseCreationDeletionDTO(Course course, Dossier dossier)
+    [TestMethod]
+    [ExpectedException(typeof(InvalidInputException))]
+    public async Task GetCourseDataWithSupportingFilesOrThrowOnDeleted_CourseDoesNotExist_ThrowsInvalidInputException()
     {
-        return new CourseDeletionInitiationDTO
-        {
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            DossierId = dossier.Id,
-            Subject = course.Subject,
-            Catalog = course.Catalog
-        };
+        var subject = "SOEN";
+        var catalog = "490";
+        courseRepository.Setup(cr => cr.GetCourseWithSupportingFilesBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
+
+        await courseService.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog);
     }
 
-    private User GetSampleUser()
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task GetCourseDataWithSupportingFilesOrThrowOnDeleted_CourseIsDeleted_ThrowsBadRequestException()
     {
-        return new User
-        {
-            Id = Guid.NewGuid(),
-            FirstName = "Joe",
-            LastName = "Smith",
-            Email = "jsmith@ccm.com",
-            Password = "Password123!"
-        };
+        var subject = "SOEN";
+        var catalog = "490";
+        var course = TestData.GetSampleCourse();
+        course.CourseState = CourseStateEnum.Deleted;
+        courseRepository.Setup(cr => cr.GetCourseWithSupportingFilesBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+        courseRepository.Setup(cr => cr.GetCourseByCourseIdAndLatestVersion(It.IsAny<int>())).ReturnsAsync(course);
+
+        await courseService.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog);
     }
 
-    private Dossier GetSampleDossier(User user)
+    [TestMethod]
+    public async Task GetCourseDataWithSupportingFilesOrThrowOnDeleted_ValidCall_Succeeds()
     {
-        return new Dossier
-        {
-            Initiator = user,
-            InitiatorId = user.Id,
-            Title = "Dossier 1",
-            Description = "Text description of a dossier.",
-            Published = false,
-        };
-    }
+        var subject = "SOEN";
+        var catalog = "490";
+        var course = TestData.GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseWithSupportingFilesBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+        courseRepository.Setup(cr => cr.GetCourseByCourseIdAndLatestVersion(It.IsAny<int>())).ReturnsAsync(course);
 
-    private CourseCreationRequest GetSampleCourseCreationRequest(Dossier dossier, Course course)
-    {
-        return new CourseCreationRequest
-        {
-            DossierId = dossier.Id,
-            NewCourseId = course.Id,
-            Rationale = "Why not?",
-            ResourceImplication = "New prof needed",
-            Comment = "Easy change to make"
-        };
-    }
+        var courseData = await courseService.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog);
 
-    private CourseModificationRequest GetSampleCourseModificationRequest(Dossier dossier, Course course)
-    {
-        return new CourseModificationRequest
-        {
-            DossierId = dossier.Id,
-            CourseId = course.Id,
-            Rationale = "Why not?",
-            ResourceImplication = "New prof needed",
-            Comment = "Easy change to make"
-        };
-    }
-
-    private EditCourseCreationRequestDTO GetSampleEditCourseCreationRequestDTO()
-    {
-        return new EditCourseCreationRequestDTO
-        {
-            Id = Guid.NewGuid(),
-            DossierId = Guid.NewGuid(),
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Subject = "SOEN Modified3",
-            Catalog = "500",
-            Title = "Super Capstone for Software Engineers",
-            Description = "An advanced capstone project for final year software engineering students.",
-            CourseNotes = "Students are required to present their project at the end of the semester.",
-            CreditValue = "6.5",
-            PreReqs = "SOEN 490 previously or concurrently",
-            Career = CourseCareerEnum.UGRD,
-            EquivalentCourses = "SOEN 499",
-            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
-            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
-        };
-    }
-
-    private EditCourseModificationRequestDTO GetSampleEditCourseModificationRequestDTO()
-    {
-        return new EditCourseModificationRequestDTO
-        {
-            Id = Guid.NewGuid(),
-            DossierId = Guid.NewGuid(),
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Title = "Super Capstone for Software Engineers",
-            Description = "An advanced capstone project for final year software engineering students.",
-            CourseNotes = "Students are required to present their project at the end of the semester.",
-            CreditValue = "6.5",
-            PreReqs = "SOEN 490 previously or concurrently",
-            Career = CourseCareerEnum.UGRD,
-            EquivalentCourses = "SOEN 499",
-            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
-            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
-        };
-    }
-
-    private CourseCreationRequest GetSampleCourseCreationRequest()
-    {
-        return new CourseCreationRequest
-        {
-            DossierId = Guid.NewGuid(),
-            NewCourseId = Guid.NewGuid(),
-            NewCourse = GetSampleCourse(),
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Comment = "Fun",
-        };
-    }
-
-    private CourseModificationRequest GetSampleCourseModificationRequest()
-    {
-        return new CourseModificationRequest
-        {
-            DossierId = Guid.NewGuid(),
-            CourseId = Guid.NewGuid(),
-            Course = GetSampleCourse(),
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Comment = "Fun",
-        };
+        Assert.IsNotNull(courseData);
     }
 }

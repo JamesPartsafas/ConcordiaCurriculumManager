@@ -1,15 +1,17 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.Controllers;
-using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
-using ConcordiaCurriculumManager.Models.Curriculum;
-using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Net;
 using ConcordiaCurriculumManager.DTO.Courses;
+using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
+using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
+using ConcordiaCurriculumManager.Repositories;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 
@@ -21,6 +23,7 @@ public class CourseControllerTest
     private Mock<ICourseService> _courseService = null!;
     private Mock<IUserAuthenticationService> _userAuthenticationService = null!;
     private CourseController _courseController = null!;
+    private Mock<IDossierService> _dossierService = null!;
 
     [TestInitialize]
     public void TestInitialize()
@@ -29,19 +32,20 @@ public class CourseControllerTest
         _mapper = new Mock<IMapper>();
         _courseService = new Mock<ICourseService>();
         _userAuthenticationService = new Mock<IUserAuthenticationService>();
+        _dossierService = new Mock<IDossierService>();
 
-        _courseController = new CourseController(_mapper.Object, _logger.Object, _courseService.Object, _userAuthenticationService.Object);
+        _courseController = new CourseController(_mapper.Object, _logger.Object, _courseService.Object, _userAuthenticationService.Object, _dossierService.Object);
     }
 
     [TestMethod]
     public async Task InitiatiateCourseCreation_ValidCall_ReturnsData()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseCreationInitiationDTO = GetSampleCourseCreationInitiationDTO(course, dossier);
-        var courseCreationRequestDTO = GetSampleCourseCreationRequestDTO(course, dossier);
-        var courseCreationRequest = GetSampleCourseCreationRequest(course, dossier);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseCreationInitiationDTO = TestData.GetSampleCourseCreationInitiationDTO(dossier);
+        var courseCreationRequestDTO = TestData.GetSampleCourseCreationRequestDTO(course, dossier);
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest(dossier, course);
 
         _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
         _courseService.Setup(x => x.InitiateCourseCreation(courseCreationInitiationDTO, user.Id)).ReturnsAsync(courseCreationRequest);
@@ -55,54 +59,32 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task InitiatiateCourseCreation_InvalidCall_Returns400()
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task InitiatiateCourseCreation_InvalidCall_ThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseCreationInitiationDTO = GetSampleCourseCreationInitiationDTO(course, dossier);
-        var courseCreationRequestDTO = GetSampleCourseCreationRequestDTO(course, dossier);
-        var courseCreationRequest = GetSampleCourseCreationRequest(course, dossier);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseCreationInitiationDTO = TestData.GetSampleCourseCreationInitiationDTO(dossier);
+        var courseCreationRequestDTO = TestData.GetSampleCourseCreationRequestDTO(course, dossier);
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest(dossier, course);
 
         _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
-        _courseService.Setup(x => x.InitiateCourseCreation(courseCreationInitiationDTO, user.Id)).Throws(new ArgumentException());
+        _courseService.Setup(x => x.InitiateCourseCreation(courseCreationInitiationDTO, user.Id)).Throws(new BadRequestException());
 
-        var actionResult = await _courseController.InitiateCourseCreation(courseCreationInitiationDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-        _courseService.Verify(service => service.InitiateCourseCreation(courseCreationInitiationDTO, user.Id), Times.Once);
-    }
-
-    [TestMethod]
-    public async Task InitiatiateCourseCreation_ServerError_Returns500()
-    {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseCreationInitiationDTO = GetSampleCourseCreationInitiationDTO(course, dossier);
-        var courseCreationRequestDTO = GetSampleCourseCreationRequestDTO(course, dossier);
-        var courseCreationRequest = GetSampleCourseCreationRequest(course, dossier);
-
-        _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
-        _courseService.Setup(x => x.InitiateCourseCreation(courseCreationInitiationDTO, user.Id)).Throws(new Exception());
-
-        var actionResult = await _courseController.InitiateCourseCreation(courseCreationInitiationDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        await _courseController.InitiateCourseCreation(courseCreationInitiationDTO);
         _courseService.Verify(service => service.InitiateCourseCreation(courseCreationInitiationDTO, user.Id), Times.Once);
     }
 
     [TestMethod]
     public async Task InitiatiateCourseModification_ValidCall_ReturnsData()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseModificationInitiationDTO = GetSampleCourseModificationInitiationDTO(course, dossier);
-        var courseModificationRequestDTO = GetSampleCourseModificationRequestDTO(course, dossier);
-        var courseModificationRequest = GetSampleCourseModificationRequest(course, dossier);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseModificationInitiationDTO = TestData.GetSampleCourseCreationModificationDTO(course, dossier);
+        var courseModificationRequestDTO = TestData.GetSampleCourseModificationRequestDTO(course, dossier);
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest(dossier, course);
 
         _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
         _courseService.Setup(x => x.InitiateCourseModification(courseModificationInitiationDTO, user.Id)).ReturnsAsync(courseModificationRequest);
@@ -116,54 +98,32 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task InitiatiateCourseModification_InvalidCall_Returns400()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task InitiatiateCourseModification_InvalidCall_ThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseModificationInitiationDTO = GetSampleCourseModificationInitiationDTO(course, dossier);
-        var courseModificationRequestDTO = GetSampleCourseModificationRequestDTO(course, dossier);
-        var courseModificationRequest = GetSampleCourseModificationRequest(course, dossier);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseModificationInitiationDTO = TestData.GetSampleCourseCreationModificationDTO(course, dossier);
+        var courseModificationRequestDTO = TestData.GetSampleCourseModificationRequestDTO(course, dossier);
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest(dossier, course);
 
         _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
-        _courseService.Setup(x => x.InitiateCourseModification(courseModificationInitiationDTO, user.Id)).Throws(new ArgumentException());
+        _courseService.Setup(x => x.InitiateCourseModification(courseModificationInitiationDTO, user.Id)).Throws(new NotFoundException());
 
-        var actionResult = await _courseController.InitiateCourseModification(courseModificationInitiationDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-        _courseService.Verify(service => service.InitiateCourseModification(courseModificationInitiationDTO, user.Id), Times.Once);
-    }
-
-    [TestMethod]
-    public async Task InitiatiateCourseModification_ServerError_Returns500()
-    {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseModificationInitiationDTO = GetSampleCourseModificationInitiationDTO(course, dossier);
-        var courseModificationRequestDTO = GetSampleCourseModificationRequestDTO(course, dossier);
-        var courseModificationRequest = GetSampleCourseModificationRequest(course, dossier);
-
-        _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
-        _courseService.Setup(x => x.InitiateCourseModification(courseModificationInitiationDTO, user.Id)).Throws(new Exception());
-
-        var actionResult = await _courseController.InitiateCourseModification(courseModificationInitiationDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        await _courseController.InitiateCourseModification(courseModificationInitiationDTO);
         _courseService.Verify(service => service.InitiateCourseModification(courseModificationInitiationDTO, user.Id), Times.Once);
     }
 
     [TestMethod]
     public async Task InitiatiateCourseDeletion_ValidCall_ReturnsData()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseDeletionInitiationDTO = GetSampleCourseDeletionInitiationDTO(course, dossier);
-        var courseDeletionnRequestDTO = GetSampleCourseDeletionRequestDTO(course, dossier);
-        var courseDeletionRequest = GetSampleCourseDeletionRequest(course, dossier);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseDeletionInitiationDTO = TestData.GetSampleCourseCreationDeletionDTO(course, dossier);
+        var courseDeletionnRequestDTO = TestData.GetSampleCourseDeletionRequestDTO(course, dossier);
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
 
         _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
         _courseService.Setup(x => x.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id)).ReturnsAsync(courseDeletionRequest);
@@ -177,17 +137,18 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task InitiatiateCourseDeletion_InvalidCall_Returns400()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task InitiatiateCourseDeletion_InvalidCall_ThrowsException()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseDeletionInitiationDTO = GetSampleCourseDeletionInitiationDTO(course, dossier);
-        var courseDeletionRequestDTO = GetSampleCourseDeletionRequestDTO(course, dossier);
-        var courseDeletionRequest = GetSampleCourseDeletionRequest(course, dossier);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseDeletionInitiationDTO = TestData.GetSampleCourseCreationDeletionDTO(course, dossier);
+        var courseDeletionnRequestDTO = TestData.GetSampleCourseDeletionRequestDTO(course, dossier);
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
 
         _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
-        _courseService.Setup(x => x.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id)).Throws(new ArgumentException());
+        _courseService.Setup(x => x.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id)).Throws(new NotFoundException());
 
         var actionResult = await _courseController.InitiateCourseDeletion(courseDeletionInitiationDTO);
         var objectResult = (ObjectResult)actionResult;
@@ -197,32 +158,12 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task InitiatiateCourseDeletion_ServerError_Returns500()
-    {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseDeletionInitiationDTO = GetSampleCourseDeletionInitiationDTO(course, dossier);
-        var courseDeletionRequestDTO = GetSampleCourseDeletionRequestDTO(course, dossier);
-        var courseDeletionRequest = GetSampleCourseDeletionRequest(course, dossier);
-
-        _userAuthenticationService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(user.Id.ToString);
-        _courseService.Setup(x => x.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id)).Throws(new Exception());
-
-        var actionResult = await _courseController.InitiateCourseDeletion(courseDeletionInitiationDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
-        _courseService.Verify(service => service.InitiateCourseDeletion(courseDeletionInitiationDTO, user.Id), Times.Once);
-    }
-
-    [TestMethod]
     public async Task GetCourseData_ValidCall_ReturnsData()
     {
         var subject = "SOEN";
         var catalog = "490";
-        var course = GetSampleCourse();
-       _courseService.Setup(cr => cr.GetCourseData(subject, catalog)).ReturnsAsync(course);
+        var course = TestData.GetSampleCourse();
+       _courseService.Setup(cr => cr.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog)).ReturnsAsync(course);
 
         var actionResult = await _courseController.GetCourseData(subject, catalog);
         var objectResult = (ObjectResult)actionResult;
@@ -232,9 +173,10 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task GetCourseData_ServerError_Returns500()
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task GetCourseData_ServerError_ThrowsTheSameExceptionAsCourseService()
     {
-        _courseService.Setup(cr => cr.GetCourseData(It.IsAny<string>(), It.IsAny<string>())).Throws(new Exception());
+        _courseService.Setup(cr => cr.GetCourseDataWithSupportingFilesOrThrowOnDeleted(It.IsAny<string>(), It.IsAny<string>())).Throws(new BadRequestException());
 
         var actionResult = await _courseController.GetCourseData(It.IsAny<string>(), It.IsAny<string>());
         var objectResult = (ObjectResult)actionResult;
@@ -245,12 +187,12 @@ public class CourseControllerTest
     [TestMethod]
     public async Task EditCourseCreationRequest_ValidCall_ReturnsData()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseCreationRequestDTO = GetSampleCourseCreationRequestDTO(course, dossier);
-        var courseCreationRequest = GetSampleCourseCreationRequest(course, dossier);
-        var editCourseCreationRequestDTO = GetSampleEditCourseCreationRequestDTO();
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseCreationRequestDTO = TestData.GetSampleCourseCreationRequestDTO(course, dossier);
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest(dossier, course);
+        var editCourseCreationRequestDTO = TestData.GetSampleEditCourseCreationRequestDTO();
 ;
         _courseService.Setup(x => x.EditCourseCreationRequest(editCourseCreationRequestDTO)).ReturnsAsync(courseCreationRequest);
         _mapper.Setup(x => x.Map<CourseCreationRequestDTO>(It.IsAny<CourseCreationRequest>())).Returns(courseCreationRequestDTO);
@@ -263,42 +205,26 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task EditCourseCreationRequest_InvalidCall_Returns400()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditCourseCreationRequest_InvalidCall_ThrowsException()
     {
-        var editCourseCreationRequestDTO = GetSampleEditCourseCreationRequestDTO();
+        var editCourseCreationRequestDTO = TestData.GetSampleEditCourseCreationRequestDTO();
 
-        _courseService.Setup(x => x.EditCourseCreationRequest(editCourseCreationRequestDTO)).Throws(new ArgumentException());
+        _courseService.Setup(x => x.EditCourseCreationRequest(editCourseCreationRequestDTO)).Throws(new NotFoundException());
 
-        var actionResult = await _courseController.EditCourseCreationRequest(editCourseCreationRequestDTO);
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-        _courseService.Verify(service => service.EditCourseCreationRequest(editCourseCreationRequestDTO), Times.Once);
-    }
-
-    [TestMethod]
-    public async Task EditCourseCreationRequest_ServerError_Returns500()
-    {
-        var editCourseCreationRequestDTO = GetSampleEditCourseCreationRequestDTO();
-
-        _courseService.Setup(x => x.EditCourseCreationRequest(editCourseCreationRequestDTO)).Throws(new Exception());
-
-        var actionResult = await _courseController.EditCourseCreationRequest(editCourseCreationRequestDTO);
-        var objectResult = (ObjectResult)actionResult;
-        
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        await _courseController.EditCourseCreationRequest(editCourseCreationRequestDTO);
         _courseService.Verify(service => service.EditCourseCreationRequest(editCourseCreationRequestDTO), Times.Once);
     }
 
     [TestMethod]
     public async Task EditCourseModificationRequest_ValidCall_ReturnsData()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseModificationRequestDTO = GetSampleCourseModificationRequestDTO(course, dossier);
-        var courseModificationRequest = GetSampleCourseModificationRequest(course, dossier);
-        var editCourseModificationRequestDTO = GetSampleEditCourseModificationRequestDTO();
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseModificationRequestDTO = TestData.GetSampleCourseModificationRequestDTO(course, dossier);
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest(dossier, course);
+        var editCourseModificationRequestDTO = TestData.GetSampleEditCourseModificationRequestDTO();
 
         _courseService.Setup(x => x.EditCourseModificationRequest(editCourseModificationRequestDTO)).ReturnsAsync(courseModificationRequest);
         _mapper.Setup(x => x.Map<CourseModificationRequestDTO>(It.IsAny<CourseModificationRequest>())).Returns(courseModificationRequestDTO);
@@ -311,11 +237,12 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task EditCourseModificationRequest_InvalidCall_Returns400()
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditCourseModificationRequest_InvalidCall_ThrowsException()
     {
-        var editCourseModificationRequestDTO = GetSampleEditCourseModificationRequestDTO();
+        var editCourseModificationRequestDTO = TestData.GetSampleEditCourseModificationRequestDTO();
 
-        _courseService.Setup(x => x.EditCourseModificationRequest(editCourseModificationRequestDTO)).Throws(new ArgumentException());
+        _courseService.Setup(x => x.EditCourseModificationRequest(editCourseModificationRequestDTO)).Throws(new NotFoundException());
 
         var actionResult = await _courseController.EditCourseModificationRequest(editCourseModificationRequestDTO);
         var objectResult = (ObjectResult)actionResult;
@@ -325,26 +252,47 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task EditCourseModificationRequest_ServerError_Returns500()
+    public async Task EditCourseDeletionRequest_ValidCall_ReturnsData()
     {
-        var editCourseModificationRequestDTO = GetSampleEditCourseModificationRequestDTO();
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseDeletionRequestDTO = TestData.GetSampleCourseDeletionRequestDTO(course, dossier);
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+        var editCourseDeletionRequestDTO = TestData.GetSampleEditCourseDeletionRequestDTO();
 
-        _courseService.Setup(x => x.EditCourseModificationRequest(editCourseModificationRequestDTO)).Throws(new Exception());
+        _courseService.Setup(x => x.EditCourseDeletionRequest(editCourseDeletionRequestDTO)).ReturnsAsync(courseDeletionRequest);
+        _mapper.Setup(x => x.Map<CourseDeletionRequestDTO>(It.IsAny<CourseDeletionRequest>())).Returns(courseDeletionRequestDTO);
 
-        var actionResult = await _courseController.EditCourseModificationRequest(editCourseModificationRequestDTO);
+        var actionResult = await _courseController.EditCourseDeletionRequest(editCourseDeletionRequestDTO);
         var objectResult = (ObjectResult)actionResult;
 
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
-        _courseService.Verify(service => service.EditCourseModificationRequest(editCourseModificationRequestDTO), Times.Once);
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        _courseService.Verify(service => service.EditCourseDeletionRequest(editCourseDeletionRequestDTO), Times.Once);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditCourseDeletionRequest_InvalidCall_ThrowsException()
+    {
+        var editCourseDeletionRequestDTO = TestData.GetSampleEditCourseDeletionRequestDTO();
+
+        _courseService.Setup(x => x.EditCourseDeletionRequest(editCourseDeletionRequestDTO)).Throws(new NotFoundException());
+
+        var actionResult = await _courseController.EditCourseDeletionRequest(editCourseDeletionRequestDTO);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+        _courseService.Verify(service => service.EditCourseDeletionRequest(editCourseDeletionRequestDTO), Times.Once);
     }
 
     [TestMethod]
     public async Task DeleteCourseCreationRequest_ValidCall_Returns204()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseCreationRequest = GetSampleCourseCreationRequest(course, dossier);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest(dossier, course);
 
         var actionResult = await _courseController.DeleteCourseCreationRequest(courseCreationRequest.Id);
         var objectResult = (NoContentResult)actionResult;
@@ -353,34 +301,21 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task DeleteCourseCreationRequest_InvalidCall_Returns400()
-    {
-        _courseService.Setup(service => service.DeleteCourseCreationRequest(It.IsAny<Guid>())).Throws(new ArgumentException());
-
-        var actionResult = await _courseController.DeleteCourseCreationRequest(It.IsAny<Guid>());
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-    }
-
-    [TestMethod]
-    public async Task DeleteCourseCreationRequest_ServerError_Returns500()
+    [ExpectedException(typeof(Exception))]
+    public async Task DeleteCourseCreationRequest_InvalidCall_ThrowsException()
     {
         _courseService.Setup(service => service.DeleteCourseCreationRequest(It.IsAny<Guid>())).Throws(new Exception());
 
-        var actionResult = await _courseController.DeleteCourseCreationRequest(It.IsAny<Guid>());
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        await _courseController.DeleteCourseCreationRequest(It.IsAny<Guid>());
     }
 
     [TestMethod]
     public async Task DeleteCourseModificationRequest_ValidCall_Returns204()
     {
-        var user = GetSampleUser();
-        var dossier = GetSampleDossier(user);
-        var course = GetSampleCourse();
-        var courseModificationRequest = GetSampleCourseModificationRequest(course, dossier);
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest(dossier, course);
 
         var actionResult = await _courseController.DeleteCourseModificationRequest(courseModificationRequest.Id);
         var objectResult = (NoContentResult)actionResult;
@@ -389,244 +324,112 @@ public class CourseControllerTest
     }
 
     [TestMethod]
-    public async Task DeleteCourseModificationRequest_InvalidCall_Returns400()
-    {
-        _courseService.Setup(service => service.DeleteCourseModificationRequest(It.IsAny<Guid>())).Throws(new ArgumentException());
-
-        var actionResult = await _courseController.DeleteCourseModificationRequest(It.IsAny<Guid>());
-        var objectResult = (ObjectResult)actionResult;
-
-        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
-    }
-
-    [TestMethod]
-    public async Task DeleteCourseModificationRequest_ServerError_Returns500()
+    [ExpectedException(typeof(Exception))]
+    public async Task DeleteCourseModificationRequest_InvalidCall_ThrowsException()
     {
         _courseService.Setup(service => service.DeleteCourseModificationRequest(It.IsAny<Guid>())).Throws(new Exception());
 
-        var actionResult = await _courseController.DeleteCourseModificationRequest(It.IsAny<Guid>());
+        await _courseController.DeleteCourseModificationRequest(It.IsAny<Guid>());
+    }
+
+    [TestMethod]
+    public async Task DeleteCourseDeletionRequest_ValidCall_Returns204()
+    {
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest(dossier, course);
+
+        var actionResult = await _courseController.DeleteCourseDeletionRequest(courseDeletionRequest.Id);
+        var objectResult = (NoContentResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.NoContent, objectResult.StatusCode);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(Exception))]
+    public async Task DeleteCourseDeletionRequest_InvalidCall_ThrowsException()
+    {
+        _courseService.Setup(service => service.DeleteCourseDeletionRequest(It.IsAny<Guid>())).Throws(new Exception());
+
+        await _courseController.DeleteCourseDeletionRequest(It.IsAny<Guid>());
+    }
+
+    [TestMethod]
+    public async Task GetCourseCreationRequest_ValidCall_ReturnsData()
+    {
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
+
+        _dossierService.Setup(service => service.GetCourseCreationRequest(It.IsAny<Guid>())).ReturnsAsync(courseCreationRequest);
+
+        var actionResult = await _courseController.GetCourseCreationRequest(It.IsAny<Guid>());
         var objectResult = (ObjectResult)actionResult;
 
-        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        _mapper.Verify(mock => mock.Map<CourseCreationRequestCourseDetailsDTO>(courseCreationRequest), Times.Once());
     }
 
-    private User GetSampleUser()
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task GetCourseCreationRequest_InvalidCall_ThrowsException()
     {
-        return new User
-        {
-            Id = new Guid(),
-            FirstName = "Joe",
-            LastName = "Smith",
-            Email = "jsmith@ccm.com",
-            Password = "Password123!"
-        };
+        _dossierService.Setup(service => service.GetCourseCreationRequest(It.IsAny<Guid>())).Throws(new NotFoundException());
+
+        var actionResult = await _courseController.GetCourseCreationRequest(It.IsAny<Guid>());
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.NotFound, objectResult.StatusCode);
     }
 
-    private Dossier GetSampleDossier(User user)
+    [TestMethod]
+    public async Task GetCourseModificationRequest_ValidCall_ReturnsData()
     {
-        return new Dossier
-        {
-            Initiator = user,
-            InitiatorId = user.Id,
-            Title = "Dossier 1",
-            Description = "Text description of a dossier.",
-            Published = false,
-        };
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
+
+        _dossierService.Setup(service => service.GetCourseModificationRequest(It.IsAny<Guid>())).ReturnsAsync(courseModificationRequest);
+
+        var actionResult = await _courseController.GetCourseModificationRequest(It.IsAny<Guid>());
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        _mapper.Verify(mock => mock.Map<CourseModificationRequestCourseDetailsDTO>(courseModificationRequest), Times.Once());
     }
 
-    private Course GetSampleCourse()
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task GetCourseModificationRequest_InvalidCall_ThrowsException()
     {
-        var id = Guid.NewGuid();
+        _dossierService.Setup(service => service.GetCourseModificationRequest(It.IsAny<Guid>())).Throws(new NotFoundException());
 
-        return new Course
-        {
-            Id = id,
-            CourseID = 1000,
-            Subject = "SOEN",
-            Catalog = "490",
-            Title = "Capstone",
-            Description = "Curriculum manager building simulator",
-            CreditValue = "6",
-            PreReqs = "SOEN 390",
-            CourseNotes = "Lots of fun",
-            Career = CourseCareerEnum.UGRD,
-            EquivalentCourses = "",
-            CourseState = CourseStateEnum.NewCourseProposal,
-            Version = 1,
-            Published = true,
-            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } }, id)
-        };
+        var actionResult = await _courseController.GetCourseModificationRequest(It.IsAny<Guid>());
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.NotFound, objectResult.StatusCode);
     }
 
-    private CourseCreationInitiationDTO GetSampleCourseCreationInitiationDTO(Course course, Dossier dossier)
+    [TestMethod]
+    public async Task GetCourseDeletionRequest_ValidCall_ReturnsData()
     {
-        return new CourseCreationInitiationDTO
-        {
-            Subject = "SOEN",
-            Catalog = "490",
-            Title = "Capstone",
-            Description = "Curriculum manager building simulator",
-            CreditValue = "6",
-            PreReqs = "SOEN 390",
-            CourseNotes = "Fun",
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Career = CourseCareerEnum.UGRD,
-            EquivalentCourses = "",
-            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
-            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
-            DossierId = dossier.Id
-        };
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+
+        _dossierService.Setup(service => service.GetCourseDeletionRequest(It.IsAny<Guid>())).ReturnsAsync(courseDeletionRequest);
+
+        var actionResult = await _courseController.GetCourseDeletionRequest(It.IsAny<Guid>());
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        _mapper.Verify(mock => mock.Map<CourseDeletionRequestDTO>(courseDeletionRequest), Times.Once());
     }
 
-    private CourseCreationRequestDTO GetSampleCourseCreationRequestDTO(Course course, Dossier dossier)
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task GetCourseDeletionRequest_InvalidCall_ThrowsException()
     {
-        return new CourseCreationRequestDTO
-        {
-            Id = Guid.NewGuid(),
-            DossierId = dossier.Id,
-            NewCourseId = course.Id,
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Comment = "Fun",
-        };
-    }
+        _dossierService.Setup(service => service.GetCourseDeletionRequest(It.IsAny<Guid>())).Throws(new NotFoundException());
 
-    private CourseCreationRequest GetSampleCourseCreationRequest(Course course, Dossier dossier)
-    {
-        return new CourseCreationRequest
-        {
-            DossierId = dossier.Id,
-            NewCourseId = course.Id,
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Comment = "Fun",
-        };
-    }
+        var actionResult = await _courseController.GetCourseDeletionRequest(It.IsAny<Guid>());
+        var objectResult = (ObjectResult)actionResult;
 
-    private CourseModificationInitiationDTO GetSampleCourseModificationInitiationDTO(Course course, Dossier dossier)
-    {
-        return new CourseModificationInitiationDTO
-        {
-            Subject = "SOEN",
-            Catalog = "490",
-            Title = "Capstone",
-            Description = "Curriculum manager building simulator",
-            CreditValue = "6",
-            PreReqs = "SOEN 390",
-            CourseNotes = "Fun",
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Career = CourseCareerEnum.UGRD,
-            EquivalentCourses = "",
-            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
-            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
-            DossierId = dossier.Id,
-            CourseId = 1,
-        };
-    }
-
-    private CourseModificationRequestDTO GetSampleCourseModificationRequestDTO(Course course, Dossier dossier)
-    {
-        return new CourseModificationRequestDTO
-        {
-            Id = Guid.NewGuid(),
-            DossierId = dossier.Id,
-            CourseId = course.Id,
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Comment = "Fun",
-        };
-    }
-
-    private CourseModificationRequest GetSampleCourseModificationRequest(Course course, Dossier dossier)
-    {
-        return new CourseModificationRequest
-        {
-            DossierId = dossier.Id,
-            CourseId = course.Id,
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Comment = "Fun",
-        };
-    }
-
-    private CourseDeletionInitiationDTO GetSampleCourseDeletionInitiationDTO(Course course, Dossier dossier)
-    {
-        return new CourseDeletionInitiationDTO
-        {
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            DossierId = dossier.Id,
-            Subject = "SOEN",
-            Catalog = "490"
-        };
-    }
-
-    private CourseDeletionRequestDTO GetSampleCourseDeletionRequestDTO(Course course, Dossier dossier)
-    {
-        return new CourseDeletionRequestDTO
-        {
-            Id = Guid.NewGuid(),
-            DossierId = dossier.Id,
-            CourseId = course.Id,
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Comment = "Fun",
-        };
-    }
-
-    private CourseDeletionRequest GetSampleCourseDeletionRequest(Course course, Dossier dossier)
-    {
-        return new CourseDeletionRequest
-        {
-            DossierId = dossier.Id,
-            CourseId = course.Id,
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Comment = "Fun",
-        };
-    }
-
-    private EditCourseCreationRequestDTO GetSampleEditCourseCreationRequestDTO()
-    {
-        return new EditCourseCreationRequestDTO
-        {
-            Id = Guid.NewGuid(),
-            DossierId = Guid.NewGuid(),
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Subject = "SOEN Modified3",
-            Catalog = "500",
-            Title = "Super Capstone for Software Engineers",
-            Description = "An advanced capstone project for final year software engineering students.",
-            CourseNotes = "Students are required to present their project at the end of the semester.",
-            CreditValue = "6.5",
-            PreReqs = "SOEN 490 previously or concurrently",
-            Career = CourseCareerEnum.UGRD,
-            EquivalentCourses = "SOEN 499",
-            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
-            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
-        };
-    }
-
-    private EditCourseModificationRequestDTO GetSampleEditCourseModificationRequestDTO()
-    {
-        return new EditCourseModificationRequestDTO
-        {
-            Id = Guid.NewGuid(),
-            DossierId = Guid.NewGuid(),
-            Rationale = "It's necessary",
-            ResourceImplication = "New prof needed",
-            Title = "Super Capstone for Software Engineers",
-            Description = "An advanced capstone project for final year software engineering students.",
-            CourseNotes = "Students are required to present their project at the end of the semester.",
-            CreditValue = "6.5",
-            PreReqs = "SOEN 490 previously or concurrently",
-            Career = CourseCareerEnum.UGRD,
-            EquivalentCourses = "SOEN 499",
-            ComponentCodes = new Dictionary<ComponentCodeEnum, int?> { { ComponentCodeEnum.LEC, 3 } },
-            SupportingFiles = new Dictionary<string, string> { { "name.pdf", "base64content" } },
-        };
+        Assert.AreEqual((int)HttpStatusCode.NotFound, objectResult.StatusCode);
     }
 }

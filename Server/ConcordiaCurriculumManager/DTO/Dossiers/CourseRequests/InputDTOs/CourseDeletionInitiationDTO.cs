@@ -1,6 +1,6 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum;
 
-namespace ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
+namespace ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 
 public class CourseDeletionInitiationDTO : CourseInitiationDTO
 {

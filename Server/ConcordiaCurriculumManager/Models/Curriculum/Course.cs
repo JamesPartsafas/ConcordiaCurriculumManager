@@ -1,4 +1,5 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using NpgsqlTypes;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum;
@@ -27,7 +28,7 @@ public class Course : BaseModel
 
     public required CourseStateEnum CourseState { get; set; }
 
-    public required int Version { get; set; }
+    public int? Version { get; set; }
 
     public required bool Published { get; set; }
 
@@ -46,6 +47,69 @@ public class Course : BaseModel
 
     public ICollection<CourseReference>? CourseReferencing { get; set; }
 
+    public bool IsCourseStateFinalized() => CourseState == CourseStateEnum.Accepted || CourseState == CourseStateEnum.Deleted;
+
+    public void VerifyCourseIsValidOrThrow()
+    {
+        // Published courses must have final state and version
+        if (Published)
+        {
+            if (IsCourseStateFinalized() && Version != null) return;
+
+            throw new ArgumentException("The course is published but does not have an appropriate course state or version");
+        }
+
+        // Courses with final state must have version
+        if (IsCourseStateFinalized())
+        {
+            if (Version != null) return;
+
+            throw new ArgumentException("The course has a finalized state but does not have a version");
+        }
+
+        // Courses with non-final states must not have version
+        if (Version == null) return;
+
+        throw new ArgumentException("The course has a non-final state but it has a version");
+    }
+
+    public void ModifyCourseFromDTOData(CourseInitiationBaseDataDTO initiation)
+    {
+        Title = initiation.Title;
+        Description = initiation.Description;
+        CourseNotes = initiation.CourseNotes;
+        CreditValue = initiation.CreditValue;
+        PreReqs = initiation.PreReqs;
+        Career = initiation.Career;
+        EquivalentCourses = initiation.EquivalentCourses;
+        CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(initiation.ComponentCodes, Id);
+        SupportingFiles = SupportingFile.GetSupportingFileMapping(initiation.SupportingFiles, Id);
+    }
+
+    public static Course CreateCourseFromDTOData(CourseRequestInitiationDTO initiation, int concordiaCourseId, int? version)
+    {
+        var internalId = Guid.NewGuid();
+        return new Course
+        {
+            Id = internalId,
+            CourseID = concordiaCourseId,
+            Subject = initiation.Subject,
+            Catalog = initiation.Catalog,
+            Title = initiation.Title,
+            Description = initiation.Description,
+            CourseNotes = initiation.CourseNotes,
+            CreditValue = initiation.CreditValue,
+            PreReqs = initiation.PreReqs,
+            Career = initiation.Career,
+            EquivalentCourses = initiation.EquivalentCourses,
+            CourseState = initiation.GetAssociatedCourseState(),
+            Version = version,
+            Published = false,
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(initiation.ComponentCodes, internalId),
+            SupportingFiles = SupportingFile.GetSupportingFileMapping(initiation.SupportingFiles, internalId)
+        };
+    }
+
     public static Course CloneCourseForDeletionRequest(Course course)
     {
         return new Course
@@ -62,8 +126,8 @@ public class Course : BaseModel
             EquivalentCourses = course.EquivalentCourses,
             CourseNotes = course.CourseNotes,
             CourseState = CourseStateEnum.CourseDeletionProposal,
-            Version = course.Version + 1,
-            Published = course.Published,
+            Version = null,
+            Published = false,
             CourseCourseComponents = course.CourseCourseComponents,
             SupportingFiles = course.SupportingFiles,
         };
@@ -103,8 +167,5 @@ public enum CourseStateEnum
     CourseDeletionProposal,
 
     [PgName(nameof(Deleted))]
-    Deleted,
-
-    [PgName(nameof(Rejected))]
-    Rejected,
+    Deleted
 }

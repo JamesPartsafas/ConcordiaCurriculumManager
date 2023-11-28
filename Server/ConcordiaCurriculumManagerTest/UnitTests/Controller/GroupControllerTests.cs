@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System.Net;
 using ConcordiaCurriculumManager.DTO;
+using AutoMapper;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controllers
 {
@@ -16,6 +18,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Controllers
         private Mock<IUserAuthenticationService> _userService = null!;
         private Mock<ILogger<GroupController>> _logger = null!;
         private GroupController _groupController = null!;
+        private Mock<IMapper> _mapper = null!;
 
         [TestInitialize]
         public void TestInitialize()
@@ -23,8 +26,9 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Controllers
             _logger = new Mock<ILogger<GroupController>>();
             _groupService = new Mock<IGroupService>();
             _userService = new Mock<IUserAuthenticationService>();
+            _mapper = new Mock<IMapper>();
 
-            _groupController = new GroupController(_groupService.Object, _userService.Object, _logger.Object);
+            _groupController = new GroupController(_groupService.Object, _userService.Object, _logger.Object, _mapper.Object);
         }
 
         [TestMethod]
@@ -46,46 +50,40 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Controllers
         }
 
         [TestMethod]
-        public async Task CreateGroup_Failure_Returns500()
+        [ExpectedException(typeof(Exception))]
+        public async Task CreateGroup_Failure_ThrowsException()
         {
             var groupCreateDTO = new GroupCreateDTO { Name = "Test Group" };
 
-            _groupService.Setup(x => x.CreateGroupAsync(It.IsAny<ConcordiaCurriculumManager.Models.Users.Group>())).ReturnsAsync(false);
+            _groupService.Setup(x => x.CreateGroupAsync(It.IsAny<Group>())).ReturnsAsync(false);
 
-            var result = await _groupController.CreateGroup(groupCreateDTO);
-
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
-            var objectResult = (ObjectResult)result;
-            Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+            await _groupController.CreateGroup(groupCreateDTO);
         }
 
         [TestMethod]
         public async Task GetGroupById_ValidId_ReturnsGroup()
         {
             var groupId = Guid.NewGuid();
-            var expectedGroup = new GroupDTO { Id = groupId, Name = "Test Group", Members = new List<UserDTO> { }, GroupMasters = new List<UserDTO> { } };
+            var expectedGroup = new Group { Id = groupId, Name = "Test Group", Members = new List<User> { }, GroupMasters = new List<User> { } };
 
             _groupService.Setup(service => service.GetGroupByIdAsync(It.IsAny<Guid>()))
                          .ReturnsAsync(expectedGroup);
 
             var result = await _groupController.GetGroupById(groupId);
-
-            Assert.IsNotNull(result);
-
             var objectResult = result as OkObjectResult;
 
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(objectResult);
             Assert.AreEqual((int)HttpStatusCode.OK, objectResult!.StatusCode);
-            Assert.AreEqual(expectedGroup, objectResult.Value);
         }
 
         [TestMethod]
-        public async Task GetGroupById_NotFound_Returns404()
+        [ExpectedException(typeof(NotFoundException))]
+        public async Task GetGroupById_NotFound_ThrowsExceptionhrowsException()
         {
-            _groupService.Setup(x => x.GetGroupByIdAsync(It.IsAny<Guid>())).ReturnsAsync((GroupDTO)null!);
+            _groupService.Setup(x => x.GetGroupByIdAsync(It.IsAny<Guid>())).Throws(new NotFoundException());
 
-            var result = await _groupController.GetGroupById(Guid.NewGuid());
-
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+            await _groupController.GetGroupById(Guid.NewGuid());
         }
     }
 }

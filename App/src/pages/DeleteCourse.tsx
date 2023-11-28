@@ -40,6 +40,7 @@ export default function DeleteCourse() {
     const [catalog, setCatalog] = useState("");
     const [rationale, setRationale] = useState("");
     const [resourceImplication, setResourceImplication] = useState("");
+    const [comment, setComment] = useState("");
 
     const handleChangeSubject = (value: string) => {
         if (value.length === 0) setCourseSubjectError(true);
@@ -61,6 +62,9 @@ export default function DeleteCourse() {
         else setResourceImplicationError(false);
         setResourceImplication(e.currentTarget.value);
     };
+    const handleChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setComment(e.currentTarget.value);
+    };
     const handleSubmitRequest = () => {
         setFormSubmitted(true);
         if (courseSubjectError || courseCatalogError || rationaleError || resourceImplicationError) return;
@@ -72,6 +76,7 @@ export default function DeleteCourse() {
                 resourceImplication: resourceImplication,
                 subject: subject,
                 catalog: catalog,
+                comment: comment,
             };
             deleteCourse(courseDeletionRequest)
                 .then(() => {
@@ -103,6 +108,15 @@ export default function DeleteCourse() {
                     <form>
                         <Flex>
                             <Stack w="60%" p={8} m="auto">
+                                <Button
+                                    style="primary"
+                                    variant="outline"
+                                    width="10%"
+                                    height="40px"
+                                    onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
+                                >
+                                    Back
+                                </Button>
                                 <Stack>
                                     <Center>
                                         <Heading as="h1" size="2xl" color="brandRed">
@@ -174,11 +188,29 @@ export default function DeleteCourse() {
                                     </Stack>
                                 </Stack>
                                 <Stack>
+                                    <Center>
+                                        <Heading as="h2" size="xl" color="brandRed">
+                                            <Text align="center">Comment</Text>
+                                        </Heading>
+                                    </Center>
+                                    <Stack>
+                                        <FormControl>
+                                            <Textarea
+                                                value={comment}
+                                                onChange={handleChangeComment}
+                                                placeholder="Add any additional comments."
+                                                minH={"200px"}
+                                            ></Textarea>
+                                        </FormControl>
+                                    </Stack>
+                                </Stack>
+                                <Stack>
                                     <Button
                                         style="primary"
                                         width="auto"
                                         height="50px"
                                         variant="solid"
+                                        marginTop="16px"
                                         onClick={() => handleSubmitRequest()}
                                         isLoading={isLoading}
                                     >

@@ -79,7 +79,7 @@ export function decodeTokenToUser(accessToken: string) {
 }
 
 export function isAdmin(user: User): boolean {
-    return user.roles.includes(UserRoles.Admin);
+    return user?.roles.includes(UserRoles.Admin);
 }
 
 export function isAdminOrGroupMaster(user: User): boolean {

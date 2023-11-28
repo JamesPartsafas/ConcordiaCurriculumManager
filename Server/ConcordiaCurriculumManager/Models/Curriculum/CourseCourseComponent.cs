@@ -23,4 +23,19 @@ public class CourseCourseComponent : BaseModel
 
         return mapping;
     }
+
+    public static Dictionary<ComponentCodeEnum, int?> GetComponentCodeEnumDictionary(ICollection<CourseCourseComponent> courseCourseComponents)
+    {
+        var dictionary = new Dictionary<ComponentCodeEnum, int?>();
+
+        if (courseCourseComponents != null)
+        {
+            foreach (var component in courseCourseComponents)
+            {
+                dictionary[component.ComponentCode] = component.HoursPerWeek;
+            }
+        }
+
+        return dictionary;
+    }
 }

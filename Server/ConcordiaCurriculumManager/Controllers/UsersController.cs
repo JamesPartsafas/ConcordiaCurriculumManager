@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -42,7 +43,7 @@ public class UsersController : Controller
     {
         if (string.IsNullOrWhiteSpace(email))
         {
-            return BadRequest("Email cannot be null or white space");
+            throw new InvalidInputException("Email cannot be null or white space");
         }
 
         var users = await _userService.GetUserLikeEmailAsync(lastId ?? Guid.Empty, email.Trim());

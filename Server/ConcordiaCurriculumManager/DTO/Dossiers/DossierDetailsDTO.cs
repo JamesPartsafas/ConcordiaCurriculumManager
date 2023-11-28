@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 
 namespace ConcordiaCurriculumManager.DTO.Dossiers;
 
@@ -19,6 +20,8 @@ public class DossierDetailsDTO
     public List<CourseModificationRequest> CourseModificationRequests { get; set; } = new List<CourseModificationRequest>();
 
     public List<CourseDeletionRequest> CourseDeletionRequests { get; set; } = new List<CourseDeletionRequest>();
+
+    public List<ApprovalStage> ApprovalStages { get; set; } = new List<ApprovalStage>();
 
     public required DateTime CreatedDate { get; set; }
 

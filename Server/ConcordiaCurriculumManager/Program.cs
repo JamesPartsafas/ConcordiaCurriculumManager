@@ -1,3 +1,4 @@
+using ConcordiaCurriculumManager.Filters;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using ConcordiaCurriculumManager.Security;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Npgsql;
+using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text;
@@ -74,15 +76,24 @@ public class Program
             options.UseNpgsql(dbDataSource);
         });
 
+        builder.Host.UseSerilog((context, logger) =>
+        {
+            logger
+            .ReadFrom.Configuration(context.Configuration)
+            .Enrich.FromLogContext();
+        });
+        
         AddServices(builder.Services);
 
         builder.Services.AddMemoryCache();
         builder.Services.AddAutoMapper(typeof(Program));
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(options => {
+            options.Filters.Add<ExceptionHandlerFilter>();
+        });
+
         builder.Services.AddEndpointsApiExplorer();
 
-        builder.Services.Configure<IISServerOptions>(options =>{ options.MaxRequestBodySize = int.MaxValue ; });
         if (env.IsDevelopment())
         {
             builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
@@ -148,6 +159,7 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseMiddleware<EnrichLogContextMiddleware>();
 
         app.MapControllers();
 
@@ -163,6 +175,7 @@ public class Program
         services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
         services.AddScoped<ICourseService, CourseService>();
         services.AddScoped<IDossierService, DossierService>();
+        services.AddScoped<IDossierReviewService, DossierReviewService>();
         services.AddScoped<IGroupService, GroupService>();
         services.AddScoped<IUserService, UserService>();
 
@@ -170,5 +183,6 @@ public class Program
         services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddScoped<ICourseRepository, CourseRepository>();
         services.AddScoped<IDossierRepository, DossierRepository>();
+        services.AddScoped<IDossierReviewRepository, DossierReviewRepository>();
     }
 }

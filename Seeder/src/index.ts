@@ -1,6 +1,7 @@
 import path from 'path';
 import Role from './types/Role';
 import User from './types/User';
+import Group from './types/Group';
 import { readFile, seedDataBase } from './util';
 import CourseComponents from './types/CourseComponents';
 import Course from './types/Course';
@@ -29,8 +30,11 @@ const coursesData = readFile(coursesJsonFilePath, Course);
 const courseReferencesJsonFilePath = path.resolve(__dirname, 'data', 'CourseReferences.json');
 const courseReferencesData = readFile(courseReferencesJsonFilePath, CourseReference);
 
+const groupsJsonFilePath = path.resolve(__dirname, 'data', 'Groups.json');
+const groupsData = readFile(groupsJsonFilePath, Group);
+
 if (!onlyValidateData) {
-  seedDataBase(connectionString, [rolesData, usersData, courseComponentsData, coursesData, courseReferencesData]);
+  seedDataBase(connectionString, [rolesData, usersData, courseComponentsData, coursesData, courseReferencesData, groupsData]);
 } else {
   console.log('Seeding data is valid!');
 }

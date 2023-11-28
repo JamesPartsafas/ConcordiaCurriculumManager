@@ -21,8 +21,11 @@ public interface IDossierRepository
     public Task<bool> UpdateCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task<CourseModificationRequest?> GetCourseModificationRequest(Guid courseRequestId);
     public Task<bool> UpdateCourseModificationRequest(CourseModificationRequest courseModificatioRequest);
+    public Task<CourseDeletionRequest?> GetCourseDeletionRequest(Guid courseRequestId);
+    public Task<bool> UpdateCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
     public Task<bool> DeleteCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task<bool> DeleteCourseModificationRequest(CourseModificationRequest courseModificationRequest);
+    public Task<bool> DeleteCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
 }
 
 public class DossierRepository : IDossierRepository
@@ -56,11 +59,9 @@ public class DossierRepository : IDossierRepository
     }
 
     public async Task<List<Dossier>> GetDossiersByID(Guid userId) {
-        var dbDossiers = await _dbContext.Dossiers
+        return await _dbContext.Dossiers
             .Where(d => d.InitiatorId.Equals(userId))
             .ToListAsync();
-        return dbDossiers;
-            
     }
 
     public async Task<Dossier?> GetDossierByDossierId(Guid dossierId) => await _dbContext.Dossiers
@@ -89,7 +90,11 @@ public class DossierRepository : IDossierRepository
 
     public async Task<CourseCreationRequest?> GetCourseCreationRequest(Guid courseRequestId)
     {
-        var courseCreationRequest = await _dbContext.CourseCreationRequests.Where(c => c.Id == courseRequestId).Include(cr => cr.NewCourse).FirstOrDefaultAsync();
+        var courseCreationRequest = await _dbContext.CourseCreationRequests.Where(c => c.Id == courseRequestId)
+            .Include(cr => cr.NewCourse)
+            .Include(cr => cr.NewCourse!.SupportingFiles)
+            .Include(cr => cr.NewCourse!.CourseCourseComponents)
+            .FirstOrDefaultAsync();
         return courseCreationRequest;
     }
 
@@ -102,13 +107,30 @@ public class DossierRepository : IDossierRepository
 
     public async Task<CourseModificationRequest?> GetCourseModificationRequest(Guid courseRequestId)
     {
-        var courseModificationRequest = await _dbContext.CourseModificationRequests.Where(c => c.Id == courseRequestId).Include(cr => cr.Course).FirstOrDefaultAsync();
+        var courseModificationRequest = await _dbContext.CourseModificationRequests.Where(c => c.Id == courseRequestId)
+            .Include(cr => cr.Course)
+            .Include(cr => cr.Course!.SupportingFiles)
+            .Include(cr => cr.Course!.CourseCourseComponents)
+            .FirstOrDefaultAsync();
         return courseModificationRequest;
     }
 
     public async Task<bool> UpdateCourseModificationRequest(CourseModificationRequest courseModificatioRequest)
     {
         _dbContext.CourseModificationRequests.Update(courseModificatioRequest);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<CourseDeletionRequest?> GetCourseDeletionRequest(Guid courseRequestId)
+    {
+        var courseDeletionRequest = await _dbContext.CourseDeletionRequests.Where(c => c.Id == courseRequestId).Include(cr => cr.Course).FirstOrDefaultAsync();
+        return courseDeletionRequest;
+    }
+
+    public async Task<bool> UpdateCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest)
+    {
+        _dbContext.CourseDeletionRequests.Update(courseDeletionRequest);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
@@ -125,6 +147,14 @@ public class DossierRepository : IDossierRepository
     {
         _dbContext.Courses.Remove(courseModificationRequest.Course!);
         _dbContext.CourseModificationRequests.Remove(courseModificationRequest);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest)
+    {
+        _dbContext.Courses.Remove(courseDeletionRequest.Course!);
+        _dbContext.CourseDeletionRequests.Remove(courseDeletionRequest);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }

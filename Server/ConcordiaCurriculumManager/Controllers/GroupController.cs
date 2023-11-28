@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Swashbuckle.AspNetCore.Annotations;
 using ConcordiaCurriculumManager.Security;
 using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 
 namespace ConcordiaCurriculumManager.Controllers;
 
@@ -14,15 +15,17 @@ namespace ConcordiaCurriculumManager.Controllers;
 [Route("[controller]")]
 public class GroupController : Controller
 {
+    private readonly IMapper _mapper;
     private readonly IGroupService _groupService;
     private readonly IUserAuthenticationService _userService;
     private readonly ILogger<GroupController> _logger;
 
-    public GroupController(IGroupService groupService, IUserAuthenticationService userService, ILogger<GroupController> logger)
+    public GroupController(IGroupService groupService, IUserAuthenticationService userService, ILogger<GroupController> logger, IMapper mapper)
     {
         _groupService = groupService;
         _userService = userService;
         _logger = logger;
+        _mapper = mapper;
     }
 
     [HttpPost(nameof(CreateGroup))]
@@ -34,14 +37,12 @@ public class GroupController : Controller
         var group = new Group { Name = groupCreateDTO.Name };
         var result = await _groupService.CreateGroupAsync(group);
 
-        if (result)
+        if (!result)
         {
-            return CreatedAtAction(nameof(GetGroupById), new { id = group.Id }, group);
+            throw new Exception("An error occured while creating a group");
         }
-        else
-        {
-            return StatusCode(500, "An error occured while creating the group");
-        }
+
+        return CreatedAtAction(nameof(CreateGroup), new { id = group.Id }, group);
     }
 
     [HttpGet("{groupId}")]
@@ -50,75 +51,80 @@ public class GroupController : Controller
     public async Task<IActionResult> GetGroupById([FromRoute, Required] Guid groupId)
     {
         var group = await _groupService.GetGroupByIdAsync(groupId);
-        if (group == null)
-        {
-            return NotFound();
-        }
-        return Ok(group);
+        var groupDTO = _mapper.Map<GroupDTO>(group);
+        return Ok(groupDTO);
     }
 
     [HttpGet(nameof(GetAllGroups))]
     [SwaggerResponse(StatusCodes.Status200OK, "All groups retrieved successfully")]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "No groups found")]
     public async Task<IActionResult> GetAllGroups()
     {
         var groups = await _groupService.GetAllGroupsAsync();
-        return Ok(groups);
+        var groupsDTO = _mapper.Map<List<GroupDTO>>(groups);
+        return Ok(groupsDTO);
     }
 
     [HttpPost("{groupId}/users/{userId}")]
     [Authorize(Policies.IsGroupMasterOrAdmin)]
     [SwaggerResponse(StatusCodes.Status200OK, "User added to group successfully")]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "Error adding user to group")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Group or user do not exist")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error adding user to group")]
     public async Task<IActionResult> AddUserToGroup([FromRoute, Required] Guid groupId, [FromRoute, Required] Guid userId)
     {
         var result = await _groupService.AddUserToGroup(userId, groupId);
-        if (result)
+        if (!result)
         {
-            return Ok();
+            throw new Exception($"Failed to add user {userId} to group {groupId}");
         }
-        return NotFound();
+
+        return Ok();
     }
 
     [HttpDelete("{groupId}/users/{userId}")]
     [Authorize(Policies.IsGroupMasterOrAdmin)]
     [SwaggerResponse(StatusCodes.Status200OK, "User removed from group successfully")]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "Error removing user from group")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Group or user do not exist")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error removing user from group")]
     public async Task<IActionResult> RemoveUserFromGroup([FromRoute, Required] Guid groupId, [FromRoute, Required] Guid userId)
     {
         var result = await _groupService.RemoveUserFromGroup(userId, groupId);
-        if (result)
+        if (!result)
         {
-            return Ok();
+            throw new Exception($"Failed to remove user {userId} from group {groupId}");
         }
-        return NotFound();
+
+        return Ok();
     }
 
     [HttpPost("{groupId}/masters/{userId}")]
     [Authorize(Policies.IsGroupMasterOrAdmin)]
     [SwaggerResponse(StatusCodes.Status200OK, "User added to group masters successfully")]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "User is not a member of this group or is already a group master")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Group or user do not exist")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error adding user as a group master")]
     public async Task<IActionResult> AddGroupMaster([FromRoute, Required] Guid groupId, [FromRoute, Required] Guid userId)
     {
         var result = await _groupService.AddGroupMaster(userId, groupId);
-        if (result)
+        if (!result)
         {
-            return Ok();
+            throw new Exception($"Failed to add user {userId} to group {groupId} as group master");
         }
-        return NotFound();
+
+        return Ok();
     }
 
     [HttpDelete("{groupId}/masters/{userId}")]
     [Authorize(Policies.IsGroupMasterOrAdmin)]
     [SwaggerResponse(StatusCodes.Status200OK, "User removed from group masters successfully")]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "User is not a member of this group or is not a group master")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Group or user do not exist")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error removing user from group master")]
     public async Task<IActionResult> RemoveGroupMaster([FromRoute, Required] Guid groupId, [FromRoute, Required] Guid userId)
     {
         var result = await _groupService.RemoveGroupMaster(userId, groupId);
-        if (result)
+        if (!result)
         {
-            return Ok();
+            throw new Exception($"Failed to remove user {userId} from group {groupId} as a group master");
         }
-        return NotFound();
+
+        return Ok();
     }
 }
