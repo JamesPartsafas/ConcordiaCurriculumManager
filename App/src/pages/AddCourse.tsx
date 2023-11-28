@@ -1,4 +1,3 @@
-import Header from "../shared/Header";
 import {
     Flex,
     Center,
@@ -252,7 +251,6 @@ export default function AddCourse() {
         <>
             {allCourseSettings && (
                 <Box>
-                    <Header></Header>
                     <form>
                         <Flex>
                             <Stack w="35%" p={8}>

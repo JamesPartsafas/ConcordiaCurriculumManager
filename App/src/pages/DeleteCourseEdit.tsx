@@ -1,4 +1,3 @@
-import Header from "../shared/Header";
 import {
     Flex,
     Center,
@@ -131,7 +130,6 @@ export default function DeleteCourseEdit() {
         <>
             {
                 <Box>
-                    <Header></Header>
                     <form>
                         <Flex>
                             <Stack w="60%" p={8} m="auto">
