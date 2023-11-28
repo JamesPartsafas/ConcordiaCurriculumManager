@@ -5,7 +5,6 @@ import { isAdmin } from "../services/auth";
 import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../services/group";
 import { useContext, useEffect, useState } from "react";
 import { BaseRoutes } from "../constants";
-import Header from "../shared/Header";
 import { UserContext } from "../App";
 
 export default function DisplayManageableGroups() {
@@ -37,7 +36,6 @@ export default function DisplayManageableGroups() {
 
     return (
         <div>
-            <Header></Header>
             <Container maxW="3xl" height="80vh" display="flex" alignItems="center" justifyContent="center">
                 <div>
                     <h1
