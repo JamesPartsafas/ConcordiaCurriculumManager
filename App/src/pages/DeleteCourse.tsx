@@ -109,7 +109,7 @@ export default function DeleteCourse() {
                                 <Button
                                     style="primary"
                                     variant="outline"
-                                    width="10%"
+                                    width="100px"
                                     height="40px"
                                     onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
                                 >
