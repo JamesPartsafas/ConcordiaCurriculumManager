@@ -76,7 +76,9 @@ export default function Header(props: HeaderProps) {
                         fontFamily={"heading"}
                         color={useColorModeValue("gray.800", "white")}
                     >
-                        <Image src={logo} height="50px" />
+                        <Link to={BaseRoutes.Home} style={{ textDecoration: "none" }}>
+                            <Image src={logo} height="50px" />
+                        </Link>
                     </Text>
 
                     <Flex display={{ base: "none", md: "flex" }} ml={10}>
