@@ -27,6 +27,7 @@ import AddingMasterToGroup from "./pages/AddGroupMaster";
 import RemovingMasterFromGroup from "./pages/RemoveGroupMaster";
 import CreateGroup from "./pages/CreateGroup";
 import DeleteCourseEdit from "./pages/DeleteCourseEdit";
+import Header from "./shared/Header";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -60,6 +61,7 @@ export function App() {
     return (
         <>
             <UserContext.Provider value={user}>
+                {isLoggedIn && <Header setUser={setUser} setIsLoggedIn={setIsLoggedIn}></Header>}
                 <Routes>
                     <Route
                         path={BaseRoutes.Home}

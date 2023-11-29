@@ -4,7 +4,6 @@ import { UserContext } from "../App";
 import Button from "../components/Button";
 import { BaseRoutes } from "../constants";
 import { useNavigate } from "react-router-dom";
-import Header from "../shared/Header";
 import { isAdminOrGroupMaster } from "../services/auth";
 
 export default function CallToActionWithIllustration() {
@@ -13,7 +12,6 @@ export default function CallToActionWithIllustration() {
 
     return (
         <>
-            <Header></Header>
             <Container maxW={"5xl"}>
                 <Stack textAlign={"center"} align={"center"} spacing={{ base: 8, md: 10 }} py={{ base: 20, md: 28 }}>
                     <Heading fontWeight={600} fontSize={{ base: "3xl", sm: "4xl", md: "6xl" }} lineHeight={"110%"}>

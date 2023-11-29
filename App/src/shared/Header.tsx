@@ -12,6 +12,7 @@ import {
     useColorModeValue,
     useBreakpointValue,
     useDisclosure,
+    useToast,
     Image,
 } from "@chakra-ui/react";
 import Button from "../components/Button";
@@ -20,15 +21,34 @@ import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@ch
 import { useNavigate } from "react-router-dom";
 import { logout } from "../services/auth";
 import { BaseRoutes } from "../constants";
+import { User } from "../models/user";
+import { showToast } from "../utils/toastUtils";
 import { Link } from "react-router-dom";
 
-export default function Header() {
+export interface HeaderProps {
+    setUser: (user: User | null) => void;
+    setIsLoggedIn: (isLoggedIn: boolean) => void;
+}
+
+export default function Header(props: HeaderProps) {
     const { isOpen, onToggle } = useDisclosure();
     const navigate = useNavigate();
+    const toast = useToast(); // Use the useToast hook
+
     function logOut() {
-        logout();
-        navigate(BaseRoutes.Login);
+        logout().then(
+            () => {
+                props.setUser(null);
+                props.setIsLoggedIn(false);
+                navigate(BaseRoutes.Login);
+                showToast(toast, "Success!", "You have successfully logged out.", "success");
+            },
+            (rej) => {
+                showToast(toast, "Error!", rej.message, "error");
+            }
+        );
     }
+
     return (
         <Box>
             <Flex
