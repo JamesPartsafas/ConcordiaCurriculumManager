@@ -117,7 +117,7 @@ public class CourseService : ICourseService
             Rationale = initiation.Rationale,
             ResourceImplication = initiation.ResourceImplication,
             Comment = initiation.Comment,
-            Conflict = GenerateConflictMessageFromReferencedCourses(course)
+            Conflict = string.Empty,
         };
 
         await _dossierService.SaveCourseCreationRequest(courseCreationRequest);
