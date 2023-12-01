@@ -20,6 +20,7 @@ import { getCourseData } from "../../services/course";
 import { showToast } from "../../utils/toastUtils";
 import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface EditCourseModalProps {
     isOpen: boolean;
@@ -45,6 +46,7 @@ export default function EditCourseModal(props: EditCourseModalProps) {
 
     const toast = useToast();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState<boolean>(false);
 
     function handleClose() {
         reset();
@@ -57,25 +59,29 @@ export default function EditCourseModal(props: EditCourseModalProps) {
     }
 
     function onSubmit(data: EditCourseModalForm) {
-        console.log("submit");
-        console.log(data);
+        setLoading(true);
 
-        // #TODO: call get course endpoint
-        getCourseData(data.subject, data.catalog).then(
-            (res: CourseDataResponse) => {
-                // before you navigate create a state and save the res.data to avoid calling the endpoint again
-                navigate(
-                    BaseRoutes.EditCourse.replace(":id", data.catalog.toString()).replace(
-                        ":dossierId",
-                        props.dossierId
-                    ),
-                    { state: res.data }
-                );
-            },
-            (rej) => {
-                showToast(toast, "Error!", rej.response.data, "error");
-            }
-        );
+        getCourseData(data.subject, data.catalog)
+            .then(
+                (res: CourseDataResponse) => {
+                    setLoading(false);
+                    navigate(
+                        BaseRoutes.EditCourse.replace(":id", data.catalog.toString()).replace(
+                            ":dossierId",
+                            props.dossierId
+                        ),
+                        { state: res.data }
+                    );
+                },
+                (rej) => {
+                    setLoading(false);
+                    showToast(toast, "Error!", rej.response != null ? rej.response.data : rej.message, "error");
+                }
+            )
+            .catch((err) => {
+                setLoading(false);
+                showToast(toast, "Error!", err, "error");
+            });
     }
 
     return (
@@ -131,7 +137,7 @@ export default function EditCourseModal(props: EditCourseModalProps) {
                             style="secondary"
                             type="submit"
                             //add type submit
-                            // isLoading={loading}
+                            isLoading={loading}
                             loadingText="Saving"
                             variant="solid"
                             width="fit-content"

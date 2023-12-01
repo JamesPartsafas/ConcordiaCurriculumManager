@@ -68,6 +68,7 @@ export default function DossierDetails() {
         getAllCourseSettings().then((res) => {
             setCourseSettings(res.data);
         });
+        console.log(courseSettings);
     }
 
     function deleteRequestAlert() {
