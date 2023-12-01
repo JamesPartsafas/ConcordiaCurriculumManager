@@ -115,3 +115,7 @@ export const componentMappings = {
     "Tutorial/Lab": "TL",
     Workshop: "WKS",
 };
+
+export interface CourseDataResponse {
+    data: Course;
+}
