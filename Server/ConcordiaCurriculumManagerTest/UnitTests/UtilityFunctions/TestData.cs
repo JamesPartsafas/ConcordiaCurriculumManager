@@ -299,7 +299,7 @@ public static class TestData
         return new Dossier
         {
             InitiatorId = Guid.NewGuid(),
-            Published = false,
+            State = DossierStateEnum.Created,
             Title = "test title",
             Description = "test description"
         };
@@ -313,7 +313,7 @@ public static class TestData
             InitiatorId = user.Id,
             Title = "Dossier 1",
             Description = "Text description of a dossier.",
-            Published = false,
+            State = DossierStateEnum.Created,
         };
     }
 

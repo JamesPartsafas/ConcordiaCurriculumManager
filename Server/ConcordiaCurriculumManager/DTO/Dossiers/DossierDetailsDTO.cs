@@ -13,7 +13,7 @@ public class DossierDetailsDTO
 
     public required string Description { get; set; }
 
-    public required bool Published { get; set; }
+    public required DossierStateEnum State { get; set; }
 
     public List<CourseCreationRequest> CourseCreationRequests { get; set; } = new List<CourseCreationRequest>();
 

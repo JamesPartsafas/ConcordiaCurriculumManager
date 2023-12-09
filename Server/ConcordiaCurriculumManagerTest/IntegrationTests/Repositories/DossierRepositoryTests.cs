@@ -53,8 +53,7 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
                 InitiatorId = Guid.NewGuid(),
                 Title = "test title",
                 Description = "test description",
-                Published = false
-
+                State = DossierStateEnum.Created
             };
 
             dbContext.Users.Add(user);
@@ -75,7 +74,7 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
                 InitiatorId = Guid.NewGuid(),
                 Title = "test title",
                 Description = "test description",
-                Published = false
+                State = DossierStateEnum.Created
             };
 
             dbContext.Dossiers.Add(dossier);
@@ -94,7 +93,7 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
                 InitiatorId = Guid.NewGuid(),
                 Title = "test title",
                 Description = "test description",
-                Published = false
+                State = DossierStateEnum.Created
             };
 
             var result = await dossierRepository.SaveDossier(dossier);
@@ -143,7 +142,7 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
                 InitiatorId = Guid.NewGuid(),
                 Title = "test title",
                 Description = "test description",
-                Published = false
+                State = DossierStateEnum.Created
             };
 
             var newTitle = "test title modified";
@@ -167,7 +166,7 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
                 InitiatorId = Guid.NewGuid(),
                 Title = "test title",
                 Description = "test description",
-                Published = false
+                State = DossierStateEnum.Created
             };
 
             dbContext.Dossiers.Add(dossier);

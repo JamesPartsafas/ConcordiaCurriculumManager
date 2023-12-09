@@ -35,4 +35,16 @@ public class DossierReviewController : Controller
 
         return Ok();
     }
+
+    [HttpPut(nameof(RejectDossier) + "/{dossierId}")]
+    [Authorize(Policies.IsDossierReviewMaster)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Dossier successfully rejected")]
+    public async Task<ActionResult> RejectDossier([FromRoute, Required] Guid dossierId)
+    {
+        await _dossierReviewService.RejectDossier(dossierId);
+
+        return Ok();
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,7 @@ public interface IDossierRepository
     public Task<bool> DeleteCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task<bool> DeleteCourseModificationRequest(CourseModificationRequest courseModificationRequest);
     public Task<bool> DeleteCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
+    public Task<IList<User>> GetCurrentlyReviewingGroupMasters(Guid dossierId);
 }
 
 public class DossierRepository : IDossierRepository
@@ -157,5 +159,16 @@ public class DossierRepository : IDossierRepository
         _dbContext.CourseDeletionRequests.Remove(courseDeletionRequest);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
+    }
+
+    public async Task<IList<User>> GetCurrentlyReviewingGroupMasters(Guid dossierId)
+    {
+        var stage = await _dbContext.ApprovalStages
+            .Where(stage => stage.DossierId.Equals(dossierId) && stage.IsCurrentStage)
+            .Include(stage => stage.Group)
+            .ThenInclude(group => group!.GroupMasters)
+            .FirstOrDefaultAsync();
+
+        return stage!.Group!.GroupMasters;
     }
 }
