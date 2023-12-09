@@ -169,6 +169,9 @@ public class DossierRepository : IDossierRepository
             .ThenInclude(group => group!.GroupMasters)
             .FirstOrDefaultAsync();
 
-        return stage!.Group!.GroupMasters;
+        if (stage == null || stage.Group == null)
+            return new List<User>();
+
+        return stage.Group.GroupMasters;
     }
 }
