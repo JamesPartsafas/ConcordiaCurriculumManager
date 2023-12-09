@@ -5,6 +5,7 @@ using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 public static class TestData
@@ -305,6 +306,42 @@ public static class TestData
         };
     }
 
+    public static Dossier GetSampleDossierInInitialStage()
+    {
+        var dossierId = Guid.NewGuid();
+        return new Dossier
+        {
+            Id = dossierId,
+            InitiatorId = Guid.NewGuid(),
+            State = DossierStateEnum.InReview,
+            Title = "test title",
+            Description = "test description",
+            ApprovalStages = new List<ApprovalStage>
+            {
+                new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 0, IsCurrentStage = true, IsFinalStage = false },
+                new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 1, IsCurrentStage = false, IsFinalStage = true },
+            }
+        };
+    }
+
+    public static Dossier GetSampleDossierInFinalStage()
+    {
+        var dossierId = Guid.NewGuid();
+        return new Dossier
+        {
+            Id = dossierId,
+            InitiatorId = Guid.NewGuid(),
+            State = DossierStateEnum.InReview,
+            Title = "test title",
+            Description = "test description",
+            ApprovalStages = new List<ApprovalStage>
+            {
+                new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 0, IsCurrentStage = false, IsFinalStage = false },
+                new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 1, IsCurrentStage = true, IsFinalStage = true },
+            }
+        };
+    }
+
     public static Dossier GetSampleDossier(User user)
     {
         return new Dossier
@@ -348,6 +385,41 @@ public static class TestData
         {
             DossierId = GetSampleDossier().Id,
             GroupIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() }
+        };
+    }
+
+    public static CourseVersion GetSampleCourseVersion()
+    {
+        return new CourseVersion
+        {
+            Subject = "SOEN",
+            Catalog = "490",
+            Version = 6,
+        };
+    }
+
+    public static ICollection<CourseVersion> GetSampleCourseVersionCollection()
+    {
+        return new List<CourseVersion>
+        {
+            new CourseVersion
+            {
+                Subject = "SOEN",
+                Catalog = "390",
+                Version = 4,
+            },
+            new CourseVersion
+            {
+                Subject = "SOEN",
+                Catalog = "248",
+                Version = 6,
+            },
+            new CourseVersion
+            {
+                Subject = "ENGR",
+                Catalog = "213",
+                Version = 1,
+            }
         };
     }
 

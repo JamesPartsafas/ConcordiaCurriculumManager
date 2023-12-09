@@ -76,4 +76,49 @@ public class DossierTest
 
         Assert.ThrowsException<BadRequestException>(() => dossier.MarkAsRejected());
     }
+
+    [TestMethod]
+    public void ForwardDossier_ThatIsInReview_Forwards()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+
+        dossier.MarkAsForwarded();
+
+        var initialStage = dossier.ApprovalStages.Where(stage => stage.StageIndex == 0).First();
+        var finalStage = dossier.ApprovalStages.Where(stage => stage.StageIndex == 1).First();
+
+        Assert.AreEqual(false, initialStage.IsCurrentStage);
+        Assert.AreEqual(true, finalStage.IsCurrentStage);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public void ForwardDossier_ThatIsInFinalReviewStage_Throws()
+    {
+        var dossier = TestData.GetSampleDossierInFinalStage();
+
+        dossier.MarkAsForwarded();
+    }
+
+    [TestMethod]
+    public void AcceptDossier_ThatIsInFinalStage_MarksCompleted()
+    {
+        var dossier = TestData.GetSampleDossierInFinalStage();
+
+        dossier.MarkAsAccepted(TestData.GetSampleCourseVersionCollection());
+
+        var finalStage = dossier.ApprovalStages.Where(stage => stage.StageIndex == 1).First();
+
+        Assert.AreEqual(DossierStateEnum.Approved, dossier.State);
+        Assert.AreEqual(false, finalStage.IsCurrentStage);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public void AcceptDossier_ThatIsInInitialStage_Throws()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+
+        dossier.MarkAsAccepted(TestData.GetSampleCourseVersionCollection());
+    }
 }

@@ -90,4 +90,28 @@ public class CourseTest
 
         Assert.ThrowsException<ArgumentException>(action);
     }
+
+    [TestMethod]
+    public void MarkAsAccepted_GivenValidCourse_CorrectlyMarks()
+    {
+        var course = TestData.GetSampleCourse();
+        var version = 5;
+
+        course.MarkAsAccepted(version);
+
+        Assert.AreEqual(CourseStateEnum.Accepted, course.CourseState);
+        Assert.AreEqual(version, course.Version);
+    }
+
+    [TestMethod]
+    public void MarkAsDeleted_GivenValidCourse_CorrectlyMarks()
+    {
+        var course = TestData.GetSampleCourse();
+        var version = 5;
+
+        course.MarkAsDeleted(version);
+
+        Assert.AreEqual(CourseStateEnum.Deleted, course.CourseState);
+        Assert.AreEqual(version, course.Version);
+    }
 }
