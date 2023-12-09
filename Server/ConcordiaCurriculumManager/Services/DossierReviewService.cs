@@ -1,6 +1,7 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Repositories;
 
 namespace ConcordiaCurriculumManager.Services;
@@ -8,6 +9,8 @@ namespace ConcordiaCurriculumManager.Services;
 public interface IDossierReviewService
 {
     public Task SubmitDossierForReview(DossierSubmissionDTO dto);
+    public Task RejectDossier(Guid dossierId);
+    public Task<Dossier> GetDossierWithApprovalStagesOrThrow(Guid dossierId);
 }
 
 public class DossierReviewService : IDossierReviewService
@@ -38,7 +41,6 @@ public class DossierReviewService : IDossierReviewService
         if (!(await _groupService.IsGroupIdListValid(dto.GroupIds))) throw new InvalidInputException("All groups set as reviewers must be valid groups");
 
         Dossier dossier = await _dossierService.GetDossierDetailsByIdOrThrow(dto.DossierId);
-        if (dossier.Published) throw new BadRequestException("The dossier has already been submitted for review");
 
         var approvalStages = dossier.PrepareForPublishing(dto);
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
@@ -49,4 +51,20 @@ public class DossierReviewService : IDossierReviewService
         else
             _logger.LogError($"Encountered error attempting to submit dossier {dossier.Id} for review");
     }
+
+    public async Task RejectDossier(Guid dossierId)
+    {
+        Dossier dossier = await GetDossierWithApprovalStagesOrThrow(dossierId);
+
+        dossier.MarkAsRejected();
+
+        var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
+        if (isDossierSaved)
+            _logger.LogInformation($"Dossier {dossier.Id} successfully rejected from the review process");
+        else
+            _logger.LogError($"Encountered error attempting to reject dossier {dossier.Id} from the review process");
+    }
+
+    public async Task<Dossier> GetDossierWithApprovalStagesOrThrow(Guid dossierId) => await _dossierReviewRepository.GetDossierWithApprovalStages(dossierId)
+        ?? throw new NotFoundException("The dossier does not exist.");
 }
