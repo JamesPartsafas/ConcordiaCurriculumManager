@@ -1,4 +1,3 @@
-import DossierDetails from "../pages/dossier/DossierDetails";
 import { CourseCreationRequest, CourseDeletionRequest, CourseModificationRequest } from "./course";
 
 export interface DossierDTO {
@@ -38,7 +37,7 @@ export enum DossierStateEnum {
     Created = 0,
     InReview = 1,
     Rejected = 2,
-    Approved = 3
+    Approved = 3,
 }
 
 export function dossierStateToString(dossier: DossierDTO | DossierDetailsDTO | null): string {
@@ -50,5 +49,3 @@ export function dossierStateToString(dossier: DossierDTO | DossierDetailsDTO | n
 
     return "Created";
 }
-
-
