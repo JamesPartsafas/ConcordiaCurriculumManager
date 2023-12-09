@@ -21,6 +21,13 @@ public static class AuthorizationPolicies
             .RequireAuthenticatedUser()
             .Build();
         });
+
+        options.AddPolicy(Policies.IsDossierReviewMaster, policy =>
+        {
+            policy.AddRequirements(new DossierReviewMasterRequirement())
+            .RequireAuthenticatedUser()
+            .Build();
+        });
     }
 
     public static void AddAuthorizationHandlers(this IServiceCollection services)
@@ -28,5 +35,6 @@ public static class AuthorizationPolicies
         services.AddScoped<IAuthorizationHandler, AdminHandler>();
         services.AddScoped<IAuthorizationHandler, GroupMasterHandler>();
         services.AddScoped<IAuthorizationHandler, OwnerOfDossierHandler>();
+        services.AddScoped<IAuthorizationHandler, DossierReviewMasterHandler>();
     }
 }
