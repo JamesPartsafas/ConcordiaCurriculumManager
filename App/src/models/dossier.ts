@@ -1,3 +1,4 @@
+import DossierDetails from "../pages/dossier/DossierDetails";
 import { CourseCreationRequest, CourseDeletionRequest, CourseModificationRequest } from "./course";
 
 export interface DossierDTO {
@@ -5,7 +6,7 @@ export interface DossierDTO {
     initiatorId: string;
     title: string | null;
     description: string | null;
-    published: boolean;
+    state: DossierStateEnum;
 }
 
 export interface DossierDetailsDTO {
@@ -13,7 +14,7 @@ export interface DossierDetailsDTO {
     initiatorId: string;
     title: string | null;
     description: string | null;
-    published: boolean;
+    state: DossierStateEnum;
     createdDate: Date;
     modifiedDate: Date;
     courseCreationRequests: CourseCreationRequest[];
@@ -32,3 +33,22 @@ export interface GetMyDossiersResponse {
 export interface DossierDetailsResponse {
     data: DossierDetailsDTO;
 }
+
+export enum DossierStateEnum {
+    Created = 0,
+    InReview = 1,
+    Rejected = 2,
+    Approved = 3
+}
+
+export function dossierStateToString(dossier: DossierDTO | DossierDetailsDTO | null): string {
+    if (!dossier) return "Created";
+
+    if (dossier.state === DossierStateEnum.InReview) return "In Review";
+    if (dossier.state === DossierStateEnum.Rejected) return "Rejected";
+    if (dossier.state === DossierStateEnum.Approved) return "Approved";
+
+    return "Created";
+}
+
+
