@@ -1,6 +1,8 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
+using NpgsqlTypes;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 {
@@ -15,7 +17,7 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
         public required string Description { get; set; }
 
-        public required bool Published { get; set; }
+        public required DossierStateEnum State { get; set; }
 
         public List<CourseCreationRequest> CourseCreationRequests { get; set; } = new List<CourseCreationRequest>();
 
@@ -25,8 +27,18 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
         public IList<ApprovalStage> ApprovalStages { get; set; } = new List<ApprovalStage>();
 
+        public void MarkAsRejected()
+        {
+            if (State != DossierStateEnum.InReview)
+                throw new BadRequestException("A dossier that is not currently in review cannot be rejected");
+
+            State = DossierStateEnum.Rejected;
+        }
+
         public IList<ApprovalStage> PrepareForPublishing(DossierSubmissionDTO dto)
         {
+            VerifyPublishStateIsConsistentOrThrow();
+
             List<ApprovalStage> stages = dto.GroupIds.Select((Guid groupId, int index) =>
             {
                 return new ApprovalStage
@@ -43,10 +55,32 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
             stages.First().IsCurrentStage = true;
             stages.Last().IsFinalStage = true;
 
-            this.Published = true;
+            this.State = DossierStateEnum.InReview;
 
             return stages;
         }
+
+        private void VerifyPublishStateIsConsistentOrThrow()
+        {
+            if (State == DossierStateEnum.InReview) throw new BadRequestException("The dossier has already been submitted for review");
+            if (State == DossierStateEnum.Rejected) throw new BadRequestException("The dossier has already been submitted for review and was rejected");
+            if (State == DossierStateEnum.Approved) throw new BadRequestException("The dossier has already been submitted for review and was approved");
+        }
+    }
+
+    public enum DossierStateEnum
+    {
+        [PgName(nameof(Created))]
+        Created,
+
+        [PgName(nameof(InReview))]
+        InReview,
+
+        [PgName(nameof(Rejected))]
+        Rejected,
+
+        [PgName(nameof(Approved))]
+        Approved
     }
 }
 

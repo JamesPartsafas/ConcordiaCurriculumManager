@@ -74,7 +74,7 @@ public static class ObjectSelectors
         ModifiedDate = dossier.ModifiedDate,
         Title = dossier.Title,
         Description = dossier.Description,
-        Published = dossier.Published,
+        State = dossier.State,
         InitiatorId = dossier.InitiatorId,
         CourseCreationRequests = (List<CourseCreationRequest>)dossier.CourseCreationRequests.Select(request => new CourseCreationRequest
         {
