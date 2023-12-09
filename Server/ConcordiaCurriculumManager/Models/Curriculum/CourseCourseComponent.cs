@@ -38,4 +38,28 @@ public class CourseCourseComponent : BaseModel
 
         return dictionary;
     }
+
+    public static ICollection<CourseCourseComponent> CloneForDeletionRequest(ICollection<CourseCourseComponent>? oldComponents, Guid newCourseId)
+    {
+        ICollection<CourseCourseComponent> components = new List<CourseCourseComponent>();
+        if (oldComponents == null)
+            return components;
+
+        foreach (var oldComponent in oldComponents)
+        {
+            components.Add(CloneForDeletionRequest(oldComponent, newCourseId));
+        }
+
+        return components;
+    }
+
+    private static CourseCourseComponent CloneForDeletionRequest(CourseCourseComponent oldComponent, Guid newCourseId)
+    {
+        return new CourseCourseComponent
+        {
+            ComponentCode = oldComponent.ComponentCode,
+            CourseId = newCourseId,
+            HoursPerWeek = oldComponent.HoursPerWeek
+        };
+    }
 }
