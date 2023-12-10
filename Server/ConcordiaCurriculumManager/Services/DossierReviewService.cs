@@ -9,6 +9,7 @@ public interface IDossierReviewService
 {
     public Task SubmitDossierForReview(DossierSubmissionDTO dto);
     public Task RejectDossier(Guid dossierId);
+    public Task ReturnDossier(Guid dossierId);
     public Task ForwardDossier(Guid dossierId);
     public Task<Dossier> GetDossierWithApprovalStagesOrThrow(Guid dossierId);
     public Task<Dossier> GetDossierWithApprovalStagesAndRequestsOrThrow(Guid dossierId);
@@ -67,6 +68,19 @@ public class DossierReviewService : IDossierReviewService
             _logger.LogInformation($"Dossier {dossier.Id} successfully rejected from the review process");
         else
             _logger.LogError($"Encountered error attempting to reject dossier {dossier.Id} from the review process");
+    }
+
+    public async Task ReturnDossier(Guid dossierId)
+    {
+        Dossier dossier = await GetDossierWithApprovalStagesOrThrow(dossierId);
+
+        dossier.MarkAsReturned();
+
+        var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
+        if (isDossierSaved)
+            _logger.LogInformation($"Dossier {dossier.Id} successfully returned to the previous group in the review process");
+        else
+            _logger.LogError($"Encountered error attempting to return dossier {dossier.Id} to the previous group in the review process");
     }
 
     public async Task ForwardDossier(Guid dossierId)
