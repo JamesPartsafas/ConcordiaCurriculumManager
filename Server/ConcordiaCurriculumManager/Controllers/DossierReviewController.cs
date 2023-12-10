@@ -33,7 +33,7 @@ public class DossierReviewController : Controller
 
         await _dossierReviewService.SubmitDossierForReview(dto);
 
-        return Ok();
+        return NoContent();
     }
 
     [HttpPut(nameof(RejectDossier) + "/{dossierId}")]
@@ -45,6 +45,18 @@ public class DossierReviewController : Controller
     {
         await _dossierReviewService.RejectDossier(dossierId);
 
-        return Ok();
+        return NoContent();
+    }
+
+    [HttpPut(nameof(ForwardDossier) + "/{dossierId}")]
+    [Authorize(Policies.IsDossierReviewMaster)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Dossier successfully forwarded")]
+    public async Task<ActionResult> ForwardDossier([FromRoute, Required] Guid dossierId)
+    {
+        await _dossierReviewService.ForwardDossier(dossierId);
+
+        return NoContent();
     }
 }

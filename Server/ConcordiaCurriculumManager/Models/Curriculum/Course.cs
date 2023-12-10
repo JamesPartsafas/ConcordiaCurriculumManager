@@ -112,9 +112,10 @@ public class Course : BaseModel
 
     public static Course CloneCourseForDeletionRequest(Course course)
     {
+        var newId = Guid.NewGuid();
         return new Course
         {
-            Id = Guid.NewGuid(),
+            Id = newId,
             CourseID = course.CourseID,
             Subject = course.Subject,
             Catalog = course.Catalog,
@@ -128,9 +129,21 @@ public class Course : BaseModel
             CourseState = CourseStateEnum.CourseDeletionProposal,
             Version = null,
             Published = false,
-            CourseCourseComponents = course.CourseCourseComponents,
+            CourseCourseComponents = CourseCourseComponent.CloneForDeletionRequest(course.CourseCourseComponents, newId),
             SupportingFiles = course.SupportingFiles,
         };
+    }
+
+    public void MarkAsAccepted(int version) => MarkAsFinalized(version, CourseStateEnum.Accepted);
+
+    public void MarkAsDeleted(int version) => MarkAsFinalized(version, CourseStateEnum.Deleted);
+
+    private void MarkAsFinalized(int version, CourseStateEnum state)
+    {
+        Version = version;
+        CourseState = state;
+
+        VerifyCourseIsValidOrThrow();
     }
 }   
 

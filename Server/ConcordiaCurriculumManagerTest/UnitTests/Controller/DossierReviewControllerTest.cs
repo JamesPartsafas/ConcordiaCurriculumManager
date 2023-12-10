@@ -40,4 +40,15 @@ public class DossierReviewControllerTest
 
         dossierReviewService.Verify(mock => mock.RejectDossier(dossierId), Times.Once());
     }
+
+    [TestMethod]
+    public async Task ForwardDossier_ValidCall_ReturnsOk()
+    {
+        dossierReviewService.Setup(drs => drs.ForwardDossier(It.IsAny<Guid>())).Returns(Task.CompletedTask);
+        var dossierId = Guid.NewGuid();
+
+        var actionResult = await dossierReviewController.ForwardDossier(dossierId);
+
+        dossierReviewService.Verify(mock => mock.ForwardDossier(dossierId), Times.Once());
+    }
 }

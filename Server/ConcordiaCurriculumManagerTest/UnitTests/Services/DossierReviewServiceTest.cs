@@ -21,6 +21,7 @@ public class DossierReviewServiceTest
     private Mock<ILogger<DossierReviewService>> logger = null!;
     private Mock<IDossierService> dossierService = null!;
     private Mock<IGroupService> groupService = null!;
+    private Mock<ICourseService> courseService = null!;
     private Mock<IDossierRepository> dossierRepository = null!;
     private Mock<IDossierReviewRepository> dossierReviewRepository = null!;
 
@@ -32,6 +33,7 @@ public class DossierReviewServiceTest
         logger = new Mock<ILogger<DossierReviewService>>();
         dossierService = new Mock<IDossierService>();
         groupService = new Mock<IGroupService>();
+        courseService = new Mock<ICourseService>();
         dossierRepository = new Mock<IDossierRepository>();
         dossierReviewRepository = new Mock<IDossierReviewRepository>();
 
@@ -39,6 +41,7 @@ public class DossierReviewServiceTest
             logger.Object,
             dossierService.Object,
             groupService.Object,
+            courseService.Object,
             dossierRepository.Object,
             dossierReviewRepository.Object
         );
@@ -130,6 +133,34 @@ public class DossierReviewServiceTest
         await dossierReviewService.RejectDossier(dossier.Id);
 
         Assert.AreEqual(DossierStateEnum.Rejected, dossier.State);
+        dossierRepository.Verify(mock => mock.UpdateDossier(dossier), Times.Once());
+    }
+
+    [TestMethod]
+    public async Task ForwardDossier_WithInitialApprovalStage_Forwards()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequests(dossier.Id)).ReturnsAsync(dossier);
+
+        await dossierReviewService.ForwardDossier(dossier.Id);
+
+        Assert.AreEqual(DossierStateEnum.InReview, dossier.State);
+        dossierRepository.Verify(mock => mock.UpdateDossier(dossier), Times.Once());
+    }
+
+    [TestMethod]
+    public async Task ForwardDossier_WithFinalApprovalStage_Forwards()
+    {
+        var dossier = TestData.GetSampleDossierInFinalStage();
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequests(dossier.Id)).ReturnsAsync(dossier);
+        courseService.Setup(cs => cs.GetCourseVersions(dossier)).ReturnsAsync(TestData.GetSampleCourseVersionCollection());
+
+        await dossierReviewService.ForwardDossier(dossier.Id);
+
+        Assert.AreEqual(DossierStateEnum.Approved, dossier.State);
+        courseService.Verify(mock => mock.GetCourseVersions(dossier), Times.Once());
         dossierRepository.Verify(mock => mock.UpdateDossier(dossier), Times.Once());
     }
 }
