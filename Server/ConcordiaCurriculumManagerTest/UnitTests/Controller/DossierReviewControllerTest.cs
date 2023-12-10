@@ -42,6 +42,17 @@ public class DossierReviewControllerTest
     }
 
     [TestMethod]
+    public async Task ReturnDossier_ValidCall_ReturnsOk()
+    {
+        dossierReviewService.Setup(drs => drs.ReturnDossier(It.IsAny<Guid>())).Returns(Task.CompletedTask);
+        var dossierId = Guid.NewGuid();
+
+        var actionResult = await dossierReviewController.ReturnDossier(dossierId);
+
+        dossierReviewService.Verify(mock => mock.ReturnDossier(dossierId), Times.Once());
+    }
+
+    [TestMethod]
     public async Task ForwardDossier_ValidCall_ReturnsOk()
     {
         dossierReviewService.Setup(drs => drs.ForwardDossier(It.IsAny<Guid>())).Returns(Task.CompletedTask);

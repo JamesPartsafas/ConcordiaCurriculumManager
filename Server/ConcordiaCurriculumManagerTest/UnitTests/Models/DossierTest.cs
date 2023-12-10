@@ -121,4 +121,29 @@ public class DossierTest
 
         dossier.MarkAsAccepted(TestData.GetSampleCourseVersionCollection());
     }
+
+    [TestMethod]
+    public void ReturnDossier_ThatIsInNonInitialStage_MarksReturned()
+    {
+        var dossier = TestData.GetSampleDossierInFinalStage();
+
+        var currentStage = dossier.ApprovalStages.Where(stage => stage.IsCurrentStage).First();
+
+        dossier.MarkAsReturned();
+
+        var previousStage = dossier.ApprovalStages.Where(stage => stage.IsCurrentStage).First();
+
+        Assert.AreEqual(previousStage.StageIndex, currentStage.StageIndex - 1);
+        Assert.AreEqual(true, previousStage.IsCurrentStage);
+        Assert.AreEqual(false, currentStage.IsCurrentStage);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public void ReturnDossier_ThatIsInInitialStage_Throws()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+
+        dossier.MarkAsReturned();
+    }
 }

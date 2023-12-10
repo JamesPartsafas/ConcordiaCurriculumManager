@@ -137,6 +137,29 @@ public class DossierReviewServiceTest
     }
 
     [TestMethod]
+    public async Task ReturnDossier_WithFinalApprovalStage_Returns()
+    {
+        var dossier = TestData.GetSampleDossierInFinalStage();
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStages(dossier.Id)).ReturnsAsync(dossier);
+
+        await dossierReviewService.ReturnDossier(dossier.Id);
+
+        dossierRepository.Verify(mock => mock.UpdateDossier(dossier), Times.Once());
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task ReturnDossier_InInitialApprovalStage_Throws()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStages(dossier.Id)).ReturnsAsync(dossier);
+
+        await dossierReviewService.ReturnDossier(dossier.Id);
+    }
+
+    [TestMethod]
     public async Task ForwardDossier_WithInitialApprovalStage_Forwards()
     {
         var dossier = TestData.GetSampleDossierInInitialStage();
@@ -150,7 +173,7 @@ public class DossierReviewServiceTest
     }
 
     [TestMethod]
-    public async Task ForwardDossier_WithFinalApprovalStage_Forwards()
+    public async Task ForwardDossier_WithFinalApprovalStage_Accepts()
     {
         var dossier = TestData.GetSampleDossierInFinalStage();
 
