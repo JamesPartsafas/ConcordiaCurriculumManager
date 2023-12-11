@@ -35,6 +35,19 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
             State = DossierStateEnum.Rejected;
         }
 
+        public void MarkAsReturned()
+        {
+            if (IsInInitialStageOfReviewPipeline())
+                throw new BadRequestException("The dossier cannot be returned as it is still in the initial stage of its approval pipeline");
+
+            var currentStage = ApprovalStages.Where(stage => stage.IsCurrentStage).First();
+
+            currentStage.IsCurrentStage = false;
+
+            var previousStage = ApprovalStages.Where(stage => stage.StageIndex == currentStage.StageIndex - 1).First();
+            previousStage.IsCurrentStage = true;
+        }
+
         public void MarkAsForwarded()
         {
             if (IsInFinalStageOfReviewPipeline())
@@ -101,13 +114,28 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
             if (State == DossierStateEnum.Approved) throw new BadRequestException("The dossier has already been submitted for review and was approved");
         }
 
+        public bool IsInInitialStageOfReviewPipeline()
+        {
+            VerifyStagesAreLoadedOrThrow();
+
+            var initialStage = ApprovalStages.Where(stage => stage.IsInitialStage()).First();
+
+            return initialStage.IsCurrentStage;
+        }
+
         public bool IsInFinalStageOfReviewPipeline()
         {
-            if (ApprovalStages.Count == 0) throw new BadRequestException("The approval stages have not been loaded for the dossier");
+            VerifyStagesAreLoadedOrThrow();
 
             var finalStage = ApprovalStages.Where(stage => stage.IsFinalStage).First();
 
             return finalStage.IsCurrentStage;
+        }
+
+        private void VerifyStagesAreLoadedOrThrow()
+        {
+            if (ApprovalStages.Count == 0)
+                throw new BadRequestException($"The approval stages have not been loaded for the dossier {Id}");
         }
     }
 

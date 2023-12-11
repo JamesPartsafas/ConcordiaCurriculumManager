@@ -423,6 +423,18 @@ public static class TestData
         };
     }
 
+    public static ApprovalStage GetSampleApprovalStage()
+    {
+        return new ApprovalStage
+        {
+            DossierId = Guid.NewGuid(),
+            GroupId = Guid.NewGuid(),
+            StageIndex = 3,
+            IsCurrentStage = true,
+            IsFinalStage = false
+        };
+    }
+
     // GROUPS
     public static Group GetSampleGroup()
     {
