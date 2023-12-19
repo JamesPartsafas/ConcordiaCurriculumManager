@@ -100,18 +100,6 @@ export default function DossierReview() {
 
     return (
         <>
-            {/* <Container maxW={"70%"} mt={5} mb={2}>
-                <Button
-                    style="primary"
-                    variant="outline"
-                    height="40px"
-                    width="100px"
-                    onClick={() => navigate(BaseRoutes.Dossiers)}
-                >
-                    Back
-                </Button>
-            </Container> */}
-
             <Box>
                 <form>
                     <Button
