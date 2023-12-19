@@ -120,7 +120,7 @@ export default function DossierReview() {
                         height="40px"
                         width="100px"
                         margin="20px"
-                        onClick={() => navigate(BaseRoutes.Dossiers)}
+                        onClick={() => navigate(BaseRoutes.Dossiers)} // TODO: change the link to navigate to the Dossiers Review Page
                     >
                         Back
                     </Button>
@@ -163,6 +163,7 @@ export default function DossierReview() {
                                     <Heading size={"md"} color="brandBlue">
                                         Course Creation Requests:
                                     </Heading>
+                                    {/* TODO: Change the links below to the Course Details Page */}
                                     {dossierDetails?.courseCreationRequests?.map((courseCreationRequest) => (
                                         <Text key={courseCreationRequest.id} as="u">
                                             <Link to={BaseRoutes.ManageableGroup}>
@@ -176,6 +177,7 @@ export default function DossierReview() {
                                     <Heading size={"md"} color="brandBlue">
                                         Course Modification Requests:
                                     </Heading>
+                                    {/* TODO: Change the link below to the Course Details Page */}
                                     {dossierDetails?.courseModificationRequests?.map((courseModificationRequest) => (
                                         <Text key={courseModificationRequest.id} as="u">
                                             <Link to={BaseRoutes.ManageableGroup}>
@@ -189,6 +191,7 @@ export default function DossierReview() {
                                     <Heading size={"md"} color="brandBlue">
                                         Course Deletion Requests:
                                     </Heading>
+                                    {/* TODO: Change the link below to the Course Details Page */}
                                     {dossierDetails?.courseDeletionRequests?.map((courseDeletionRequest) => (
                                         <Text key={courseDeletionRequest.id} as="u">
                                             <Link to={BaseRoutes.ManageableGroup}>
