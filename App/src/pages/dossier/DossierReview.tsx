@@ -35,7 +35,7 @@ export default function DossierReview() {
     const { dossierId } = useParams();
     const [dossierDetails, setDossierDetails] = useState<DossierDetailsDTO | null>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [loading, setLoading] = useState<boolean>(false);
+    //const [loading, setLoading] = useState<boolean>(false);
     const cancelRef = React.useRef();
 
     const navigate = useNavigate();
@@ -81,7 +81,7 @@ export default function DossierReview() {
                                 variant="solid"
                                 width="fit-content"
                                 height="40px"
-                                isLoading={loading}
+                                //isLoading={loading}
                                 loadingText="Deleting"
                                 // onClick={() => {
                                 //     addMessage(message);
