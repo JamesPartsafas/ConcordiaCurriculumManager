@@ -34,7 +34,10 @@ import React from "react";
 export default function DossierReview() {
     const { dossierId } = useParams();
     const [dossierDetails, setDossierDetails] = useState<DossierDetailsDTO | null>(null);
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen: isOpenMessage, onOpen: onOpenMessage, onClose: onCloseMessage } = useDisclosure();
+    const { isOpen: isOpenForward, onOpen: onOpenForward, onClose: onCloseForward } = useDisclosure();
+    const { isOpen: isOpenReturn, onOpen: onOpenReturn, onClose: onCloseReturn } = useDisclosure();
+    const { isOpen: isOpenReject, onOpen: onOpenReject, onClose: onCloseReject } = useDisclosure();
     //const [loading, setLoading] = useState<boolean>(false);
     const cancelRef = React.useRef();
 
@@ -53,7 +56,7 @@ export default function DossierReview() {
 
     function messageAlertDialog() {
         return (
-            <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+            <AlertDialog isOpen={isOpenMessage} leastDestructiveRef={cancelRef} onClose={onCloseMessage}>
                 <AlertDialogOverlay>
                     <AlertDialogContent>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
@@ -72,7 +75,7 @@ export default function DossierReview() {
                                 width="fit-content"
                                 height="40px"
                                 ref={cancelRef}
-                                onClick={onClose}
+                                onClick={onCloseMessage}
                             >
                                 Cancel
                             </Button>
@@ -90,6 +93,146 @@ export default function DossierReview() {
                                 ml={3}
                             >
                                 Submit
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+        );
+    }
+
+    function forwardAlertDialog() {
+        return (
+            <AlertDialog isOpen={isOpenForward} leastDestructiveRef={cancelRef} onClose={onCloseForward}>
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Forward Dossier
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            Are you sure you want to forward this dossier to the next group in the approval pipeline?
+                            You can&apos;t undo this action afterwards.
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                            <Button
+                                style="secondary"
+                                variant="outline"
+                                width="fit-content"
+                                height="40px"
+                                ref={cancelRef}
+                                onClick={onCloseForward}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                style="primary"
+                                variant="solid"
+                                width="fit-content"
+                                height="40px"
+                                //isLoading={loading}
+                                loadingText="Deleting"
+                                // onClick={() => {
+                                //     forwardDossier(dossier);
+                                //     // onClose();
+                                // }}
+                                ml={3}
+                            >
+                                Forward
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+        );
+    }
+
+    function returnAlertDialog() {
+        return (
+            <AlertDialog isOpen={isOpenReturn} leastDestructiveRef={cancelRef} onClose={onCloseReturn}>
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Return Dossier
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            Are you sure you want to return this dossier to the previous group in the approval pipeline?
+                            You can&apos;t undo this action afterwards.
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                            <Button
+                                style="secondary"
+                                variant="outline"
+                                width="fit-content"
+                                height="40px"
+                                ref={cancelRef}
+                                onClick={onCloseReturn}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                style="primary"
+                                variant="solid"
+                                width="fit-content"
+                                height="40px"
+                                //isLoading={loading}
+                                loadingText="Deleting"
+                                // onClick={() => {
+                                //     returnDossier(dossier);
+                                //     // onClose();
+                                // }}
+                                ml={3}
+                            >
+                                Return
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+        );
+    }
+
+    function rejectAlertDialog() {
+        return (
+            <AlertDialog isOpen={isOpenReject} leastDestructiveRef={cancelRef} onClose={onCloseReject}>
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Reject Dossier
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            Are you sure you want to reject this dossier? You can&apos;t undo this action afterwards.
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                            <Button
+                                style="secondary"
+                                variant="outline"
+                                width="fit-content"
+                                height="40px"
+                                ref={cancelRef}
+                                onClick={onCloseReject}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                style="primary"
+                                variant="solid"
+                                width="fit-content"
+                                height="40px"
+                                //isLoading={loading}
+                                loadingText="Deleting"
+                                // onClick={() => {
+                                //     rejectDossier(dossier);
+                                //     // onClose();
+                                // }}
+                                ml={3}
+                            >
+                                Reject
                             </Button>
                         </AlertDialogFooter>
                     </AlertDialogContent>
@@ -133,13 +276,31 @@ export default function DossierReview() {
                                 <Text>updated: {dossierDetails?.modifiedDate?.toString()}</Text>
                             </Stack>
                             <Stack direction="row" spacing={4} align="center" marginBottom={10}>
-                                <Button background="brandBlue" variant="solid">
+                                <Button
+                                    background="brandBlue"
+                                    variant="solid"
+                                    onClick={() => {
+                                        onOpenForward();
+                                    }}
+                                >
                                     Forward
                                 </Button>
-                                <Button background="brandGray" variant="solid">
+                                <Button
+                                    background="brandGray"
+                                    variant="solid"
+                                    onClick={() => {
+                                        onOpenReturn();
+                                    }}
+                                >
                                     Return
                                 </Button>
-                                <Button background="brandRed" variant="solid">
+                                <Button
+                                    background="brandRed"
+                                    variant="solid"
+                                    onClick={() => {
+                                        onOpenReject();
+                                    }}
+                                >
                                     Reject
                                 </Button>
                             </Stack>
@@ -224,7 +385,7 @@ export default function DossierReview() {
                                         // onClick={() => handleSubmitCourse()}
                                         // isLoading={isLoading}
                                         onClick={() => {
-                                            onOpen();
+                                            onOpenMessage();
                                         }}
                                     >
                                         Submit
@@ -452,6 +613,9 @@ export default function DossierReview() {
                 </form>
             </Box>
             {messageAlertDialog()}
+            {forwardAlertDialog()}
+            {returnAlertDialog()}
+            {rejectAlertDialog()}
         </>
     );
 }
