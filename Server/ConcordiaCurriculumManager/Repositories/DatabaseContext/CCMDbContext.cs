@@ -131,6 +131,10 @@ public class CCMDbContext : DbContext
     private static void ConfigureGroupUserRelationship(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Group>()
+            .HasIndex(group => group.Name)
+            .IsUnique();
+
+        modelBuilder.Entity<Group>()
             .HasMany(group => group.Members)
             .WithMany(user => user.Groups);
 
