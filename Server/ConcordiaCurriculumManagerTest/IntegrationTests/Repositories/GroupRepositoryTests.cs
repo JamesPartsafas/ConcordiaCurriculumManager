@@ -333,4 +333,15 @@ public class GroupRepositoryTests
         Assert.IsTrue(validIds.Contains(group1.Id));
         Assert.IsTrue(validIds.Contains(group2.Id));
     }
+
+    [TestMethod]
+    public async Task UpdateGroupAsync_GroupExists_ReturnsTrue()
+    {
+        var repository = new GroupRepository(dbContext);
+        var group = new Group { Name = "test group" };
+
+        var result = await repository.UpdateGroupAsync(group);
+
+        Assert.IsTrue(result);
+    }
 }

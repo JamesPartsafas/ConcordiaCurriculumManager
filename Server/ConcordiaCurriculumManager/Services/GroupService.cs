@@ -16,6 +16,8 @@ public interface IGroupService
     Task<bool> RemoveGroupMaster(Guid userId, Guid groupId);
     Task<bool> IsGroupMaster(Guid userId, Guid groupId);
     Task<bool> IsGroupIdListValid(IList<Guid> groupIds);
+
+    Task<bool> UpdateGroupAsync(Guid id, GroupCreateDTO groupDto);
 }
 
 public class GroupService : IGroupService
@@ -73,5 +75,17 @@ public class GroupService : IGroupService
         var validGroupIds = await _groupRepository.GetValidGroupIds();
 
         return groupIds.All(groupId => validGroupIds.Contains(groupId));
+    }
+
+    public async Task<bool> UpdateGroupAsync(Guid id, GroupCreateDTO groupDto)
+    {
+        var group = await _groupRepository.GetGroupById(id);
+        if (group == null)
+        {
+            return false;
+        }
+
+        group.Name = groupDto.Name;
+        return await _groupRepository.UpdateGroupAsync(group);
     }
 }
