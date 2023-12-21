@@ -1,4 +1,5 @@
 using ConcordiaCurriculumManager.Security;
+using Serilog.Context;
 
 namespace ConcordiaCurriculumManager.Filters;
 
