@@ -33,7 +33,7 @@ import React from "react";
 import Button from "../../components/Button";
 import { UserRoles } from "../../models/user";
 import { showToast } from "../../utils/toastUtils";
-import { DossierDTO, GetMyDossiersResponse, dossierStateToString } from "../../models/dossier";
+import { DossierDTO, DossierStateEnum, GetMyDossiersResponse, dossierStateToString } from "../../models/dossier";
 import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
 
@@ -44,6 +44,7 @@ export default function Dossiers() {
     const navigate = useNavigate();
 
     const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
+    const [reviewedDossiers, setReviewedDossiers] = useState<DossierDTO[]>([]);
     const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
     const [dossierModalAction, setDossierModalTitle] = useState<"add" | "edit">();
@@ -68,6 +69,7 @@ export default function Dossiers() {
             .then(
                 (res: GetMyDossiersResponse) => {
                     setMyDossiers(res.data);
+                    setReviewedDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.InReview));
                 },
                 (rej) => {
                     console.log(rej);
@@ -295,7 +297,7 @@ export default function Dossiers() {
                                 </Tr>
                             </Thead>
                             <Tbody>
-                                {myDossiers.slice(startIndex - 1, endIndex).map((dossier) => (
+                                {reviewedDossiers.slice(startIndex - 1, endIndex).map((dossier) => (
                                     <Tr key={dossier.id} display={"flex"}>
                                         <Td minW={"200px"} maxW={"200px"}>
                                             {dossier.title}
@@ -350,7 +352,7 @@ export default function Dossiers() {
                                     <Td height={20}>
                                         <Flex>
                                             <Text alignSelf="center">
-                                                Showing {startIndex} to {endIndex} of {myDossiers.length} results
+                                                Showing {startIndex} to {endIndex} of {reviewedDossiers.length} results
                                             </Text>
                                             <Spacer />
                                             <ChakraButton
