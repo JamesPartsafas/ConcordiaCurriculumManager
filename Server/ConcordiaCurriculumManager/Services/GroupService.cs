@@ -16,8 +16,8 @@ public interface IGroupService
     Task<bool> RemoveGroupMaster(Guid userId, Guid groupId);
     Task<bool> IsGroupMaster(Guid userId, Guid groupId);
     Task<bool> IsGroupIdListValid(IList<Guid> groupIds);
-
     Task<bool> UpdateGroupAsync(Guid id, GroupCreateDTO groupDto);
+    Task<bool> DeleteGroupAsync(Guid id);
 }
 
 public class GroupService : IGroupService
@@ -87,5 +87,10 @@ public class GroupService : IGroupService
 
         group.Name = groupDto.Name;
         return await _groupRepository.UpdateGroupAsync(group);
+    }
+
+    public async Task<bool> DeleteGroupAsync(Guid id)
+    {
+        return await _groupRepository.DeleteGroupAsync(id);
     }
 }
