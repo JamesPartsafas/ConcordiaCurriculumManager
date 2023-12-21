@@ -7,16 +7,19 @@ import { AddUserToGroup, GetGroupByID, GroupDTO, GroupResponseDTO } from "../ser
 import { useLocation } from "react-router-dom";
 import { BaseRoutes } from "../constants";
 import { UserDTO, UserRoleCodes } from "../models/user";
-import { AllUsersResponseDTO, updateAllUsers } from "../services/user";
+import { AllUsersResponseDTO, updateAllUsers, searchUsersByEmail } from "../services/user";
 import { getAllUsers } from "../services/user";
+import { set } from "react-hook-form";
 
 export default function AddingUserToGroup() {
     const [users, setUsers] = useState<UserDTO[]>([]);
     const [nonMembers, setNonMembers] = useState<UserDTO[]>([]);
+    const [searchInput, setSearchInput] = useState<string>();
     const navigate = useNavigate();
     const location = useLocation();
     const [myGroup, setMyGroup] = useState<GroupDTO | null>(null);
     const [locationState, setLocationState] = useState({ gid: "", name: "" });
+    const handleChange = (event) => setSearchInput(event.target.value);
 
     function getMyGroup(gid: string) {
         console.log("Grabbing group info");
@@ -33,6 +36,17 @@ export default function AddingUserToGroup() {
     function getUsers() {
         console.log("Grabbing User info");
         getAllUsers()
+            .then((res: AllUsersResponseDTO) => {
+                setUsers(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    function searchUsers(input: string) {
+        console.log("Searching for " + input);
+        searchUsersByEmail(users[0].id, input)
             .then((res: AllUsersResponseDTO) => {
                 setUsers(res.data);
             })
@@ -104,7 +118,16 @@ export default function AddingUserToGroup() {
 
                         <FormControl>
                             <FormLabel htmlFor="search-text">Search:</FormLabel>
-                            <Input id="searcher" type="text" />
+                            <Input id="searcher" type="text" value={searchInput} onChange={handleChange} />
+                            <Button
+                                style="secondary"
+                                variant="outline"
+                                width="22%"
+                                height="40px"
+                                onClick={() => searchUsers(searchInput)}
+                            >
+                                Search
+                            </Button>
                         </FormControl>
 
                         <div id="item-list">
