@@ -35,6 +35,7 @@ import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { showToast } from "../../utils/toastUtils";
 import DeleteAlert from "../../shared/DeleteAlert";
+import EditCourseModal from "./EditCourseModal";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
@@ -42,6 +43,7 @@ export default function DossierDetails() {
     const [dossierDetails, setDossierDetails] = useState<DossierDetailsDTO | null>(null);
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
     const [selectedCourseCreationRequest, setSelectedCourseCreationRequest] = useState<CourseCreationRequest>(null);
     const [selectedCourseModificationRequest, setSelectedCourseModificationRequest] =
         useState<CourseModificationRequest>(null);
@@ -52,6 +54,7 @@ export default function DossierDetails() {
 
     useEffect(() => {
         requestDossierDetails(dossierId);
+        requestCourseSettings();
         requestCourseSettings();
     }, [dossierId]);
 
@@ -64,8 +67,8 @@ export default function DossierDetails() {
     function requestCourseSettings() {
         getAllCourseSettings().then((res) => {
             setCourseSettings(res.data);
-            console.log(res.data);
         });
+        console.log(courseSettings);
     }
 
     function deleteRequestAlert() {
@@ -205,9 +208,21 @@ export default function DossierDetails() {
             });
     }
 
+    function createModificationRequest() {
+        return (
+            <EditCourseModal
+                isOpen={isEditOpen}
+                onClose={onEditClose}
+                allCourseSettings={courseSettings}
+                dossierId={dossierId}
+            ></EditCourseModal>
+        );
+    }
+
     return (
         <>
             {deleteRequestAlert()}
+            {createModificationRequest()}
             <Container maxW={"70%"} mt={5} mb={2}>
                 <Button
                     style="primary"
@@ -403,8 +418,7 @@ export default function DossierDetails() {
                     style="primary"
                     width="100%"
                     onClick={() => {
-                        // need to have a modal maybe to select which course to edit
-                        navigate(BaseRoutes.EditCourse.replace(":id", "1").replace(":dossierId", dossierId));
+                        onEditOpen();
                     }}
                 >
                     Add Modification Request

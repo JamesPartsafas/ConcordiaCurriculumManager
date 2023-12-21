@@ -22,9 +22,16 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { addCourse, getAllCourseSettings } from "../services/course";
-import { AllCourseSettings, Course, CourseCareer, CourseComponent, CourseComponents } from "../models/course";
+import {
+    AllCourseSettings,
+    Course,
+    CourseCareer,
+    CourseComponent,
+    CourseComponents,
+    componentMappings,
+} from "../models/course";
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
 import Button from "../components/Button";
@@ -56,6 +63,9 @@ export default function EditCourse() {
     const [courseCareers, setCourseCareers] = useState<string[]>([]);
     const selectedComponentRef = useRef<HTMLSelectElement>(null);
     const { dossierId } = useParams();
+
+    const location = useLocation();
+    const state = location.state as Course;
 
     const handleChangeCourseCareer = (value: string) => {
         if (value.length === 0) setCourseCareersError(true);
@@ -112,6 +122,13 @@ export default function EditCourse() {
         setCourseComponents(courseComponents.filter((_component, componentIndex) => componentIndex !== index));
     };
 
+    const handleEditComponentHours = (hours: number, index: number) => {
+        const temp = [...courseComponents];
+        temp[index].hours = hours;
+        setCourseComponents(temp);
+        console.log(temp);
+    };
+
     const handleSubmitCourse = () => {
         setFormSubmitted(true);
         if (courseCodeError || courseCreditError || courseNameError || courseSubjectError) return;
@@ -141,18 +158,17 @@ export default function EditCourse() {
         }
     };
     const setCourseData = () => {
-        const courseDetails = {
-            subject: "COMP",
-            catalog: "1",
-            title: "Computer networks and Communications",
-            description:
-                "This course is about computer networks and communications, please refer to the course outline for more details about this course",
-            creditValue: "4",
-            preReqs: "COMP: 335 and COMP 352",
-            career: 4,
-            equivalentCourses: "",
-            componentCodes: [2, 3],
-            dossierId: "37581d9d-713f-475c-9668-23971b0e64d0",
+        const courseDetails: Course = {
+            subject: state?.subject,
+            catalog: state?.catalog,
+            title: state?.title,
+            description: state?.description,
+            creditValue: state?.creditValue,
+            preReqs: state?.preReqs,
+            career: state?.career,
+            equivalentCourses: state?.equivalentCourses,
+            componentCodes: state?.componentCodes,
+            dossierId: dossierId,
         };
         setDepartment(courseDetails.subject);
         setCourseName(courseDetails.title);
@@ -162,9 +178,19 @@ export default function EditCourse() {
         setCourseNumber(courseDetails.catalog);
         setCouresCareer(allCourseSettings?.courseCareers.find((career) => career.careerCode == courseDetails.career));
         // find course components in allCourseSettings that match component codes of coursdDetails
-        const courseComponentsTemp = allCourseSettings?.courseComponents.filter((component) =>
-            courseDetails.componentCodes.includes(component.componentCode)
-        );
+        const courseComponentsTemp = allCourseSettings?.courseComponents
+            .filter((component) =>
+                Object.keys(courseDetails.componentCodes).includes(componentMappings[component.componentName])
+            )
+            .map((filteredComponent) => {
+                const code = componentMappings[filteredComponent.componentName];
+                const hours = courseDetails.componentCodes[code];
+                return {
+                    ...filteredComponent,
+                    hours: hours,
+                };
+            });
+
         setCourseComponents(courseComponentsTemp || []);
     };
     useEffect(() => {
@@ -355,24 +381,21 @@ export default function EditCourse() {
                                                                         {component.componentName}
                                                                     </Text>
                                                                 </Center>
-                                                                {/* <Center w="35%">
-                                                                <Text mr={2}>Hours:</Text>
-                                                                <NumberInput
-                                                                    max={10}
-                                                                    display={"inline"}
-                                                                    pr={0}
-                                                                    w="50px"
-                                                                    defaultValue={component.hours}
-                                                                    onChange={(e) =>
-                                                                        handleEditComponentHours(
-                                                                            parseInt(e),
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <NumberInputField pr={0} />
-                                                                </NumberInput>
-                                                            </Center> */}
+                                                                <Center w="35%">
+                                                                    <Text mr={2}>Hours:</Text>
+                                                                    <NumberInput
+                                                                        max={10}
+                                                                        display={"inline"}
+                                                                        pr={0}
+                                                                        w="50px"
+                                                                        defaultValue={component.hours}
+                                                                        onChange={(e) =>
+                                                                            handleEditComponentHours(parseInt(e), index)
+                                                                        }
+                                                                    >
+                                                                        <NumberInputField pr={0} />
+                                                                    </NumberInput>
+                                                                </Center>
                                                                 <Center w="30%">
                                                                     <ButtonGroup
                                                                         size="sm"
