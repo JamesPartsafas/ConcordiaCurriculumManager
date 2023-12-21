@@ -5,6 +5,7 @@ using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 public static class TestData
@@ -299,9 +300,45 @@ public static class TestData
         return new Dossier
         {
             InitiatorId = Guid.NewGuid(),
-            Published = false,
+            State = DossierStateEnum.Created,
             Title = "test title",
             Description = "test description"
+        };
+    }
+
+    public static Dossier GetSampleDossierInInitialStage()
+    {
+        var dossierId = Guid.NewGuid();
+        return new Dossier
+        {
+            Id = dossierId,
+            InitiatorId = Guid.NewGuid(),
+            State = DossierStateEnum.InReview,
+            Title = "test title",
+            Description = "test description",
+            ApprovalStages = new List<ApprovalStage>
+            {
+                new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 0, IsCurrentStage = true, IsFinalStage = false },
+                new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 1, IsCurrentStage = false, IsFinalStage = true },
+            }
+        };
+    }
+
+    public static Dossier GetSampleDossierInFinalStage()
+    {
+        var dossierId = Guid.NewGuid();
+        return new Dossier
+        {
+            Id = dossierId,
+            InitiatorId = Guid.NewGuid(),
+            State = DossierStateEnum.InReview,
+            Title = "test title",
+            Description = "test description",
+            ApprovalStages = new List<ApprovalStage>
+            {
+                new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 0, IsCurrentStage = false, IsFinalStage = false },
+                new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 1, IsCurrentStage = true, IsFinalStage = true },
+            }
         };
     }
 
@@ -313,7 +350,7 @@ public static class TestData
             InitiatorId = user.Id,
             Title = "Dossier 1",
             Description = "Text description of a dossier.",
-            Published = false,
+            State = DossierStateEnum.Created,
         };
     }
 
@@ -348,6 +385,53 @@ public static class TestData
         {
             DossierId = GetSampleDossier().Id,
             GroupIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() }
+        };
+    }
+
+    public static CourseVersion GetSampleCourseVersion()
+    {
+        return new CourseVersion
+        {
+            Subject = "SOEN",
+            Catalog = "490",
+            Version = 6,
+        };
+    }
+
+    public static ICollection<CourseVersion> GetSampleCourseVersionCollection()
+    {
+        return new List<CourseVersion>
+        {
+            new CourseVersion
+            {
+                Subject = "SOEN",
+                Catalog = "390",
+                Version = 4,
+            },
+            new CourseVersion
+            {
+                Subject = "SOEN",
+                Catalog = "248",
+                Version = 6,
+            },
+            new CourseVersion
+            {
+                Subject = "ENGR",
+                Catalog = "213",
+                Version = 1,
+            }
+        };
+    }
+
+    public static ApprovalStage GetSampleApprovalStage()
+    {
+        return new ApprovalStage
+        {
+            DossierId = Guid.NewGuid(),
+            GroupId = Guid.NewGuid(),
+            StageIndex = 3,
+            IsCurrentStage = true,
+            IsFinalStage = false
         };
     }
 

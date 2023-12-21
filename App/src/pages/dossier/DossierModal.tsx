@@ -70,7 +70,7 @@ export default function DossierModal(props: DossierModalProps) {
                 title: data.title,
                 description: data.description,
                 initiatorId: props.dossier?.initiatorId,
-                published: props.dossier?.published,
+                state: props.dossier?.state,
             };
             editDossier(dossier).then(
                 () => {

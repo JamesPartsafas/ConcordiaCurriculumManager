@@ -1,11 +1,14 @@
 ﻿using System;
 namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 {
-    public class CourseModificationRequest : CourseRequest
+    public class CourseModificationRequest : CourseRequestOnExistingCourse
     {
-        public required Guid CourseId { get; set; }
+        public void MarkAsAccepted(ICollection<CourseVersion> currentVersions)
+        {
+            int nextVersion = GetNextCourseVersion(currentVersions);
 
-        public Course? Course { get; set; }
+            Course!.MarkAsAccepted(nextVersion);
+        }
     }
 }
 

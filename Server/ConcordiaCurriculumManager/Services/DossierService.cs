@@ -20,6 +20,7 @@ public interface IDossierService
     public Task<CourseCreationRequest> GetCourseCreationRequest(Guid courseRequestId);
     public Task<CourseModificationRequest> GetCourseModificationRequest(Guid courseRequestId);
     public Task<CourseDeletionRequest> GetCourseDeletionRequest(Guid courseRequestId);
+    public Task<IList<User>> GetCurrentlyReviewingGroupMasters(Guid dossierId);
 }
 
 public class DossierService : IDossierService
@@ -52,7 +53,7 @@ public class DossierService : IDossierService
             InitiatorId = user.Id,
             Title = d.Title,
             Description = d.Description,
-            Published = false
+            State = DossierStateEnum.Created
         };
 
         bool dossierCreated = await _dossierRepository.SaveDossier(dossier);
@@ -159,5 +160,10 @@ public class DossierService : IDossierService
     {
         var courseDeletionRequest = await _dossierRepository.GetCourseDeletionRequest(courseRequestId) ?? throw new NotFoundException($"Error retrieving the course deletion request with id ${typeof(CourseDeletionRequest)} ${courseRequestId}");
         return courseDeletionRequest;
+    }
+
+    public async Task<IList<User>> GetCurrentlyReviewingGroupMasters(Guid dossierId)
+    {
+        return await _dossierRepository.GetCurrentlyReviewingGroupMasters(dossierId);
     }
 }

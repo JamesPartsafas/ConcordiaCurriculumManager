@@ -33,7 +33,7 @@ import React from "react";
 import Button from "../../components/Button";
 import { UserRoles } from "../../models/user";
 import { showToast } from "../../utils/toastUtils";
-import { DossierDTO, GetMyDossiersResponse } from "../../models/dossier";
+import { DossierDTO, GetMyDossiersResponse, dossierStateToString } from "../../models/dossier";
 import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
 
@@ -186,7 +186,7 @@ export default function Dossiers() {
                                         Description
                                     </Th>
                                     <Th minW={"120px"} maxW={"120px"}>
-                                        Published
+                                        State
                                     </Th>
                                     <Th width={"25%"}></Th>
                                 </Tr>
@@ -203,7 +203,7 @@ export default function Dossiers() {
                                             </Text>
                                         </Td>
                                         <Td minW={"120px"} maxW={"120px"}>
-                                            {dossier.published ? "Yes" : "No"}
+                                            {dossierStateToString(dossier)}
                                         </Td>
 
                                         <Td width={"25%"}>

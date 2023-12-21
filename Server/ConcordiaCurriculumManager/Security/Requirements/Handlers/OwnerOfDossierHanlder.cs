@@ -24,7 +24,7 @@ public class OwnerOfDossierHandler : AuthorizationHandler<OwnerOfDossierRequirem
             || !_httpContextAccessor.HttpContext.Request.RouteValues.TryGetValue("dossierId", out var dossierId)
             || !Guid.TryParse(dossierId?.ToString(), out var parsedDossierId))
         {
-            // This is not an Http Request or there is no group Id. Abstain
+            // This is not an Http Request or there is no dossier Id. Abstain
             _logger.LogWarning("OwnerOfDossierHandler is possibly called on a http endpoint that does not include a dossier id as a param");
             return;
         }

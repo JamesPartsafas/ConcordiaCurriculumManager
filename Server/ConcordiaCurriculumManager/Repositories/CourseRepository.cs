@@ -14,6 +14,7 @@ public interface ICourseRepository
     public Task<Course?> GetCourseByCourseId(int courseId);
     public Task<Course?> GetCourseByCourseIdAndLatestVersion(int courseId);
     public Task<Course?> GetCourseWithSupportingFilesBySubjectAndCatalog(string subject, string catalog);
+    public Task<int?> GetCurrentCourseVersion(string subject, string catalog);
 }
 
 public class CourseRepository : ICourseRepository
@@ -35,6 +36,7 @@ public class CourseRepository : ICourseRepository
             && course.Catalog == catalog 
             && (course.CourseState == CourseStateEnum.Accepted || course.CourseState == CourseStateEnum.Deleted))
         .OrderByDescending(course => course.Version)
+        .Select(ObjectSelectors.CourseSelector())
         .FirstOrDefaultAsync();
 
     public async Task<bool> SaveCourse(Course course)
@@ -50,11 +52,13 @@ public class CourseRepository : ICourseRepository
         course.CourseID == courseId 
         && course.CourseState == CourseStateEnum.Accepted)
     .OrderByDescending(course => course.Version)
+    .Select(ObjectSelectors.CourseSelector())
     .FirstOrDefaultAsync();
 
     public async Task<Course?> GetCourseByCourseId(int courseId) => await _dbContext.Courses
         .Where(course => course.CourseID == courseId && course.CourseState == CourseStateEnum.Accepted)
         .OrderByDescending(course => course.Version)
+        .Select(ObjectSelectors.CourseSelector())
         .FirstOrDefaultAsync();
 
     public Task<Course?> GetCourseWithSupportingFilesBySubjectAndCatalog(string subject, string catalog) => _dbContext.Courses
@@ -65,5 +69,13 @@ public class CourseRepository : ICourseRepository
         .Include(course => course.SupportingFiles)
         .Include(course => course.CourseCourseComponents)
         .OrderByDescending(course => course.Version)
+        .FirstOrDefaultAsync();
+
+    public async Task<int?> GetCurrentCourseVersion(string catalog, string subject) => await _dbContext.Courses
+        .Where(course =>
+            course.Subject == subject
+            && course.Catalog == catalog)
+        .OrderByDescending(course => course.Version)
+        .Select(course => course.Version)
         .FirstOrDefaultAsync();
 }
