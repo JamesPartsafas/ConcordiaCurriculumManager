@@ -1,108 +1,73 @@
+import { Flex, Container, Heading, Stack, Text } from "@chakra-ui/react";
 import { useContext } from "react";
 import { UserContext } from "../App";
 import Button from "../components/Button";
 import { BaseRoutes } from "../constants";
 import { useNavigate } from "react-router-dom";
-import { Container, Flex } from "@chakra-ui/react";
-import Header from "../shared/Header";
 import { isAdminOrGroupMaster } from "../services/auth";
 
-export default function Home() {
+export default function CallToActionWithIllustration() {
     const navigate = useNavigate();
     const user = useContext(UserContext);
+
     return (
-        <div>
-            <Header></Header>
-            <Container maxW="80%" py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>
-                <h1
-                    style={{
-                        margin: "5%",
-                        fontWeight: "bold",
-                        fontSize: "24px",
-                        color: "#FF8888",
-                        textAlign: "center",
-                    }}
-                >
-                    Hello {user?.firstName}, Welcome to the Concordia Curriculum Manager!
-                </h1>
-                <Container>
-                    <Flex align={"center"}>
-                        <h2
-                            style={{
-                                margin: "20px",
-                                fontWeight: "bold",
-                                fontSize: "24px",
-                                color: "#FF8888",
-                                textAlign: "center",
-                            }}
-                        >
-                            Dossier List:{" "}
-                        </h2>
+        <>
+            <Container maxW={"5xl"}>
+                <Stack textAlign={"center"} align={"center"} spacing={{ base: 8, md: 10 }} py={{ base: 20, md: 28 }}>
+                    <Heading fontWeight={600} fontSize={{ base: "3xl", sm: "4xl", md: "6xl" }} lineHeight={"110%"}>
+                        Hello {user?.firstName},
+                        <br />
+                        <Text as={"span"} color={"brandRed"}>
+                            Welcome to the Concordia Curriculum Manager!
+                        </Text>
+                    </Heading>
+                    <Text color={"gray.500"} maxW={"3xl"} fontSize="xl">
+                        Quick access to the Dossier List and Group List:
+                    </Text>
+                    <Stack spacing={6} direction={"row"}>
                         <Button
                             style="primary"
-                            variant="outline"
+                            variant="solid"
                             width="200px"
                             height="40px"
-                            margin="5%"
+                            margin="0px"
                             onClick={() => navigate(BaseRoutes.Dossiers)}
                         >
                             View Dossier List
                         </Button>
-                    </Flex>
-                </Container>
-                <Container>
-                    <Flex align={"center"}>
-                        <h2
-                            style={{
-                                margin: "20px",
-                                fontWeight: "bold",
-                                fontSize: "24px",
-                                color: "#FF8888",
-                                textAlign: "center",
-                            }}
+                        <Button
+                            style="primary"
+                            variant="outline"
+                            width="200px"
+                            margin="0px"
+                            height="40px"
+                            onClick={() => navigate(BaseRoutes.Dossiers)}
                         >
-                            View your Groups{" "}
+                            View Groups List
+                        </Button>
+                    </Stack>
+                    {isAdminOrGroupMaster(user) && (
+                        <Stack>
+                            <Text color={"gray.500"} maxW={"3xl"}>
+                                Manage Groups is reserved for admins only:
+                            </Text>
                             <Button
-                                style="primary"
-                                variant="outline"
-                                width="200px"
-                                margin="5%"
+                                style="secondary"
+                                variant="solid"
+                                width="240px"
                                 height="40px"
-                                onClick={() => navigate(BaseRoutes.Dossiers)}
+                                margin="auto"
+                                onClick={() => navigate(BaseRoutes.ManageableGroup)}
                             >
-                                View Groups List
+                                View Manageable Groups List
                             </Button>
-                        </h2>
+                        </Stack>
+                    )}
+                    <Flex w={"full"}>
+                        {/* <Illustration height={{ sm: "24rem", lg: "28rem" }} mt={{ base: 12, sm: 16 }} /> */}
                     </Flex>
-                </Container>
-                {isAdminOrGroupMaster(user) && (
-                    <Container>
-                        <Flex align={"center"}>
-                            <h2
-                                style={{
-                                    margin: "20px",
-                                    fontWeight: "bold",
-                                    fontSize: "24px",
-                                    color: "#FF8888",
-                                    textAlign: "center",
-                                }}
-                            >
-                                Manage Groups{" "}
-                                <Button
-                                    style="primary"
-                                    variant="outline"
-                                    width="240px"
-                                    height="40px"
-                                    margin="10%"
-                                    onClick={() => navigate(BaseRoutes.ManageableGroup)}
-                                >
-                                    View Manageable Groups List
-                                </Button>
-                            </h2>
-                        </Flex>
-                    </Container>
-                )}
+                </Stack>
             </Container>
-        </div>
+        </>
     );
 }

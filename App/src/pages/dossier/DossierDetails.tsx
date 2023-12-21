@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DossierDetailsDTO, DossierDetailsResponse } from "../../models/dossier";
+import { DossierDetailsDTO, DossierDetailsResponse, dossierStateToString } from "../../models/dossier";
 import { getDossierDetails } from "../../services/dossier";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -8,6 +8,7 @@ import {
     Card,
     CardBody,
     CardFooter,
+    Container,
     Divider,
     Heading,
     Kbd,
@@ -207,11 +208,23 @@ export default function DossierDetails() {
     return (
         <>
             {deleteRequestAlert()}
+            <Container maxW={"70%"} mt={5} mb={2}>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="100px"
+                    onClick={() => navigate(BaseRoutes.Dossiers)}
+                >
+                    Back
+                </Button>
+            </Container>
+
             <div style={{ margin: "auto", width: "fit-content" }}>
                 <Heading color={"brandRed"}>{dossierDetails?.title}</Heading>
                 <Kbd>{dossierDetails?.id}</Kbd>
                 <Text>{dossierDetails?.description}</Text>
-                <Text>published: {dossierDetails?.published ? "yes" : "no"}</Text>
+                <Text>state: {dossierStateToString(dossierDetails)}</Text>
                 <Text>created: {dossierDetails?.createdDate?.toString()}</Text>
                 <Text>updated: {dossierDetails?.modifiedDate?.toString()}</Text>
             </div>

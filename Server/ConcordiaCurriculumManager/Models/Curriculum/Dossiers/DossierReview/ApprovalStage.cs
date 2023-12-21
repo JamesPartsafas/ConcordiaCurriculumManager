@@ -17,4 +17,6 @@ public class ApprovalStage : BaseModel
     public required bool IsCurrentStage { get; set; }
 
     public required bool IsFinalStage { get; set; }
+
+    public bool IsInitialStage() => StageIndex == 0;
 }

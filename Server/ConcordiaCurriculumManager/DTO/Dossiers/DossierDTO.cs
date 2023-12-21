@@ -1,6 +1,4 @@
-﻿using ConcordiaCurriculumManager.Models.Users;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 
 namespace ConcordiaCurriculumManager.DTO.Dossiers;
 
@@ -14,7 +12,5 @@ public class DossierDTO
 
     public required string Description { get; set; }
 
-    public required bool Published { get; set; }
+    public required DossierStateEnum State { get; set; }
 }
-
-

@@ -1,4 +1,3 @@
-import Header from "../shared/Header";
 import {
     Flex,
     Center,
@@ -104,14 +103,13 @@ export default function DeleteCourse() {
         <>
             {allCourseSettings && (
                 <Box>
-                    <Header></Header>
                     <form>
                         <Flex>
                             <Stack w="60%" p={8} m="auto">
                                 <Button
                                     style="primary"
                                     variant="outline"
-                                    width="10%"
+                                    width="100px"
                                     height="40px"
                                     onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
                                 >

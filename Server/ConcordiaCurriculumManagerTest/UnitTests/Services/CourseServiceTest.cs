@@ -120,7 +120,7 @@ public class CourseServiceTest
         dossierService.Setup(cr => cr.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>()))
             .Returns(Task.CompletedTask);
         dossierService.Setup(cr => cr.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
-        
+
         var courseCreationRequest = await courseService.InitiateCourseCreation(TestData.GetSampleCourseCreationInitiationDTO(dossier), user.Id);
 
         Assert.IsNotNull(courseCreationRequest);
@@ -226,6 +226,52 @@ public class CourseServiceTest
         var courseModificationRequest = await courseService.InitiateCourseModification(TestData.GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
 
         Assert.IsNotNull(courseModificationRequest);
+    }
+
+    [TestMethod]
+    public async Task InitiateCourseModification_WithConflictInCourse_SetsProperConflictMessage()
+    {
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleAcceptedCourse();
+
+        var course1 = TestData.GetSampleCourse();
+        course1.Subject = "COMP";
+        course1.Catalog = "123";
+
+        var course2 = TestData.GetSampleCourse();
+        course1.Subject = "SOEN";
+        course1.Catalog = "456";
+
+        course.CourseReferenced = new List<CourseReference>() {
+            new()
+            {
+                CourseReferenced = course,
+                CourseReferencedId = course.Id,
+                CourseReferencing = course1,
+                CourseReferencingId = course1.Id,
+            },
+            new()
+            {
+                CourseReferenced = course,
+                CourseReferencedId = course.Id,
+                CourseReferencing = course2,
+                CourseReferencingId = course2.Id,
+            },
+        };
+
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
+        courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
+        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(cr => cr.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).Returns(Task.CompletedTask);
+
+        var courseModificationRequest = await courseService.InitiateCourseModification(TestData.GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
+
+        Assert.IsNotNull(courseModificationRequest);
+
+        StringAssert.Contains(courseModificationRequest.Conflict, $"{course1.Subject}-{course1.Catalog}");
+        StringAssert.Contains(courseModificationRequest.Conflict, $"{course2.Subject}-{course2.Catalog}");
     }
 
     [TestMethod]
@@ -367,6 +413,52 @@ public class CourseServiceTest
         var courseDeletionRequest = await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
 
         Assert.IsNotNull(courseDeletionRequest);
+    }
+
+    [TestMethod]
+    public async Task InitiateCourseDeletion_ValidInput_SetsProperConflictMessage()
+    {
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+
+        var course1 = TestData.GetSampleCourse();
+        course1.Subject = "COMP";
+        course1.Catalog = "123";
+
+        var course2 = TestData.GetSampleCourse();
+        course1.Subject = "SOEN";
+        course1.Catalog = "456";
+
+        course.CourseReferenced = new List<CourseReference>() {
+            new()
+            {
+                CourseReferenced = course,
+                CourseReferencedId = course.Id,
+                CourseReferencing = course1,
+                CourseReferencingId = course1.Id,
+            },
+            new()
+            {
+                CourseReferenced = course,
+                CourseReferencedId = course.Id,
+                CourseReferencing = course2,
+                CourseReferencingId = course2.Id,
+            },
+        };
+
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
+        courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
+        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(cr => cr.SaveCourseDeletionRequest(It.IsAny<CourseDeletionRequest>())).Returns(Task.CompletedTask);
+
+        var courseDeletionRequest = await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
+
+        Assert.IsNotNull(courseDeletionRequest);
+
+        StringAssert.Contains(courseDeletionRequest.Conflict, $"{course1.Subject}-{course1.Catalog}");
+        StringAssert.Contains(courseDeletionRequest.Conflict, $"{course2.Subject}-{course2.Catalog}");
     }
 
     [TestMethod]

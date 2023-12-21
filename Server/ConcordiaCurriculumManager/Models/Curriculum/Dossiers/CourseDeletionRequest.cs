@@ -1,9 +1,11 @@
 ﻿namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 
-public class CourseDeletionRequest : CourseRequest
+public class CourseDeletionRequest : CourseRequestOnExistingCourse
 {
-    public required Guid CourseId { get; set; }
+    public void MarkAsDeleted(ICollection<CourseVersion> currentVersions)
+    {
+        int nextVersion = GetNextCourseVersion(currentVersions);
 
-    public Course? Course { get; set; }
-
+        Course!.MarkAsDeleted(nextVersion);
+    }
 }

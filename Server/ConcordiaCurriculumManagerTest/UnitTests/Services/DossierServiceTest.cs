@@ -123,7 +123,7 @@ public class DossierServiceTest
             InitiatorId = user.Id,
             Title = "test title",
             Description = "test description",
-            Published = false
+            State = DossierStateEnum.Created
         };
 
         var editDossier = new EditDossierDTO
@@ -151,7 +151,7 @@ public class DossierServiceTest
             InitiatorId = user.Id,
             Title = "test title",
             Description = "test description",
-            Published = false
+            State = DossierStateEnum.Created
         };
 
         var editDossier = new EditDossierDTO
@@ -192,7 +192,7 @@ public class DossierServiceTest
             InitiatorId = user.Id,
             Title = "test title",
             Description = "test description",
-            Published = false
+            State = DossierStateEnum.Created
         };
 
         dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
@@ -213,7 +213,7 @@ public class DossierServiceTest
             InitiatorId = user.Id,
             Title = "test title",
             Description = "test description",
-            Published = false
+            State = DossierStateEnum.Created
         };
 
         var deletedDossier = dossier.Id;

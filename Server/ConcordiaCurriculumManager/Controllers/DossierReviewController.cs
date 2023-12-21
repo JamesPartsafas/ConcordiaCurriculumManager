@@ -33,6 +33,42 @@ public class DossierReviewController : Controller
 
         await _dossierReviewService.SubmitDossierForReview(dto);
 
-        return Ok();
+        return NoContent();
+    }
+
+    [HttpPut(nameof(RejectDossier) + "/{dossierId}")]
+    [Authorize(Policies.IsDossierReviewMaster)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Dossier successfully rejected")]
+    public async Task<ActionResult> RejectDossier([FromRoute, Required] Guid dossierId)
+    {
+        await _dossierReviewService.RejectDossier(dossierId);
+
+        return NoContent();
+    }
+
+    [HttpPut(nameof(ReturnDossier) + "/{dossierId}")]
+    [Authorize(Policies.IsDossierReviewMaster)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Dossier successfully returned")]
+    public async Task<ActionResult> ReturnDossier([FromRoute, Required] Guid dossierId)
+    {
+        await _dossierReviewService.ReturnDossier(dossierId);
+
+        return NoContent();
+    }
+
+    [HttpPut(nameof(ForwardDossier) + "/{dossierId}")]
+    [Authorize(Policies.IsDossierReviewMaster)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Dossier successfully forwarded")]
+    public async Task<ActionResult> ForwardDossier([FromRoute, Required] Guid dossierId)
+    {
+        await _dossierReviewService.ForwardDossier(dossierId);
+
+        return NoContent();
     }
 }
