@@ -7,9 +7,8 @@ import { AddUserToGroup, GetGroupByID, GroupDTO, GroupResponseDTO } from "../ser
 import { useLocation } from "react-router-dom";
 import { BaseRoutes } from "../constants";
 import { UserDTO, UserRoleCodes } from "../models/user";
-import { AllUsersResponseDTO, updateAllUsers, searchUsersByEmail } from "../services/user";
+import { AllUsersResponseDTO, searchUsersByEmail } from "../services/user";
 import { getAllUsers } from "../services/user";
-import { set } from "react-hook-form";
 
 export default function AddingUserToGroup() {
     const [users, setUsers] = useState<UserDTO[]>([]);
@@ -46,8 +45,9 @@ export default function AddingUserToGroup() {
 
     function searchUsers(input: string) {
         console.log("Searching for " + input);
-        searchUsersByEmail(users[0].id, input)
+        searchUsersByEmail(input)
             .then((res: AllUsersResponseDTO) => {
+                console.log(JSON.stringify(res.data));
                 setUsers(res.data);
             })
             .catch((err) => {
@@ -55,17 +55,6 @@ export default function AddingUserToGroup() {
             });
     }
 
-    function updateUsers(uid: string) {
-        console.log("Updating user info");
-        updateAllUsers(uid)
-            .then((res: AllUsersResponseDTO) => {
-                console.log(JSON.stringify(res, null, 2));
-                setUsers(users.concat(res.data));
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
     useEffect(() => {
         if (location.state) {
             const _state = location.state as { gid: string; name: string };
@@ -76,6 +65,7 @@ export default function AddingUserToGroup() {
     }, [location]);
 
     useEffect(() => {
+        console.log("Non Memebers being updated.");
         const filteredUsers = users.filter((user) => {
             if (user.roles.find((role) => role.userRole === UserRoleCodes.Admin)) return false;
             if (myGroup.members.find((member) => member.id === user.id)) return false;
@@ -158,18 +148,6 @@ export default function AddingUserToGroup() {
                             >
                                 Back
                             </Button>
-
-                            {nonMembers.length != 0 && (
-                                <Button
-                                    style="secondary"
-                                    variant="outline"
-                                    width="22%"
-                                    height="40px"
-                                    onClick={() => updateUsers(nonMembers[nonMembers.length - 1].id)}
-                                >
-                                    Next Page
-                                </Button>
-                            )}
                         </HStack>
                     </Stack>
                 </Box>

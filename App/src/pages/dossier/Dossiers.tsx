@@ -1,13 +1,5 @@
 import {
-    Table,
-    Thead,
-    Tbody,
     Text,
-    Tr,
-    Th,
-    Td,
-    TableContainer,
-    IconButton,
     AlertDialog,
     AlertDialogOverlay,
     AlertDialogContent,
@@ -15,15 +7,13 @@ import {
     AlertDialogBody,
     AlertDialogFooter,
     useDisclosure,
-    Tfoot,
-    Spacer,
     Flex,
     Box,
     Tooltip,
     useToast,
 } from "@chakra-ui/react";
 import { Button as ChakraButton, Container } from "@chakra-ui/react";
-import { AddIcon, DeleteIcon, EditIcon, InfoIcon } from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons";
 
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
@@ -33,9 +23,10 @@ import React from "react";
 import Button from "../../components/Button";
 import { UserRoles } from "../../models/user";
 import { showToast } from "../../utils/toastUtils";
-import { DossierDTO, DossierStateEnum, GetMyDossiersResponse, dossierStateToString } from "../../models/dossier";
+import { DossierDTO, DossierStateEnum, GetMyDossiersResponse } from "../../models/dossier";
 import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import DossierTable from "../../components/DossierTable";
 
 export default function Dossiers() {
     const user = useContext(UserContext);
@@ -45,6 +36,8 @@ export default function Dossiers() {
 
     const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
     const [reviewedDossiers, setReviewedDossiers] = useState<DossierDTO[]>([]);
+    const [approvedDossiers, setApprovedDossiers] = useState<DossierDTO[]>([]);
+    const [rejectedDossiers, setRejectedDossiers] = useState<DossierDTO[]>([]);
     const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
     const [dossierModalAction, setDossierModalTitle] = useState<"add" | "edit">();
@@ -68,8 +61,10 @@ export default function Dossiers() {
         getMyDossiers()
             .then(
                 (res: GetMyDossiersResponse) => {
-                    setMyDossiers(res.data);
+                    setMyDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.Created));
                     setReviewedDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.InReview));
+                    setApprovedDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.Approved));
+                    setRejectedDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.Rejected));
                 },
                 (rej) => {
                     console.log(rej);
@@ -177,310 +172,19 @@ export default function Dossiers() {
 
             <Box maxW="5xl" m="auto">
                 <Flex flexDirection="column">
-                    <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
-                        <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "auto" }}>
-                            <Thead backgroundColor={"#e2e8f0"}>
-                                <Tr display={"flex"}>
-                                    <Th minW={"200px"} maxW={"200px"}>
-                                        Title
-                                    </Th>
-                                    <Th minW={"500px"} maxW={"500px"}>
-                                        Description
-                                    </Th>
-                                    <Th minW={"120px"} maxW={"120px"}>
-                                        State
-                                    </Th>
-                                    <Th width={"25%"}></Th>
-                                </Tr>
-                            </Thead>
-                            <Tbody>
-                                {myDossiers.slice(startIndex - 1, endIndex).map((dossier) => (
-                                    <Tr key={dossier.id} display={"flex"}>
-                                        <Td minW={"200px"} maxW={"200px"}>
-                                            {dossier.title}
-                                        </Td>
-                                        <Td minW={"500px"} maxW={"500px"}>
-                                            <Text overflow="hidden" textOverflow="ellipsis" maxW={"500px"}>
-                                                {dossier.description}
-                                            </Text>
-                                        </Td>
-                                        <Td minW={"120px"} maxW={"120px"}>
-                                            {dossierStateToString(dossier)}
-                                        </Td>
-
-                                        <Td width={"25%"}>
-                                            <IconButton
-                                                aria-label="Delete"
-                                                icon={<DeleteIcon />}
-                                                backgroundColor={"#932439"}
-                                                color={"white"}
-                                                onClick={() => {
-                                                    setSelectedDossier(dossier);
-                                                    onOpen();
-                                                }}
-                                            />
-                                            <IconButton
-                                                ml={2}
-                                                aria-label="Edit"
-                                                icon={<EditIcon />}
-                                                backgroundColor={"#0072a8"}
-                                                color={"white"}
-                                                onClick={() => {
-                                                    setSelectedDossier(dossier);
-                                                    setDossierModalTitle("edit");
-                                                    displayDossierModal();
-                                                }}
-                                            />
-                                            <IconButton
-                                                ml={2}
-                                                aria-label="Edit"
-                                                icon={<InfoIcon />}
-                                                onClick={() => {
-                                                    setSelectedDossier(dossier);
-                                                    handleNavigateToDossierDetails(dossier.id);
-                                                }}
-                                            />
-                                        </Td>
-                                    </Tr>
-                                ))}
-                            </Tbody>
-                            <Tfoot>
-                                <Tr>
-                                    <Td height={20}>
-                                        <Flex>
-                                            <Text alignSelf="center">
-                                                Showing {startIndex} to {endIndex} of {myDossiers.length} results
-                                            </Text>
-                                            <Spacer />
-                                            <ChakraButton
-                                                mr={4}
-                                                p={4}
-                                                variant="outline"
-                                                onClick={() => setCurrentPage(currentPage - 1)}
-                                                isDisabled={startIndex == 1}
-                                            >
-                                                Previous
-                                            </ChakraButton>
-                                            <ChakraButton
-                                                p={4}
-                                                variant="outline"
-                                                onClick={() => setCurrentPage(currentPage + 1)}
-                                                isDisabled={endIndex == totalResults}
-                                            >
-                                                Next
-                                            </ChakraButton>
-                                        </Flex>
-                                    </Td>
-                                </Tr>
-                            </Tfoot>
-                        </Table>
-                    </TableContainer>
-
-                    <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
-                        {user?.firstName + "'s"} Dossiers Under Review
-                    </Text>
-
-                    <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
-                        <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "auto" }}>
-                            <Thead backgroundColor={"#e2e8f0"}>
-                                <Tr display={"flex"}>
-                                    <Th minW={"200px"} maxW={"200px"}>
-                                        Title
-                                    </Th>
-                                    <Th minW={"500px"} maxW={"500px"}>
-                                        Description
-                                    </Th>
-                                    <Th minW={"120px"} maxW={"120px"}>
-                                        State
-                                    </Th>
-                                    <Th width={"25%"}></Th>
-                                </Tr>
-                            </Thead>
-                            <Tbody>
-                                {reviewedDossiers.slice(startIndex - 1, endIndex).map((dossier) => (
-                                    <Tr key={dossier.id} display={"flex"}>
-                                        <Td minW={"200px"} maxW={"200px"}>
-                                            {dossier.title}
-                                        </Td>
-                                        <Td minW={"500px"} maxW={"500px"}>
-                                            <Text overflow="hidden" textOverflow="ellipsis" maxW={"500px"}>
-                                                {dossier.description}
-                                            </Text>
-                                        </Td>
-                                        <Td minW={"120px"} maxW={"120px"}>
-                                            {dossierStateToString(dossier)}
-                                        </Td>
-
-                                        <Td width={"25%"}>
-                                            <IconButton
-                                                aria-label="Delete"
-                                                icon={<DeleteIcon />}
-                                                backgroundColor={"#932439"}
-                                                color={"white"}
-                                                onClick={() => {
-                                                    setSelectedDossier(dossier);
-                                                    onOpen();
-                                                }}
-                                            />
-                                            <IconButton
-                                                ml={2}
-                                                aria-label="Edit"
-                                                icon={<EditIcon />}
-                                                backgroundColor={"#0072a8"}
-                                                color={"white"}
-                                                onClick={() => {
-                                                    setSelectedDossier(dossier);
-                                                    setDossierModalTitle("edit");
-                                                    displayDossierModal();
-                                                }}
-                                            />
-                                            <IconButton
-                                                ml={2}
-                                                aria-label="Edit"
-                                                icon={<InfoIcon />}
-                                                onClick={() => {
-                                                    setSelectedDossier(dossier);
-                                                    handleNavigateToDossierDetails(dossier.id);
-                                                }}
-                                            />
-                                        </Td>
-                                    </Tr>
-                                ))}
-                            </Tbody>
-                            <Tfoot>
-                                <Tr>
-                                    <Td height={20}>
-                                        <Flex>
-                                            <Text alignSelf="center">
-                                                Showing {startIndex} to {endIndex} of {reviewedDossiers.length} results
-                                            </Text>
-                                            <Spacer />
-                                            <ChakraButton
-                                                mr={4}
-                                                p={4}
-                                                variant="outline"
-                                                onClick={() => setCurrentPage(currentPage - 1)}
-                                                isDisabled={startIndex == 1}
-                                            >
-                                                Previous
-                                            </ChakraButton>
-                                            <ChakraButton
-                                                p={4}
-                                                variant="outline"
-                                                onClick={() => setCurrentPage(currentPage + 1)}
-                                                isDisabled={endIndex == totalResults}
-                                            >
-                                                Next
-                                            </ChakraButton>
-                                        </Flex>
-                                    </Td>
-                                </Tr>
-                            </Tfoot>
-                        </Table>
-                    </TableContainer>
-
-                    <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
-                        Dossiers Requiring {user?.firstName + "'s"} Review
-                    </Text>
-
-                    <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
-                        <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "auto" }}>
-                            <Thead backgroundColor={"#e2e8f0"}>
-                                <Tr display={"flex"}>
-                                    <Th minW={"200px"} maxW={"200px"}>
-                                        Title
-                                    </Th>
-                                    <Th minW={"500px"} maxW={"500px"}>
-                                        Description
-                                    </Th>
-                                    <Th minW={"120px"} maxW={"120px"}>
-                                        State
-                                    </Th>
-                                    <Th width={"25%"}></Th>
-                                </Tr>
-                            </Thead>
-                            <Tbody>
-                                {myDossiers.slice(startIndex - 1, endIndex).map((dossier) => (
-                                    <Tr key={dossier.id} display={"flex"}>
-                                        <Td minW={"200px"} maxW={"200px"}>
-                                            {dossier.title}
-                                        </Td>
-                                        <Td minW={"500px"} maxW={"500px"}>
-                                            <Text overflow="hidden" textOverflow="ellipsis" maxW={"500px"}>
-                                                {dossier.description}
-                                            </Text>
-                                        </Td>
-                                        <Td minW={"120px"} maxW={"120px"}>
-                                            {dossierStateToString(dossier)}
-                                        </Td>
-
-                                        <Td width={"25%"}>
-                                            <IconButton
-                                                aria-label="Delete"
-                                                icon={<DeleteIcon />}
-                                                backgroundColor={"#932439"}
-                                                color={"white"}
-                                                onClick={() => {
-                                                    setSelectedDossier(dossier);
-                                                    onOpen();
-                                                }}
-                                            />
-                                            <IconButton
-                                                ml={2}
-                                                aria-label="Edit"
-                                                icon={<EditIcon />}
-                                                backgroundColor={"#0072a8"}
-                                                color={"white"}
-                                                onClick={() => {
-                                                    setSelectedDossier(dossier);
-                                                    setDossierModalTitle("edit");
-                                                    displayDossierModal();
-                                                }}
-                                            />
-                                            <IconButton
-                                                ml={2}
-                                                aria-label="Edit"
-                                                icon={<InfoIcon />}
-                                                onClick={() => {
-                                                    setSelectedDossier(dossier);
-                                                    handleNavigateToDossierDetails(dossier.id);
-                                                }}
-                                            />
-                                        </Td>
-                                    </Tr>
-                                ))}
-                            </Tbody>
-                            <Tfoot>
-                                <Tr>
-                                    <Td height={20}>
-                                        <Flex>
-                                            <Text alignSelf="center">
-                                                Showing {startIndex} to {endIndex} of {myDossiers.length} results
-                                            </Text>
-                                            <Spacer />
-                                            <ChakraButton
-                                                mr={4}
-                                                p={4}
-                                                variant="outline"
-                                                onClick={() => setCurrentPage(currentPage - 1)}
-                                                isDisabled={startIndex == 1}
-                                            >
-                                                Previous
-                                            </ChakraButton>
-                                            <ChakraButton
-                                                p={4}
-                                                variant="outline"
-                                                onClick={() => setCurrentPage(currentPage + 1)}
-                                                isDisabled={endIndex == totalResults}
-                                            >
-                                                Next
-                                            </ChakraButton>
-                                        </Flex>
-                                    </Td>
-                                </Tr>
-                            </Tfoot>
-                        </Table>
-                    </TableContainer>
+                    <DossierTable
+                        myDossiers={myDossiers}
+                        startIndex={startIndex}
+                        endIndex={endIndex}
+                        setSelectedDossier={setSelectedDossier}
+                        onOpen={onOpen}
+                        setDossierModalTitle={setDossierModalTitle}
+                        displayDossierModal={displayDossierModal}
+                        handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                        setCurrentPage={setCurrentPage}
+                        currentPage={currentPage}
+                        totalResults={totalResults}
+                    />
 
                     <Tooltip
                         label="Only Initiators can create dossiers"
@@ -506,6 +210,60 @@ export default function Dossiers() {
                             </Button>
                         </span>
                     </Tooltip>
+
+                    <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
+                        {user?.firstName + "'s"} Dossiers Under Review
+                    </Text>
+
+                    <DossierTable
+                        myDossiers={reviewedDossiers}
+                        startIndex={startIndex}
+                        endIndex={endIndex}
+                        setSelectedDossier={setSelectedDossier}
+                        onOpen={onOpen}
+                        setDossierModalTitle={setDossierModalTitle}
+                        displayDossierModal={displayDossierModal}
+                        handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                        setCurrentPage={setCurrentPage}
+                        currentPage={currentPage}
+                        totalResults={totalResults}
+                    />
+
+                    <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
+                        {user?.firstName + "'s"} Approved Dossiers
+                    </Text>
+
+                    <DossierTable
+                        myDossiers={approvedDossiers}
+                        startIndex={startIndex}
+                        endIndex={endIndex}
+                        setSelectedDossier={setSelectedDossier}
+                        onOpen={onOpen}
+                        setDossierModalTitle={setDossierModalTitle}
+                        displayDossierModal={displayDossierModal}
+                        handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                        setCurrentPage={setCurrentPage}
+                        currentPage={currentPage}
+                        totalResults={totalResults}
+                    />
+
+                    <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
+                        {user?.firstName + "'s"} Rejected Dossiers
+                    </Text>
+
+                    <DossierTable
+                        myDossiers={rejectedDossiers}
+                        startIndex={startIndex}
+                        endIndex={endIndex}
+                        setSelectedDossier={setSelectedDossier}
+                        onOpen={onOpen}
+                        setDossierModalTitle={setDossierModalTitle}
+                        displayDossierModal={displayDossierModal}
+                        handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                        setCurrentPage={setCurrentPage}
+                        currentPage={currentPage}
+                        totalResults={totalResults}
+                    />
                 </Flex>
             </Box>
 
