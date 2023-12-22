@@ -2,7 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-route
 
 // 1. import `ChakraProvider` component
 import { ChakraProvider } from "@chakra-ui/react";
-// import CourseBrowser from "./pages/CourseBrowser";
+import CourseBrowser from "./pages/CourseBrowser";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -69,10 +69,10 @@ export function App() {
                         path={BaseRoutes.Home}
                         element={isLoggedIn == true ? <Home /> : <Navigate to={BaseRoutes.Login} />}
                     />
-                    {/* <Route
+                    <Route
                         path={BaseRoutes.CourseBrowser}
                         element={isLoggedIn == true ? <CourseBrowser /> : <Navigate to={BaseRoutes.Login} />}
-                    /> */}
+                    />
                     <Route
                         path={BaseRoutes.Login}
                         element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn} />}
