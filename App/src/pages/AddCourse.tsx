@@ -65,6 +65,8 @@ export default function AddCourse() {
     const [rational, setRational] = useState("");
     const [courseNotes, setCourseNotes] = useState("");
     const [resourceImplication, setResourceImplication] = useState("");
+    const [equivalentCourses, setEquivalentCourses] = useState("");
+    const [comment, setComment] = useState("");
 
     // File upload states
     const [fileName, setFileName] = useState("");
@@ -131,7 +133,10 @@ export default function AddCourse() {
         setComponents([...components, courseComponents[index]]);
         setCourseComponents(courseComponents.filter((_component, componentIndex) => componentIndex !== index));
     };
+    const handleChangeEquivalentCourses = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+        setEquivalentCourses(e.currentTarget.value);
 
+    const handleChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => setComment(e.currentTarget.value);
     const handleSubmitCourse = () => {
         setFormSubmitted(true);
         if (courseCodeError || courseCreditError || courseNameError || courseSubjectError) {
@@ -147,13 +152,14 @@ export default function AddCourse() {
                 creditValue: courseCredits,
                 preReqs: courseRequesites,
                 career: courseCareer.careerCode,
-                equivalentCourses: "",
+                equivalentCourses: equivalentCourses,
                 componentCodes: getCourseComponentsObject(courseComponents),
                 dossierId: dossierId,
                 courseNotes: courseNotes,
                 rationale: rational,
                 supportingFiles: supportingFiles,
                 resourceImplication: resourceImplication,
+                comment: comment,
             };
             addCourse(course)
                 .then(() => {
@@ -232,6 +238,7 @@ export default function AddCourse() {
         setCourseNotes("");
         setResourceImplication("");
         setSupportingFiles({});
+        setEquivalentCourses("");
     };
 
     useEffect(() => {
@@ -338,14 +345,14 @@ export default function AddCourse() {
                                 <Stack>
                                     <Center>
                                         <Heading as="h2" size="xl" color="brandRed">
-                                            <Text align="center">Resource Implication</Text>
+                                            <Text align="center">Equivalent Courses</Text>
                                         </Heading>
                                     </Center>
                                     <Stack>
                                         <Textarea
-                                            value={resourceImplication}
-                                            onChange={handleChangeResourceImplication}
-                                            placeholder="Enter resource implication..."
+                                            value={equivalentCourses}
+                                            onChange={handleChangeEquivalentCourses}
+                                            placeholder="Enter equivalent courses..."
                                             minH={"100px"}
                                         ></Textarea>
                                     </Stack>
@@ -464,6 +471,10 @@ export default function AddCourse() {
                                                                       component.hours +
                                                                       " hour(s) per week. "
                                                               )}
+                                                    </Text>
+                                                    <Text>
+                                                        <b>Equivalent Courses: </b>{" "}
+                                                        {equivalentCourses ? equivalentCourses : "None"}
                                                     </Text>
                                                 </Box>
                                             </CardBody>
@@ -598,6 +609,21 @@ export default function AddCourse() {
                                 <Stack>
                                     <Center>
                                         <Heading as="h2" size="xl" color="brandRed">
+                                            <Text align="center">Resource Implication</Text>
+                                        </Heading>
+                                    </Center>
+                                    <Stack>
+                                        <Textarea
+                                            value={resourceImplication}
+                                            onChange={handleChangeResourceImplication}
+                                            placeholder="Enter resource implication..."
+                                            minH={"100px"}
+                                        ></Textarea>
+                                    </Stack>
+                                </Stack>
+                                <Stack>
+                                    <Center>
+                                        <Heading as="h2" size="xl" color="brandRed">
                                             <Text align="center">Rationale</Text>
                                         </Heading>
                                     </Center>
@@ -621,6 +647,21 @@ export default function AddCourse() {
                                             value={courseNotes}
                                             onChange={handleChangeCourseNotes}
                                             placeholder="Enter course notes..."
+                                            minH={"100px"}
+                                        ></Textarea>
+                                    </Stack>
+                                </Stack>
+                                <Stack>
+                                    <Center>
+                                        <Heading as="h2" size="xl" color="brandRed">
+                                            <Text align="center">Comments</Text>
+                                        </Heading>
+                                    </Center>
+                                    <Stack>
+                                        <Textarea
+                                            value={comment}
+                                            onChange={handleChangeComment}
+                                            placeholder="Enter comments..."
                                             minH={"100px"}
                                         ></Textarea>
                                     </Stack>

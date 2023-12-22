@@ -39,7 +39,8 @@ export interface Course {
     rationale: string;
     supportingFiles: object;
     resourceImplication: string;
-    courseID: number;
+    courseID?: number;
+    comment: string;
 }
 
 export interface newCourse extends Course {
