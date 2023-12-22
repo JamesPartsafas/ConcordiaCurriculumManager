@@ -289,14 +289,13 @@ export default function EditCourse() {
         <>
             {allCourseSettings && (
                 <Box>
-                    
                     <Button
                         style="primary"
                         variant="outline"
                         width="100px"
                         height="40px"
                         ml={8}
-                        mt= {5}
+                        mt={5}
                         onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
                     >
                         Back
