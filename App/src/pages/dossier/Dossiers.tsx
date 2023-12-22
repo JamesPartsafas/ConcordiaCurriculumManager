@@ -12,7 +12,7 @@ import {
     Tooltip,
     useToast,
 } from "@chakra-ui/react";
-import { Button as ChakraButton, Container } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 
 import { useContext, useEffect, useState } from "react";
