@@ -120,37 +120,36 @@ export interface CourseDataResponse {
     data: Course;
 }
 
-export interface CourseCreationRequestDTOResponse{
+export interface CourseCreationRequestDTOResponse {
     data: {
-        id: string,
-        dossierId: string,
-        rationale: string | null,
-        resourceImplication: string | null,
-        comment: string | null,
-        conflict: string | null,
-        newCourseID: string
-        newCourse: Course
-    }
+        id: string;
+        dossierId: string;
+        rationale: string | null;
+        resourceImplication: string | null;
+        comment: string | null;
+        conflict: string | null;
+        newCourseID: string;
+        newCourse: Course;
+    };
 }
 
-export interface CourseModificationRequestDTOResponse{
+export interface CourseModificationRequestDTOResponse {
     data: {
-        id: string,
-        dossierId: string,
-        rationale: string | null,
-        resourceImplication: string | null,
-        comment: string | null,
-        conflict: string | null,
-        courseID: string
-        course: Course
-    }
+        id: string;
+        dossierId: string;
+        rationale: string | null;
+        resourceImplication: string | null;
+        comment: string | null;
+        conflict: string | null;
+        courseID: string;
+        course: Course;
+    };
 }
 
-
-export interface EditCourseCreationRequestDTO extends Course{
-    id: string
+export interface EditCourseCreationRequestDTO extends Course {
+    id: string;
 }
 
-export interface EditCourseModificationRequestDTO extends Course{
-    id: string
+export interface EditCourseModificationRequestDTO extends Course {
+    id: string;
 }

@@ -37,7 +37,6 @@ const CourseAPIEndpoints = {
     EditCourseCreationRequest: "/Course/EditCourseCreationRequest",
     EditCourseModificationRequest: "/Course/EditCourseModificationRequest",
     GetCourseData: "/Course/GetCourseData",
-
 };
 
 export function getAllCourseSettings(): Promise<GetAllCourseSettingsResponse> {
@@ -49,7 +48,7 @@ export function addCourse(course: Course): Promise<unknown> {
 }
 
 export function modifyCourse(course: Course): Promise<unknown> {
-    return axios.post(CourseAPIEndpoints.ModifyCourse, course)
+    return axios.post(CourseAPIEndpoints.ModifyCourse, course);
 }
 
 export function deleteCourse(courseDeletionRequest: CourseDeletionRequestDTO): Promise<unknown> {
@@ -80,7 +79,10 @@ export function getCourseModificationRequest(courseRequestId: string): Promise<u
     return axios.get(`${CourseAPIEndpoints.GetCourseModificationRequest}/${courseRequestId}`);
 }
 
-export function editCourseDeletionRequest(dossierId: string, courseDeletionRequest: EditCourseDeletionRequestDTO): Promise<unknown> {
+export function editCourseDeletionRequest(
+    dossierId: string,
+    courseDeletionRequest: EditCourseDeletionRequestDTO
+): Promise<unknown> {
     return axios.put(`${CourseAPIEndpoints.EditCourseDeletionRequest}/${dossierId}`, courseDeletionRequest);
 }
 
@@ -88,10 +90,10 @@ export function getCourseData(subject: string, catalog: number): Promise<unknown
     return axios.get(`${CourseAPIEndpoints.GetCourseData}/${subject}/${catalog}`);
 }
 
-export function editCourseCreationRequest(dossierId: string, course: Course){
-    return axios.put(`${CourseAPIEndpoints.EditCourseCreationRequest}/${dossierId}`, course)
+export function editCourseCreationRequest(dossierId: string, course: Course) {
+    return axios.put(`${CourseAPIEndpoints.EditCourseCreationRequest}/${dossierId}`, course);
 }
 
-export function editCourseModificationRequest(dossierId: string, course: Course){
-    return axios.put(`${CourseAPIEndpoints.EditCourseModificationRequest}/${dossierId}`, course)
+export function editCourseModificationRequest(dossierId: string, course: Course) {
+    return axios.put(`${CourseAPIEndpoints.EditCourseModificationRequest}/${dossierId}`, course);
 }
