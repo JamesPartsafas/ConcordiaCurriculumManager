@@ -139,7 +139,6 @@ export function App() {
                         element={isLoggedIn == true ? <DeleteCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
-
                         path={BaseRoutes.CreateGroup}
                         element={isAdmin(user) == true ? <CreateGroup /> : <Navigate to={BaseRoutes.Login} />}
                     />
