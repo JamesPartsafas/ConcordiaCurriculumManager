@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AllCourseSettings, Course, CourseCreationRequest } from "../models/course";
+import { AllCourseSettings, Course } from "../models/course";
 
 interface GetAllCourseSettingsResponse {
     data: AllCourseSettings;
