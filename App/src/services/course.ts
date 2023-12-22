@@ -32,6 +32,7 @@ const CourseAPIEndpoints = {
     DeleteCourseDeletionRequest: "/Course/DeleteCourseDeletionRequest",
     GetCourseDeletionRequest: "/Course/GetCourseDeletionRequest",
     GetCourseCreationRequest: "/Course/GetCourseCreationRequest",
+    GetCourseModificationRequest: "/Course/GetCourseModificationRequest",
     EditCourseDeletionRequest: "/Course/EditCourseDeletionRequest",
     EditCourseCreationRequest: "/Course/EditCourseCreationRequest",
     EditCourseModificationRequest: "/Course/EditCourseModificationRequest",
@@ -73,6 +74,10 @@ export function getCourseDeletionRequest(courseRequestId: string): Promise<unkno
 
 export function getCourseCreationRequest(courseRequestId: string): Promise<unknown> {
     return axios.get(`${CourseAPIEndpoints.GetCourseCreationRequest}/${courseRequestId}`);
+}
+
+export function getCourseModificationRequest(courseRequestId: string): Promise<unknown> {
+    return axios.get(`${CourseAPIEndpoints.GetCourseModificationRequest}/${courseRequestId}`);
 }
 
 export function editCourseDeletionRequest(dossierId: string, courseDeletionRequest: EditCourseDeletionRequestDTO): Promise<unknown> {

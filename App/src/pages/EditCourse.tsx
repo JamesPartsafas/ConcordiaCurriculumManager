@@ -36,6 +36,7 @@ import {
     CourseComponent,
     CourseComponents,
     EditCourseCreationRequestDTO,
+    EditCourseModificationRequestDTO,
     componentMappings,
 } from "../models/course";
 import AutocompleteInput from "../components/Select";
@@ -188,8 +189,12 @@ export default function EditCourse() {
                     });
             } else if (state.api === "editModificationRequest") {
                 //edit an existing modification request
+                const modificationRequestToEdit: EditCourseModificationRequestDTO = {
+                    ...course,
+                    id: state?.id,
+                };
 
-                editCourseModificationRequest(dossierId, course)
+                editCourseModificationRequest(dossierId, modificationRequestToEdit)
                     .then(() => {
                         showToast(toast, "Success!", "Course modification request modified successfully.", "success");
                         toggleLoading(false);

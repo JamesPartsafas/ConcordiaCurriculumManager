@@ -25,6 +25,7 @@ import {
     CourseCreationRequestDTOResponse,
     CourseDeletionRequest,
     CourseModificationRequest,
+    CourseModificationRequestDTOResponse,
 } from "../../models/course";
 import {
     deleteCourseCreationRequest,
@@ -32,6 +33,7 @@ import {
     deleteCourseModificationRequest,
     getAllCourseSettings,
     getCourseCreationRequest,
+    getCourseModificationRequest,
 } from "../../services/course";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
@@ -224,16 +226,33 @@ export default function DossierDetails() {
     function editCourseCreationRequest(creationRequest: CourseCreationRequest) {
         getCourseCreationRequest(creationRequest.id).then((res: CourseCreationRequestDTOResponse) => {
             const creationRequestToEdit = {
-                ...res.data.newCourse, 
-                id: res.data.id
+                ...res.data.newCourse,
+                id: res.data.id,
             };
-            console.log(creationRequestToEdit)
+
             navigate(
                 BaseRoutes.EditCourse.replace(":id", creationRequest.newCourse.catalog.toString()).replace(
                     ":dossierId",
                     dossierId
                 ),
                 { state: { ...creationRequestToEdit, api: "editCreationRequest" } }
+            );
+        });
+    }
+
+    function editCourseModificationRequest(modificationRequest: CourseModificationRequest) {
+        getCourseModificationRequest(modificationRequest.id).then((res: CourseModificationRequestDTOResponse) => {
+            const modificationRequestToEdit = {
+                ...res.data.course,
+                id: res.data.id,
+            };
+
+            navigate(
+                BaseRoutes.EditCourse.replace(":id", modificationRequest.course.catalog.toString()).replace(
+                    ":dossierId",
+                    dossierId
+                ),
+                { state: { ...modificationRequestToEdit, api: "editModificationRequest" } }
             );
         });
     }
@@ -416,8 +435,14 @@ export default function DossierDetails() {
                             <Divider />
                             <CardFooter>
                                 <ButtonGroup spacing="2">
-                                    <Button variant="solid" style="secondary">
-                                        View
+                                    <Button
+                                        variant="solid"
+                                        style="secondary"
+                                        onClick={() => {
+                                            editCourseModificationRequest(courseModificationRequest);
+                                        }}
+                                    >
+                                        Edit
                                     </Button>
                                     <Button
                                         variant="outline"
