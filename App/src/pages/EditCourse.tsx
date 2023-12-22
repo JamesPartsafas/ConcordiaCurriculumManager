@@ -22,7 +22,7 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useState, useRef, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
     editCourseCreationRequest,
     editCourseModificationRequest,
@@ -42,6 +42,7 @@ import {
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
 import Button from "../components/Button";
+import { BaseRoutes } from "../constants";
 
 export default function EditCourse() {
     const toast = useToast();
@@ -77,6 +78,7 @@ export default function EditCourse() {
 
     const selectedComponentRef = useRef<HTMLSelectElement>(null);
     const { dossierId } = useParams();
+    const navigate = useNavigate();
 
     const location = useLocation();
     const state = location.state;
@@ -287,6 +289,19 @@ export default function EditCourse() {
         <>
             {allCourseSettings && (
                 <Box>
+                    
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        width="100px"
+                        height="40px"
+                        ml={8}
+                        mt= {5}
+                        onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
+                    >
+                        Back
+                    </Button>
+
                     <form>
                         <Flex>
                             <Stack w="35%" p={8}>
