@@ -39,7 +39,7 @@ export interface Course {
     rationale: string;
     supportingFiles: object;
     resourceImplication: string;
-    courseID?: number;
+    courseID: number;
 }
 
 export interface newCourse extends Course {
@@ -118,4 +118,21 @@ export const componentMappings = {
 
 export interface CourseDataResponse {
     data: Course;
+}
+
+export interface CourseCreationRequestDTOResponse{
+    data: {
+        id: string,
+        dossierId: string,
+        rationale: string | null,
+        resourceImplication: string | null,
+        comment: string | null,
+        conflict: string | null,
+        newCourseID: string
+        newCourse: Course
+    }
+}
+
+export interface EditCourseCreationRequestDTO extends Course{
+    id: string
 }

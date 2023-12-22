@@ -23,13 +23,19 @@ import { AddIcon } from "@chakra-ui/icons";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useState, useRef, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { addCourse, getAllCourseSettings } from "../services/course";
+import {
+    editCourseCreationRequest,
+    editCourseModificationRequest,
+    getAllCourseSettings,
+    modifyCourse,
+} from "../services/course";
 import {
     AllCourseSettings,
     Course,
     CourseCareer,
     CourseComponent,
     CourseComponents,
+    EditCourseCreationRequestDTO,
     componentMappings,
 } from "../models/course";
 import AutocompleteInput from "../components/Select";
@@ -41,16 +47,17 @@ export default function EditCourse() {
     // Form managment and error handling states
     const [isLoading, toggleLoading] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
-    const [courseSubjectError, setCourseSubjectError] = useState(true);
-    const [courseCodeError, setCourseCodeError] = useState(true);
-    const [courseNameError, setCourseNameError] = useState(true);
-    const [courseCreditError, setCourseCreditError] = useState(true);
-    const [courseCareersError, setCourseCareersError] = useState(true);
+    const [courseSubjectError, setCourseSubjectError] = useState(false);
+    const [courseCodeError, setCourseCodeError] = useState(false);
+    const [courseNameError, setCourseNameError] = useState(false);
+    const [courseCreditError, setCourseCreditError] = useState(false);
+    const [courseCareersError, setCourseCareersError] = useState(false);
 
     const [selectedComponent, setSelectedComponent] = useState<string>(
         '{"componentCode":0,"componentName":"Conference"}'
     );
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
+    const [courseID, setCourseID] = useState<number>();
     const [department, setDepartment] = useState("");
     const [courseNumber, setCourseNumber] = useState("");
     const [courseName, setCourseName] = useState("");
@@ -61,11 +68,17 @@ export default function EditCourse() {
     const [components, setComponents] = useState<CourseComponents[]>([]);
     const [courseCareer, setCouresCareer] = useState<CourseCareer>(null);
     const [courseCareers, setCourseCareers] = useState<string[]>([]);
+    const [supportingFiles, setSupportingFiles] = useState<object>();
+    const [equivalentCourses, setEquivalentCourses] = useState<string>();
+    const [courseNotes, setCourseNotes] = useState("");
+    const [rationale, setRationale] = useState("");
+    const [resourceImplication, setResourceImplication] = useState("");
+
     const selectedComponentRef = useRef<HTMLSelectElement>(null);
     const { dossierId } = useParams();
 
     const location = useLocation();
-    const state = location.state as Course;
+    const state = location.state;
 
     const handleChangeCourseCareer = (value: string) => {
         if (value.length === 0) setCourseCareersError(true);
@@ -130,35 +143,79 @@ export default function EditCourse() {
     };
 
     const handleSubmitCourse = () => {
+        console.log(courseID);
         setFormSubmitted(true);
         if (courseCodeError || courseCreditError || courseNameError || courseSubjectError) return;
         else {
             toggleLoading(true);
             const course: Course = {
+                courseID: courseID,
                 subject: department,
-                catalog: "1",
+                catalog: courseNumber,
                 title: courseName,
                 description: courseDescription,
                 creditValue: courseCredits,
                 preReqs: courseRequesites,
                 career: courseCareer.careerCode,
-                equivalentCourses: "",
-                componentCodes: courseComponents.map((component) => component.componentCode),
+                equivalentCourses: equivalentCourses,
+                componentCodes: courseComponents.reduce((acc, component) => {
+                    acc[component.componentCode] = component.hours;
+                    return acc;
+                }, {}),
+
                 dossierId: dossierId,
+                supportingFiles: supportingFiles,
+                courseNotes: courseNotes,
+                rationale: rationale,
+                resourceImplication: resourceImplication,
             };
-            addCourse(course)
-                .then(() => {
-                    showToast(toast, "Success!", "Course added successfully.", "success");
-                    toggleLoading(false);
-                })
-                .catch(() => {
-                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
-                    toggleLoading(false);
-                });
+
+            if (state.api === "editCreationRequest") {
+                //edit a creation request
+                const creationRequestToEdit: EditCourseCreationRequestDTO = {
+                    ...course,
+                    id: state?.id,
+                };
+                console.log(course)
+
+                editCourseCreationRequest(dossierId, creationRequestToEdit)
+                    .then(() => {
+                        showToast(toast, "Success!", "Course creation request modified successfully.", "success");
+                        toggleLoading(false);
+                    })
+                    .catch(() => {
+                        showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                        toggleLoading(false);
+                    });
+            } else if (state.api === "editModificationRequest") {
+                //edit an existing modification request
+
+                editCourseModificationRequest(dossierId, course)
+                    .then(() => {
+                        showToast(toast, "Success!", "Course modification request modified successfully.", "success");
+                        toggleLoading(false);
+                    })
+                    .catch(() => {
+                        showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                        toggleLoading(false);
+                    });
+            } else {
+                //create a new modification request
+                modifyCourse(course)
+                    .then(() => {
+                        showToast(toast, "Success!", "Course modified successfully.", "success");
+                        toggleLoading(false);
+                    })
+                    .catch(() => {
+                        showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                        toggleLoading(false);
+                    });
+            }
         }
     };
     const setCourseData = () => {
         const courseDetails: Course = {
+            courseID: state?.courseID,
             subject: state?.subject,
             catalog: state?.catalog,
             title: state?.title,
@@ -169,18 +226,30 @@ export default function EditCourse() {
             equivalentCourses: state?.equivalentCourses,
             componentCodes: state?.componentCodes,
             dossierId: dossierId,
+
+            courseNotes: state?.courseNotes,
+            rationale: state?.rationale || "",
+            supportingFiles: state?.supportingFiles,
+            resourceImplication: state?.resourceImplication || "",
         };
-        setDepartment(courseDetails.subject);
-        setCourseName(courseDetails.title);
-        setCourseDescription(courseDetails.description);
-        setCourseCredits(courseDetails.creditValue);
-        setCourseRequesites(courseDetails.preReqs);
-        setCourseNumber(courseDetails.catalog);
+        setCourseID(courseDetails?.courseID);
+        setDepartment(courseDetails?.subject);
+        setCourseName(courseDetails?.title);
+        setCourseDescription(courseDetails?.description);
+        setCourseCredits(courseDetails?.creditValue);
+        setCourseRequesites(courseDetails?.preReqs);
+        setCourseNumber(courseDetails?.catalog);
+        setSupportingFiles(courseDetails?.supportingFiles);
+        setEquivalentCourses(courseDetails?.equivalentCourses);
+        setCourseNotes(courseDetails?.courseNotes);
+        setRationale(courseDetails?.rationale);
+        setResourceImplication(courseDetails?.resourceImplication);
+
         setCouresCareer(allCourseSettings?.courseCareers.find((career) => career.careerCode == courseDetails.career));
         // find course components in allCourseSettings that match component codes of coursdDetails
         const courseComponentsTemp = allCourseSettings?.courseComponents
             .filter((component) =>
-                Object.keys(courseDetails.componentCodes).includes(componentMappings[component.componentName])
+                Object.keys(courseDetails?.componentCodes || {}).includes(componentMappings[component.componentName])
             )
             .map((filteredComponent) => {
                 const code = componentMappings[filteredComponent.componentName];
@@ -190,7 +259,6 @@ export default function EditCourse() {
                     hours: hours,
                 };
             });
-
         setCourseComponents(courseComponentsTemp || []);
     };
     useEffect(() => {
@@ -207,7 +275,7 @@ export default function EditCourse() {
     }, []);
 
     useEffect(() => {
-        setCourseData();
+        if (allCourseSettings) setCourseData();
     }, [allCourseSettings]);
     return (
         // display if AllCourseSettings is not null
