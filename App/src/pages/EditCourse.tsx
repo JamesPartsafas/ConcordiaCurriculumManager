@@ -176,7 +176,6 @@ export default function EditCourse() {
                     ...course,
                     id: state?.id,
                 };
-                console.log(course)
 
                 editCourseCreationRequest(dossierId, creationRequestToEdit)
                     .then(() => {
