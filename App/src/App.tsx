@@ -18,7 +18,6 @@ import { BaseRoutes } from "./constants";
 import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
 import DisplayManageableGroups from "./pages/ManageableGroups";
-import EditCourse from "./pages/EditCourse";
 import AddingUserToGroup from "./pages/addUserToGroup";
 import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
 import DeleteCourse from "./pages/DeleteCourse";
@@ -131,7 +130,7 @@ export function App() {
                     />
                     <Route
                         path={BaseRoutes.EditCourse}
-                        element={isLoggedIn == true ? <EditCourse /> : <Navigate to={BaseRoutes.Login} />}
+                        element={isLoggedIn == true ? <AddCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
                         path={BaseRoutes.DeleteCourse}
