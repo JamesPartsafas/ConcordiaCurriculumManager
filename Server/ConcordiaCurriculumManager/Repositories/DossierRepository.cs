@@ -67,8 +67,17 @@ public class DossierRepository : IDossierRepository
     }
 
     public async Task<Dossier?> GetDossierByDossierId(Guid dossierId) => await _dbContext.Dossiers
-        .Select(ObjectSelectors.DossierSelector())
         .Where(d => d.Id == dossierId)
+        .Include(d => d.CourseCreationRequests)
+        .ThenInclude(c => c.NewCourse)
+        .Include(d => d.CourseDeletionRequests)
+        .ThenInclude(c => c.Course)
+        .Include(d => d.CourseModificationRequests)
+        .ThenInclude(c => c.Course)
+        .Include(d => d.ApprovalStages)
+        .ThenInclude(a => a.Group == null ? null : a.Group.Members)
+        .Include(d => d.ApprovalStages)
+        .ThenInclude(a => a.Group == null ? null : a.Group.GroupMasters)
         .FirstOrDefaultAsync();
 
     public async Task<bool> SaveDossier(Dossier dossier)
