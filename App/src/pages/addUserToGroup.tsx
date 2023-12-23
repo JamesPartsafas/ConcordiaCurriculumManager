@@ -7,16 +7,18 @@ import { AddUserToGroup, GetGroupByID, GroupDTO, GroupResponseDTO } from "../ser
 import { useLocation } from "react-router-dom";
 import { BaseRoutes } from "../constants";
 import { UserDTO, UserRoleCodes } from "../models/user";
-import { AllUsersResponseDTO, updateAllUsers } from "../services/user";
+import { AllUsersResponseDTO, searchUsersByEmail } from "../services/user";
 import { getAllUsers } from "../services/user";
 
 export default function AddingUserToGroup() {
     const [users, setUsers] = useState<UserDTO[]>([]);
     const [nonMembers, setNonMembers] = useState<UserDTO[]>([]);
+    const [searchInput, setSearchInput] = useState<string>();
     const navigate = useNavigate();
     const location = useLocation();
     const [myGroup, setMyGroup] = useState<GroupDTO | null>(null);
     const [locationState, setLocationState] = useState({ gid: "", name: "" });
+    const handleChange = (event) => setSearchInput(event.target.value);
 
     function getMyGroup(gid: string) {
         console.log("Grabbing group info");
@@ -41,17 +43,18 @@ export default function AddingUserToGroup() {
             });
     }
 
-    function updateUsers(uid: string) {
-        console.log("Updating user info");
-        updateAllUsers(uid)
+    function searchUsers(input: string) {
+        console.log("Searching for " + input);
+        searchUsersByEmail(input)
             .then((res: AllUsersResponseDTO) => {
-                console.log(JSON.stringify(res, null, 2));
-                setUsers(users.concat(res.data));
+                console.log(JSON.stringify(res.data));
+                setUsers(res.data);
             })
             .catch((err) => {
                 console.log(err);
             });
     }
+
     useEffect(() => {
         if (location.state) {
             const _state = location.state as { gid: string; name: string };
@@ -62,6 +65,7 @@ export default function AddingUserToGroup() {
     }, [location]);
 
     useEffect(() => {
+        console.log("Non Memebers being updated.");
         const filteredUsers = users.filter((user) => {
             if (user.roles.find((role) => role.userRole === UserRoleCodes.Admin)) return false;
             if (myGroup.members.find((member) => member.id === user.id)) return false;
@@ -104,7 +108,16 @@ export default function AddingUserToGroup() {
 
                         <FormControl>
                             <FormLabel htmlFor="search-text">Search:</FormLabel>
-                            <Input id="searcher" type="text" />
+                            <Input id="searcher" type="text" value={searchInput} onChange={handleChange} />
+                            <Button
+                                style="secondary"
+                                variant="outline"
+                                width="22%"
+                                height="40px"
+                                onClick={() => searchUsers(searchInput)}
+                            >
+                                Search
+                            </Button>
                         </FormControl>
 
                         <div id="item-list">
@@ -135,18 +148,6 @@ export default function AddingUserToGroup() {
                             >
                                 Back
                             </Button>
-
-                            {nonMembers.length != 0 && (
-                                <Button
-                                    style="secondary"
-                                    variant="outline"
-                                    width="22%"
-                                    height="40px"
-                                    onClick={() => updateUsers(nonMembers[nonMembers.length - 1].id)}
-                                >
-                                    Next Page
-                                </Button>
-                            )}
                         </HStack>
                     </Stack>
                 </Box>
