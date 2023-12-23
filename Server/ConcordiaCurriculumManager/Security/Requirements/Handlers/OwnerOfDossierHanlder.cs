@@ -55,16 +55,22 @@ public class OwnerOfDossierHandler : AuthorizationHandler<OwnerOfDossierRequirem
         }
 
         var isDossierPublished = !dossier.State.Equals(DossierStateEnum.Created);
-        
-        if (!isDossierPublished && dossier.InitiatorId.Equals(parsedUserId))
+
+        if (!isDossierPublished)
         {
-            context.Succeed(requirement);
+            if (dossier.InitiatorId.Equals(parsedUserId))
+            {
+                context.Succeed(requirement);
+                return;
+            }
+
+            context.Fail();
             return;
         }
 
         var currentApprovalStage = dossier.ApprovalStages.Where(stage => stage.IsCurrentStage).FirstOrDefault();
         var reviewingGroup = currentApprovalStage?.Group;
-        
+
         if (reviewingGroup is null)
         {
             context.Fail();
