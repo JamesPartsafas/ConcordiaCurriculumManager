@@ -2,8 +2,7 @@
 
 namespace ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 
-public class CourseModificationRequestCourseDetailsDTO : CourseModificationRequestDTO
+public class CourseDeletionRequestCourseDetailsDTO : CourseDeletionRequestDTO
 {
     public required CourseDataDTO Course { get; set; }
 }
-

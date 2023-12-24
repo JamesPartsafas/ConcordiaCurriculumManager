@@ -1,8 +1,6 @@
-﻿using System;
-namespace ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs
+﻿namespace ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
+
+public class CourseModificationRequestDTO : CourseRequestDTO
 {
-    public class CourseModificationRequestDTO : CourseRequestDTO
-    {
-        public required Guid CourseId { get; set; }
-    }
+    public required Guid CourseId { get; set; }
 }

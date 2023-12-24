@@ -1,4 +1,6 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
+using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 
 namespace ConcordiaCurriculumManager.DTO.Dossiers;
@@ -15,13 +17,13 @@ public class DossierDetailsDTO
 
     public required DossierStateEnum State { get; set; }
 
-    public List<CourseCreationRequest> CourseCreationRequests { get; set; } = new List<CourseCreationRequest>();
+    public List<CourseCreationRequestCourseDetailsDTO> CourseCreationRequests { get; set; } = new List<CourseCreationRequestCourseDetailsDTO>();
 
-    public List<CourseModificationRequest> CourseModificationRequests { get; set; } = new List<CourseModificationRequest>();
+    public List<CourseModificationRequestCourseDetailsDTO> CourseModificationRequests { get; set; } = new List<CourseModificationRequestCourseDetailsDTO>();
 
-    public List<CourseDeletionRequest> CourseDeletionRequests { get; set; } = new List<CourseDeletionRequest>();
+    public List<CourseDeletionRequestCourseDetailsDTO> CourseDeletionRequests { get; set; } = new List<CourseDeletionRequestCourseDetailsDTO>();
 
-    public List<ApprovalStage> ApprovalStages { get; set; } = new List<ApprovalStage>();
+    public List<ApprovalStageDTO> ApprovalStages { get; set; } = new List<ApprovalStageDTO>();
 
     public required DateTime CreatedDate { get; set; }
 

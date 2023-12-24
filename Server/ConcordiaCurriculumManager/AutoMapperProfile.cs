@@ -5,8 +5,10 @@ using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
+using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
 
 namespace ConcordiaCurriculumManager;
@@ -20,6 +22,7 @@ public class AutoMapper : Profile
         CreateMap<Course, CourseCreationInitiationDTO>().ReverseMap();
         CreateMap<Dossier, DossierDTO>().ReverseMap();
         CreateMap<Dossier, DossierDetailsDTO>().ReverseMap();
+        CreateMap<Dossier, DossierDetailsWithDiscussionDTO>().ReverseMap();
         CreateMap<CourseCreationRequest, CourseCreationRequestDTO>().ReverseMap();
         CreateMap<CourseModificationRequest, CourseModificationRequestDTO>().ReverseMap();
         CreateMap<CourseDeletionRequest, CourseDeletionRequestDTO>().ReverseMap();
@@ -33,6 +36,10 @@ public class AutoMapper : Profile
             .ReverseMap();
         CreateMap<CourseCreationRequest, CourseCreationRequestCourseDetailsDTO>().ReverseMap();
         CreateMap<CourseModificationRequest, CourseModificationRequestCourseDetailsDTO>().ReverseMap();
+        CreateMap<CourseDeletionRequest, CourseDeletionRequestCourseDetailsDTO>().ReverseMap();
+        CreateMap<ApprovalStage, ApprovalStageDTO>();
+        CreateMap<DossierDiscussion, DossierDiscussionDTO>().ReverseMap();
+        CreateMap<CreateDossierDiscussionMessageDTO, DiscussionMessage>();
+        CreateMap<DiscussionMessage, DossierDiscussionMessageDTO>();
     }
-
 }
