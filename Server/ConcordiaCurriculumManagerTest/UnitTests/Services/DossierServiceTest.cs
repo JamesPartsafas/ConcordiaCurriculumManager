@@ -360,5 +360,27 @@ public class DossierServiceTest
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
+
+    [TestMethod]
+    public async Task GetDossierReportByDossierId_ValidInput_ReturnsDossierReport()
+    {
+        var dossier = TestData.GetSampleDossier();
+        dossierRepository.Setup(d => d.GetDossierReportByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
+
+        var dossierReport = await dossierService.GetDossierReportByDossierId(dossier.Id);
+
+        Assert.IsNotNull(dossierReport);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task GetDossierReportByDossierId_InvalidInput_Throws()
+    {
+        dossierRepository.Setup(d => d.GetDossierReportByDossierId(It.IsAny<Guid>())).ReturnsAsync((Dossier)null!);
+
+        await dossierService.GetDossierReportByDossierId(TestData.GetSampleDossier().Id);
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
 }
 
