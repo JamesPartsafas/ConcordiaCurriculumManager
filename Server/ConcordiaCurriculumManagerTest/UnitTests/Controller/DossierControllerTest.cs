@@ -154,15 +154,6 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
 
             await dossierController.GetDossierReportByDossierId(Guid.NewGuid());
         }
-
-        [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public async Task GetDossierReportByDossierId_InvalidCall_Returns500()
-        {
-            dossierService.Setup(d => d.GetDossierReportByDossierId(It.IsAny<Guid>())).Throws(new NotFoundException());
-
-            await dossierController.GetDossierReportByDossierId(Guid.NewGuid());
-        }
     }
 }
 
