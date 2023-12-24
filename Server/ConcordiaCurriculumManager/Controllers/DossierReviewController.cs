@@ -84,8 +84,7 @@ public class DossierReviewController : Controller
     [SwaggerResponse(StatusCodes.Status200OK, "Dossier Review successfully added")]
     public async Task<ActionResult> ReviewDossier([FromRoute, Required] Guid dossierId, [FromBody, Required] CreateDossierDiscussionMessageDTO dossierMessageDTO)
     {
-        var dossierMessage = _mapper.Map<DiscussionMessage>(dossierMessageDTO);
-        //?? throw new InvalidInputException("Invalid Message");
+        var dossierMessage = _mapper.Map<DiscussionMessage>(dossierMessageDTO) ?? throw new InvalidInputException("Invalid Message");
         dossierMessage.DossierDiscussionId = dossierId;
         await _dossierReviewService.AddDossierDiscussionReview(dossierId, dossierMessage);
         return NoContent();
