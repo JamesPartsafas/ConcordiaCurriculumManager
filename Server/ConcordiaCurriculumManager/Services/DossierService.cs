@@ -1,8 +1,12 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace ConcordiaCurriculumManager.Services;
 public interface IDossierService
@@ -21,21 +25,24 @@ public interface IDossierService
     public Task<CourseModificationRequest> GetCourseModificationRequest(Guid courseRequestId);
     public Task<CourseDeletionRequest> GetCourseDeletionRequest(Guid courseRequestId);
     public Task<IList<User>> GetCurrentlyReviewingGroupMasters(Guid dossierId);
+    public Task<DossierReport> GetDossierReportByDossierId(Guid dossierId);
 }
 
 public class DossierService : IDossierService
 {
     private readonly ILogger<DossierService> _logger;
     private readonly IDossierRepository _dossierRepository;
+    private readonly ICourseRepository _courseRepository;
 
-    public DossierService(ILogger<DossierService> logger, IDossierRepository dossierRepository)
+    public DossierService(ILogger<DossierService> logger, IDossierRepository dossierRepository, ICourseRepository courseRepository)
     {
         _logger = logger;
         _dossierRepository = dossierRepository;
+        _courseRepository = courseRepository;
     }
 
     public async Task<List<Dossier>> GetDossiersByID(Guid ID)
-    { 
+    {
         var dossiers = await _dossierRepository.GetDossiersByID(ID);
 
         if (dossiers.Count == 0)
@@ -77,7 +84,7 @@ public class DossierService : IDossierService
         {
             throw new Exception($"Error editing {typeof(Dossier)} {dossier.Id}");
         }
-        
+
         _logger.LogInformation($"Edited {typeof(Dossier)} {dossier.Id}");
         return dossier;
     }
@@ -97,7 +104,7 @@ public class DossierService : IDossierService
 
     public async Task<Dossier?> GetDossierDetailsById(Guid id) => await _dossierRepository.GetDossierByDossierId(id);
 
-    public async Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id) => await _dossierRepository.GetDossierByDossierId(id) 
+    public async Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id) => await _dossierRepository.GetDossierByDossierId(id)
         ?? throw new NotFoundException("The dossier does not exist.");
 
     public async Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId)
@@ -165,5 +172,20 @@ public class DossierService : IDossierService
     public async Task<IList<User>> GetCurrentlyReviewingGroupMasters(Guid dossierId)
     {
         return await _dossierRepository.GetCurrentlyReviewingGroupMasters(dossierId);
+    }
+
+    public async Task<DossierReport> GetDossierReportByDossierId(Guid dossierId)
+    {
+        var dossier = await _dossierRepository.GetDossierReportByDossierId(dossierId) ?? throw new NotFoundException("The dossier does not exist.");
+        var oldCourses = new List<Course>();
+
+        foreach (var request in dossier.CourseModificationRequests)
+        {
+            var course = await _courseRepository.GetCourseWithSupportingFilesBySubjectAndCatalog(request.Course!.Subject, request.Course.Catalog);
+            if (course == null) continue;
+            oldCourses.Add(course);
+        }
+
+        return new DossierReport { Dossier = dossier, OldCourses = oldCourses };
     }
 }

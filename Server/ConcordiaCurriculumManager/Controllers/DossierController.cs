@@ -88,4 +88,15 @@ public class DossierController : Controller
         await _dossierService.DeleteDossier(dossierId);
         return NoContent();
     }
+
+    [HttpGet(nameof(GetDossierReportByDossierId) + "/{dossierId}")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Dossier report created")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Dossier is not found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetDossierReportByDossierId([FromRoute, Required] Guid dossierId)
+    {
+        var dossierReport = await _dossierService.GetDossierReportByDossierId(dossierId);
+        var dossierReportDTO = _mapper.Map<DossierReportDTO>(dossierReport);
+        return Created($"/{nameof(GetDossierReportByDossierId)}", dossierReportDTO);
+    }
 }
