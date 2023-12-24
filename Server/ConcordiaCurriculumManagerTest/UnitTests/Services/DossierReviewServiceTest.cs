@@ -1,17 +1,14 @@
-﻿using Castle.Core.Logging;
-using ConcordiaCurriculumManager.Filters.Exceptions;
+﻿using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Repositories;
+using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
 
@@ -23,6 +20,7 @@ public class DossierReviewServiceTest
     private Mock<IGroupService> groupService = null!;
     private Mock<ICourseService> courseService = null!;
     private Mock<IDossierRepository> dossierRepository = null!;
+    private Mock<IHttpContextAccessor> httpContextAccessor = null!;
     private Mock<IDossierReviewRepository> dossierReviewRepository = null!;
 
     private DossierReviewService dossierReviewService = null!;
@@ -35,6 +33,7 @@ public class DossierReviewServiceTest
         groupService = new Mock<IGroupService>();
         courseService = new Mock<ICourseService>();
         dossierRepository = new Mock<IDossierRepository>();
+        httpContextAccessor = new Mock<IHttpContextAccessor>();
         dossierReviewRepository = new Mock<IDossierReviewRepository>();
 
         dossierReviewService = new DossierReviewService(
@@ -43,7 +42,8 @@ public class DossierReviewServiceTest
             groupService.Object,
             courseService.Object,
             dossierRepository.Object,
-            dossierReviewRepository.Object
+            dossierReviewRepository.Object,
+            httpContextAccessor.Object
         );
     }
 
@@ -60,8 +60,6 @@ public class DossierReviewServiceTest
         dossierReviewRepository.Setup(drr => drr.SaveApprovalStages(It.IsAny<IList<ApprovalStage>>())).ReturnsAsync(true);
 
         await dossierReviewService.SubmitDossierForReview(dto);
-
-        // No exception thrown means method succeeded
     }
 
     [TestMethod]
@@ -186,4 +184,111 @@ public class DossierReviewServiceTest
         courseService.Verify(mock => mock.GetCourseVersions(dossier), Times.Once());
         dossierRepository.Verify(mock => mock.UpdateDossier(dossier), Times.Once());
     }
+
+    [TestMethod]
+    public async Task GetDossierWithDiscussion_ValidDossier_ReturnsDossier()
+    {
+        var dossier = TestData.GetSampleDossier();
+        dossier.State = DossierStateEnum.InReview;
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossier.Id)).ReturnsAsync(dossier);
+
+        var returnedDossier = await dossierReviewService.GetDossierWithDiscussion(dossier.Id);
+
+        Assert.IsNotNull(returnedDossier);
+        Assert.AreEqual(dossier.Id, returnedDossier.Id);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task GetDossierWithDiscussion_UnpublishedDossier_Throws()
+    {
+        var dossier = TestData.GetSampleDossier();
+        dossier.State = DossierStateEnum.Created;
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossier.Id)).ReturnsAsync(dossier);
+
+        await dossierReviewService.GetDossierWithDiscussion(dossier.Id);
+    }
+
+    [TestMethod]
+    public async Task AddDossierDiscussionReview_ValidInput_AddsMessageAndSavesDossier()
+    {
+        var dossier = TestData.GetSampleDossierWithDiscussion();
+        var message = TestData.GetSampleDiscussionMessage();
+
+        httpContextAccessor.Setup(x => x.HttpContext!.User.Claims).Returns(new[]
+        {
+            new Claim(Claims.Id, Guid.NewGuid().ToString()),
+        });
+        
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossier.Id)).ReturnsAsync(dossier);
+        dossierRepository.Setup(dr => dr.UpdateDossier(dossier)).ReturnsAsync(true);
+
+        await dossierReviewService.AddDossierDiscussionReview(dossier.Id, message);
+
+        Assert.AreEqual(1, dossier.Discussion!.Messages.Count); 
+        Assert.AreEqual(message, dossier.Discussion.Messages.Last()); 
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public async Task AddDossierDiscussionReview_DossierDiscussionNotFound_Throws()
+    {
+        var dossierId = Guid.NewGuid();
+        var message = TestData.GetSampleDiscussionMessage();
+        var dossier = TestData.GetSampleDossier();
+        dossier.Discussion = null;
+        dossier.State = DossierStateEnum.InReview;
+
+        httpContextAccessor.Setup(x => x.HttpContext!.User.Claims).Returns(new[]
+        {
+            new Claim(Claims.Id, "Test ID"),
+        });
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(dossier);
+
+        await dossierReviewService.AddDossierDiscussionReview(dossierId, message);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task AddDossierDiscussionReview_UserIdNotFound_Throws()
+    {
+        var dossierId = Guid.NewGuid();
+        var message = TestData.GetSampleDiscussionMessage();
+        var dossier = TestData.GetSampleDossier();
+        dossier.Discussion = null;
+        dossier.State = DossierStateEnum.InReview;
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(dossier);
+
+        await dossierReviewService.AddDossierDiscussionReview(dossierId, message);
+    }
+
+    [TestMethod]
+    public async Task GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow_DossierExists_ReturnsDossier()
+    {
+        var dossierId = Guid.NewGuid();
+        var expectedDossier = TestData.GetSampleDossierWithDiscussion();
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(expectedDossier);
+
+        var resultDossier = await dossierReviewService.GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(dossierId);
+
+        Assert.IsNotNull(resultDossier);
+        Assert.AreEqual(expectedDossier, resultDossier);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow_DossierDoesNotExist_ThrowsNotFoundException()
+    {
+        var dossierId = Guid.NewGuid();
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync((Dossier)null!);
+
+        await dossierReviewService.GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(dossierId);
+    }
+
 }

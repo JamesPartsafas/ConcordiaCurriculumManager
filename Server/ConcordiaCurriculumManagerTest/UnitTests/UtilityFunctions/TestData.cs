@@ -435,6 +435,81 @@ public static class TestData
         };
     }
 
+    public static DiscussionMessage GetSampleDiscussionMessage()
+    {
+        return new DiscussionMessage
+        {
+            DossierDiscussionId = Guid.NewGuid(),
+            GroupId = Guid.NewGuid(),
+            AuthorId = Guid.NewGuid(),
+            Message = "This is a test message"
+        };
+    }
+
+    public static Dossier GetSampleDossierWithDiscussion()
+    {
+        var dossier = GetSampleDossier();
+        dossier.State = DossierStateEnum.InReview;
+        dossier.Discussion = new()
+        {
+            DossierId = dossier.Id
+        };
+
+        return dossier;
+    }
+
+    // DOSSIER REVIEWS DTO
+    public static CreateDossierDiscussionMessageDTO GetSampleCreateDossierDiscussionMessageDTO()
+    {
+        return new CreateDossierDiscussionMessageDTO
+        {
+            Message = "This is a test message",
+            GroupId = Guid.NewGuid()
+        };
+    }
+
+    public static DossierDiscussionMessageDTO GetSampleDossierDiscussionMessageDTO()
+    {
+        return new DossierDiscussionMessageDTO
+        {
+            Id = Guid.NewGuid(),
+            Message = "This is a test message",
+            GroupId = Guid.NewGuid()
+        };
+    }
+
+    public static DossierDiscussionDTO GetSampleDossierDiscussionDTO()
+    {
+        var message = GetSampleDossierDiscussionMessageDTO();
+
+        return new DossierDiscussionDTO
+        {
+            DossierId = Guid.NewGuid(),
+            Messages = new List<DossierDiscussionMessageDTO> { message }
+        };
+    }
+
+    public static DossierDetailsWithDiscussionDTO GetSampleDossierDetailsWithDiscussionDTO()
+    {
+        var discusssion = GetSampleDossierDiscussionDTO();
+
+        var dossier = new DossierDetailsWithDiscussionDTO
+        {
+            Id = Guid.NewGuid(),
+            InitiatorId = Guid.NewGuid(),
+            Title = "Title",
+            Description = "Description",
+            State = DossierStateEnum.InReview,
+            CreatedDate = DateTime.Now,
+            ModifiedDate = DateTime.Now,
+            Discussion = discusssion
+        };
+
+        discusssion.DossierId = dossier.Id;
+
+        return dossier;
+    }
+
     // GROUPS
     public static Group GetSampleGroup()
     {
