@@ -382,5 +382,15 @@ public class DossierServiceTest
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
+
+    [TestMethod]
+    public async Task GetDossiersRequiredReview_ValidInput_ReturnsDossiersRequireReview()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+        var dossiers = new List<Dossier> { dossier };
+        dossierRepository.Setup(d => d.GetDossiersRequiredReview(It.IsAny<Guid>())).ReturnsAsync(dossiers);
+
+        await dossierService.GetDossiersRequiredReview(dossier.InitiatorId);
+    }
 }
 
