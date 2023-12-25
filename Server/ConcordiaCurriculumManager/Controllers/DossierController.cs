@@ -99,4 +99,16 @@ public class DossierController : Controller
         var dossierReportDTO = _mapper.Map<DossierReportDTO>(dossierReport);
         return Created($"/{nameof(GetDossierReportByDossierId)}", dossierReportDTO);
     }
+
+    [HttpGet(nameof(GetDossiersRequiredReview))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Dossiers retrieved")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Dossiers are not found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetDossiersRequiredReview()
+    {
+        Guid userId = Guid.Parse(_userService.GetCurrentUserClaim(Claims.Id));
+        var dossiers = await _dossierService.GetDossiersRequiredReview(userId);
+        var dossiersDTOs = _mapper.Map<List<DossierDTO>>(dossiers);
+        return Ok(dossiersDTOs);
+    }
 }

@@ -29,6 +29,7 @@ public interface IDossierRepository
     public Task<bool> DeleteCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
     public Task<IList<User>> GetCurrentlyReviewingGroupMasters(Guid dossierId);
     public Task<Dossier?> GetDossierReportByDossierId(Guid dossierId);
+    public Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId);
 }
 
 public class DossierRepository : IDossierRepository
@@ -211,5 +212,10 @@ public class DossierRepository : IDossierRepository
         .Include(d => d.ApprovalStages)
             .ThenInclude(a => a.Group)
         .FirstOrDefaultAsync();
+    }
+
+    public async Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId)
+    {
+        return await _dbContext.Dossiers.Include(d => d.ApprovalStages.Where(a => a.IsCurrentStage)).ThenInclude(a => a.Group).Where(d => d.ApprovalStages.First().Group!.Members.Any(m => m.Id.Equals(userId))).ToListAsync();
     }
 }
