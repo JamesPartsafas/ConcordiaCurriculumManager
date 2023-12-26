@@ -26,6 +26,7 @@ public interface IDossierService
     public Task<CourseDeletionRequest> GetCourseDeletionRequest(Guid courseRequestId);
     public Task<IList<User>> GetCurrentlyReviewingGroupMasters(Guid dossierId);
     public Task<DossierReport> GetDossierReportByDossierId(Guid dossierId);
+    public Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId);
 }
 
 public class DossierService : IDossierService
@@ -187,5 +188,10 @@ public class DossierService : IDossierService
         }
 
         return new DossierReport { Dossier = dossier, OldCourses = oldCourses };
+    }
+
+    public async Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId)
+    {
+        return await _dossierRepository.GetDossiersRequiredReview(userId);
     }
 }

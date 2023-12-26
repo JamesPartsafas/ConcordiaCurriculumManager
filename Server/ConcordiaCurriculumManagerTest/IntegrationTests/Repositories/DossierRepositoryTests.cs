@@ -320,6 +320,18 @@ namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
 
             Assert.IsTrue(result);
         }
+
+        [TestMethod]
+        public async Task GetDossiersRequiredReview_ReturnsDossiersRequireReview()
+        {
+            var dossier = TestData.GetSampleDossierInInitialStage();
+
+            dbContext.Dossiers.Add(dossier);
+            await dbContext.SaveChangesAsync();
+
+            var result = await dossierRepository.GetDossiersRequiredReview(dossier.Id);
+            Assert.IsNotNull(result);
+        }
     }
 }
 
