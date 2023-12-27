@@ -2,7 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-route
 
 // 1. import `ChakraProvider` component
 import { ChakraProvider } from "@chakra-ui/react";
-// import CourseBrowser from "./pages/CourseBrowser";
+import CourseBrowser from "./pages/CourseBrowser";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -26,6 +26,7 @@ import AddingMasterToGroup from "./pages/AddGroupMaster";
 import RemovingMasterFromGroup from "./pages/RemoveGroupMaster";
 import CreateGroup from "./pages/CreateGroup";
 import DeleteCourseEdit from "./pages/DeleteCourseEdit";
+import CourseDetails from "./pages/CourseDetails";
 import Header from "./shared/Header";
 import DossierReview from "./pages/dossier/DossierReview";
 
@@ -67,10 +68,10 @@ export function App() {
                         path={BaseRoutes.Home}
                         element={isLoggedIn == true ? <Home /> : <Navigate to={BaseRoutes.Login} />}
                     />
-                    {/* <Route
+                    <Route
                         path={BaseRoutes.CourseBrowser}
                         element={isLoggedIn == true ? <CourseBrowser /> : <Navigate to={BaseRoutes.Login} />}
-                    /> */}
+                    />
                     <Route
                         path={BaseRoutes.Login}
                         element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn} />}
@@ -143,6 +144,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.DeleteCourseEdit}
                         element={isLoggedIn == true ? <DeleteCourseEdit /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.CourseDetails}
+                        element={isLoggedIn == true ? <CourseDetails /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
                     {/* whenever none of the other routes match we show the not found page */}
