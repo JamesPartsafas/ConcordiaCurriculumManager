@@ -29,6 +29,6 @@ export function getDossierDetails(id: string): Promise<DossierDetailsResponse> {
     return axios.get(`/Dossier/${id}`);
 }
 
-export function getDossierRequiredReview(): Promise<GetMyDossiersResponse>{
-    return axios.get('/Dossier/GetDossiersRequiredReview');
+export function getDossierRequiredReview(): Promise<GetMyDossiersResponse> {
+    return axios.get("/Dossier/GetDossiersRequiredReview");
 }

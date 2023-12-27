@@ -184,6 +184,7 @@ export default function Dossiers() {
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         totalResults={totalResults}
+                        useIcons={true}
                     />
 
                     <Tooltip
@@ -227,6 +228,7 @@ export default function Dossiers() {
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         totalResults={totalResults}
+                        useIcons={false}
                     />
 
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -245,6 +247,7 @@ export default function Dossiers() {
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         totalResults={totalResults}
+                        useIcons={false}
                     />
 
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -263,6 +266,7 @@ export default function Dossiers() {
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         totalResults={totalResults}
+                        useIcons={false}
                     />
 
                     <span style={{ alignSelf: "flex-end", width: "fit-content", height: "fit-content" }}>
