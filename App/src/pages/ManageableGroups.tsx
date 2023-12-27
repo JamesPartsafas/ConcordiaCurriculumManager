@@ -49,12 +49,8 @@ export default function DisplayManageableGroups() {
     }, [user]);
 
     const onDeleteGroup = (groupId) => {
-        // Add logic to delete the group here
         console.log(`Deleting group with ID: ${groupId}`);
-        // You can call the API or perform any other actions here
-        // ...
-
-        // Clear the deleteGroupId after the action is performed
+        // Incomplete yet
         setDeleteGroupId(null);
     };
 
