@@ -264,6 +264,23 @@ export default function Dossiers() {
                         currentPage={currentPage}
                         totalResults={totalResults}
                     />
+
+                    <span style={{ alignSelf: "flex-end", width: "fit-content", height: "fit-content" }}>
+                        <Button
+                            style="primary"
+                            variant="solid"
+                            width="175px"
+                            height="40px"
+                            mt="2"
+                            alignSelf="flex-end"
+                            isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                            onClick={() => {
+                                navigate(BaseRoutes.DossiersToReview);
+                            }}
+                        >
+                            Dossiers To Review
+                        </Button>
+                    </span>
                 </Flex>
             </Box>
 
