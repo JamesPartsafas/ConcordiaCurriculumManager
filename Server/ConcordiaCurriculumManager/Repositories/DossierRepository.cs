@@ -216,6 +216,10 @@ public class DossierRepository : IDossierRepository
 
     public async Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId)
     {
-        return await _dbContext.Dossiers.Include(d => d.ApprovalStages.Where(a => a.IsCurrentStage)).ThenInclude(a => a.Group).Where(d => d.ApprovalStages.First().Group!.Members.Any(m => m.Id.Equals(userId))).ToListAsync();
+        return await _dbContext.Dossiers
+            .Include(d => d.ApprovalStages)
+            .ThenInclude(a => a.Group)
+            .Where(d => d.ApprovalStages.Where(a => a.IsCurrentStage).First().Group!.Members.Any(m => m.Id.Equals(userId)))
+            .ToListAsync();
     }
 }

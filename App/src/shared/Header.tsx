@@ -260,7 +260,7 @@ const NAV_ITEMS: Array<NavItem> = [
     },
     {
         label: "Review Proposal",
-        href: "#",
+        href: "/dossierstoreview",
     },
     {
         label: "Current Change Log",

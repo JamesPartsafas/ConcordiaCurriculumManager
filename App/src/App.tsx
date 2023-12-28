@@ -24,6 +24,7 @@ import DeleteCourse from "./pages/DeleteCourse";
 import DossierDetails from "./pages/dossier/DossierDetails";
 import AddingMasterToGroup from "./pages/AddGroupMaster";
 import RemovingMasterFromGroup from "./pages/RemoveGroupMaster";
+import DossiersToReview from "./pages/dossier/DossierToReview";
 import CreateGroup from "./pages/CreateGroup";
 import DeleteCourseEdit from "./pages/DeleteCourseEdit";
 import CourseDetails from "./pages/CourseDetails";
@@ -116,6 +117,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.Dossiers}
                         element={isLoggedIn == true ? <Dossiers /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.DossiersToReview}
+                        element={isLoggedIn == true ? <DossiersToReview /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
                         path={BaseRoutes.DossierReview}
