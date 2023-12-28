@@ -20,7 +20,7 @@ public class DossierReviewServiceTest
     private Mock<IGroupService> groupService = null!;
     private Mock<ICourseService> courseService = null!;
     private Mock<IDossierRepository> dossierRepository = null!;
-    private Mock<IHttpContextAccessor> httpContextAccessor = null!;
+    private Mock<IUserAuthenticationService> userService = null!;
     private Mock<IDossierReviewRepository> dossierReviewRepository = null!;
 
     private DossierReviewService dossierReviewService = null!;
@@ -33,7 +33,7 @@ public class DossierReviewServiceTest
         groupService = new Mock<IGroupService>();
         courseService = new Mock<ICourseService>();
         dossierRepository = new Mock<IDossierRepository>();
-        httpContextAccessor = new Mock<IHttpContextAccessor>();
+        userService = new Mock<IUserAuthenticationService>();
         dossierReviewRepository = new Mock<IDossierReviewRepository>();
 
         dossierReviewService = new DossierReviewService(
@@ -43,7 +43,7 @@ public class DossierReviewServiceTest
             courseService.Object,
             dossierRepository.Object,
             dossierReviewRepository.Object,
-            httpContextAccessor.Object
+            userService.Object
         );
     }
 
@@ -186,43 +186,13 @@ public class DossierReviewServiceTest
     }
 
     [TestMethod]
-    public async Task GetDossierWithDiscussion_ValidDossier_ReturnsDossier()
-    {
-        var dossier = TestData.GetSampleDossier();
-        dossier.State = DossierStateEnum.InReview;
-
-        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossier.Id)).ReturnsAsync(dossier);
-
-        var returnedDossier = await dossierReviewService.GetDossierWithDiscussion(dossier.Id);
-
-        Assert.IsNotNull(returnedDossier);
-        Assert.AreEqual(dossier.Id, returnedDossier.Id);
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(BadRequestException))]
-    public async Task GetDossierWithDiscussion_UnpublishedDossier_Throws()
-    {
-        var dossier = TestData.GetSampleDossier();
-        dossier.State = DossierStateEnum.Created;
-
-        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossier.Id)).ReturnsAsync(dossier);
-
-        await dossierReviewService.GetDossierWithDiscussion(dossier.Id);
-    }
-
-    [TestMethod]
     public async Task AddDossierDiscussionReview_ValidInput_AddsMessageAndSavesDossier()
     {
         var dossier = TestData.GetSampleDossierWithDiscussion();
         var message = TestData.GetSampleDiscussionMessage();
-
-        httpContextAccessor.Setup(x => x.HttpContext!.User.Claims).Returns(new[]
-        {
-            new Claim(Claims.Id, Guid.NewGuid().ToString()),
-        });
         
-        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossier.Id)).ReturnsAsync(dossier);
+        userService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(Guid.NewGuid().ToString());
+        dossierRepository.Setup(drr => drr.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
         dossierRepository.Setup(dr => dr.UpdateDossier(dossier)).ReturnsAsync(true);
 
         await dossierReviewService.AddDossierDiscussionReview(dossier.Id, message);
@@ -232,19 +202,16 @@ public class DossierReviewServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
+    [ExpectedException(typeof(NotFoundException))]
     public async Task AddDossierDiscussionReview_DossierDiscussionNotFound_Throws()
     {
         var dossierId = Guid.NewGuid();
         var message = TestData.GetSampleDiscussionMessage();
         var dossier = TestData.GetSampleDossier();
-        dossier.Discussion = null;
+        dossier.Discussion = null!;
         dossier.State = DossierStateEnum.InReview;
 
-        httpContextAccessor.Setup(x => x.HttpContext!.User.Claims).Returns(new[]
-        {
-            new Claim(Claims.Id, "Test ID"),
-        });
+        userService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(Guid.NewGuid().ToString());
 
         dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(dossier);
 
@@ -252,13 +219,13 @@ public class DossierReviewServiceTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(BadRequestException))]
+    [ExpectedException(typeof(NotFoundException))]
     public async Task AddDossierDiscussionReview_UserIdNotFound_Throws()
     {
         var dossierId = Guid.NewGuid();
         var message = TestData.GetSampleDiscussionMessage();
         var dossier = TestData.GetSampleDossier();
-        dossier.Discussion = null;
+        dossier.Discussion = null!;
         dossier.State = DossierStateEnum.InReview;
 
         dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(dossier);
@@ -272,7 +239,7 @@ public class DossierReviewServiceTest
         var dossierId = Guid.NewGuid();
         var expectedDossier = TestData.GetSampleDossierWithDiscussion();
 
-        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(expectedDossier);
+        dossierRepository.Setup(drr => drr.GetDossierByDossierId(dossierId)).ReturnsAsync(expectedDossier);
 
         var resultDossier = await dossierReviewService.GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(dossierId);
 

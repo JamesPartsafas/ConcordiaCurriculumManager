@@ -1,325 +1,299 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
-using ConcordiaCurriculumManager.Settings;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
-namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories
+namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories;
+
+[TestClass]
+public class DossierRepositoryTests
 {
-    [TestClass]
-    public class DossierRepositoryTests
+    private static CCMDbContext dbContext = null!;
+    private IDossierRepository dossierRepository = null!;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext _)
     {
-        private static CCMDbContext dbContext = null!;
-        private IDossierRepository dossierRepository = null!;
+        var options = new DbContextOptionsBuilder<CCMDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext _)
+        dbContext = new CCMDbContext(options);
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup() => dbContext.Dispose();
+
+    [TestInitialize]
+    public void TestInitialize()
+    {
+        dossierRepository = new DossierRepository(dbContext);
+    }
+
+    [TestMethod]
+    public async Task GetDossierById_ValidId_ReturnsListOfDossiers()
+    {
+        var user = new User
         {
-            var options = new DbContextOptionsBuilder<CCMDbContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .Options;
+            Id = Guid.NewGuid(),
+            FirstName = "fname",
+            LastName = "lname",
+            Email = "test@example.com",
+            Password = "password"
+        };
 
-            dbContext = new CCMDbContext(options);
-        }
-
-        [ClassCleanup]
-        public static void ClassCleanup() => dbContext.Dispose();
-
-        [TestInitialize]
-        public void TestInitialize()
+        var dossier = new Dossier
         {
-            dossierRepository = new DossierRepository(dbContext);
-        }
+            Id = Guid.NewGuid(),
+            Initiator = user,
+            InitiatorId = Guid.NewGuid(),
+            Title = "test title",
+            Description = "test description",
+            State = DossierStateEnum.Created,
+            Discussion = null!,
+        };
 
-        [TestMethod]
-        public async Task GetDossierById_ValidId_ReturnsListOfDossiers()
+        dbContext.Users.Add(user);
+        dbContext.Dossiers.Add(dossier);
+        await dbContext.SaveChangesAsync();
+
+        var result = await dossierRepository.GetDossiersByID(user.Id);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(result.Count(), 1);
+        Assert.AreEqual(user.Id, dossier.InitiatorId);
+    }
+
+    [TestMethod]
+    public async Task GetDossierByDossierId_ValidId_ReturnsDossier()
+    {
+        var dossier = TestData.GetSampleDossier();
+
+        dbContext.Dossiers.Add(dossier);
+        await dbContext.SaveChangesAsync();
+
+        var result = await dossierRepository.GetDossierByDossierId(dossier.Id);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(result.InitiatorId, dossier.InitiatorId);
+        Assert.AreEqual(result.Title, dossier.Title);
+    }
+
+    [TestMethod]
+    public async Task SaveDossier_ReturnsTrue() {
+        var dossier = TestData.GetSampleDossier();
+
+        var result = await dossierRepository.SaveDossier(dossier);
+
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public async Task SaveCourseCreationRequest_ReturnsTrue()
+    {
+        var courseCreationRequest = new CourseCreationRequest
         {
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                FirstName = "fname",
-                LastName = "lname",
-                Email = "test@example.com",
-                Password = "password"
-            };
+            NewCourseId = Guid.NewGuid(),
+            DossierId = Guid.NewGuid(),
+            Rationale = "It's important",
+            ResourceImplication = "Very expensive",
+            Comment = "Not complex"
+        };
 
-            var dossier = new Dossier
-            {
-                Initiator = user,
-                InitiatorId = Guid.NewGuid(),
-                Title = "test title",
-                Description = "test description",
-                State = DossierStateEnum.Created
-            };
+        var result = await dossierRepository.SaveCourseCreationRequest(courseCreationRequest);
 
-            dbContext.Users.Add(user);
-            dbContext.Dossiers.Add(dossier);
-            await dbContext.SaveChangesAsync();
+        Assert.IsTrue(result);
+    }
 
-            var result = await dossierRepository.GetDossiersByID(user.Id);
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Count(), 1);
-            Assert.AreEqual(user.Id, dossier.InitiatorId);
-        }
-
-        [TestMethod]
-        public async Task GetDossierByDossierId_ValidId_ReturnsDossier()
+    [TestMethod]
+    public async Task SaveCourseModificationRequest_ReturnsTrue()
+    {
+        var courseModificationRequest = new CourseModificationRequest
         {
-            var dossier = new Dossier
-            {
-                InitiatorId = Guid.NewGuid(),
-                Title = "test title",
-                Description = "test description",
-                State = DossierStateEnum.Created
-            };
+            CourseId = Guid.NewGuid(),
+            DossierId = Guid.NewGuid(),
+            Rationale = "It's important",
+            ResourceImplication = "Very expensive",
+            Comment = "Not complex"
+        };
 
-            dbContext.Dossiers.Add(dossier);
-            await dbContext.SaveChangesAsync();
+        var result = await dossierRepository.SaveCourseModificationRequest(courseModificationRequest);
 
-            var result = await dossierRepository.GetDossierByDossierId(dossier.Id);
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.InitiatorId, dossier.InitiatorId);
-            Assert.AreEqual(result.Title, dossier.Title);
-        }
+        Assert.IsTrue(result);
+    }
 
-        [TestMethod]
-        public async Task SaveDossier_ReturnsTrue() {
-            var dossier = new Dossier
-            {
-                InitiatorId = Guid.NewGuid(),
-                Title = "test title",
-                Description = "test description",
-                State = DossierStateEnum.Created
-            };
+    [TestMethod]
+    public async Task UpdateDossier_ReturnsTrue() {
+        var dossier = TestData.GetSampleDossier();
+        await dossierRepository.SaveDossier(dossier);
 
-            var result = await dossierRepository.SaveDossier(dossier);
+        var newTitle = "test title modified";
+        var newDescription = "test description modified";
 
-            Assert.IsTrue(result);
-        }
+        dossier.Title = newTitle;
+        dossier.Description = newDescription;
+        var result = await dossierRepository.UpdateDossier(dossier);
 
-        [TestMethod]
-        public async Task SaveCourseCreationRequest_ReturnsTrue()
-        {
-            var courseCreationRequest = new CourseCreationRequest
-            {
-                NewCourseId = Guid.NewGuid(),
-                DossierId = Guid.NewGuid(),
-                Rationale = "It's important",
-                ResourceImplication = "Very expensive",
-                Comment = "Not complex"
-            };
+        Assert.AreEqual(dossier.Title, newTitle);
+        Assert.AreEqual(dossier.Description, newDescription);
+        Assert.IsTrue(result);
+    }
 
-            var result = await dossierRepository.SaveCourseCreationRequest(courseCreationRequest);
+    [TestMethod]
+    public async Task DeleteDossier_ReturnsTrue()
+    {
+        var dossier = TestData.GetSampleDossier();
 
-            Assert.IsTrue(result);
-        }
+        dbContext.Dossiers.Add(dossier);
+        await dbContext.SaveChangesAsync();
 
-        [TestMethod]
-        public async Task SaveCourseModificationRequest_ReturnsTrue()
-        {
-            var courseModificationRequest = new CourseModificationRequest
-            {
-                CourseId = Guid.NewGuid(),
-                DossierId = Guid.NewGuid(),
-                Rationale = "It's important",
-                ResourceImplication = "Very expensive",
-                Comment = "Not complex"
-            };
+        var result = await dossierRepository.DeleteDossier(dossier);
 
-            var result = await dossierRepository.SaveCourseModificationRequest(courseModificationRequest);
+        Assert.IsTrue(result);
+    }
 
-            Assert.IsTrue(result);
-        }
+    [TestMethod]
+    public async Task GetCourseCreationRequest_ReturnsCourseCreationRequest()
+    {
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
 
-        [TestMethod]
-        public async Task UpdateDossier_ReturnsTrue() {
-            var dossier = new Dossier
-            {
-                InitiatorId = Guid.NewGuid(),
-                Title = "test title",
-                Description = "test description",
-                State = DossierStateEnum.Created
-            };
+        dbContext.CourseCreationRequests.Add(courseCreationRequest);
+        await dbContext.SaveChangesAsync();
 
-            var newTitle = "test title modified";
-            var newDescription = "test description modified";
+        var result = await dossierRepository.GetCourseCreationRequest(courseCreationRequest.Id);
+        Assert.IsNotNull(result);
+    }
 
-            dossier.Title = newTitle;
-            dossier.Description = newDescription;
-            var result = await dossierRepository.UpdateDossier(dossier);
+    [TestMethod]
+    public async Task UpdateCourseCreationRequest_ReturnsTrue()
+    {
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
 
-            Assert.AreEqual(dossier.Title, newTitle);
-            Assert.AreEqual(dossier.Description, newDescription);
-            Assert.IsTrue(result);
-        }
+        dbContext.CourseCreationRequests.Add(courseCreationRequest);
+        await dbContext.SaveChangesAsync();
 
-        [TestMethod]
-        public async Task DeleteDossier_ReturnsTrue()
-        {
-            var dossier = new Dossier
-            {   
-                Id = Guid.NewGuid(),
-                InitiatorId = Guid.NewGuid(),
-                Title = "test title",
-                Description = "test description",
-                State = DossierStateEnum.Created
-            };
+        var newRationale = "It's necessary modified";
+        var newResourceImplication = "New prof needed modified";
 
-            dbContext.Dossiers.Add(dossier);
-            await dbContext.SaveChangesAsync();
+        courseCreationRequest.Rationale = newRationale;
+        courseCreationRequest.ResourceImplication = newResourceImplication;
 
-            var result = await dossierRepository.DeleteDossier(dossier);
+        var result = await dossierRepository.UpdateCourseCreationRequest(courseCreationRequest);
 
-            Assert.IsTrue(result);
-        }
+        Assert.AreEqual(courseCreationRequest.Rationale, newRationale);
+        Assert.AreEqual(courseCreationRequest.ResourceImplication, newResourceImplication);
+        Assert.IsTrue(result);
+    }
 
-        [TestMethod]
-        public async Task GetCourseCreationRequest_ReturnsCourseCreationRequest()
-        {
-            var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
+    [TestMethod]
+    public async Task GetCourseModificationRequest_ReturnsCourseModificationRequest()
+    {
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
 
-            dbContext.CourseCreationRequests.Add(courseCreationRequest);
-            await dbContext.SaveChangesAsync();
+        dbContext.CourseModificationRequests.Add(courseModificationRequest);
+        await dbContext.SaveChangesAsync();
 
-            var result = await dossierRepository.GetCourseCreationRequest(courseCreationRequest.Id);
-            Assert.IsNotNull(result);
-        }
+        var result = await dossierRepository.GetCourseModificationRequest(courseModificationRequest.Id);
+        Assert.IsNotNull(result);
+    }
 
-        [TestMethod]
-        public async Task UpdateCourseCreationRequest_ReturnsTrue()
-        {
-            var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
+    [TestMethod]
+    public async Task UpdateCourseModificationRequest_ReturnsTrue()
+    {
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
 
-            dbContext.CourseCreationRequests.Add(courseCreationRequest);
-            await dbContext.SaveChangesAsync();
+        dbContext.CourseModificationRequests.Add(courseModificationRequest);
+        await dbContext.SaveChangesAsync();
 
-            var newRationale = "It's necessary modified";
-            var newResourceImplication = "New prof needed modified";
+        var newRationale = "It's necessary modified";
+        var newResourceImplication = "New prof needed modified";
 
-            courseCreationRequest.Rationale = newRationale;
-            courseCreationRequest.ResourceImplication = newResourceImplication;
+        courseModificationRequest.Rationale = newRationale;
+        courseModificationRequest.ResourceImplication = newResourceImplication;
 
-            var result = await dossierRepository.UpdateCourseCreationRequest(courseCreationRequest);
+        var result = await dossierRepository.UpdateCourseModificationRequest(courseModificationRequest);
 
-            Assert.AreEqual(courseCreationRequest.Rationale, newRationale);
-            Assert.AreEqual(courseCreationRequest.ResourceImplication, newResourceImplication);
-            Assert.IsTrue(result);
-        }
+        Assert.AreEqual(courseModificationRequest.Rationale, newRationale);
+        Assert.AreEqual(courseModificationRequest.ResourceImplication, newResourceImplication);
+        Assert.IsTrue(result);
+    }
 
-        [TestMethod]
-        public async Task GetCourseModificationRequest_ReturnsCourseModificationRequest()
-        {
-            var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
+    [TestMethod]
+    public async Task GetCourseDeletionRequest_ReturnsCourseDeletionRequest()
+    {
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
 
-            dbContext.CourseModificationRequests.Add(courseModificationRequest);
-            await dbContext.SaveChangesAsync();
+        dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
+        await dbContext.SaveChangesAsync();
 
-            var result = await dossierRepository.GetCourseModificationRequest(courseModificationRequest.Id);
-            Assert.IsNotNull(result);
-        }
+        var result = await dossierRepository.GetCourseDeletionRequest(courseDeletionRequest.Id);
+        Assert.IsNotNull(result);
+    }
 
-        [TestMethod]
-        public async Task UpdateCourseModificationRequest_ReturnsTrue()
-        {
-            var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
+    [TestMethod]
+    public async Task UpdateCourseDeletionRequest_ReturnsTrue()
+    {
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
 
-            dbContext.CourseModificationRequests.Add(courseModificationRequest);
-            await dbContext.SaveChangesAsync();
+        dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
+        await dbContext.SaveChangesAsync();
 
-            var newRationale = "It's necessary modified";
-            var newResourceImplication = "New prof needed modified";
+        var newRationale = "It's necessary modified";
+        var newResourceImplication = "New prof needed modified";
 
-            courseModificationRequest.Rationale = newRationale;
-            courseModificationRequest.ResourceImplication = newResourceImplication;
+        courseDeletionRequest.Rationale = newRationale;
+        courseDeletionRequest.ResourceImplication = newResourceImplication;
 
-            var result = await dossierRepository.UpdateCourseModificationRequest(courseModificationRequest);
+        var result = await dossierRepository.UpdateCourseDeletionRequest(courseDeletionRequest);
 
-            Assert.AreEqual(courseModificationRequest.Rationale, newRationale);
-            Assert.AreEqual(courseModificationRequest.ResourceImplication, newResourceImplication);
-            Assert.IsTrue(result);
-        }
+        Assert.AreEqual(courseDeletionRequest.Rationale, newRationale);
+        Assert.AreEqual(courseDeletionRequest.ResourceImplication, newResourceImplication);
+        Assert.IsTrue(result);
+    }
 
-        [TestMethod]
-        public async Task GetCourseDeletionRequest_ReturnsCourseDeletionRequest()
-        {
-            var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+    [TestMethod]
+    public async Task DeleteCourseCreationRequest_ReturnsTrue()
+    {
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
+        var course = TestData.GetSampleCourse();
 
-            dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
-            await dbContext.SaveChangesAsync();
+        dbContext.CourseCreationRequests.Add(courseCreationRequest);
+        dbContext.Courses.Add(course);
+        await dbContext.SaveChangesAsync();
 
-            var result = await dossierRepository.GetCourseDeletionRequest(courseDeletionRequest.Id);
-            Assert.IsNotNull(result);
-        }
+        var result = await dossierRepository.DeleteCourseCreationRequest(courseCreationRequest);
 
-        [TestMethod]
-        public async Task UpdateCourseDeletionRequest_ReturnsTrue()
-        {
-            var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+        Assert.IsTrue(result);
+    }
 
-            dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
-            await dbContext.SaveChangesAsync();
+    [TestMethod]
+    public async Task DeleteCourseModificationRequest_ReturnsTrue()
+    {
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
+        var course = TestData.GetSampleCourse();
 
-            var newRationale = "It's necessary modified";
-            var newResourceImplication = "New prof needed modified";
+        dbContext.CourseModificationRequests.Add(courseModificationRequest);
+        dbContext.Courses.Add(course);
+        await dbContext.SaveChangesAsync();
 
-            courseDeletionRequest.Rationale = newRationale;
-            courseDeletionRequest.ResourceImplication = newResourceImplication;
+        var result = await dossierRepository.DeleteCourseModificationRequest(courseModificationRequest);
 
-            var result = await dossierRepository.UpdateCourseDeletionRequest(courseDeletionRequest);
+        Assert.IsTrue(result);
+    }
 
-            Assert.AreEqual(courseDeletionRequest.Rationale, newRationale);
-            Assert.AreEqual(courseDeletionRequest.ResourceImplication, newResourceImplication);
-            Assert.IsTrue(result);
-        }
+    [TestMethod]
+    public async Task DeleteCourseDeletionRequest_ReturnsTrue()
+    {
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+        var course = TestData.GetSampleCourse();
 
-        [TestMethod]
-        public async Task DeleteCourseCreationRequest_ReturnsTrue()
-        {
-            var courseCreationRequest = TestData.GetSampleCourseCreationRequest();
-            var course = TestData.GetSampleCourse();
+        dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
+        dbContext.Courses.Add(course);
+        await dbContext.SaveChangesAsync();
 
-            dbContext.CourseCreationRequests.Add(courseCreationRequest);
-            dbContext.Courses.Add(course);
-            await dbContext.SaveChangesAsync();
+        var result = await dossierRepository.DeleteCourseDeletionRequest(courseDeletionRequest);
 
-            var result = await dossierRepository.DeleteCourseCreationRequest(courseCreationRequest);
-
-            Assert.IsTrue(result);
-        }
-
-        [TestMethod]
-        public async Task DeleteCourseModificationRequest_ReturnsTrue()
-        {
-            var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
-            var course = TestData.GetSampleCourse();
-
-            dbContext.CourseModificationRequests.Add(courseModificationRequest);
-            dbContext.Courses.Add(course);
-            await dbContext.SaveChangesAsync();
-
-            var result = await dossierRepository.DeleteCourseModificationRequest(courseModificationRequest);
-
-            Assert.IsTrue(result);
-        }
-
-        [TestMethod]
-        public async Task DeleteCourseDeletionRequest_ReturnsTrue()
-        {
-            var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
-            var course = TestData.GetSampleCourse();
-
-            dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
-            dbContext.Courses.Add(course);
-            await dbContext.SaveChangesAsync();
-
-            var result = await dossierRepository.DeleteCourseDeletionRequest(courseDeletionRequest);
-
-            Assert.IsTrue(result);
-        }
+        Assert.IsTrue(result);
     }
 }
 

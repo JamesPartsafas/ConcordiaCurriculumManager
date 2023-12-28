@@ -82,26 +82,5 @@ public class DossierReviewControllerTest
         Assert.IsInstanceOfType(actionResult, typeof(NoContentResult));
     }
 
-    [TestMethod]
-    public async Task GetAllDossierReviews_ValidCall_ReturnsOkWithDossierDetails()
-    {
-        var dossierId = Guid.NewGuid();
-        var dossier = TestData.GetSampleDossier();
-        var dossierDetailsDTO = TestData.GetSampleDossierDetailsWithDiscussionDTO();
-
-        dossierReviewService.Setup(drs => drs.GetDossierWithDiscussion(dossierId)).ReturnsAsync(dossier);
-        mapper.Setup(m => m.Map<DossierDetailsWithDiscussionDTO>(dossier)).Returns(dossierDetailsDTO);
-
-        var actionResult = await dossierReviewController.GetAllDossierReviews(dossierId);
-
-        dossierReviewService.Verify(mock => mock.GetDossierWithDiscussion(dossierId), Times.Once());
-        mapper.Verify(mock => mock.Map<DossierDetailsWithDiscussionDTO>(dossier), Times.Once());
-
-        var okObjectResult = actionResult as OkObjectResult;
-        Assert.IsNotNull(okObjectResult);
-        Assert.AreEqual(StatusCodes.Status200OK, okObjectResult.StatusCode);
-        Assert.IsNotNull(okObjectResult.Value);
-        Assert.IsInstanceOfType(okObjectResult.Value, typeof(DossierDetailsWithDiscussionDTO));
-    }
 
 }
