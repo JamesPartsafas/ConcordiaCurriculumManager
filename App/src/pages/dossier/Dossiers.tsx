@@ -165,6 +165,19 @@ export default function Dossiers() {
                 >
                     Back
                 </Button>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    width="175px"
+                    height="40px"
+                    alignSelf="flex-end"
+                    isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                    onClick={() => {
+                        navigate(BaseRoutes.DossiersToReview);
+                    }}
+                >
+                    Dossiers To Review
+                </Button>
             </Container>
             <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                 {user?.firstName + "'s"} Dossiers
@@ -184,6 +197,7 @@ export default function Dossiers() {
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         totalResults={totalResults}
+                        useIcons={true}
                     />
 
                     <Tooltip
@@ -227,6 +241,7 @@ export default function Dossiers() {
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         totalResults={totalResults}
+                        useIcons={false}
                     />
 
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -245,6 +260,7 @@ export default function Dossiers() {
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         totalResults={totalResults}
+                        useIcons={false}
                     />
 
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -263,6 +279,7 @@ export default function Dossiers() {
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         totalResults={totalResults}
+                        useIcons={false}
                     />
                 </Flex>
             </Box>

@@ -29,6 +29,7 @@ DossierTable.propTypes = {
     setCurrentPage: PropTypes.func,
     currentPage: PropTypes.number,
     totalResults: PropTypes.number,
+    useIcons: PropTypes.bool,
 };
 function DossierTable({
     myDossiers,
@@ -42,6 +43,7 @@ function DossierTable({
     setCurrentPage,
     currentPage,
     totalResults,
+    useIcons,
 }) {
     return (
         <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
@@ -75,39 +77,41 @@ function DossierTable({
                                 {dossierStateToString(dossier)}
                             </Td>
 
-                            <Td width={"25%"}>
-                                <IconButton
-                                    aria-label="Delete"
-                                    icon={<DeleteIcon />}
-                                    backgroundColor={"#932439"}
-                                    color={"white"}
-                                    onClick={() => {
-                                        setSelectedDossier(dossier);
-                                        onOpen();
-                                    }}
-                                />
-                                <IconButton
-                                    ml={2}
-                                    aria-label="Edit"
-                                    icon={<EditIcon />}
-                                    backgroundColor={"#0072a8"}
-                                    color={"white"}
-                                    onClick={() => {
-                                        setSelectedDossier(dossier);
-                                        setDossierModalTitle("edit");
-                                        displayDossierModal();
-                                    }}
-                                />
-                                <IconButton
-                                    ml={2}
-                                    aria-label="Edit"
-                                    icon={<InfoIcon />}
-                                    onClick={() => {
-                                        setSelectedDossier(dossier);
-                                        handleNavigateToDossierDetails(dossier.id);
-                                    }}
-                                />
-                            </Td>
+                            {useIcons && (
+                                <Td width={"25%"}>
+                                    <IconButton
+                                        aria-label="Delete"
+                                        icon={<DeleteIcon />}
+                                        backgroundColor={"#932439"}
+                                        color={"white"}
+                                        onClick={() => {
+                                            setSelectedDossier(dossier);
+                                            onOpen();
+                                        }}
+                                    />
+                                    <IconButton
+                                        ml={2}
+                                        aria-label="Edit"
+                                        icon={<EditIcon />}
+                                        backgroundColor={"#0072a8"}
+                                        color={"white"}
+                                        onClick={() => {
+                                            setSelectedDossier(dossier);
+                                            setDossierModalTitle("edit");
+                                            displayDossierModal();
+                                        }}
+                                    />
+                                    <IconButton
+                                        ml={2}
+                                        aria-label="Edit"
+                                        icon={<InfoIcon />}
+                                        onClick={() => {
+                                            setSelectedDossier(dossier);
+                                            handleNavigateToDossierDetails(dossier.id);
+                                        }}
+                                    />
+                                </Td>
+                            )}
                         </Tr>
                     ))}
                 </Tbody>

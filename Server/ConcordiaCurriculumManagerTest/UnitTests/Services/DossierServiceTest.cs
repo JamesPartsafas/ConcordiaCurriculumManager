@@ -16,6 +16,7 @@ public class DossierServiceTest
 {
     private Mock<IDossierRepository> dossierRepository = null!;
     private Mock<ILogger<DossierService>> logger = null!;
+    private Mock<ICourseRepository> courseRepository = null!;
     private DossierService dossierService = null!;
 
     [TestInitialize]
@@ -23,8 +24,9 @@ public class DossierServiceTest
     {
         logger = new Mock<ILogger<DossierService>>();
         dossierRepository = new Mock<IDossierRepository>();
+        courseRepository = new Mock<ICourseRepository>();
 
-        dossierService = new DossierService(logger.Object, dossierRepository.Object);
+        dossierService = new DossierService(logger.Object, dossierRepository.Object, courseRepository.Object);
     }
 
     [TestMethod]
@@ -332,6 +334,38 @@ public class DossierServiceTest
         await dossierService.GetCourseDeletionRequest(TestData.GetSampleCourseDeletionRequest().Id);
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    public async Task GetDossierReportByDossierId_ValidInput_ReturnsDossierReport()
+    {
+        var dossier = TestData.GetSampleDossier();
+        dossierRepository.Setup(d => d.GetDossierReportByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
+
+        var dossierReport = await dossierService.GetDossierReportByDossierId(dossier.Id);
+
+        Assert.IsNotNull(dossierReport);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task GetDossierReportByDossierId_InvalidInput_Throws()
+    {
+        dossierRepository.Setup(d => d.GetDossierReportByDossierId(It.IsAny<Guid>())).ReturnsAsync((Dossier)null!);
+
+        await dossierService.GetDossierReportByDossierId(TestData.GetSampleDossier().Id);
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    public async Task GetDossiersRequiredReview_ValidInput_ReturnsDossiersRequireReview()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+        var dossiers = new List<Dossier> { dossier };
+        dossierRepository.Setup(d => d.GetDossiersRequiredReview(It.IsAny<Guid>())).ReturnsAsync(dossiers);
+
+        await dossierService.GetDossiersRequiredReview(dossier.InitiatorId);
     }
 }
 

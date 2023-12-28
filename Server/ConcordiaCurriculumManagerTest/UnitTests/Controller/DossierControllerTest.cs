@@ -132,6 +132,28 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
 
             Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
         }
+
+        [TestMethod]
+        public async Task GetDossierReportByDossierId_ValidCall_ReturnsDossierReport()
+        {
+            var dossierReport = TestData.GetSampleDossierReport();
+            dossierService.Setup(d => d.GetDossierReportByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossierReport);
+
+            var actionResult = await dossierController.GetDossierReportByDossierId(It.IsAny<Guid>());
+            var objectResult = (ObjectResult)actionResult;
+
+            Assert.AreEqual((int)HttpStatusCode.Created, objectResult.StatusCode);
+            mapper.Verify(mock => mock.Map<DossierReportDTO>(dossierReport), Times.Once());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public async Task GetDossierReportByDossierId_InvalidCall_Returns404()
+        {
+            dossierService.Setup(d => d.GetDossierReportByDossierId(It.IsAny<Guid>())).Throws(new NotFoundException());
+
+            await dossierController.GetDossierReportByDossierId(Guid.NewGuid());
+        }
     }
 }
 

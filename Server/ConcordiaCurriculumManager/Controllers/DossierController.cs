@@ -88,4 +88,27 @@ public class DossierController : Controller
         await _dossierService.DeleteDossier(dossierId);
         return NoContent();
     }
+
+    [HttpGet(nameof(GetDossierReportByDossierId) + "/{dossierId}")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Dossier report created")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Dossier is not found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetDossierReportByDossierId([FromRoute, Required] Guid dossierId)
+    {
+        var dossierReport = await _dossierService.GetDossierReportByDossierId(dossierId);
+        var dossierReportDTO = _mapper.Map<DossierReportDTO>(dossierReport);
+        return Created($"/{nameof(GetDossierReportByDossierId)}", dossierReportDTO);
+    }
+
+    [HttpGet(nameof(GetDossiersRequiredReview))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Dossiers retrieved")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Dossiers are not found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetDossiersRequiredReview()
+    {
+        Guid userId = Guid.Parse(_userService.GetCurrentUserClaim(Claims.Id));
+        var dossiers = await _dossierService.GetDossiersRequiredReview(userId);
+        var dossiersDTOs = _mapper.Map<List<DossierDTO>>(dossiers);
+        return Ok(dossiersDTOs);
+    }
 }

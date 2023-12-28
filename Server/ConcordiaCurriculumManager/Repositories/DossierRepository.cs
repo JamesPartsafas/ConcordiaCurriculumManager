@@ -28,6 +28,8 @@ public interface IDossierRepository
     public Task<bool> DeleteCourseModificationRequest(CourseModificationRequest courseModificationRequest);
     public Task<bool> DeleteCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
     public Task<IList<User>> GetCurrentlyReviewingGroupMasters(Guid dossierId);
+    public Task<Dossier?> GetDossierReportByDossierId(Guid dossierId);
+    public Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId);
 }
 
 public class DossierRepository : IDossierRepository
@@ -184,5 +186,42 @@ public class DossierRepository : IDossierRepository
             return new List<User>();
 
         return stage.Group.GroupMasters;
+    }
+
+    public async Task<Dossier?> GetDossierReportByDossierId(Guid dossierId)
+    {
+        return await _dbContext.Dossiers
+        .Where(d => d.Id == dossierId)
+        .Include(d => d.Initiator)
+        .Include(d => d.CourseCreationRequests)
+            .ThenInclude(ccr => ccr.NewCourse)
+                .ThenInclude(nc => nc!.SupportingFiles)
+            .Include(d => d.CourseCreationRequests)
+                .ThenInclude(ccr => ccr.NewCourse)
+                    .ThenInclude(nc => nc!.CourseCourseComponents)
+        .Include(d => d.CourseModificationRequests)
+            .ThenInclude(cmr => cmr.Course)
+                .ThenInclude(cr => cr!.SupportingFiles)
+            .Include(d => d.CourseModificationRequests)
+                .ThenInclude(cmr => cmr.Course)
+                    .ThenInclude(cr => cr!.CourseCourseComponents)
+        .Include(d => d.CourseDeletionRequests)
+            .ThenInclude(cmr => cmr.Course)
+                .ThenInclude(cr => cr!.SupportingFiles)
+            .Include(d => d.CourseModificationRequests)
+                .ThenInclude(cmr => cmr.Course)
+                    .ThenInclude(cr => cr!.CourseCourseComponents)
+        .Include(d => d.ApprovalStages)
+            .ThenInclude(a => a.Group)
+        .FirstOrDefaultAsync();
+    }
+
+    public async Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId)
+    {
+        return await _dbContext.Dossiers
+            .Include(d => d.ApprovalStages)
+            .ThenInclude(a => a.Group)
+            .Where(d => d.ApprovalStages.Where(a => a.IsCurrentStage).First().Group!.Members.Any(m => m.Id.Equals(userId)))
+            .ToListAsync();
     }
 }

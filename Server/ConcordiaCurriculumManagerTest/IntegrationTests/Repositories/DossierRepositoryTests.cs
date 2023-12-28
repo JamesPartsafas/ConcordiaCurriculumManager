@@ -80,7 +80,8 @@ public class DossierRepositoryTests
     }
 
     [TestMethod]
-    public async Task SaveDossier_ReturnsTrue() {
+    public async Task SaveDossier_ReturnsTrue()
+    {
         var dossier = TestData.GetSampleDossier();
 
         var result = await dossierRepository.SaveDossier(dossier);
@@ -123,7 +124,8 @@ public class DossierRepositoryTests
     }
 
     [TestMethod]
-    public async Task UpdateDossier_ReturnsTrue() {
+    public async Task UpdateDossier_ReturnsTrue()
+    {
         var dossier = TestData.GetSampleDossier();
         await dossierRepository.SaveDossier(dossier);
 
@@ -291,9 +293,52 @@ public class DossierRepositoryTests
         dbContext.Courses.Add(course);
         await dbContext.SaveChangesAsync();
 
+        var result = await dossierRepository.DeleteCourseCreationRequest(courseCreationRequest);
+
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public async Task DeleteCourseModificationRequest_ReturnsTrue()
+    {
+        var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
+        var course = TestData.GetSampleCourse();
+
+        dbContext.CourseModificationRequests.Add(courseModificationRequest);
+        dbContext.Courses.Add(course);
+        await dbContext.SaveChangesAsync();
+
+        var result = await dossierRepository.DeleteCourseModificationRequest(courseModificationRequest);
+
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public async Task DeleteCourseDeletionRequest_ReturnsTrue()
+    {
+        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
+        var course = TestData.GetSampleCourse();
+
+        dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
+        dbContext.Courses.Add(course);
+        await dbContext.SaveChangesAsync();
+
         var result = await dossierRepository.DeleteCourseDeletionRequest(courseDeletionRequest);
 
         Assert.IsTrue(result);
     }
+
+    [TestMethod]
+    public async Task GetDossiersRequiredReview_ReturnsDossiersRequireReview()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+
+        dbContext.Dossiers.Add(dossier);
+        await dbContext.SaveChangesAsync();
+
+        var result = await dossierRepository.GetDossiersRequiredReview(dossier.Id);
+        Assert.IsNotNull(result);
+    }
+}
 }
 

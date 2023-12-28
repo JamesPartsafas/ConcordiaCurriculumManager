@@ -22,14 +22,18 @@ import {
 import {
     AllCourseSettings,
     CourseCreationRequest,
+    CourseCreationRequestDTOResponse,
     CourseDeletionRequest,
     CourseModificationRequest,
+    CourseModificationRequestDTOResponse,
 } from "../../models/course";
 import {
     deleteCourseCreationRequest,
     deleteCourseDeletionRequest,
     deleteCourseModificationRequest,
     getAllCourseSettings,
+    getCourseCreationRequest,
+    getCourseModificationRequest,
 } from "../../services/course";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
@@ -61,6 +65,7 @@ export default function DossierDetails() {
     function requestDossierDetails(dossierId: string) {
         getDossierDetails(dossierId).then((res: DossierDetailsResponse) => {
             setDossierDetails(res.data);
+            console.log(res.data);
         });
     }
 
@@ -68,7 +73,6 @@ export default function DossierDetails() {
         getAllCourseSettings().then((res) => {
             setCourseSettings(res.data);
         });
-        console.log(courseSettings);
     }
 
     function deleteRequestAlert() {
@@ -219,6 +223,40 @@ export default function DossierDetails() {
         );
     }
 
+    function editCourseCreationRequest(creationRequest: CourseCreationRequest) {
+        getCourseCreationRequest(creationRequest.id).then((res: CourseCreationRequestDTOResponse) => {
+            const creationRequestToEdit = {
+                ...res.data.newCourse,
+                id: res.data.id,
+            };
+
+            navigate(
+                BaseRoutes.EditCourse.replace(":id", creationRequest.newCourse.catalog.toString()).replace(
+                    ":dossierId",
+                    dossierId
+                ),
+                { state: { ...creationRequestToEdit, api: "editCreationRequest" } }
+            );
+        });
+    }
+
+    function editCourseModificationRequest(modificationRequest: CourseModificationRequest) {
+        getCourseModificationRequest(modificationRequest.id).then((res: CourseModificationRequestDTOResponse) => {
+            const modificationRequestToEdit = {
+                ...res.data.course,
+                id: res.data.id,
+            };
+
+            navigate(
+                BaseRoutes.EditCourse.replace(":id", modificationRequest.course.catalog.toString()).replace(
+                    ":dossierId",
+                    dossierId
+                ),
+                { state: { ...modificationRequestToEdit, api: "editModificationRequest" } }
+            );
+        });
+    }
+
     return (
         <>
             {deleteRequestAlert()}
@@ -301,7 +339,13 @@ export default function DossierDetails() {
                             <Divider />
                             <CardFooter>
                                 <ButtonGroup spacing="2">
-                                    <Button variant="solid" style="primary">
+                                    <Button
+                                        variant="solid"
+                                        style="primary"
+                                        onClick={() => {
+                                            editCourseCreationRequest(courseCreationRequest);
+                                        }}
+                                    >
                                         Edit
                                     </Button>
                                     <Button
@@ -391,8 +435,14 @@ export default function DossierDetails() {
                             <Divider />
                             <CardFooter>
                                 <ButtonGroup spacing="2">
-                                    <Button variant="solid" style="secondary">
-                                        View
+                                    <Button
+                                        variant="solid"
+                                        style="secondary"
+                                        onClick={() => {
+                                            editCourseModificationRequest(courseModificationRequest);
+                                        }}
+                                    >
+                                        Edit
                                     </Button>
                                     <Button
                                         variant="outline"
