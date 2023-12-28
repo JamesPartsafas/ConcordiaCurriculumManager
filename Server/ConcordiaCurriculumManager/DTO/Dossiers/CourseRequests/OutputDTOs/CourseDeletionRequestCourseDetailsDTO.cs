@@ -6,3 +6,4 @@ public class CourseDeletionRequestCourseDetailsDTO : CourseDeletionRequestDTO
 {
     public required CourseDataDTO Course { get; set; }
 }
+

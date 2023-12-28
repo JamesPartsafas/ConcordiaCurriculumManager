@@ -39,7 +39,7 @@ public class AutoMapper : Profile
         CreateMap<DossierDiscussion, DossierDiscussionDTO>().ReverseMap();
         CreateMap<CreateDossierDiscussionMessageDTO, DiscussionMessage>();
         CreateMap<DiscussionMessage, DossierDiscussionMessageDTO>();
-        CreateMap<CourseDeletionRequest, CourseDeletionRequestDetailsDTO>().ReverseMap();
+        CreateMap<CourseDeletionRequest, CourseDeletionRequestCourseDetailsDTO>().ReverseMap();
         CreateMap<DossierReport, DossierReportDTO>()
             .ForMember(dest => dest.InitiatorId, opt => opt.MapFrom(d => d.Dossier.InitiatorId))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(d => d.Dossier.Title))

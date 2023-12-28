@@ -293,36 +293,6 @@ public class DossierRepositoryTests
         dbContext.Courses.Add(course);
         await dbContext.SaveChangesAsync();
 
-        var result = await dossierRepository.DeleteCourseCreationRequest(courseCreationRequest);
-
-        Assert.IsTrue(result);
-    }
-
-    [TestMethod]
-    public async Task DeleteCourseModificationRequest_ReturnsTrue()
-    {
-        var courseModificationRequest = TestData.GetSampleCourseModificationRequest();
-        var course = TestData.GetSampleCourse();
-
-        dbContext.CourseModificationRequests.Add(courseModificationRequest);
-        dbContext.Courses.Add(course);
-        await dbContext.SaveChangesAsync();
-
-        var result = await dossierRepository.DeleteCourseModificationRequest(courseModificationRequest);
-
-        Assert.IsTrue(result);
-    }
-
-    [TestMethod]
-    public async Task DeleteCourseDeletionRequest_ReturnsTrue()
-    {
-        var courseDeletionRequest = TestData.GetSampleCourseDeletionRequest();
-        var course = TestData.GetSampleCourse();
-
-        dbContext.CourseDeletionRequests.Add(courseDeletionRequest);
-        dbContext.Courses.Add(course);
-        await dbContext.SaveChangesAsync();
-
         var result = await dossierRepository.DeleteCourseDeletionRequest(courseDeletionRequest);
 
         Assert.IsTrue(result);
@@ -340,5 +310,3 @@ public class DossierRepositoryTests
         Assert.IsNotNull(result);
     }
 }
-}
-
