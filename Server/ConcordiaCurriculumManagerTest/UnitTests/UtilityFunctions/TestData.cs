@@ -297,12 +297,18 @@ public static class TestData
     // DOSSIER DATA
     public static Dossier GetSampleDossier()
     {
+        var dossierId = Guid.NewGuid();
         return new Dossier
         {
+            Id = dossierId,
             InitiatorId = Guid.NewGuid(),
             State = DossierStateEnum.Created,
             Title = "test title",
-            Description = "test description"
+            Description = "test description",
+            Discussion = new()
+            {
+                DossierId = dossierId
+            }
         };
     }
 
@@ -320,6 +326,10 @@ public static class TestData
             {
                 new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 0, IsCurrentStage = true, IsFinalStage = false },
                 new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 1, IsCurrentStage = false, IsFinalStage = true },
+            },
+            Discussion = new()
+            {
+                DossierId = dossierId
             }
         };
     }
@@ -338,19 +348,29 @@ public static class TestData
             {
                 new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 0, IsCurrentStage = false, IsFinalStage = false },
                 new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 1, IsCurrentStage = true, IsFinalStage = true },
+            },
+            Discussion = new()
+            {
+                DossierId = dossierId
             }
         };
     }
 
     public static Dossier GetSampleDossier(User user)
     {
+        var dossierId = Guid.NewGuid();
         return new Dossier
         {
+            Id = dossierId,
             Initiator = user,
             InitiatorId = user.Id,
             Title = "Dossier 1",
             Description = "Text description of a dossier.",
             State = DossierStateEnum.Created,
+            Discussion = new()
+            {
+                DossierId = dossierId
+            }
         };
     }
 
@@ -433,6 +453,81 @@ public static class TestData
             IsCurrentStage = true,
             IsFinalStage = false
         };
+    }
+
+    public static DiscussionMessage GetSampleDiscussionMessage()
+    {
+        return new DiscussionMessage
+        {
+            DossierDiscussionId = Guid.NewGuid(),
+            GroupId = Guid.NewGuid(),
+            AuthorId = Guid.NewGuid(),
+            Message = "This is a test message"
+        };
+    }
+
+    public static Dossier GetSampleDossierWithDiscussion()
+    {
+        var dossier = GetSampleDossier();
+        dossier.State = DossierStateEnum.InReview;
+        dossier.Discussion = new()
+        {
+            DossierId = dossier.Id
+        };
+
+        return dossier;
+    }
+
+    // DOSSIER REVIEWS DTO
+    public static CreateDossierDiscussionMessageDTO GetSampleCreateDossierDiscussionMessageDTO()
+    {
+        return new CreateDossierDiscussionMessageDTO
+        {
+            Message = "This is a test message",
+            GroupId = Guid.NewGuid()
+        };
+    }
+
+    public static DossierDiscussionMessageDTO GetSampleDossierDiscussionMessageDTO()
+    {
+        return new DossierDiscussionMessageDTO
+        {
+            Id = Guid.NewGuid(),
+            Message = "This is a test message",
+            GroupId = Guid.NewGuid()
+        };
+    }
+
+    public static DossierDiscussionDTO GetSampleDossierDiscussionDTO()
+    {
+        var message = GetSampleDossierDiscussionMessageDTO();
+
+        return new DossierDiscussionDTO
+        {
+            DossierId = Guid.NewGuid(),
+            Messages = new List<DossierDiscussionMessageDTO> { message }
+        };
+    }
+
+    public static DossierDetailsDTO GetSampleDossierWithDiscussionDTO()
+    {
+        var discusssion = GetSampleDossierDiscussionDTO();
+
+        var dossier = new DossierDetailsDTO
+        {
+            Id = Guid.NewGuid(),
+            InitiatorId = Guid.NewGuid(),
+            Title = "Title",
+            Description = "Description",
+            State = DossierStateEnum.InReview,
+            CreatedDate = DateTime.Now,
+            ModifiedDate = DateTime.Now,
+            Discussion = discusssion
+        };
+
+        discusssion.DossierId = dossier.Id;
+
+        return dossier;
     }
 
     public static DossierReport GetSampleDossierReport()

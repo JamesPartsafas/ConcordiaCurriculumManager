@@ -11,6 +11,7 @@ public interface IDossierReviewRepository
     Task<bool> SaveApprovalStages(IList<ApprovalStage> stages);
     Task<Dossier?> GetDossierWithApprovalStages(Guid dossierId);
     Task<Dossier?> GetDossierWithApprovalStagesAndRequests(Guid dossierId);
+    Task<Dossier?> GetDossierWithApprovalStagesAndRequestsAndDiscussion(Guid dossierId);
 }
 
 public class DossierReviewRepository : IDossierReviewRepository
@@ -48,6 +49,22 @@ public class DossierReviewRepository : IDossierReviewRepository
             .ThenInclude(modificationRequests => modificationRequests.Course)
             .Include(dossier => dossier.CourseDeletionRequests)
             .ThenInclude(deletionRequests => deletionRequests.Course)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<Dossier?> GetDossierWithApprovalStagesAndRequestsAndDiscussion(Guid dossierId)
+    {
+        return await _dbContext.Dossiers
+            .Where(dossier => dossier.Id.Equals(dossierId))
+            .Include(dossier => dossier.ApprovalStages)
+            .Include(dossier => dossier.CourseCreationRequests)
+            .ThenInclude(creationRequests => creationRequests.NewCourse)
+            .Include(dossier => dossier.CourseModificationRequests)
+            .ThenInclude(modificationRequests => modificationRequests.Course)
+            .Include(dossier => dossier.CourseDeletionRequests)
+            .ThenInclude(deletionRequests => deletionRequests.Course)
+            .Include(dossier => dossier.Discussion)
+            .ThenInclude(discussion => discussion == null ? null : discussion.Messages)
             .FirstOrDefaultAsync();
     }
 }

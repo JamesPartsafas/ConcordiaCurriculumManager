@@ -5,6 +5,7 @@ using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
+using NetTopologySuite.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -54,14 +55,20 @@ public class DossierService : IDossierService
         return dossiers;
     }
 
-    public async Task<Dossier> CreateDossierForUser(CreateDossierDTO d, User user) {
+    public async Task<Dossier> CreateDossierForUser(CreateDossierDTO d, User user)
+    {
+        var dossierId = Guid.NewGuid();
         var dossier = new Dossier
         {
-            Id = Guid.NewGuid(),
+            Id = dossierId,
             InitiatorId = user.Id,
             Title = d.Title,
             Description = d.Description,
-            State = DossierStateEnum.Created
+            State = DossierStateEnum.Created,
+            Discussion = new()
+            {
+                DossierId = dossierId
+            }
         };
 
         bool dossierCreated = await _dossierRepository.SaveDossier(dossier);

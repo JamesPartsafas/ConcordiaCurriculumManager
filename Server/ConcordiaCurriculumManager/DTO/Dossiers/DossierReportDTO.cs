@@ -19,7 +19,7 @@ namespace ConcordiaCurriculumManager.DTO.Dossiers
 
         public IList<CourseModificationRequestCourseDetailsDTO> CourseModificationRequests { get; set; } = new List<CourseModificationRequestCourseDetailsDTO>();
 
-        public IList<CourseDeletionRequestDetailsDTO> CourseDeletionRequests { get; set; } = new List<CourseDeletionRequestDetailsDTO>();
+        public IList<CourseDeletionRequestCourseDetailsDTO> CourseDeletionRequests { get; set; } = new List<CourseDeletionRequestCourseDetailsDTO>();
 
         public IList<ApprovalStage> ApprovalStages { get; set; } = new List<ApprovalStage>();
 

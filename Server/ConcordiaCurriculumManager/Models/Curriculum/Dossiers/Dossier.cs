@@ -27,6 +27,8 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
         public IList<ApprovalStage> ApprovalStages { get; set; } = new List<ApprovalStage>();
 
+        public required DossierDiscussion Discussion { get; set; }
+
         public void MarkAsRejected()
         {
             if (State != DossierStateEnum.InReview)

@@ -150,5 +150,30 @@ public class CCMDbContext : DbContext
             .HasMany(group => group.ApprovalStages)
             .WithOne(stage => stage.Group)
             .HasForeignKey(stage => stage.GroupId);
+
+        modelBuilder.Entity<Dossier>()
+            .HasOne(dossier => dossier.Discussion)
+            .WithOne(discussion => discussion.Dossier)
+            .HasForeignKey<DossierDiscussion>(discussion => discussion.DossierId);
+
+        modelBuilder.Entity<DossierDiscussion>()
+            .HasMany(discussion => discussion.Messages)
+            .WithOne(message => message.DossierDiscussion)
+            .HasForeignKey(message => message.DossierDiscussionId);
+
+        modelBuilder.Entity<DiscussionMessage>()
+            .HasOne(message => message.Author)
+            .WithMany()
+            .HasForeignKey(message => message.AuthorId);
+
+        modelBuilder.Entity<DiscussionMessage>()
+            .HasOne(message => message.Group)
+            .WithMany()
+            .HasForeignKey(message => message.GroupId);
+
+        modelBuilder.Entity<DiscussionMessage>()
+            .HasOne(message => message.ParentDiscussionMessage)
+            .WithMany()
+            .HasForeignKey(message => message.ParentDiscussionMessageId);
     }
 }
