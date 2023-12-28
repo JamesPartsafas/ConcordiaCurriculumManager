@@ -13,11 +13,10 @@ public interface IDossierReviewService
     public Task RejectDossier(Guid dossierId);
     public Task ReturnDossier(Guid dossierId);
     public Task ForwardDossier(Guid dossierId);
-    public Task<Dossier> GetDossierWithDiscussion(Guid dossierId);
     public Task<Dossier> GetDossierWithApprovalStagesOrThrow(Guid dossierId);
     public Task<Dossier> GetDossierWithApprovalStagesAndRequestsOrThrow(Guid dossierId);
     public Task<Dossier> GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(Guid dossierId);
-    Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message);
+    public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message);
 }
 
 public class DossierReviewService : IDossierReviewService
@@ -27,8 +26,8 @@ public class DossierReviewService : IDossierReviewService
     private readonly IGroupService _groupService;
     private readonly ICourseService _courseService;
     private readonly IDossierRepository _dossierRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IDossierReviewRepository _dossierReviewRepository;
+    private readonly IUserAuthenticationService _userAuthenticationService;
 
     public DossierReviewService(
         ILogger<DossierReviewService> logger,
@@ -37,7 +36,7 @@ public class DossierReviewService : IDossierReviewService
         ICourseService courseService,
         IDossierRepository dossierRepository,
         IDossierReviewRepository dossierReviewRepository,
-        IHttpContextAccessor httpContextAccessor)
+        IUserAuthenticationService userAuthenticationService)
     {
         _logger = logger;
         _dossierService = dossierService;
@@ -45,7 +44,7 @@ public class DossierReviewService : IDossierReviewService
         _courseService = courseService;
         _dossierRepository = dossierRepository;
         _dossierReviewRepository = dossierReviewRepository;
-        _httpContextAccessor = httpContextAccessor;
+        _userAuthenticationService = userAuthenticationService;
     }
 
     public async Task SubmitDossierForReview(DossierSubmissionDTO dto)
@@ -54,11 +53,6 @@ public class DossierReviewService : IDossierReviewService
         if (!(await _groupService.IsGroupIdListValid(dto.GroupIds))) throw new InvalidInputException("All groups set as reviewers must be valid groups");
 
         Dossier dossier = await _dossierService.GetDossierDetailsByIdOrThrow(dto.DossierId);
-        dossier.Discussion = new()
-        {
-            DossierId = dossier.Id,
-            Dossier = dossier
-        };
 
         var approvalStages = dossier.PrepareForPublishing(dto);
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
@@ -130,8 +124,9 @@ public class DossierReviewService : IDossierReviewService
             _logger.LogError($"Encountered error attempting to accept dossier {dossier.Id} and remove it from the review process");
     }
 
-    public async Task<Dossier> GetDossierWithDiscussion(Guid dossierId)
+    public async Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message)
     {
+        var userId = _userAuthenticationService.GetCurrentUserClaim(Claims.Id);
         var dossier = await GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(dossierId);
 
         if (dossier.State.Equals(DossierStateEnum.Created))
@@ -139,22 +134,7 @@ public class DossierReviewService : IDossierReviewService
             throw new BadRequestException("The dossier is not published yet.");
         }
 
-        return dossier;
-    }
-
-    public async Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message)
-    {
-        var userId = _httpContextAccessor.HttpContext?.User.Claims?.FirstOrDefault(c => c.Type.Equals(Claims.Id)) ?? throw new BadRequestException("User Id does not exist");
-
-        var dossier = await GetDossierWithDiscussion(dossierId);
-        
-        if (dossier.Discussion is null)
-        {
-            _logger.LogError("A published dossier does not have a discussion board");
-            throw new InvalidOperationException("The dossier does not have a discussion board");
-        }
-
-        message.AuthorId = Guid.Parse(userId.Value);
+        message.AuthorId = Guid.Parse(userId);
         dossier.Discussion.Messages.Add(message);
 
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
@@ -172,6 +152,6 @@ public class DossierReviewService : IDossierReviewService
         ?? throw new NotFoundException("The dossier does not exist.");
 
     public async Task<Dossier> GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(Guid dossierId) =>
-        await _dossierReviewRepository.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)
+        await _dossierRepository.GetDossierByDossierId(dossierId)
         ?? throw new NotFoundException("The dossier does not exist.");
 }

@@ -89,15 +89,4 @@ public class DossierReviewController : Controller
         await _dossierReviewService.AddDossierDiscussionReview(dossierId, dossierMessage);
         return NoContent();
     }
-
-    [HttpPut(nameof(GetAllDossierReviews) + "/{dossierId}")]
-    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
-    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
-    [SwaggerResponse(StatusCodes.Status200OK, "All Dossier Review were successfully returned")]
-    public async Task<ActionResult> GetAllDossierReviews([FromRoute, Required] Guid dossierId)
-    {
-        var dossier = await _dossierReviewService.GetDossierWithDiscussion(dossierId);
-        var dossierDetails = _mapper.Map<DossierDetailsWithDiscussionDTO>(dossier);
-        return Ok(dossierDetails);
-    }
 }

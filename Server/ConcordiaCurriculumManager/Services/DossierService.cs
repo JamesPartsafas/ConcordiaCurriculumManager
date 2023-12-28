@@ -3,6 +3,7 @@ using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
+using NetTopologySuite.Utilities;
 
 namespace ConcordiaCurriculumManager.Services;
 public interface IDossierService
@@ -35,7 +36,7 @@ public class DossierService : IDossierService
     }
 
     public async Task<List<Dossier>> GetDossiersByID(Guid ID)
-    { 
+    {
         var dossiers = await _dossierRepository.GetDossiersByID(ID);
 
         if (dossiers.Count == 0)
@@ -46,14 +47,20 @@ public class DossierService : IDossierService
         return dossiers;
     }
 
-    public async Task<Dossier> CreateDossierForUser(CreateDossierDTO d, User user) {
+    public async Task<Dossier> CreateDossierForUser(CreateDossierDTO d, User user)
+    {
+        var dossierId = Guid.NewGuid();
         var dossier = new Dossier
         {
-            Id = Guid.NewGuid(),
+            Id = dossierId,
             InitiatorId = user.Id,
             Title = d.Title,
             Description = d.Description,
-            State = DossierStateEnum.Created
+            State = DossierStateEnum.Created,
+            Discussion = new()
+            {
+                DossierId = dossierId
+            }
         };
 
         bool dossierCreated = await _dossierRepository.SaveDossier(dossier);
@@ -77,7 +84,7 @@ public class DossierService : IDossierService
         {
             throw new Exception($"Error editing {typeof(Dossier)} {dossier.Id}");
         }
-        
+
         _logger.LogInformation($"Edited {typeof(Dossier)} {dossier.Id}");
         return dossier;
     }
@@ -97,7 +104,7 @@ public class DossierService : IDossierService
 
     public async Task<Dossier?> GetDossierDetailsById(Guid id) => await _dossierRepository.GetDossierByDossierId(id);
 
-    public async Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id) => await _dossierRepository.GetDossierByDossierId(id) 
+    public async Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id) => await _dossierRepository.GetDossierByDossierId(id)
         ?? throw new NotFoundException("The dossier does not exist.");
 
     public async Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId)

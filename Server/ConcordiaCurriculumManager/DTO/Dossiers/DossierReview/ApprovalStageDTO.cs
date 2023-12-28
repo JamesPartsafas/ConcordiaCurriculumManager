@@ -4,6 +4,8 @@ public class ApprovalStageDTO
 {
     public required Guid GroupId { get; set; }
 
+    public required GroupDTO Group { get; set; }
+
     public required int StageIndex { get; set; }
 
     public required bool IsCurrentStage { get; set; }
