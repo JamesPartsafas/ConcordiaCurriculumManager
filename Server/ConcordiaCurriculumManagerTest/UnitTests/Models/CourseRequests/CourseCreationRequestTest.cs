@@ -14,7 +14,7 @@ public class CourseCreationRequestTest
         var course = TestData.GetSampleCourse();
         request.NewCourse = course;
 
-        request.MarkAsAccepted();
+        request.MarkAsAccepted(new List<CourseVersion>());
 
         Assert.AreEqual(CourseStateEnum.Accepted, request.NewCourse.CourseState);
     }
@@ -26,6 +26,20 @@ public class CourseCreationRequestTest
         var request = TestData.GetSampleCourseCreationRequest();
         request.NewCourse = null;
 
-        request.MarkAsAccepted();
+        request.MarkAsAccepted(new List<CourseVersion>());
+    }
+
+    [TestMethod]
+    public void MarkAsAccepted_WithDeletedCourse_MarksCorrectly()
+    {
+        var request = TestData.GetSampleCourseCreationRequest();
+        var course = TestData.GetSampleCourse();
+        request.NewCourse = course;
+        var versions = TestData.GetSampleCourseVersionCollection();
+        versions.Add(TestData.GetSampleCourseVersion());
+
+        request.MarkAsAccepted(versions);
+
+        Assert.AreEqual(CourseStateEnum.Accepted, request.NewCourse.CourseState);
     }
 }
