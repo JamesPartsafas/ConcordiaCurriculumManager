@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Box, Text, VStack, Stack } from "@chakra-ui/react";
+import { Box, Text, Stack, HStack, Heading } from "@chakra-ui/react";
 
 const CourseDifferenceViewer = ({ oldCourse, newCourse }) => {
     const compareCourses = (oldCourse, newCourse) => {
@@ -16,36 +16,38 @@ const CourseDifferenceViewer = ({ oldCourse, newCourse }) => {
     const differences = compareCourses(oldCourse, newCourse);
 
     return (
-        <VStack align="stretch">
-            <Box>
-                <Text fontSize="lg" fontWeight="bold">
+        <HStack align="stretch">
+            <Box bg={"gray.200"} p={2}>
+                <Heading as="h2" size="xl" color="brandRed">
                     Old Version
-                </Text>
+                </Heading>
                 {differences.map(({ key, oldValue, isChanged }) => (
                     <>
                         <Stack key={key} direction="row">
+                            <Text>{key}: </Text>
                             <Text key={key} as={isChanged ? "s" : "span"} color={isChanged ? "red" : "black"}>
-                                {key}: {oldValue}
+                                {oldValue}
                             </Text>
                         </Stack>
                     </>
                 ))}
             </Box>
-            <Box>
-                <Text fontSize="lg" fontWeight="bold">
-                    New Version
-                </Text>
+            <Box bg={"gray.200"} p={2}>
+                <Heading as="h2" size="xl" color="brandRed">
+                    Current Version
+                </Heading>
                 {differences.map(({ key, newValue, isChanged }) => (
                     <>
                         <Stack key={key} direction="row">
+                            <Text>{key}: </Text>
                             <Text key={key} color={isChanged ? "blue" : "black"}>
-                                {key}: {newValue}
+                                {newValue}
                             </Text>
                         </Stack>
                     </>
                 ))}
             </Box>
-        </VStack>
+        </HStack>
     );
 };
 
