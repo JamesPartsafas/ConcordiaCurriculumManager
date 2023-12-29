@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 

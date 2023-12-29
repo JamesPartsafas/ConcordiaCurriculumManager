@@ -30,6 +30,8 @@ namespace ConcordiaCurriculumManager.DTO.Courses
 
         public required CourseStateEnum CourseState { get; set; }
 
+        public int? Version { get; set; }
+
         public required Dictionary<ComponentCodeEnum, int?> ComponentCodes { get; set; }
 
         public required Dictionary<string, string> SupportingFiles { get; set; }
