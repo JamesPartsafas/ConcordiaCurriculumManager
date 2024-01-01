@@ -160,15 +160,15 @@ export default function Dossiers() {
                     style="primary"
                     variant="outline"
                     height="40px"
-                    width="100px"
+                    width="fit-content"
                     onClick={() => navigate(BaseRoutes.Home)}
                 >
-                    Back
+                    Return to Home
                 </Button>
                 <Button
                     style="primary"
                     variant="outline"
-                    width="175px"
+                    width="fit-content"
                     height="40px"
                     alignSelf="flex-end"
                     isDisabled={!user.roles.includes(UserRoles.Initiator)}
