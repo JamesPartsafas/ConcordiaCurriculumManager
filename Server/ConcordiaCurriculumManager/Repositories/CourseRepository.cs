@@ -71,10 +71,11 @@ public class CourseRepository : ICourseRepository
         .OrderByDescending(course => course.Version)
         .FirstOrDefaultAsync();
 
-    public async Task<int?> GetCurrentCourseVersion(string catalog, string subject) => await _dbContext.Courses
+    public async Task<int?> GetCurrentCourseVersion(string subject, string catalog) => await _dbContext.Courses
         .Where(course =>
             course.Subject == subject
-            && course.Catalog == catalog)
+            && course.Catalog == catalog
+            && course.Version != null)
         .OrderByDescending(course => course.Version)
         .Select(course => course.Version)
         .FirstOrDefaultAsync();

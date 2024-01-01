@@ -107,7 +107,9 @@ public class CourseService : ICourseService
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(initiation.DossierId, userId);
 
-        var course = Course.CreateCourseFromDTOData(initiation, (await _courseRepository.GetMaxCourseId()) + 1, null);
+        int concordiaCourseId = courseFromDb != null ? courseFromDb.CourseID : (await _courseRepository.GetMaxCourseId()) + 1;
+
+        var course = Course.CreateCourseFromDTOData(initiation, concordiaCourseId, null);
 
         await SaveCourseForUserOrThrow(course, userId);
 
@@ -286,13 +288,14 @@ public class CourseService : ICourseService
 
     public async Task<ICollection<CourseVersion>> GetCourseVersions(Dossier dossier)
     {
-        IEnumerable<CourseRequestOnExistingCourse> requests = dossier.CourseModificationRequests
-            .Concat<CourseRequestOnExistingCourse>(dossier.CourseDeletionRequests);
+        IEnumerable<Course?> courses = new List<Course>();
+        courses = courses.Concat(dossier.CourseCreationRequests.Select(ccr => ccr.NewCourse).ToList());
+        courses = courses.Concat(dossier.CourseModificationRequests.Select(cmr => cmr.Course).ToList());
+        courses = courses.Concat(dossier.CourseDeletionRequests.Select(cdr => cdr.Course).ToList());
 
         ICollection<CourseVersion> currentCourseVersions = new List<CourseVersion>();
-        foreach (var request in requests)
+        foreach (var course in courses)
         {
-            var course = request.Course;
             if (course == null) continue;
 
             int? version = await _courseRepository.GetCurrentCourseVersion(course.Subject, course.Catalog);
