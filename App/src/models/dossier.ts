@@ -1,3 +1,4 @@
+import { GroupDTO } from "../services/group";
 import { CourseCreationRequest, CourseDeletionRequest, CourseModificationRequest } from "./course";
 
 export interface DossierDTO {
@@ -19,6 +20,20 @@ export interface DossierDetailsDTO {
     courseCreationRequests: CourseCreationRequest[];
     courseModificationRequests: CourseModificationRequest[];
     courseDeletionRequests: CourseDeletionRequest[];
+    approvalStages: ApprovalStage[]
+}
+
+export interface ApprovalStage {
+    id: string;
+    createdDate: Date;
+    modifiedDate: Date;
+    groupID: string;
+    group: GroupDTO;
+    dossierId: string;
+    stageIndex: number;
+    isCurrentStage: boolean;
+    isFinalStage: boolean;
+
 }
 
 export interface DossierDTOResponse {
