@@ -33,7 +33,7 @@ import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { ArrowLeftIcon } from "@chakra-ui/icons";
 import React from "react";
-import { forwardDossier, returnDossier, reviewDossier } from "../../services/dossierreview";
+import { forwardDossier, rejectDossier, returnDossier, reviewDossier } from "../../services/dossierreview";
 import { showToast } from "../../utils/toastUtils";
 
 export default function DossierReview() {
@@ -236,10 +236,10 @@ export default function DossierReview() {
                                 height="40px"
                                 //isLoading={loading}
                                 loadingText="Deleting"
-                                // onClick={() => {
-                                //     rejectDossier(dossier);
-                                //     // onClose();
-                                // }}
+                                onClick={() => {
+                                    handleRejectDossier();
+                                    onCloseReject();
+                                }}
                                 ml={3}
                             >
                                 Reject
@@ -265,6 +265,16 @@ export default function DossierReview() {
         returnDossier(dossierId)
             .then(() => {
                 showToast(toast, "Success!", "Dossier successfully returned.", "success");
+            })
+            .catch(() => {
+                showToast(toast, "Error!", "One or more validation errors occurred", "error");
+            });
+    };
+
+    const handleRejectDossier = () => {
+        rejectDossier(dossierId)
+            .then(() => {
+                showToast(toast, "Success!", "Dossier successfully rejected.", "success");
             })
             .catch(() => {
                 showToast(toast, "Error!", "One or more validation errors occurred", "error");
