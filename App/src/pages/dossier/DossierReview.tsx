@@ -33,7 +33,7 @@ import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { ArrowLeftIcon } from "@chakra-ui/icons";
 import React from "react";
-import { forwardDossier, reviewDossier } from "../../services/dossierreview";
+import { forwardDossier, returnDossier, reviewDossier } from "../../services/dossierreview";
 import { showToast } from "../../utils/toastUtils";
 
 export default function DossierReview() {
@@ -144,7 +144,7 @@ export default function DossierReview() {
                                 //isLoading={loading}
                                 loadingText="Deleting"
                                 onClick={() => {
-                                    handleForwardRequest();
+                                    handleForwardDossier();
                                     onCloseForward();
                                 }}
                                 ml={3}
@@ -190,10 +190,10 @@ export default function DossierReview() {
                                 height="40px"
                                 //isLoading={loading}
                                 loadingText="Deleting"
-                                // onClick={() => {
-                                //     returnDossier(dossier);
-                                //     // onClose();
-                                // }}
+                                onClick={() => {
+                                    handleReturnDossier();
+                                    onCloseReturn();
+                                }}
                                 ml={3}
                             >
                                 Return
@@ -251,10 +251,20 @@ export default function DossierReview() {
         );
     }
 
-    const handleForwardRequest = () => {
+    const handleForwardDossier = () => {
         forwardDossier(dossierId)
             .then(() => {
                 showToast(toast, "Success!", "Dossier successfully forwarded.", "success");
+            })
+            .catch(() => {
+                showToast(toast, "Error!", "One or more validation errors occurred", "error");
+            });
+    };
+
+    const handleReturnDossier = () => {
+        returnDossier(dossierId)
+            .then(() => {
+                showToast(toast, "Success!", "Dossier successfully returned.", "success");
             })
             .catch(() => {
                 showToast(toast, "Error!", "One or more validation errors occurred", "error");
