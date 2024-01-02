@@ -148,6 +148,7 @@ export default function DossierReview() {
                                 //isLoading={loading}
                                 loadingText="Deleting"
                                 onClick={() => {
+                                    window.location.reload();
                                     handleForwardDossier();
                                     onCloseForward();
                                 }}
@@ -195,6 +196,7 @@ export default function DossierReview() {
                                 //isLoading={loading}
                                 loadingText="Deleting"
                                 onClick={() => {
+                                    window.location.reload();
                                     handleReturnDossier();
                                     onCloseReturn();
                                 }}
@@ -241,6 +243,7 @@ export default function DossierReview() {
                                 //isLoading={loading}
                                 loadingText="Deleting"
                                 onClick={() => {
+                                    window.location.reload();
                                     handleRejectDossier();
                                     onCloseReject();
                                 }}
@@ -365,17 +368,22 @@ export default function DossierReview() {
                                             onOpenForward();
                                         }}
                                     >
-                                        Forward
+                                        {currentGroup.isFinalStage ? "Accept Changes" : "Forward"}
                                     </Button>
-                                    <Button
-                                        background="brandGray"
-                                        variant="solid"
-                                        onClick={() => {
-                                            onOpenReturn();
-                                        }}
-                                    >
-                                        Return
-                                    </Button>
+                                    {currentGroup.stageIndex == 0 ? (
+                                        ""
+                                    ) : (
+                                        <Button
+                                            background="brandGray"
+                                            variant="solid"
+                                            onClick={() => {
+                                                onOpenReturn();
+                                            }}
+                                        >
+                                            Return
+                                        </Button>
+                                    )}
+
                                     <Button
                                         background="brandRed"
                                         variant="solid"
