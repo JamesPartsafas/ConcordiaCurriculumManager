@@ -61,15 +61,11 @@ export default function DossierReview() {
     }, [dossierId]);
 
     async function requestDossierDetails(dossierId: string) {
-        try {
-            const dossierDetails: DossierDetailsResponse = await getDossierDetails(dossierId);
-            setDossierDetails(dossierDetails.data);
-            const currentStageGroup = dossierDetails.data.approvalStages.filter((stage) => stage.isCurrentStage)[0];
-            setCurrentGroup(currentStageGroup);
-            setIsGroupMaster(user.masteredGroups.includes(currentStageGroup.groupId));
-        } catch (error) {
-            showToast(toast, "Error!", "There was an error fetching the dossier details.", "error");
-        }
+        const dossierDetails: DossierDetailsResponse = await getDossierDetails(dossierId);
+        setDossierDetails(dossierDetails.data);
+        const currentStageGroup = dossierDetails.data.approvalStages.filter((stage) => stage.isCurrentStage)[0];
+        setCurrentGroup(currentStageGroup);
+        setIsGroupMaster(user.masteredGroups?.includes(currentStageGroup.groupId));
     }
 
     function messageAlertDialog() {
