@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ApprovalStage, DossierDetailsDTO, DossierDetailsResponse, dossierStateToString } from "../../models/dossier";
 import { getDossierDetails } from "../../services/dossier";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -35,6 +35,7 @@ import { ArrowLeftIcon } from "@chakra-ui/icons";
 import React from "react";
 import { forwardDossier, rejectDossier, returnDossier, reviewDossier } from "../../services/dossierreview";
 import { showToast } from "../../utils/toastUtils";
+import { UserContext } from "../../App";
 
 export default function DossierReview() {
     const { dossierId } = useParams();
@@ -50,6 +51,8 @@ export default function DossierReview() {
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [messageError, setMessageError] = useState(true);
     const [currentGroup, setCurrentGroup] = useState<ApprovalStage | null>(null);
+    const [isGroupMaster, setIsGroupMaster] = useState(false);
+    const user = useContext(UserContext);
 
     const navigate = useNavigate();
 
@@ -61,7 +64,9 @@ export default function DossierReview() {
         try {
             const dossierDetails: DossierDetailsResponse = await getDossierDetails(dossierId);
             setDossierDetails(dossierDetails.data);
-            setCurrentGroup(dossierDetails.data.approvalStages.filter((stage) => stage.isCurrentStage)[0]);
+            const currentStageGroup = dossierDetails.data.approvalStages.filter((stage) => stage.isCurrentStage)[0];
+            setCurrentGroup(currentStageGroup);
+            setIsGroupMaster(user.masteredGroups.includes(currentStageGroup.groupId));
         } catch (error) {
             showToast(toast, "Error!", "There was an error fetching the dossier details.", "error");
         }
@@ -355,35 +360,40 @@ export default function DossierReview() {
                                 <Text>updated: {dossierDetails?.modifiedDate?.toString()}</Text>
                                 <Text>current group: {currentGroup?.group.name}</Text>
                             </Stack>
-                            <Stack direction="row" spacing={4} align="center" marginBottom={10}>
-                                <Button
-                                    background="brandBlue"
-                                    variant="solid"
-                                    onClick={() => {
-                                        onOpenForward();
-                                    }}
-                                >
-                                    Forward
-                                </Button>
-                                <Button
-                                    background="brandGray"
-                                    variant="solid"
-                                    onClick={() => {
-                                        onOpenReturn();
-                                    }}
-                                >
-                                    Return
-                                </Button>
-                                <Button
-                                    background="brandRed"
-                                    variant="solid"
-                                    onClick={() => {
-                                        onOpenReject();
-                                    }}
-                                >
-                                    Reject
-                                </Button>
-                            </Stack>
+                            {isGroupMaster ? (
+                                <Stack direction="row" spacing={4} align="center" marginBottom={10}>
+                                    <Button
+                                        background="brandBlue"
+                                        variant="solid"
+                                        onClick={() => {
+                                            onOpenForward();
+                                        }}
+                                    >
+                                        Forward
+                                    </Button>
+                                    <Button
+                                        background="brandGray"
+                                        variant="solid"
+                                        onClick={() => {
+                                            onOpenReturn();
+                                        }}
+                                    >
+                                        Return
+                                    </Button>
+                                    <Button
+                                        background="brandRed"
+                                        variant="solid"
+                                        onClick={() => {
+                                            onOpenReject();
+                                        }}
+                                    >
+                                        Reject
+                                    </Button>
+                                </Stack>
+                            ) : (
+                                ""
+                            )}
+
                             <Stack>
                                 <Heading margin="auto" size="xl" color="brandRed">
                                     Changes
