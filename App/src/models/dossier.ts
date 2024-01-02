@@ -1,3 +1,4 @@
+import { GroupDTO } from "../services/group";
 import { CourseCreationRequest, CourseDeletionRequest, CourseModificationRequest } from "./course";
 
 export interface DossierDTO {
@@ -19,6 +20,7 @@ export interface DossierDetailsDTO {
     courseCreationRequests: CourseCreationRequest[];
     courseModificationRequests: CourseModificationRequest[];
     courseDeletionRequests: CourseDeletionRequest[];
+    approvalStages: ApprovalStage[];
 }
 
 export interface DossierDTOResponse {
@@ -48,4 +50,13 @@ export function dossierStateToString(dossier: DossierDTO | DossierDetailsDTO | n
     if (dossier.state === DossierStateEnum.Approved) return "Approved";
 
     return "Created";
+}
+
+export interface ApprovalStage {
+    groupId: string;
+    group: GroupDTO;
+    dossierId: string;
+    stageIndex: number;
+    isCurrentStage: boolean;
+    isFinalStage: boolean;
 }
