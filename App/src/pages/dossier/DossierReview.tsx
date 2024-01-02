@@ -33,7 +33,7 @@ import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { ArrowLeftIcon } from "@chakra-ui/icons";
 import React from "react";
-import { reviewDossier } from "../../services/dossierreview";
+import { forwardDossier, reviewDossier } from "../../services/dossierreview";
 import { showToast } from "../../utils/toastUtils";
 
 export default function DossierReview() {
@@ -143,10 +143,10 @@ export default function DossierReview() {
                                 height="40px"
                                 //isLoading={loading}
                                 loadingText="Deleting"
-                                // onClick={() => {
-                                //     forwardDossier(dossier);
-                                //     // onClose();
-                                // }}
+                                onClick={() => {
+                                    handleForwardRequest();
+                                    onCloseForward();
+                                }}
                                 ml={3}
                             >
                                 Forward
@@ -250,6 +250,16 @@ export default function DossierReview() {
             </AlertDialog>
         );
     }
+
+    const handleForwardRequest = () => {
+        forwardDossier(dossierId)
+            .then(() => {
+                showToast(toast, "Success!", "Dossier successfully forwarded.", "success");
+            })
+            .catch(() => {
+                showToast(toast, "Error!", "One or more validation errors occurred", "error");
+            });
+    };
 
     const handleChangeMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         if (e.currentTarget.value.length === 0) setMessageError(true);
