@@ -49,7 +49,7 @@ export default function DossierReview() {
     const [message, setMessage] = useState("");
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [messageError, setMessageError] = useState(true);
-    const [currentGroup, setCurrentGroup] = useState<ApprovalStage[] | null>(null);
+    const [currentGroup, setCurrentGroup] = useState<ApprovalStage | null>(null);
 
     const navigate = useNavigate();
 
@@ -57,11 +57,14 @@ export default function DossierReview() {
         requestDossierDetails(dossierId);
     }, [dossierId]);
 
-    function requestDossierDetails(dossierId: string) {
-        getDossierDetails(dossierId).then((res: DossierDetailsResponse) => {
-            setDossierDetails(res.data);
-            setCurrentGroup(res.data.approvalStages.filter((stage) => stage.isCurrentStage));
-        });
+    async function requestDossierDetails(dossierId: string) {
+        try {
+            const dossierDetails: DossierDetailsResponse = await getDossierDetails(dossierId);
+            setDossierDetails(dossierDetails.data);
+            setCurrentGroup(dossierDetails.data.approvalStages.filter((stage) => stage.isCurrentStage)[0]);
+        } catch (error) {
+            showToast(toast, "Error!", "There was an error fetching the dossier details.", "error");
+        }
     }
 
     function messageAlertDialog() {
@@ -293,17 +296,25 @@ export default function DossierReview() {
         else {
             const dossierForReviewDTO = {
                 message: message,
-                groupId: currentGroup[0].groupId,
+                groupId: currentGroup.groupId,
             };
 
             reviewDossier(dossierId, dossierForReviewDTO)
                 .then(() => {
                     showToast(toast, "Success!", "Message successfully sent.", "success");
                     //toggleLoading(false);
-                    //navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
                 })
-                .catch(() => {
-                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                .catch((e) => {
+                    if (e.response.status == 403) {
+                        showToast(
+                            toast,
+                            "Error!",
+                            "You need to part of the current stage group in order to submit a message.",
+                            "error"
+                        );
+                    } else {
+                        showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                    }
                     //toggleLoading(false);
                 });
         }
@@ -342,6 +353,7 @@ export default function DossierReview() {
                                 <Text>state: {dossierStateToString(dossierDetails)}</Text>
                                 <Text>created: {dossierDetails?.createdDate?.toString()}</Text>
                                 <Text>updated: {dossierDetails?.modifiedDate?.toString()}</Text>
+                                <Text>current group: {currentGroup?.group.name}</Text>
                             </Stack>
                             <Stack direction="row" spacing={4} align="center" marginBottom={10}>
                                 <Button
