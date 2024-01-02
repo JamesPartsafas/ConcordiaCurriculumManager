@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DossierDetailsDTO, DossierDetailsResponse, dossierStateToString } from "../../models/dossier";
+import { ApprovalStage, DossierDetailsDTO, DossierDetailsResponse, dossierStateToString } from "../../models/dossier";
 import { getDossierDetails } from "../../services/dossier";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
@@ -25,11 +25,14 @@ import {
     Text,
     Textarea,
     useDisclosure,
+    useToast,
 } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { ArrowLeftIcon } from "@chakra-ui/icons";
 import React from "react";
+import { reviewDossier } from "../../services/dossierreview";
+import { showToast } from "../../utils/toastUtils";
 
 export default function DossierReview() {
     const { dossierId } = useParams();
@@ -40,17 +43,20 @@ export default function DossierReview() {
     const { isOpen: isOpenReject, onOpen: onOpenReject, onClose: onCloseReject } = useDisclosure();
     //const [loading, setLoading] = useState<boolean>(false);
     const cancelRef = React.useRef();
+    const toast = useToast();
+    const [message, setMessage] = useState("");
+    const [currentGroup, setCurrentGroup] = useState<ApprovalStage[] | null>(null);
 
     const navigate = useNavigate();
 
     useEffect(() => {
         requestDossierDetails(dossierId);
-        //requestCourseSettings();
     }, [dossierId]);
 
     function requestDossierDetails(dossierId: string) {
         getDossierDetails(dossierId).then((res: DossierDetailsResponse) => {
             setDossierDetails(res.data);
+            setCurrentGroup(res.data.approvalStages.filter((stage) => stage.isCurrentStage));
         });
     }
 
@@ -86,10 +92,10 @@ export default function DossierReview() {
                                 height="40px"
                                 //isLoading={loading}
                                 loadingText="Deleting"
-                                // onClick={() => {
-                                //     addMessage(message);
-                                //     // onClose();
-                                // }}
+                                onClick={() => {
+                                    handleSubmitRequest();
+                                    onCloseMessage();
+                                }}
                                 ml={3}
                             >
                                 Submit
@@ -241,6 +247,31 @@ export default function DossierReview() {
         );
     }
 
+    const handleChangeMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        // if (e.currentTarget.value.length === 0) setRationaleError(true);
+        // else setRationaleError(false);
+        setMessage(e.currentTarget.value);
+        //setFormError(false);
+    };
+
+    const handleSubmitRequest = () => {
+        const dossierForReviewDTO = {
+            message: message,
+            groupId: currentGroup[0].groupId,
+        };
+
+        reviewDossier(dossierId, dossierForReviewDTO)
+            .then(() => {
+                showToast(toast, "Success!", "Message successfully sent.", "success");
+                //toggleLoading(false);
+                //navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
+            })
+            .catch(() => {
+                showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                //toggleLoading(false);
+            });
+    };
+
     return (
         <>
             <Box>
@@ -359,7 +390,7 @@ export default function DossierReview() {
                                         <Text align="center">Add Message</Text>
                                     </Heading>
                                 </Center>
-                                <Stack mb={2}>
+                                {/* <Stack mb={2}>
                                     <Text as="span">
                                         ***You are a member of the{" "}
                                         <Text as="span" fontWeight={"bold"} fontSize={20}>
@@ -367,11 +398,11 @@ export default function DossierReview() {
                                         </Text>
                                         ***
                                     </Text>
-                                </Stack>
+                                </Stack> */}
                                 <Stack>
                                     <Textarea
                                         // value={courseRequesites}
-                                        // onChange={handleChangeCourseRequesites}
+                                        onChange={handleChangeMessage}
                                         placeholder="Add message to discussion board..."
                                         minH={"150px"}
                                     ></Textarea>
@@ -382,10 +413,10 @@ export default function DossierReview() {
                                         width="auto"
                                         height="50px"
                                         variant="solid"
-                                        // onClick={() => handleSubmitCourse()}
                                         // isLoading={isLoading}
                                         onClick={() => {
                                             onOpenMessage();
+                                            //handleSubmitRequest();
                                         }}
                                     >
                                         Submit
