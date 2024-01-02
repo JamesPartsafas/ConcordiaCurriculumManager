@@ -14,6 +14,8 @@ import {
     CardBody,
     Center,
     Flex,
+    FormControl,
+    FormErrorMessage,
     Heading,
     Kbd,
     Stack,
@@ -45,6 +47,8 @@ export default function DossierReview() {
     const cancelRef = React.useRef();
     const toast = useToast();
     const [message, setMessage] = useState("");
+    const [formSubmitted, setFormSubmitted] = useState(false);
+    const [messageError, setMessageError] = useState(true);
     const [currentGroup, setCurrentGroup] = useState<ApprovalStage[] | null>(null);
 
     const navigate = useNavigate();
@@ -248,28 +252,31 @@ export default function DossierReview() {
     }
 
     const handleChangeMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        // if (e.currentTarget.value.length === 0) setRationaleError(true);
-        // else setRationaleError(false);
+        if (e.currentTarget.value.length === 0) setMessageError(true);
+        else setMessageError(false);
         setMessage(e.currentTarget.value);
-        //setFormError(false);
     };
 
     const handleSubmitRequest = () => {
-        const dossierForReviewDTO = {
-            message: message,
-            groupId: currentGroup[0].groupId,
-        };
+        setFormSubmitted(true);
+        if (messageError) return;
+        else {
+            const dossierForReviewDTO = {
+                message: message,
+                groupId: currentGroup[0].groupId,
+            };
 
-        reviewDossier(dossierId, dossierForReviewDTO)
-            .then(() => {
-                showToast(toast, "Success!", "Message successfully sent.", "success");
-                //toggleLoading(false);
-                //navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
-            })
-            .catch(() => {
-                showToast(toast, "Error!", "One or more validation errors occurred", "error");
-                //toggleLoading(false);
-            });
+            reviewDossier(dossierId, dossierForReviewDTO)
+                .then(() => {
+                    showToast(toast, "Success!", "Message successfully sent.", "success");
+                    //toggleLoading(false);
+                    //navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
+                })
+                .catch(() => {
+                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                    //toggleLoading(false);
+                });
+        }
     };
 
     return (
@@ -400,12 +407,14 @@ export default function DossierReview() {
                                     </Text>
                                 </Stack> */}
                                 <Stack>
-                                    <Textarea
-                                        // value={courseRequesites}
-                                        onChange={handleChangeMessage}
-                                        placeholder="Add message to discussion board..."
-                                        minH={"150px"}
-                                    ></Textarea>
+                                    <FormControl isInvalid={messageError && formSubmitted}>
+                                        <Textarea
+                                            onChange={handleChangeMessage}
+                                            placeholder="Add message to discussion board..."
+                                            minH={"150px"}
+                                        ></Textarea>
+                                        <FormErrorMessage>Message cannot be empty.</FormErrorMessage>
+                                    </FormControl>
                                 </Stack>
                                 <Stack>
                                     <Button
