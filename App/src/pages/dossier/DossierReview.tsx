@@ -66,7 +66,6 @@ export default function DossierReview() {
         const currentStageGroup = dossierDetailsData.data.approvalStages.filter((stage) => stage.isCurrentStage)[0];
         setCurrentGroup(currentStageGroup);
         setIsGroupMaster(user.masteredGroups?.includes(currentStageGroup?.groupId));
-        console.log(dossierDetails);
     }
 
     function messageAlertDialog() {
@@ -511,9 +510,9 @@ export default function DossierReview() {
                                     <Tabs defaultIndex={currentGroup?.stageIndex}>
                                         <TabList>
                                             {/* <Tab>All Groups</Tab> */}
-                                            {dossierDetails?.approvalStages?.map((stage) => (
-                                                <Tab key={stage.groupId}>{stage.group.name}</Tab>
-                                            ))}
+                                            {dossierDetails?.approvalStages
+                                                ?.sort((a, b) => a.stageIndex - b.stageIndex)
+                                                .map((stage) => <Tab key={stage.groupId}>{stage.group.name}</Tab>)}
                                         </TabList>
 
                                         <TabPanels>
