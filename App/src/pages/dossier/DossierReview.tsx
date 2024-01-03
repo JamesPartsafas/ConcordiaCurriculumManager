@@ -65,7 +65,7 @@ export default function DossierReview() {
         setDossierDetails(dossierDetailsData.data);
         const currentStageGroup = dossierDetailsData.data.approvalStages.filter((stage) => stage.isCurrentStage)[0];
         setCurrentGroup(currentStageGroup);
-        setIsGroupMaster(user.masteredGroups?.includes(currentStageGroup.groupId));
+        setIsGroupMaster(user.masteredGroups?.includes(currentStageGroup?.groupId));
     }
 
     function messageAlertDialog() {
@@ -121,11 +121,13 @@ export default function DossierReview() {
                 <AlertDialogOverlay>
                     <AlertDialogContent>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                            Forward Dossier
+                            {currentGroup?.isFinalStage ? "Accept Dossier" : "Forward Dossier"}
                         </AlertDialogHeader>
 
                         <AlertDialogBody>
-                            Are you sure you want to forward this dossier to the next group in the approval pipeline?
+                            {currentGroup?.isFinalStage
+                                ? "Are you sure you want to accept this dossier?"
+                                : "Are you sure you want to forward this dossier to the next group in the approval pipeline?"}
                             You can&apos;t undo this action afterwards.
                         </AlertDialogBody>
 
@@ -154,7 +156,7 @@ export default function DossierReview() {
                                 }}
                                 ml={3}
                             >
-                                Forward
+                                {currentGroup?.isFinalStage ? "Accept" : "Forward"}
                             </Button>
                         </AlertDialogFooter>
                     </AlertDialogContent>
@@ -358,7 +360,13 @@ export default function DossierReview() {
                                 <Text>state: {dossierStateToString(dossierDetails)}</Text>
                                 <Text>created: {dossierDetails?.createdDate?.toString()}</Text>
                                 <Text>updated: {dossierDetails?.modifiedDate?.toString()}</Text>
-                                <Text>current group: {currentGroup?.group.name}</Text>
+                                {dossierDetails?.state == 3 ? (
+                                    <Text fontWeight={"bold"} fontSize={20} color={"green"}>
+                                        This dossier has been approved.
+                                    </Text>
+                                ) : (
+                                    <Text>current group: {currentGroup?.group.name}</Text>
+                                )}
                             </Stack>
                             {isGroupMaster ? (
                                 <Stack direction="row" spacing={4} align="center" marginBottom={10}>
