@@ -66,6 +66,7 @@ export default function DossierReview() {
         const currentStageGroup = dossierDetailsData.data.approvalStages.filter((stage) => stage.isCurrentStage)[0];
         setCurrentGroup(currentStageGroup);
         setIsGroupMaster(user.masteredGroups?.includes(currentStageGroup?.groupId));
+        console.log(dossierDetails);
     }
 
     function messageAlertDialog() {
@@ -364,11 +365,15 @@ export default function DossierReview() {
                                     <Text fontWeight={"bold"} fontSize={20} color={"green"}>
                                         This dossier has been approved.
                                     </Text>
+                                ) : dossierDetails?.state == 2 ? (
+                                    <Text fontWeight={"bold"} fontSize={20} color={"red"}>
+                                        This dossier has been rejected.
+                                    </Text>
                                 ) : (
                                     <Text>current group: {currentGroup?.group.name}</Text>
                                 )}
                             </Stack>
-                            {isGroupMaster ? (
+                            {isGroupMaster && dossierDetails.state == 1 ? (
                                 <Stack direction="row" spacing={4} align="center" marginBottom={10}>
                                     <Button
                                         background="brandBlue"
