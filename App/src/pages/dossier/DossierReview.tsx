@@ -481,7 +481,6 @@ export default function DossierReview() {
                                         // isLoading={isLoading}
                                         onClick={() => {
                                             onOpenMessage();
-                                            //handleSubmitRequest();
                                         }}
                                     >
                                         Submit
@@ -495,7 +494,7 @@ export default function DossierReview() {
                                     </Heading>
                                 </Center>
                                 <Stack>
-                                    <Tabs>
+                                    <Tabs defaultIndex={currentGroup?.stageIndex}>
                                         <TabList>
                                             {/* <Tab>All Groups</Tab> */}
                                             {dossierDetails?.approvalStages?.map((stage) => (
