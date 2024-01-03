@@ -306,6 +306,7 @@ export default function DossierReview() {
             reviewDossier(dossierId, dossierForReviewDTO)
                 .then(() => {
                     showToast(toast, "Success!", "Message successfully sent.", "success");
+                    requestDossierDetails(dossierId);
                     //toggleLoading(false);
                 })
                 .catch((e) => {
