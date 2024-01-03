@@ -61,9 +61,9 @@ export default function DossierReview() {
     }, [dossierId]);
 
     async function requestDossierDetails(dossierId: string) {
-        const dossierDetails: DossierDetailsResponse = await getDossierDetails(dossierId);
-        setDossierDetails(dossierDetails.data);
-        const currentStageGroup = dossierDetails.data.approvalStages.filter((stage) => stage.isCurrentStage)[0];
+        const dossierDetailsData: DossierDetailsResponse = await getDossierDetails(dossierId);
+        setDossierDetails(dossierDetailsData.data);
+        const currentStageGroup = dossierDetailsData.data.approvalStages.filter((stage) => stage.isCurrentStage)[0];
         setCurrentGroup(currentStageGroup);
         setIsGroupMaster(user.masteredGroups?.includes(currentStageGroup.groupId));
     }
@@ -497,209 +497,41 @@ export default function DossierReview() {
                                 <Stack>
                                     <Tabs>
                                         <TabList>
-                                            <Tab>All Groups</Tab>
-                                            <Tab>Department Curriculum Committee</Tab>
-                                            <Tab>Department Council</Tab>
-                                            <Tab>Gina Cody School Undergraduate Studies Committee</Tab>
-                                            <Tab>Gina Cody School Faculty Council</Tab>
-                                            <Tab>Academic Planning Committee</Tab>
-                                            <Tab>School of Graduate Studies Curriculum Committee</Tab>
-                                            <Tab>School of Graduate Studies Faculty Council</Tab>
-                                            <Tab>Academic Planning Committee</Tab>
-                                            <Tab>Concordia University Senate</Tab>
+                                            {/* <Tab>All Groups</Tab> */}
+                                            {dossierDetails?.approvalStages?.map((stage) => (
+                                                <Tab key={stage.groupId}>{stage.group.name}</Tab>
+                                            ))}
                                         </TabList>
 
                                         <TabPanels>
-                                            <TabPanel>
-                                                <Card>
-                                                    <CardBody>
-                                                        <Box bg={"gray.200"} p={2}>
-                                                            <Text>
-                                                                <b>Department Curriculum Committee</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                <b>Joe User</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                <b>2023-12-17</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                                                sed do eiusmod tempor incididunt ut labore et dolore
-                                                                magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                                exercitation ullamco laboris nisi ut aliquip ex ea
-                                                                commodo consequat. Duis aute irure dolor in
-                                                                reprehenderit in voluptate velit esse cillum dolore eu
-                                                                fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                                                                non proident, sunt in culpa qui officia deserunt mollit
-                                                                anim id est laborum.
-                                                            </Text>
-                                                            <Button marginTop={5}>
-                                                                <ArrowLeftIcon marginRight={5} />
-                                                                Reply
-                                                            </Button>
-                                                        </Box>
-                                                    </CardBody>
-                                                    <CardBody>
-                                                        <Box bg={"gray.200"} p={2}>
-                                                            <Text>
-                                                                <b>Department Council</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                <b>John User</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                <b>2023-12-14</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                                                sed do eiusmod tempor incididunt ut labore et dolore
-                                                                magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                                exercitation ullamco laboris nisi ut aliquip ex ea
-                                                                commodo consequat. Duis aute irure dolor in
-                                                                reprehenderit in voluptate velit esse cillum dolore eu
-                                                                fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                                                                non proident, sunt in culpa qui officia deserunt mollit
-                                                                anim id est laborum.
-                                                            </Text>
-                                                            <Button marginTop={5}>
-                                                                <ArrowLeftIcon marginRight={5} />
-                                                                Reply
-                                                            </Button>
-                                                        </Box>
-                                                    </CardBody>
-                                                    <CardBody>
-                                                        <Box bg={"gray.200"} p={2}>
-                                                            <Text>
-                                                                <b>Gina Cody School Faculty Council</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                <b>Jane User</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                <b>2023-12-13</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                                                sed do eiusmod tempor incididunt ut labore et dolore
-                                                                magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                                exercitation ullamco laboris nisi ut aliquip ex ea
-                                                                commodo consequat. Duis aute irure dolor in
-                                                                reprehenderit in voluptate velit esse cillum dolore eu
-                                                                fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                                                                non proident, sunt in culpa qui officia deserunt mollit
-                                                                anim id est laborum.
-                                                            </Text>
-                                                            <Button marginTop={5}>
-                                                                <ArrowLeftIcon marginRight={5} />
-                                                                Reply
-                                                            </Button>
-                                                        </Box>
-                                                    </CardBody>
-                                                </Card>
-                                            </TabPanel>
-                                            <TabPanel>
-                                                <Card>
-                                                    <CardBody>
-                                                        <Box bg={"gray.200"} p={2}>
-                                                            <Text>
-                                                                <b>Department Curriculum Committee</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                <b>Joe User</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                <b>2023-12-17</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                                                sed do eiusmod tempor incididunt ut labore et dolore
-                                                                magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                                exercitation ullamco laboris nisi ut aliquip ex ea
-                                                                commodo consequat. Duis aute irure dolor in
-                                                                reprehenderit in voluptate velit esse cillum dolore eu
-                                                                fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                                                                non proident, sunt in culpa qui officia deserunt mollit
-                                                                anim id est laborum.
-                                                            </Text>
-                                                            <Button marginTop={5}>
-                                                                <ArrowLeftIcon marginRight={5} />
-                                                                Reply
-                                                            </Button>
-                                                        </Box>
-                                                    </CardBody>
-                                                </Card>
-                                            </TabPanel>
-                                            <TabPanel>
-                                                <Card>
-                                                    <CardBody>
-                                                        <Box bg={"gray.200"} p={2}>
-                                                            <Text>
-                                                                <b>Department Council</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                <b>John User</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                <b>2023-12-14</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                                                sed do eiusmod tempor incididunt ut labore et dolore
-                                                                magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                                exercitation ullamco laboris nisi ut aliquip ex ea
-                                                                commodo consequat. Duis aute irure dolor in
-                                                                reprehenderit in voluptate velit esse cillum dolore eu
-                                                                fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                                                                non proident, sunt in culpa qui officia deserunt mollit
-                                                                anim id est laborum.
-                                                            </Text>
-                                                            <Button marginTop={5}>
-                                                                <ArrowLeftIcon marginRight={5} />
-                                                                Reply
-                                                            </Button>
-                                                        </Box>
-                                                    </CardBody>
-                                                </Card>
-                                            </TabPanel>
-                                            <TabPanel></TabPanel>
-                                            <TabPanel>
-                                                <Card>
-                                                    <CardBody>
-                                                        <Box bg={"gray.200"} p={2}>
-                                                            <Text>
-                                                                <b>Gina Cody School Faculty Council</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                <b>Jane User</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                <b>2023-12-13</b>{" "}
-                                                            </Text>
-                                                            <Text>
-                                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                                                sed do eiusmod tempor incididunt ut labore et dolore
-                                                                magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                                exercitation ullamco laboris nisi ut aliquip ex ea
-                                                                commodo consequat. Duis aute irure dolor in
-                                                                reprehenderit in voluptate velit esse cillum dolore eu
-                                                                fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                                                                non proident, sunt in culpa qui officia deserunt mollit
-                                                                anim id est laborum.
-                                                            </Text>
-                                                            <Button marginTop={5}>
-                                                                <ArrowLeftIcon marginRight={5} />
-                                                                Reply
-                                                            </Button>
-                                                        </Box>
-                                                    </CardBody>
-                                                </Card>
-                                            </TabPanel>
-                                            <TabPanel></TabPanel>
-                                            <TabPanel></TabPanel>
-                                            <TabPanel></TabPanel>
-                                            <TabPanel></TabPanel>
-                                            <TabPanel></TabPanel>
+                                            {dossierDetails?.approvalStages?.map((stage) => (
+                                                <TabPanel key={stage.groupId}>
+                                                    <Card>
+                                                        {dossierDetails?.discussion.messages
+                                                            .filter((message) => stage.groupId == message.groupId)
+                                                            .map((filteredMessage) => (
+                                                                <CardBody key={filteredMessage.id}>
+                                                                    <Box bg={"gray.200"} p={2}>
+                                                                        <Text>
+                                                                            <b>{stage.group.name}</b>{" "}
+                                                                        </Text>
+                                                                        <Text>
+                                                                            <b>Joe User</b>{" "}
+                                                                        </Text>
+                                                                        <Text>
+                                                                            <b>2023-12-17</b>{" "}
+                                                                        </Text>
+                                                                        <Text>{filteredMessage.message}</Text>
+                                                                        <Button marginTop={5}>
+                                                                            <ArrowLeftIcon marginRight={5} />
+                                                                            Reply
+                                                                        </Button>
+                                                                    </Box>
+                                                                </CardBody>
+                                                            ))}
+                                                    </Card>
+                                                </TabPanel>
+                                            ))}
                                         </TabPanels>
                                     </Tabs>
                                 </Stack>
