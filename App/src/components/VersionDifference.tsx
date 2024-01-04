@@ -1,10 +1,28 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Box, Text, Stack, HStack, Heading } from "@chakra-ui/react";
-
-const CourseDifferenceViewer = ({ oldCourse, newCourse }) => {
+import { Box, HStack } from "@chakra-ui/react";
+import { AllCourseSettings, Course, componentMappings } from "../models/course";
+import CoursePreviewWithChange from "./CoursePreviewWithChange";
+const CourseDifferenceViewer = ({
+    oldCourse,
+    newCourse,
+    allCourseSettings,
+}: {
+    oldCourse: Course;
+    newCourse: Course;
+    allCourseSettings: AllCourseSettings;
+}) => {
     const compareCourses = (oldCourse, newCourse) => {
-        const fieldsToCompare = ["catalog", "title", "career", "description", "preReqs"]; // Fields to compare
+        const fieldsToCompare = [
+            "catalog",
+            "title",
+            "career",
+            "description",
+            "preReqs",
+            "componentCodes",
+            "subject",
+            "courseNotes",
+            "equivalentCourses",
+            "creditValue",
+        ]; // Fields to compare
         return fieldsToCompare.map((key) => {
             const oldValue = oldCourse[key];
             const newValue = newCourse[key];
@@ -12,82 +30,72 @@ const CourseDifferenceViewer = ({ oldCourse, newCourse }) => {
             return { key, oldValue, newValue, isChanged };
         });
     };
-
+    const getCourseComponentsObject = (courseDetails: Course) => {
+        const courseComponentsTemp = allCourseSettings?.courseComponents
+            .filter((component) =>
+                Object.keys(courseDetails?.componentCodes || {}).includes(componentMappings[component.componentName])
+            )
+            .map((filteredComponent) => {
+                const code = componentMappings[filteredComponent.componentName];
+                const hours = courseDetails.componentCodes[code];
+                return {
+                    ...filteredComponent,
+                    hours: hours,
+                };
+            });
+        return courseComponentsTemp;
+    };
     const differences = compareCourses(oldCourse, newCourse);
-
+    const oldCourseCareer = allCourseSettings?.courseCareers.find((career) => career.careerCode === oldCourse.career)
+        .careerName;
+    const newCourseCareer = allCourseSettings?.courseCareers.find((career) => career.careerCode === newCourse.career)
+        .careerName;
+    const oldCourseComponents = getCourseComponentsObject(oldCourse);
+    const newCourseComponents = getCourseComponentsObject(newCourse);
+    const changedFields = {};
+    differences.forEach(({ key, isChanged }) => {
+        changedFields[key] = isChanged;
+    });
     return (
-        <HStack align="stretch">
-            <Box bg={"gray.200"} p={2}>
-                <Heading as="h2" size="xl" color="brandRed">
-                    Old Version
-                </Heading>
-                {differences.map(({ key, oldValue, isChanged }) => (
-                    <>
-                        <Stack key={key} direction="row">
-                            <Text>{key}: </Text>
-                            <Text key={key} as={isChanged ? "s" : "span"} color={isChanged ? "red" : "black"}>
-                                {oldValue}
-                            </Text>
-                        </Stack>
-                    </>
-                ))}
-            </Box>
-            <Box bg={"gray.200"} p={2}>
-                <Heading as="h2" size="xl" color="brandRed">
-                    Current Version
-                </Heading>
-                {differences.map(({ key, newValue, isChanged }) => (
-                    <>
-                        <Stack key={key} direction="row">
-                            <Text>{key}: </Text>
-                            <Text key={key} color={isChanged ? "blue" : "black"}>
-                                {newValue}
-                            </Text>
-                        </Stack>
-                    </>
-                ))}
-            </Box>
-        </HStack>
+        <>
+            {oldCourse && newCourse && (
+                <HStack align="stretch" spacing={4} border={"solide"} borderColor={"gray.200"} borderWidth={1} p={2}>
+                    <Box w="100%">
+                        <CoursePreviewWithChange
+                            courseCareer={oldCourseCareer} // Update these props as needed
+                            courseDescription={oldCourse.description}
+                            coursePreReqs={oldCourse.preReqs}
+                            courseTitle={oldCourse.title}
+                            courseCreditValue={oldCourse.creditValue} // Add this if available
+                            courseEquivalentCourses={oldCourse.equivalentCourses} // Add this if available
+                            courseNotes={oldCourse.courseNotes}
+                            courseSubject={oldCourse.subject} // Add this if available
+                            courseCatalog={oldCourse.catalog}
+                            courseComponents={oldCourseComponents}
+                            changedFields={changedFields}
+                            version="old"
+                        />
+                    </Box>
+                    <Box w="100%">
+                        <CoursePreviewWithChange
+                            courseCareer={newCourseCareer} // Update these props as needed
+                            courseDescription={newCourse.description}
+                            coursePreReqs={newCourse.preReqs}
+                            courseTitle={newCourse.title}
+                            courseCreditValue={newCourse.creditValue} // Add this if available
+                            courseEquivalentCourses={newCourse.equivalentCourses} // Add this if available
+                            courseNotes={newCourse.courseNotes}
+                            courseSubject={newCourse.subject} // Add this if available
+                            courseCatalog={newCourse.catalog}
+                            courseComponents={newCourseComponents}
+                            changedFields={changedFields}
+                            version="new"
+                        />
+                    </Box>
+                </HStack>
+            )}
+        </>
     );
-};
-
-CourseDifferenceViewer.propTypes = {
-    oldCourse: PropTypes.shape({
-        subject: PropTypes.string,
-        catalog: PropTypes.string,
-        title: PropTypes.string,
-        description: PropTypes.string,
-        creditValue: PropTypes.string,
-        preReqs: PropTypes.string,
-        career: PropTypes.number,
-        equivalentCourses: PropTypes.string,
-        componentCodes: PropTypes.object,
-        dossierId: PropTypes.string,
-        courseNotes: PropTypes.string,
-        rationale: PropTypes.string,
-        supportingFiles: PropTypes.object,
-        resourceImplication: PropTypes.string,
-        courseID: PropTypes.number,
-        comment: PropTypes.string,
-    }).isRequired,
-    newCourse: PropTypes.shape({
-        subject: PropTypes.string,
-        catalog: PropTypes.string,
-        title: PropTypes.string,
-        description: PropTypes.string,
-        creditValue: PropTypes.string,
-        preReqs: PropTypes.string,
-        career: PropTypes.number,
-        equivalentCourses: PropTypes.string,
-        componentCodes: PropTypes.object,
-        dossierId: PropTypes.string,
-        courseNotes: PropTypes.string,
-        rationale: PropTypes.string,
-        supportingFiles: PropTypes.object,
-        resourceImplication: PropTypes.string,
-        courseID: PropTypes.number,
-        comment: PropTypes.string,
-    }).isRequired,
 };
 
 export default CourseDifferenceViewer;
