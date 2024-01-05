@@ -52,6 +52,7 @@ export default function DossierReview() {
     const [messageError, setMessageError] = useState(true);
     const [currentGroup, setCurrentGroup] = useState<ApprovalStage | null>(null);
     const [isGroupMaster, setIsGroupMaster] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const user = useContext(UserContext);
 
     const navigate = useNavigate();
@@ -103,6 +104,8 @@ export default function DossierReview() {
                                 onClick={() => {
                                     handleSubmitRequest();
                                     onCloseMessage();
+                                    setMessage("");
+                                    setIsSubmitted(true);
                                 }}
                                 ml={3}
                             >
@@ -479,7 +482,8 @@ export default function DossierReview() {
                                     <FormControl isInvalid={messageError && formSubmitted}>
                                         <Textarea
                                             onChange={handleChangeMessage}
-                                            placeholder="Add message to discussion board..."
+                                            value={isSubmitted ? "" : message}
+                                            placeholder={"Add message to discussion board..."}
                                             minH={"150px"}
                                         ></Textarea>
                                         <FormErrorMessage>Message cannot be empty.</FormErrorMessage>
