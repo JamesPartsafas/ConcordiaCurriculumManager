@@ -41,6 +41,8 @@ import { showToast } from "../../utils/toastUtils";
 import DeleteAlert from "../../shared/DeleteAlert";
 import EditCourseModal from "./EditCourseModal";
 import { ArrowBackIcon } from "@chakra-ui/icons";
+import theme from "../../../theme";
+import EditApprovalStagesModal from "./EditApprovalStagesModal";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
@@ -54,6 +56,7 @@ export default function DossierDetails() {
         useState<CourseModificationRequest>(null);
     const [selectedCourseDeletionRequest, setSelectedCourseDeletionRequest] = useState<CourseDeletionRequest>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [showApprovalStagesModal, setShowApprovalStagesModal] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -256,6 +259,13 @@ export default function DossierDetails() {
                 { state: { ...modificationRequestToEdit, api: "editModificationRequest" } }
             );
         });
+    }
+
+    function dispaylayApprovalStagesModal() {
+        setShowApprovalStagesModal(true);
+    }
+    function closeApprovalStagesModal() {
+        setShowApprovalStagesModal(false);
     }
 
     return (
@@ -571,16 +581,46 @@ export default function DossierDetails() {
                     </Button>
                 </Box>
 
-                <Heading>Approval Stages</Heading>
-                {dossierDetails?.approvalStages
-                    ?.sort((a, b) => (a.stageIndex - b.stageIndex > 0 ? 1 : -1))
-                    .map((stage) => (
-                        <div key={stage.stageIndex}>
-                            <Text>
-                                {stage.group.name} {stage.isCurrentStage ? <ArrowBackIcon/> : ""}
-                            </Text>
-                        </div>
-                    ))}
+                <Box
+                    mt={2}
+                    p={2}
+                    borderRadius={"lg"}
+                    border={"2px"}
+                    borderColor={"brandGray200"}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="space-between"
+                >
+                    <Heading mb={2}>Approval Stages</Heading>
+
+                    <Box>
+                        {dossierDetails?.approvalStages
+                            ?.sort((a, b) => (a.stageIndex - b.stageIndex > 0 ? 1 : -1))
+                            .map((stage) => (
+                                <Box key={stage.stageIndex}>
+                                    <Text>
+                                        {stage.group.name} {stage.isCurrentStage ? <ArrowBackIcon /> : ""}
+                                    </Text>
+                                </Box>
+                            ))}
+                    </Box>
+                    <Button
+                        mt={2}
+                        alignSelf={"flex-end"}
+                        variant="outline"
+                        style="primary"
+                        onClick={() => {
+                            dispaylayApprovalStagesModal();
+                        }}
+                        isDisabled={dossierDetails?.approvalStages.length !== 0}
+                    >
+                        Edit
+                    </Button>
+                </Box>
+
+                {showApprovalStagesModal && <EditApprovalStagesModal open={showApprovalStagesModal}
+                    closeModal={closeApprovalStagesModal} dossierId={dossierId}/>}
+
             </Container>
         </>
     );

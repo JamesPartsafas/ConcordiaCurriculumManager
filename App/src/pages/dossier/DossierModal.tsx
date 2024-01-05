@@ -48,20 +48,6 @@ export default function DossierModal(props: DossierModalProps) {
         },
     });
 
-    function addDefaultReviewGroups(dossierId: string) {
-        submitDossierForReview(dossierId, {
-            dossierID: dossierId,
-            groupIDs: [
-                Groups.DepartmentCurriculumCommittee,
-                Groups.DepartmentConcul,
-                Groups.FacultyUndergraduateCommittee,
-                Groups.FacultyCouncil,
-                Groups.APCCommittee,
-                Groups.Senate,
-            ],
-        });
-    }
-
     //this should call the edit or add dossier endpoint
     function onSubmit(data: DossierForm) {
         setLoading(true);
@@ -69,8 +55,6 @@ export default function DossierModal(props: DossierModalProps) {
             createDossierForUser(data).then(
                 (res: DossierDTOResponse) => {
                     props.dossierList?.push(res.data);
-
-                    addDefaultReviewGroups(res.data.id); //add default review groups
                     
                     props.closeModal();
                     showToast(toast, "Success!", "Dossier created.", "success");
