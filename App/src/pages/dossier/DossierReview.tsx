@@ -153,9 +153,8 @@ export default function DossierReview() {
                                 //isLoading={loading}
                                 loadingText="Deleting"
                                 onClick={() => {
-                                    window.location.reload();
                                     handleForwardDossier();
-                                    onCloseForward();
+                                    navigate(BaseRoutes.DossiersToReview);
                                 }}
                                 ml={3}
                             >
@@ -201,9 +200,8 @@ export default function DossierReview() {
                                 //isLoading={loading}
                                 loadingText="Deleting"
                                 onClick={() => {
-                                    window.location.reload();
                                     handleReturnDossier();
-                                    onCloseReturn();
+                                    navigate(BaseRoutes.DossiersToReview);
                                 }}
                                 ml={3}
                             >
@@ -248,9 +246,8 @@ export default function DossierReview() {
                                 //isLoading={loading}
                                 loadingText="Deleting"
                                 onClick={() => {
-                                    window.location.reload();
                                     handleRejectDossier();
-                                    onCloseReject();
+                                    navigate(BaseRoutes.DossiersToReview);
                                 }}
                                 ml={3}
                             >
@@ -266,7 +263,11 @@ export default function DossierReview() {
     const handleForwardDossier = () => {
         forwardDossier(dossierId)
             .then(() => {
-                showToast(toast, "Success!", "Dossier successfully forwarded.", "success");
+                if (currentGroup?.isFinalStage) {
+                    showToast(toast, "Success!", "Dossier successfully accepted.", "success");
+                } else {
+                    showToast(toast, "Success!", "Dossier successfully forwarded.", "success");
+                }
             })
             .catch(() => {
                 showToast(toast, "Error!", "One or more validation errors occurred", "error");
@@ -305,7 +306,7 @@ export default function DossierReview() {
         else {
             const dossierForReviewDTO = {
                 message: message,
-                groupId: currentGroup.groupId,
+                groupId: currentGroup?.groupId,
             };
 
             reviewDossier(dossierId, dossierForReviewDTO)
