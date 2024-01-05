@@ -11,7 +11,6 @@ import {
     Text,
     useToast,
 } from "@chakra-ui/react";
-import { ApprovalStage } from "../../models/dossier";
 import Button from "../../components/Button";
 import { useEffect, useState } from "react";
 import { ArrowDownIcon, ArrowUpIcon, DeleteIcon } from "@chakra-ui/icons";

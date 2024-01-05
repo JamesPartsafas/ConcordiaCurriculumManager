@@ -20,7 +20,7 @@ export interface DossierDetailsDTO {
     courseCreationRequests: CourseCreationRequest[];
     courseModificationRequests: CourseModificationRequest[];
     courseDeletionRequests: CourseDeletionRequest[];
-    approvalStages: ApprovalStage[]
+    approvalStages: ApprovalStage[];
 }
 
 export interface ApprovalStage {
@@ -33,7 +33,6 @@ export interface ApprovalStage {
     stageIndex: number;
     isCurrentStage: boolean;
     isFinalStage: boolean;
-
 }
 
 export interface DossierDTOResponse {

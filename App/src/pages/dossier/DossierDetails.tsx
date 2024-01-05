@@ -41,7 +41,6 @@ import { showToast } from "../../utils/toastUtils";
 import DeleteAlert from "../../shared/DeleteAlert";
 import EditCourseModal from "./EditCourseModal";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import theme from "../../../theme";
 import EditApprovalStagesModal from "./EditApprovalStagesModal";
 
 export default function DossierDetails() {
@@ -618,9 +617,13 @@ export default function DossierDetails() {
                     </Button>
                 </Box>
 
-                {showApprovalStagesModal && <EditApprovalStagesModal open={showApprovalStagesModal}
-                    closeModal={closeApprovalStagesModal} dossierId={dossierId}/>}
-
+                {showApprovalStagesModal && (
+                    <EditApprovalStagesModal
+                        open={showApprovalStagesModal}
+                        closeModal={closeApprovalStagesModal}
+                        dossierId={dossierId}
+                    />
+                )}
             </Container>
         </>
     );
