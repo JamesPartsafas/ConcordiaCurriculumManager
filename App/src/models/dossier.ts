@@ -54,6 +54,8 @@ export interface DossierDiscussionMessage {
     message: string;
     groupId: string;
     parentDiscussionMessageId: string;
+    createdDate: Date;
+    modifiedDate: Date;
 }
 
 export enum DossierStateEnum {

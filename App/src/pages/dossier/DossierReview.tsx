@@ -528,17 +528,26 @@ export default function DossierReview() {
                                                     <Card>
                                                         {dossierDetails?.discussion.messages
                                                             .filter((message) => stage.groupId == message.groupId)
+                                                            .sort(
+                                                                (a, b) =>
+                                                                    new Date(b.createdDate).getTime() -
+                                                                    new Date(a.createdDate).getTime()
+                                                            )
                                                             .map((filteredMessage) => (
                                                                 <CardBody key={filteredMessage.id}>
                                                                     <Box bg={"gray.200"} p={2}>
                                                                         <Text>
                                                                             <b>{stage.group.name}</b>{" "}
                                                                         </Text>
-                                                                        <Text>
+                                                                        {/* <Text>
                                                                             <b>Joe User</b>{" "}
-                                                                        </Text>
+                                                                        </Text> */}
                                                                         <Text>
-                                                                            <b>2023-12-17</b>{" "}
+                                                                            <b>
+                                                                                {filteredMessage.createdDate
+                                                                                    .toString()
+                                                                                    .substring(0, 10)}
+                                                                            </b>{" "}
                                                                         </Text>
                                                                         <Text>{filteredMessage.message}</Text>
                                                                         <Button marginTop={5}>
