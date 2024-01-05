@@ -3,6 +3,7 @@ using System;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConcordiaCurriculumManager.Migrations
 {
     [DbContext(typeof(CCMDbContext))]
-    partial class CCMDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240105000353_CreateManyToManyCourseIdentifiers")]
+    partial class CreateManyToManyCourseIdentifiers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,9 +155,6 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Property<Guid>("CommonIdentifier")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CourseGroupingId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -192,8 +192,6 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseGroupingId");
-
                     b.ToTable("CourseGroupings");
                 });
 
@@ -206,11 +204,11 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Property<Guid>("ChildGroupCommonIdentifier")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("CourseGroupingId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("GroupingType")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
@@ -219,6 +217,8 @@ namespace ConcordiaCurriculumManager.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseGroupingId");
 
                     b.HasIndex("ParentGroupId");
 
@@ -638,6 +638,21 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("CourseGroupingCourseGrouping", b =>
+                {
+                    b.Property<Guid>("OptionalGroupingsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SubGroupingsId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OptionalGroupingsId", "SubGroupingsId");
+
+                    b.HasIndex("SubGroupingsId");
+
+                    b.ToTable("CourseGroupingCourseGrouping");
+                });
+
             modelBuilder.Entity("CourseGroupingCourseIdentifier", b =>
                 {
                     b.Property<Guid>("CourseGroupingId")
@@ -725,17 +740,14 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Navigation("CourseComponent");
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", b =>
-                {
-                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", null)
-                        .WithMany("SubGroupings")
-                        .HasForeignKey("CourseGroupingId");
-                });
-
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGroupingReference", b =>
                 {
                     b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", null)
                         .WithMany("SubGroupingReferences")
+                        .HasForeignKey("CourseGroupingId");
+
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", null)
+                        .WithMany("OptionalGroupingReferences")
                         .HasForeignKey("ParentGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -902,6 +914,21 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("CourseGroupingCourseGrouping", b =>
+                {
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", null)
+                        .WithMany()
+                        .HasForeignKey("OptionalGroupingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", null)
+                        .WithMany()
+                        .HasForeignKey("SubGroupingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("CourseGroupingCourseIdentifier", b =>
                 {
                     b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", null)
@@ -988,9 +1015,9 @@ namespace ConcordiaCurriculumManager.Migrations
                 {
                     b.Navigation("Courses");
 
-                    b.Navigation("SubGroupingReferences");
+                    b.Navigation("OptionalGroupingReferences");
 
-                    b.Navigation("SubGroupings");
+                    b.Navigation("SubGroupingReferences");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.Dossier", b =>
