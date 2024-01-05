@@ -126,8 +126,8 @@ export default function DossierReview() {
 
                         <AlertDialogBody>
                             {currentGroup?.isFinalStage
-                                ? "Are you sure you want to accept this dossier?"
-                                : "Are you sure you want to forward this dossier to the next group in the approval pipeline?"}
+                                ? "Are you sure you want to accept this dossier? "
+                                : "Are you sure you want to forward this dossier to the next group in the approval pipeline? "}
                             You can&apos;t undo this action afterwards.
                         </AlertDialogBody>
 
@@ -316,7 +316,7 @@ export default function DossierReview() {
                         showToast(
                             toast,
                             "Error!",
-                            "You need to part of the current stage group in order to submit a message.",
+                            "You need to be part of the current stage group in order to submit a message.",
                             "error"
                         );
                     } else {
