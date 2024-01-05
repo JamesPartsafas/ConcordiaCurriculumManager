@@ -18,7 +18,6 @@ import { showToast } from "../../utils/toastUtils"; // Import the utility functi
 import Button from "../../components/Button";
 import { useState } from "react";
 import { DossierDTO, DossierDTOResponse } from "../../models/dossier";
-import { Groups, submitDossierForReview } from "../../services/dossierReview";
 
 interface DossierModalProps {
     open: boolean;
@@ -55,7 +54,6 @@ export default function DossierModal(props: DossierModalProps) {
             createDossierForUser(data).then(
                 (res: DossierDTOResponse) => {
                     props.dossierList?.push(res.data);
-                    
                     props.closeModal();
                     showToast(toast, "Success!", "Dossier created.", "success");
                     setLoading(false);
