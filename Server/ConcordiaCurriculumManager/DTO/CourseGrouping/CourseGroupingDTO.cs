@@ -16,6 +16,7 @@ public class CourseGroupingDTO
     public required CourseGroupingStateEnum State { get; set; }
     public int? Version { get; set; }
     public required bool Published { get; set; }
+    public required ICollection<CourseGroupingReferenceDTO> SubGroupingReferences { get; set; } = new List<CourseGroupingReferenceDTO>();
     public required ICollection<CourseGroupingDTO> SubGroupings { get; set; } = new List<CourseGroupingDTO>();
     public required ICollection<CourseDataDTO> Courses { get; set; } = new List<CourseDataDTO>();
     public required DateTime CreatedDate { get; set; }
