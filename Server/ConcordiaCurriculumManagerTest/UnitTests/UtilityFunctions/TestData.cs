@@ -494,7 +494,9 @@ public static class TestData
         {
             Id = Guid.NewGuid(),
             Message = "This is a test message",
-            GroupId = Guid.NewGuid()
+            GroupId = Guid.NewGuid(),
+            CreatedDate = DateTime.Now,
+            ModifiedDate = DateTime.Now
         };
     }
 
