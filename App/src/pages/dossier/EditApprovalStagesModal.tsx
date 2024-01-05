@@ -32,13 +32,31 @@ export default function EditApprovalStagesModal(props: EditApprovalStagesModalPr
     const [approvalStages, setApprovalStages] = useState([]);
     const navigate = useNavigate();
 
+    const groupOrder = {
+        "Department Curriculum Committee": 1,
+        "Department Consul": 2,
+        "Faculty Undergraduate Committee": 3,
+        "Faculty Council": 4,
+        "APC Committee": 5,
+        "Senate": 6,
+    };
+
     useEffect(() => {
         initializeApprovalStages();
     }, []);
 
     function initializeApprovalStages() {
         GetAllGroups().then((groups: MultiGroupResponseDTO) => {
-            setApprovalStages(groups.data.map((group, index) => ({ group: group, stageIndex: index })));
+            console.log(groups.data);
+            const sortedGroups = groups.data
+                .sort((a, b) => {
+                    const orderA = groupOrder[a.name] || Number.MAX_VALUE;
+                    const orderB = groupOrder[b.name] || Number.MAX_VALUE;
+                    return orderA - orderB;
+                })
+                .map((group, index) => ({ group: group, stageIndex: index }));
+
+            setApprovalStages(sortedGroups);
         });
     }
 
