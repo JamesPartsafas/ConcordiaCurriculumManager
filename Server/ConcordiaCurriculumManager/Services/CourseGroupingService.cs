@@ -13,11 +13,11 @@ public interface ICourseGroupingService
 
 public class CourseGroupingService : ICourseGroupingService
 {
-    private readonly ILogger<CourseService> _logger;
+    private readonly ILogger<CourseGroupingService> _logger;
     private readonly ICourseRepository _courseRepository;
     private readonly ICourseGroupingRepository _courseGroupingRepository;
 
-    public CourseGroupingService(ILogger<CourseService> logger, ICourseRepository courseRepository, ICourseGroupingRepository courseGroupingRepository)
+    public CourseGroupingService(ILogger<CourseGroupingService> logger, ICourseRepository courseRepository, ICourseGroupingRepository courseGroupingRepository)
     {
         _logger = logger;
         _courseRepository = courseRepository;
