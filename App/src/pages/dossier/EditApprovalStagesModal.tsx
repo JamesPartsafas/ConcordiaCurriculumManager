@@ -15,7 +15,7 @@ import Button from "../../components/Button";
 import { useEffect, useState } from "react";
 import { ArrowDownIcon, ArrowUpIcon, DeleteIcon } from "@chakra-ui/icons";
 import { GetAllGroups, MultiGroupResponseDTO } from "../../services/group";
-import { submitDossierForReview } from "../../services/dossierReview";
+import { submitDossierForReview } from "../../services/dossierreview";
 import { showToast } from "../../utils/toastUtils";
 import { useNavigate } from "react-router-dom";
 import { BaseRoutes } from "../../constants";
@@ -70,8 +70,8 @@ export default function EditApprovalStagesModal(props: EditApprovalStagesModalPr
 
     function addReviewGroups() {
         submitDossierForReview(props?.dossierId, {
-            dossierID: props?.dossierId,
-            groupIDs: [...approvalStages.map((stage) => stage.group.id)],
+            dossierId: props?.dossierId,
+            groupIds: [...approvalStages.map((stage) => stage.group.id)],
         }).then(
             () => {
                 setLoading(false);

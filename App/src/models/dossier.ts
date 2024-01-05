@@ -33,6 +33,7 @@ export interface ApprovalStage {
     stageIndex: number;
     isCurrentStage: boolean;
     isFinalStage: boolean;
+    discussion: DossierDiscussion;
 }
 
 export interface DossierDTOResponse {
@@ -45,6 +46,20 @@ export interface GetMyDossiersResponse {
 
 export interface DossierDetailsResponse {
     data: DossierDetailsDTO;
+}
+
+export interface DossierDiscussion {
+    dossierId: string;
+    messages: DossierDiscussionMessage[];
+}
+
+export interface DossierDiscussionMessage {
+    id: string;
+    message: string;
+    groupId: string;
+    parentDiscussionMessageId: string;
+    createdDate: Date;
+    modifiedDate: Date;
 }
 
 export enum DossierStateEnum {
