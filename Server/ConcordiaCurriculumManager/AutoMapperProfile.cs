@@ -5,6 +5,7 @@ using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
+using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
@@ -34,7 +35,11 @@ public class AutoMapper : Profile
             .ReverseMap();
         CreateMap<CourseCreationRequest, CourseCreationRequestCourseDetailsDTO>().ReverseMap();
         CreateMap<CourseModificationRequest, CourseModificationRequestCourseDetailsDTO>().ReverseMap();
-        CreateMap<CourseDeletionRequest, CourseDeletionRequestDetailsDTO>().ReverseMap();
+        CreateMap<ApprovalStage, ApprovalStageDTO>();
+        CreateMap<DossierDiscussion, DossierDiscussionDTO>().ReverseMap();
+        CreateMap<CreateDossierDiscussionMessageDTO, DiscussionMessage>();
+        CreateMap<DiscussionMessage, DossierDiscussionMessageDTO>();
+        CreateMap<CourseDeletionRequest, CourseDeletionRequestCourseDetailsDTO>().ReverseMap();
         CreateMap<DossierReport, DossierReportDTO>()
             .ForMember(dest => dest.InitiatorId, opt => opt.MapFrom(d => d.Dossier.InitiatorId))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(d => d.Dossier.Title))
@@ -45,5 +50,4 @@ public class AutoMapper : Profile
             .ForMember(dest => dest.CourseDeletionRequests, opt => opt.MapFrom(d => d.Dossier.CourseDeletionRequests))
             .ForMember(dest => dest.ApprovalStages, opt => opt.MapFrom(d => d.Dossier.ApprovalStages));
     }
-
 }

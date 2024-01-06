@@ -1,18 +1,12 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.Controllers;
-using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
-using ConcordiaCurriculumManager.Repositories;
+using ConcordiaCurriculumManager.DTO.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 
@@ -20,14 +14,16 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 public class DossierReviewControllerTest
 {
     private Mock<IDossierReviewService> dossierReviewService = null!;
+    private Mock<IMapper> mapper = null!;
     private DossierReviewController dossierReviewController = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
         dossierReviewService = new Mock<IDossierReviewService>();
+        mapper = new Mock<IMapper>();
 
-        dossierReviewController = new DossierReviewController(dossierReviewService.Object);
+        dossierReviewController = new DossierReviewController(dossierReviewService.Object, mapper.Object);
     }
 
     [TestMethod]
@@ -62,4 +58,29 @@ public class DossierReviewControllerTest
 
         dossierReviewService.Verify(mock => mock.ForwardDossier(dossierId), Times.Once());
     }
+
+    [TestMethod]
+    public async Task ReviewDossier_ValidCall_ReturnsNoContent()
+    {
+        var dossierId = Guid.NewGuid();
+        var dossierMessageDTO = TestData.GetSampleCreateDossierDiscussionMessageDTO();
+
+        var discussionMessage = new DiscussionMessage()
+        {
+            DossierDiscussionId = dossierId,
+            Message = dossierMessageDTO.Message,
+            GroupId = dossierMessageDTO.GroupId,
+            AuthorId = Guid.NewGuid()
+        };
+
+        mapper.Setup(m => m.Map<DiscussionMessage>(dossierMessageDTO)).Returns(discussionMessage);
+        dossierReviewService.Setup(drs => drs.AddDossierDiscussionReview(dossierId, It.IsAny<DiscussionMessage>())).Returns(Task.CompletedTask);
+
+        var actionResult = await dossierReviewController.ReviewDossier(dossierId, dossierMessageDTO);
+
+        dossierReviewService.Verify(mock => mock.AddDossierDiscussionReview(dossierId, It.IsAny<DiscussionMessage>()), Times.Once());
+        Assert.IsInstanceOfType(actionResult, typeof(NoContentResult));
+    }
+
+
 }

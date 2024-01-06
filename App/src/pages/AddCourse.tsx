@@ -40,10 +40,12 @@ import {
     EditCourseModificationRequestDTO,
     componentMappings,
 } from "../models/course";
+import CourseDifferenceViewer from "../components/VersionDifference";
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
 import Button from "../components/Button";
 import { BaseRoutes } from "../constants";
+import CoursePreview from "../components/CoursePreview";
 
 export default function AddCourse() {
     const toast = useToast();
@@ -52,7 +54,11 @@ export default function AddCourse() {
 
     const state = location.state;
     const { pathname } = location;
-    const pageTitle = pathname.includes("add-course") ? "Add Course" : "Edit Course";
+    const isEditPage = pathname.includes("edit-course");
+    const pageTitle = !isEditPage ? "Add Course" : "Edit Course";
+
+    const [oldCourse, setOldCourse] = useState<Course>(null);
+    const [newCourse, setNewCourse] = useState<Course>(null);
     // Form managment and error handling states
     const [isLoading, toggleLoading] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
@@ -96,36 +102,83 @@ export default function AddCourse() {
         // Find course carrer code
         const career = allCourseSettings?.courseCareers.find((career) => career.careerName === value);
         setCouresCareer(career);
+        setNewCourse({
+            ...newCourse,
+            career: career.careerCode,
+        });
     };
     const handleChangeDepartment = (value: string) => {
         if (value.length === 0) setCourseSubjectError(true);
         else setCourseSubjectError(false);
+        setNewCourse({
+            ...newCourse,
+            subject: value,
+        });
         setDepartment(value);
     };
     const handleChangeCourseNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.currentTarget.value.length === 0) setCourseCodeError(true);
         else setCourseCodeError(false);
         setCourseNumber(e.currentTarget.value);
+        setNewCourse({
+            ...newCourse,
+            catalog: e.currentTarget.value,
+        });
     };
     const handleChangeCourseName = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.currentTarget.value.length === 0) setCourseNameError(true);
         else setCourseNameError(false);
         setCourseName(e.currentTarget.value);
+        setNewCourse({
+            ...newCourse,
+            title: e.currentTarget.value,
+        });
     };
     const handleChangeCourseCredits = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.currentTarget.value.length === 0) setCourseCreditError(true);
         else setCourseCreditError(false);
         setCourseCredits(e.currentTarget.value);
+        setNewCourse({
+            ...newCourse,
+            creditValue: e.currentTarget.value,
+        });
     };
-    const handleChangeCourseDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+    const handleChangeCourseDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setCourseDescription(e.currentTarget.value);
-    const handleChangeCourseRequesites = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+        setNewCourse({
+            ...newCourse,
+            description: e.currentTarget.value,
+        });
+    };
+
+    const handleChangeCourseRequesites = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setCourseRequesites(e.currentTarget.value);
-    const handleChangeResourceImplication = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+        setNewCourse({
+            ...newCourse,
+            preReqs: e.currentTarget.value,
+        });
+    };
+    const handleChangeResourceImplication = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setResourceImplication(e.currentTarget.value);
-    const handleChangeRational = (e: React.ChangeEvent<HTMLTextAreaElement>) => setRational(e.currentTarget.value);
-    const handleChangeCourseNotes = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+        setNewCourse({
+            ...newCourse,
+            resourceImplication: e.currentTarget.value,
+        });
+    };
+    const handleChangeRational = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setRational(e.currentTarget.value);
+        setNewCourse({
+            ...newCourse,
+            rationale: e.currentTarget.value,
+        });
+    };
+    const handleChangeCourseNotes = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setCourseNotes(e.currentTarget.value);
+        setNewCourse({
+            ...newCourse,
+            courseNotes: e.currentTarget.value,
+        });
+    };
     const handleAddComponent = () => {
         const selectedItem: CourseComponent = JSON.parse(selectedComponent) as CourseComponent;
         // check if course component already exists
@@ -144,13 +197,35 @@ export default function AddCourse() {
             },
         ]);
         setComponents(components.filter((component) => component !== selectedItem));
+        setNewCourse({
+            ...newCourse,
+            componentCodes: {
+                ...newCourse?.componentCodes,
+                [componentMappings[selectedItem.componentName]]: 3,
+            },
+        });
     };
     const handleRemoveComponent = (index: number) => {
-        setComponents([...components, courseComponents[index]]);
+        setComponents([...components, courseComponents[index]]); // update list of components
         setCourseComponents(courseComponents.filter((_component, componentIndex) => componentIndex !== index));
+        // Remove component with component name as key from component codes object
+        setNewCourse({
+            ...newCourse,
+            componentCodes: Object.keys(newCourse.componentCodes).reduce((object, key) => {
+                if (key !== componentMappings[courseComponents[index].componentName]) {
+                    object[key] = newCourse.componentCodes[key];
+                }
+                return object;
+            }, {}),
+        });
     };
-    const handleChangeEquivalentCourses = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+    const handleChangeEquivalentCourses = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setEquivalentCourses(e.currentTarget.value);
+        setNewCourse({
+            ...newCourse,
+            equivalentCourses: e.currentTarget.value,
+        });
+    };
 
     const handleChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => setComment(e.currentTarget.value);
     const handleSubmitCourse = () => {
@@ -185,9 +260,11 @@ export default function AddCourse() {
                         toggleLoading(false);
                         clearForm();
                         setFormSubmitted(false);
+                        navigate("/dossierdetails/" + dossierId);
                     })
                     .catch((e) => {
-                        showToast(toast, "Error!", e.response.data.detail, "error");
+                        console.log(e);
+                        showToast(toast, "Error!", e.response.data, "error");
                         toggleLoading(false);
                     });
             } else if (pathname.includes("edit-course")) editAction(course);
@@ -226,6 +303,13 @@ export default function AddCourse() {
         const newCourseComponents = [...courseComponents];
         newCourseComponents[index].hours = hours;
         setCourseComponents(newCourseComponents);
+        setNewCourse({
+            ...newCourse,
+            componentCodes: {
+                ...newCourse.componentCodes,
+                [componentMappings[courseComponents[index].componentName]]: hours,
+            },
+        });
     };
     const getCourseComponentsObject = (courseComponents: CourseComponents[]) => {
         const courseComponentsObject = {};
@@ -332,6 +416,27 @@ export default function AddCourse() {
             resourceImplication: state?.resourceImplication || "",
             comment: state?.comment || "",
         };
+        const courseDetails2: Course = {
+            courseID: state?.courseID,
+            subject: state?.subject,
+            catalog: state?.catalog,
+            title: state?.title,
+            description: state?.description,
+            creditValue: state?.creditValue,
+            preReqs: state?.preReqs,
+            career: state?.career,
+            equivalentCourses: state?.equivalentCourses,
+            componentCodes: state?.componentCodes,
+            dossierId: dossierId,
+            courseNotes: state?.courseNotes,
+            rationale: state?.rationale || "",
+            supportingFiles: state?.supportingFiles,
+            resourceImplication: state?.resourceImplication || "",
+            comment: state?.comment || "",
+        };
+        setOldCourse(courseDetails);
+        setNewCourse(courseDetails2);
+        // set values
         setCourseID(courseDetails?.courseID);
         setDepartment(courseDetails?.subject);
         setCourseName(courseDetails?.title);
@@ -399,6 +504,13 @@ export default function AddCourse() {
                         Back
                     </Button>
                     <form>
+                        {oldCourse && newCourse && isEditPage && (
+                            <CourseDifferenceViewer
+                                oldCourse={oldCourse}
+                                newCourse={newCourse}
+                                allCourseSettings={allCourseSettings}
+                            ></CourseDifferenceViewer>
+                        )}
                         <Flex>
                             <Stack w="35%" p={8}>
                                 <Stack>
@@ -566,65 +678,22 @@ export default function AddCourse() {
                                     </Stack>
                                 </Stack>
                             </Stack>
+
                             <Stack w="65%" p={8}>
-                                <Stack>
-                                    <Center>
-                                        <Heading as="h2" size="xl" color="brandRed">
-                                            Version Preview
-                                        </Heading>
-                                    </Center>
-                                    <Stack>
-                                        <Card>
-                                            <CardBody>
-                                                <Box bg={"gray.200"} p={2}>
-                                                    <Heading size="xl">
-                                                        {department} {courseNumber} {courseName}{" "}
-                                                        {courseCredits === "" ? null : (
-                                                            <Text display={"inline"}>
-                                                                {"("}
-                                                                {courseCredits}{" "}
-                                                                {parseInt(courseCredits) === 1 ? "credit)" : "credits)"}
-                                                            </Text>
-                                                        )}
-                                                    </Heading>
-                                                    <Text>
-                                                        <b>Course Career:</b>{" "}
-                                                        {courseCareer ? courseCareer.careerName : "Not specified"}
-                                                    </Text>
-                                                    <Text>
-                                                        <b>Description:</b>{" "}
-                                                        {courseDescription
-                                                            ? courseDescription
-                                                            : "No description for this class"}
-                                                    </Text>
-                                                    <Text>
-                                                        <b>Prerequisites and Corerequisites:</b>{" "}
-                                                        {courseRequesites ? courseRequesites : "None"}
-                                                    </Text>
-                                                    <Text>
-                                                        <b>Component(s):</b>{" "}
-                                                        {courseComponents.length === 0
-                                                            ? "Not Available"
-                                                            : courseComponents.map(
-                                                                  (component) =>
-                                                                      component.componentName +
-                                                                      " " +
-                                                                      component.hours +
-                                                                      " hour(s) per week. "
-                                                              )}
-                                                    </Text>
-                                                    <Text>
-                                                        <b>Equivalent Courses: </b>{" "}
-                                                        {equivalentCourses ? equivalentCourses : "None"}
-                                                    </Text>
-                                                    <Text>
-                                                        <b>Course Notes: </b> {courseNotes ? courseNotes : "None"}
-                                                    </Text>
-                                                </Box>
-                                            </CardBody>
-                                        </Card>
-                                    </Stack>
-                                </Stack>
+                                {!isEditPage && (
+                                    <CoursePreview
+                                        courseCareer={courseCareer?.careerName}
+                                        courseDescription={courseDescription}
+                                        coursePreReqs={courseRequesites}
+                                        courseTitle={courseName}
+                                        courseCreditValue={courseCredits}
+                                        courseEquivalentCourses={equivalentCourses}
+                                        courseNotes={courseNotes}
+                                        courseSubject={department}
+                                        courseCatalog={courseNumber}
+                                        courseComponents={courseComponents}
+                                    ></CoursePreview>
+                                )}
                                 <Stack>
                                     <Center>
                                         <Heading as="h2" size="xl" color="brandRed">

@@ -171,6 +171,7 @@ export default function Dossiers() {
                     width="fit-content"
                     height="40px"
                     alignSelf="flex-end"
+                    ml="2"
                     isDisabled={!user.roles.includes(UserRoles.Initiator)}
                     onClick={() => {
                         navigate(BaseRoutes.DossiersToReview);

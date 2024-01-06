@@ -48,7 +48,7 @@ public class CourseRequestOnExistingCourseTest
 
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
-    public void MarkAsAccepeted_WithCourseNotFound_Throws()
+    public void MarkAsAccepted_WithCourseNotFound_Throws()
     {
         var collection = TestData.GetSampleCourseVersionCollection();
         var request = TestData.GetSampleCourseModificationRequest();
