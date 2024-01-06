@@ -309,4 +309,20 @@ public class DossierRepositoryTests
         var result = await dossierRepository.GetDossiersRequiredReview(dossier.Id);
         Assert.IsNotNull(result);
     }
+
+    [TestMethod]
+    public async Task CheckIfCourseRequestExists_ReturnsTrue()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+        var course = TestData.GetSampleCourse();
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest(dossier, course);
+
+        dbContext.Dossiers.Add(dossier);
+        dbContext.Courses.Add(course);
+        dbContext.CourseCreationRequests.Add(courseCreationRequest);
+        await dbContext.SaveChangesAsync();
+
+        var result = await dossierRepository.CheckIfCourseRequestExists(dossier.Id, courseCreationRequest.NewCourse!.Subject, courseCreationRequest.NewCourse.Catalog);
+        Assert.IsTrue(result);
+    }
 }
