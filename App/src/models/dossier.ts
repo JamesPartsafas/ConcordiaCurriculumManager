@@ -21,19 +21,19 @@ export interface DossierDetailsDTO {
     courseModificationRequests: CourseModificationRequest[];
     courseDeletionRequests: CourseDeletionRequest[];
     approvalStages: ApprovalStage[];
+    discussion: DossierDiscussion;
 }
 
 export interface ApprovalStage {
     id: string;
     createdDate: Date;
     modifiedDate: Date;
-    groupID: string;
+    groupId: string;
     group: GroupDTO;
     dossierId: string;
     stageIndex: number;
     isCurrentStage: boolean;
     isFinalStage: boolean;
-    discussion: DossierDiscussion;
 }
 
 export interface DossierDTOResponse {
