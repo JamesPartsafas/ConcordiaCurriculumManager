@@ -344,12 +344,12 @@ export default function DossierDetails() {
                                         <Textarea
                                             isReadOnly
                                             variant={"filled"}
-                                            value={courseCreationRequest.newCourse?.rationale}
+                                            value={courseCreationRequest?.rationale}
                                         />
                                         <Textarea
                                             isReadOnly
                                             variant={"filled"}
-                                            value={"Comments: " + courseCreationRequest.newCourse?.comment}
+                                            value={courseCreationRequest?.comment}
                                         />
                                     </Stack>
                                 </CardBody>
@@ -450,12 +450,12 @@ export default function DossierDetails() {
                                         <Textarea
                                             isReadOnly
                                             variant={"filled"}
-                                            value={"Rationale: " + courseModificationRequest.course?.rationale}
+                                            value={courseModificationRequest?.rationale}
                                         />
                                         <Textarea
                                             isReadOnly
                                             variant={"filled"}
-                                            value={"Comments: " + courseModificationRequest.course?.comment}
+                                            value={courseModificationRequest?.comment}
                                         />
                                     </Stack>
                                 </CardBody>
@@ -556,12 +556,12 @@ export default function DossierDetails() {
                                         <Textarea
                                             isReadOnly
                                             variant={"filled"}
-                                            value={"Rationale: " + courseDeletionRequest.course?.rationale}
+                                            value={courseDeletionRequest?.rationale}
                                         />
                                         <Textarea
                                             isReadOnly
                                             variant={"filled"}
-                                            value={"Comments: " + courseDeletionRequest.course?.comment}
+                                            value={courseDeletionRequest?.comment}
                                         />
                                     </Stack>
                                 </CardBody>
