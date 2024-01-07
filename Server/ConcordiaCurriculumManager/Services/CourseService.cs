@@ -111,7 +111,7 @@ public class CourseService : ICourseService
 
         if (isDuplicate)
         {
-            throw new DuplicateNameException("A course creation request with the course " + initiation.Subject + " " + initiation.Catalog + " already exists.");
+            throw new BadRequestException("A course request for " + initiation.Subject + " " + initiation.Catalog + " already exists in this dossier.");
         }
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(initiation.DossierId, userId);
@@ -144,7 +144,7 @@ public class CourseService : ICourseService
 
         if (isDuplicate)
         {
-            throw new DuplicateNameException("A course modification request with the course " + modification.Subject + " " + modification.Catalog + " already exists.");
+            throw new BadRequestException("A course request for " + modification.Subject + " " + modification.Catalog + " already exists in this dossier.");
         }
 
         var oldCourse = await GetCourseDataOrThrowOnDeleted(modification.Subject, modification.Catalog);
@@ -177,7 +177,7 @@ public class CourseService : ICourseService
 
         if (isDuplicate)
         {
-            throw new DuplicateNameException("A course deletion request with the course " + deletion.Subject + " " + deletion.Catalog + " already exists.");
+            throw new BadRequestException("A course request for " + deletion.Subject + " " + deletion.Catalog + " already exists in this dossier.");
         }
 
         var oldCourse = await GetCourseDataOrThrowOnDeleted(deletion.Subject, deletion.Catalog);
