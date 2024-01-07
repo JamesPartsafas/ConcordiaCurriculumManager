@@ -6,6 +6,7 @@ using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 public static class TestData
@@ -547,6 +548,61 @@ public static class TestData
         {
             Id = Guid.NewGuid(),
             Name = "Senate"
+        };
+    }
+
+    // COURSE GROUPINGS
+    public static CourseGrouping GetSampleCourseGrouping()
+    {
+        var id1 = Guid.NewGuid();
+        var id2 = Guid.NewGuid();
+        var common1 = Guid.NewGuid();
+        var common2 = Guid.NewGuid();
+        var course = GetSampleAcceptedCourse();
+
+        return new CourseGrouping
+        {
+            Id = id1,
+            CommonIdentifier = common1,
+            Name = "Top level",
+            RequiredCredits = "30.00",
+            IsTopLevel = true,
+            School = SchoolEnum.GinaCody,
+            State = CourseGroupingStateEnum.Accepted,
+            Published = true,
+            SubGroupingReferences = new List<CourseGroupingReference>
+            {
+                {
+                    new CourseGroupingReference
+                    {
+                        ParentGroupId = id1,
+                        ChildGroupCommonIdentifier = common2,
+                        GroupingType = GroupingTypeEnum.SubGrouping
+                    }
+                }
+            },
+            SubGroupings = new List<CourseGrouping>
+            {
+                {
+                    new CourseGrouping
+                    {
+                        Id = id2,
+                        CommonIdentifier = common2,
+                        Name = "subgroup",
+                        RequiredCredits = "10.00",
+                        IsTopLevel = false,
+                        School = SchoolEnum.GinaCody,
+                        State = CourseGroupingStateEnum.Accepted,
+                        Published = true,
+                        SubGroupingReferences = new List<CourseGroupingReference>(),
+                        SubGroupings = new List<CourseGrouping>(),
+                        CourseIdentifiers = new List<CourseIdentifier>() { { new CourseIdentifier { ConcordiaCourseId = course.CourseID } } },
+                        Courses = new List<Course>() { { course } }
+                    }
+                }
+            },
+            CourseIdentifiers = new List<CourseIdentifier>() { { new CourseIdentifier { ConcordiaCourseId = course.CourseID } } },
+            Courses = new List<Course>() { { course } }
         };
     }
 }
