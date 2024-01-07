@@ -38,7 +38,7 @@ export default function EditApprovalStagesModal(props: EditApprovalStagesModalPr
         "Faculty Undergraduate Committee": 3,
         "Faculty Council": 4,
         "APC Committee": 5,
-        Senate: 6,
+        "Senate": 6,
     };
 
     useEffect(() => {
