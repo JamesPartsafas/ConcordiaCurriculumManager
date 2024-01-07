@@ -127,4 +127,35 @@ public class GroupController : Controller
 
         return Ok();
     }
+
+    [HttpPut("{groupId}")]
+    [Authorize(Policies.IsGroupMasterOrAdmin)]
+    [SwaggerResponse(StatusCodes.Status200OK, "Group updated successfully")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Group does not exist")]
+    public async Task<IActionResult> UpdateGroup(Guid id, [FromBody] GroupCreateDTO groupDto)
+    {
+        var result = await _groupService.UpdateGroupAsync(id, groupDto);
+        if (result)
+        {
+            return Ok();
+        }
+
+        return NotFound();
+    }
+
+    [HttpDelete("{groupId}")]
+    [Authorize(Policies.IsGroupMasterOrAdmin)]
+    [SwaggerResponse(StatusCodes.Status200OK, "Group has been deleted")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Group does not exist")]
+    public async Task<IActionResult> DeleteGroup(Guid id)
+    {
+        var deleted = await _groupService.DeleteGroupAsync(id);
+        if (deleted)
+        {
+            return Ok();
+        }
+
+        return NotFound();
+    }
+
 }

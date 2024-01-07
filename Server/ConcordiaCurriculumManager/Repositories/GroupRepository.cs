@@ -15,6 +15,8 @@ public interface IGroupRepository
     Task<bool> AddGroupMaster(Guid userId, Guid groupId);
     Task<bool> RemoveGroupMaster(Guid userId, Guid groupId);
     Task<IList<Guid>> GetValidGroupIds();
+    Task<bool> UpdateGroupAsync(Group group);
+    Task<bool> DeleteGroupAsync(Guid id);
 }
 
 public class GroupRepository : IGroupRepository
@@ -133,4 +135,23 @@ public class GroupRepository : IGroupRepository
     }
 
     public async Task<IList<Guid>> GetValidGroupIds() => await _dbContext.Groups.Select(g => g.Id).ToListAsync();
+
+    public async Task<bool> UpdateGroupAsync(Group group)
+    {
+        _dbContext.Groups.Update(group);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteGroupAsync(Guid id)
+    {
+        var group = await _dbContext.Groups.FindAsync(id);
+        if (group == null)
+        {
+            return false;
+        }
+
+        _dbContext.Groups.Remove(group);
+        return await _dbContext.SaveChangesAsync() > 0;
+    }
 }
