@@ -341,6 +341,16 @@ export default function DossierDetails() {
                                                     )?.careerName}
                                             </Text>
                                         </Stack>
+                                        <Textarea
+                                            isReadOnly
+                                            variant={"filled"}
+                                            value={courseCreationRequest.newCourse?.rationale}
+                                        />
+                                        <Textarea
+                                            isReadOnly
+                                            variant={"filled"}
+                                            value={"Comments: " + courseCreationRequest.newCourse?.comment}
+                                        />
                                     </Stack>
                                 </CardBody>
                                 <Divider />
@@ -437,6 +447,16 @@ export default function DossierDetails() {
                                                     )?.careerName}
                                             </Text>
                                         </Stack>
+                                        <Textarea
+                                            isReadOnly
+                                            variant={"filled"}
+                                            value={"Rationale: " + courseModificationRequest.course?.rationale}
+                                        />
+                                        <Textarea
+                                            isReadOnly
+                                            variant={"filled"}
+                                            value={"Comments: " + courseModificationRequest.course?.comment}
+                                        />
                                     </Stack>
                                 </CardBody>
                                 <Divider />
@@ -533,6 +553,16 @@ export default function DossierDetails() {
                                                     )?.careerName}
                                             </Text>
                                         </Stack>
+                                        <Textarea
+                                            isReadOnly
+                                            variant={"filled"}
+                                            value={"Rationale: " + courseDeletionRequest.course?.rationale}
+                                        />
+                                        <Textarea
+                                            isReadOnly
+                                            variant={"filled"}
+                                            value={"Comments: " + courseDeletionRequest.course?.comment}
+                                        />
                                     </Stack>
                                 </CardBody>
                                 <Divider />
