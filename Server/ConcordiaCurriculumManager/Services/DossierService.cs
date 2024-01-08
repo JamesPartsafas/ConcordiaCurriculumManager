@@ -28,6 +28,7 @@ public interface IDossierService
     public Task<IList<User>> GetCurrentlyReviewingGroupMasters(Guid dossierId);
     public Task<DossierReport> GetDossierReportByDossierId(Guid dossierId);
     public Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId);
+    public Task<CourseChanges> GetChangesAcrossAllDossiers();
 }
 
 public class DossierService : IDossierService
@@ -200,5 +201,57 @@ public class DossierService : IDossierService
     public async Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId)
     {
         return await _dossierRepository.GetDossiersRequiredReview(userId);
+    }
+
+    public async Task<CourseChanges> GetChangesAcrossAllDossiers()
+    {
+        var courses = await _dossierRepository.GetChangesAcrossAllDossiers();
+        var oldCourses = new List<Course>();
+
+        foreach (var course in courses)
+        {
+            if (course.CourseModificationRequest is null) continue;
+            var oldCourse = await _courseRepository.GetPublishedVersion(course.Subject, course.Catalog);
+            if (oldCourse == null) continue;
+            oldCourses.Add(oldCourse);
+        }
+        var courseCreationRequests = new List<CourseCreationRequest>();
+        var courseModificationRequests = new List<CourseModificationRequest>();
+        var courseDeletionRequests = new List<CourseDeletionRequest>();
+
+        foreach (var course in courses)
+        {
+            if (course.CourseCreationRequest is not null)
+            {
+                var request = course.CourseCreationRequest;
+                course.CourseCreationRequest = null;
+                request.NewCourse = course;
+                courseCreationRequests.Add(request);
+            }
+
+            if (course.CourseModificationRequest is not null)
+            {
+                var request = course.CourseModificationRequest;
+                course.CourseModificationRequest = null;
+                request.Course = course;
+                courseModificationRequests.Add(request);
+            }
+
+            if (course.CourseDeletionRequest is not null)
+            {
+                var request = course.CourseDeletionRequest;
+                course.CourseDeletionRequest = null;
+                request.Course = course;
+                courseDeletionRequests.Add(request);
+            }
+        }
+
+        return new CourseChanges
+        {
+            CourseCreationRequests = courseCreationRequests,
+            CourseModificationRequests = courseModificationRequests,
+            CourseDeletionRequests = courseDeletionRequests,
+            OldCourses = oldCourses
+        };
     }
 }
