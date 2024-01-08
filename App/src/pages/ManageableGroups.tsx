@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
     Container,
     Table,
@@ -18,13 +18,14 @@ import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import { isAdmin } from "../services/auth";
 import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../services/group";
-import { useContext, useEffect, useRef } from "react";
 import { BaseRoutes } from "../constants";
 import { UserContext } from "../App";
 
 export default function DisplayManageableGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
     const [deleteGroupId, setDeleteGroupId] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const groupsPerPage = 5;
     const user = useContext(UserContext);
     const cancelRef = useRef();
 
@@ -54,6 +55,10 @@ export default function DisplayManageableGroups() {
         setDeleteGroupId(null);
     };
 
+    const indexOfLastGroup = currentPage * groupsPerPage;
+    const indexOfFirstGroup = indexOfLastGroup - groupsPerPage;
+    const currentGroups = myGroups.slice(indexOfFirstGroup, indexOfLastGroup);
+
     return (
         <div>
             <Container maxW="3xl" height="80vh" display="flex" alignItems="center" justifyContent="center">
@@ -82,7 +87,7 @@ export default function DisplayManageableGroups() {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {myGroups.map((group, index) => (
+                            {currentGroups.map((group, index) => (
                                 <Tr key={index}>
                                     <Td whiteSpace="nowrap" padding="16px" textAlign="center">
                                         {group.name}
@@ -163,13 +168,39 @@ export default function DisplayManageableGroups() {
                             ))}
                         </Tbody>
                     </Table>
-                    {isAdmin(user) && (
-                        <Link to={BaseRoutes.CreateGroup}>
-                            <Button style="primary" variant="solid" width="100%" height="40px">
-                                Create Group
+                    {myGroups.length > groupsPerPage && (
+                        <div style={{ marginTop: "20px", textAlign: "center" }}>
+                            <Button
+                                onClick={() => setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))}
+                                style="primary"
+                                variant="outline"
+                                width="100px"
+                                height="40px"
+                                disabled={currentPage === 1}
+                            >
+                                Prev
                             </Button>
-                        </Link>
+                            <Button
+                                onClick={() =>
+                                    setCurrentPage((prevPage) =>
+                                        Math.min(prevPage + 1, Math.ceil(myGroups.length / groupsPerPage))
+                                    )
+                                }
+                                style="primary"
+                                variant="outline"
+                                width="100px"
+                                height="40px"
+                                disabled={currentPage === Math.ceil(myGroups.length / groupsPerPage)}
+                            >
+                                Next
+                            </Button>
+                        </div>
                     )}
+                    <Link to={BaseRoutes.CreateGroup}>
+                        <Button style="primary" variant="solid" width="100%" height="40px">
+                            Create Group
+                        </Button>
+                    </Link>
                     <Link to={BaseRoutes.Home}>
                         <Button style="primary" variant="solid" width="100%" height="40px">
                             Back to Home Page
@@ -185,9 +216,7 @@ export default function DisplayManageableGroups() {
                                 <AlertDialogHeader fontSize="lg" fontWeight="bold">
                                     Delete Group
                                 </AlertDialogHeader>
-
                                 <AlertDialogBody>Are you sure? This action cannot be undone.</AlertDialogBody>
-
                                 <AlertDialogFooter>
                                     <Button ref={cancelRef} onClick={() => setDeleteGroupId(null)}>
                                         Cancel
