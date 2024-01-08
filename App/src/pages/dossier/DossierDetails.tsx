@@ -340,6 +340,20 @@ export default function DossierDetails() {
                                                             courseCreationRequest.newCourse?.career
                                                     )?.careerName}
                                             </Text>
+                                            <Text>
+                                                Rationale:{" "}
+                                                {courseCreationRequest?.rationale === null ||
+                                                courseCreationRequest?.rationale === ""
+                                                    ? "N/A"
+                                                    : courseCreationRequest?.rationale}
+                                            </Text>
+                                            <Text>
+                                                Comment:{" "}
+                                                {courseCreationRequest?.comment === null ||
+                                                courseCreationRequest?.comment === ""
+                                                    ? "N/A"
+                                                    : courseCreationRequest?.comment}
+                                            </Text>
                                         </Stack>
                                     </Stack>
                                 </CardBody>
@@ -436,6 +450,20 @@ export default function DossierDetails() {
                                                             courseModificationRequest.course?.career
                                                     )?.careerName}
                                             </Text>
+                                            <Text>
+                                                Rationale:{" "}
+                                                {courseModificationRequest?.rationale === null ||
+                                                courseModificationRequest?.rationale === ""
+                                                    ? "N/A"
+                                                    : courseModificationRequest?.rationale}
+                                            </Text>
+                                            <Text>
+                                                Comment:{" "}
+                                                {courseModificationRequest?.comment === null ||
+                                                courseModificationRequest?.comment === ""
+                                                    ? "N/A"
+                                                    : courseModificationRequest?.comment}
+                                            </Text>
                                         </Stack>
                                     </Stack>
                                 </CardBody>
@@ -531,6 +559,20 @@ export default function DossierDetails() {
                                                             courseCareer.careerCode ===
                                                             courseDeletionRequest.course?.career
                                                     )?.careerName}
+                                            </Text>
+                                            <Text>
+                                                Rationale:{" "}
+                                                {courseDeletionRequest?.rationale === null ||
+                                                courseDeletionRequest?.rationale === ""
+                                                    ? "N/A"
+                                                    : courseDeletionRequest?.rationale}
+                                            </Text>
+                                            <Text>
+                                                Comment:{" "}
+                                                {courseDeletionRequest?.comment === null ||
+                                                courseDeletionRequest?.comment === ""
+                                                    ? "N/A"
+                                                    : courseDeletionRequest?.comment}
                                             </Text>
                                         </Stack>
                                     </Stack>

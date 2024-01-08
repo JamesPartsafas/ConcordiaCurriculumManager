@@ -1,11 +1,13 @@
-import { Text, useDisclosure, Flex, Box } from "@chakra-ui/react";
+import { Text, useDisclosure, Flex, Box, Container } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
 import { getDossierRequiredReview } from "../../services/dossier";
 import { DossierDTO, GetMyDossiersResponse } from "../../models/dossier";
 import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button";
 import DossierTable from "../../components/DossierTable";
+import { UserRoles } from "../../models/user";
 
 export default function DossiersToReview() {
     const user = useContext(UserContext);
@@ -46,6 +48,30 @@ export default function DossiersToReview() {
 
     return (
         <Box maxW="5xl" m="auto">
+            <Container maxW={"5xl"} mt={5}>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    onClick={() => navigate(BaseRoutes.Home)}
+                >
+                    Return to Home
+                </Button>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    width="fit-content"
+                    height="40px"
+                    alignSelf="flex-end"
+                    isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                    onClick={() => {
+                        navigate(BaseRoutes.Dossiers);
+                    }}
+                >
+                    My Dossiers
+                </Button>
+            </Container>
             <Flex flexDirection="column">
                 <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                     {user?.firstName + "'s"} Dossiers Under Review
