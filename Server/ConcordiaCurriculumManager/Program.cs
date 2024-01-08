@@ -180,6 +180,7 @@ public class Program
 
         services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
         services.AddScoped<ICourseService, CourseService>();
+        services.AddScoped<ICourseGroupingService, CourseGroupingService>();
         services.AddScoped<IDossierService, DossierService>();
         services.AddScoped<IDossierReviewService, DossierReviewService>();
         services.AddScoped<IGroupService, GroupService>();
@@ -188,6 +189,7 @@ public class Program
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddScoped<ICourseRepository, CourseRepository>();
+        services.AddScoped<ICourseGroupingRepository, CourseGroupingRepository>();
         services.AddScoped<IDossierRepository, DossierRepository>();
         services.AddScoped<IDossierReviewRepository, DossierReviewRepository>();
     }

@@ -30,6 +30,7 @@ public interface IDossierRepository
     public Task<IList<User>> GetCurrentlyReviewingGroupMasters(Guid dossierId);
     public Task<Dossier?> GetDossierReportByDossierId(Guid dossierId);
     public Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId);
+    public Task<bool> CheckIfCourseRequestExists(Guid dossierId, string subject, string catalog);
 }
 
 public class DossierRepository : IDossierRepository
@@ -223,5 +224,24 @@ public class DossierRepository : IDossierRepository
             .ThenInclude(a => a.Group)
             .Where(d => d.ApprovalStages.Where(a => a.IsCurrentStage).First().Group!.Members.Any(m => m.Id.Equals(userId)))
             .ToListAsync();
+    }
+
+    public async Task<bool> CheckIfCourseRequestExists(Guid dossierId, string subject, string catalog)
+    {
+       var dossier = await GetDossierByDossierId(dossierId);
+
+       var courseRequests = dossier!.CourseCreationRequests.Select(r => r.NewCourse)
+                            .Concat(dossier.CourseModificationRequests.Select(r => r.Course))
+                            .Concat(dossier.CourseDeletionRequests.Select(r => r.Course))
+                            .Where(c => c != null);
+       
+        foreach (var course in courseRequests)
+       {
+            if (course!.Subject.Equals(subject) && course.Catalog.Equals(catalog)) 
+            {
+                return true;
+            }
+       }
+       return false;
     }
 }
