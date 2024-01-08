@@ -479,6 +479,33 @@ public static class TestData
         return dossier;
     }
 
+    public static CourseChanges GetSampleCourseChange() 
+    {
+        var courseCreationRequests = new List<CourseCreationRequest>();
+        var courseModificationRequests = new List<CourseModificationRequest>();
+        var courseDeletionRequests = new List<CourseDeletionRequest>();
+
+        return new CourseChanges
+        {
+            CourseCreationRequests = new List<CourseCreationRequest>
+            {
+                GetSampleCourseCreationRequest()
+            },
+            CourseModificationRequests = new List<CourseModificationRequest>
+            {
+                GetSampleCourseModificationRequest()
+            },
+            CourseDeletionRequests = new List<CourseDeletionRequest>
+            {
+                GetSampleCourseDeletionRequest()
+            },
+            OldCourses = new List<Course>
+            {
+                GetSampleCourse()
+            }
+        };
+    }
+
     // DOSSIER REVIEWS DTO
     public static CreateDossierDiscussionMessageDTO GetSampleCreateDossierDiscussionMessageDTO()
     {
