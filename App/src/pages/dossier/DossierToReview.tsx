@@ -86,6 +86,7 @@ export default function DossiersToReview() {
                     currentPage={currentPage}
                     totalResults={totalResults}
                     useIcons={false}
+                    reviewIcons={true}
                 />
             </Flex>
         </Box>

@@ -200,6 +200,7 @@ export default function Dossiers() {
                             currentPage={currentPage}
                             totalResults={totalResults}
                             useIcons={true}
+                            reviewIcons={false}
                         />
                     </div>
                     <Tooltip
@@ -244,6 +245,7 @@ export default function Dossiers() {
                             currentPage={currentPage}
                             totalResults={totalResults}
                             useIcons={false}
+                            reviewIcons={false}
                         />
                     </div>
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -263,6 +265,7 @@ export default function Dossiers() {
                         currentPage={currentPage}
                         totalResults={totalResults}
                         useIcons={false}
+                        reviewIcons={false}
                     />
 
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -282,6 +285,7 @@ export default function Dossiers() {
                             currentPage={currentPage}
                             totalResults={totalResults}
                             useIcons={false}
+                            reviewIcons={false}
                         />
                     </div>
                 </Flex>
