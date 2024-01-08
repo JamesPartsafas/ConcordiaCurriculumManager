@@ -367,5 +367,15 @@ public class DossierServiceTest
 
         await dossierService.GetDossiersRequiredReview(dossier.InitiatorId);
     }
+
+    [TestMethod]
+    public async Task GetChangesAcrossAllDossiers_ValidCall_ReturnsCourseChanges()
+    {   
+        dossierRepository.Setup(d => d.GetChangesAcrossAllDossiers()).ReturnsAsync(new List<Course> { TestData.GetSampleAcceptedCourse()});
+
+        var courseChanges = await dossierService.GetChangesAcrossAllDossiers();
+
+        Assert.IsNotNull(courseChanges);
+    }
 }
 

@@ -17,6 +17,7 @@ public interface ICourseRepository
     public Task<IList<Course>> GetCoursesByConcordiaCourseIds(IList<int> courseIds);
     public Task<Course?> GetCourseWithSupportingFilesBySubjectAndCatalog(string subject, string catalog);
     public Task<int?> GetCurrentCourseVersion(string subject, string catalog);
+    public Task<Course?> GetPublishedVersion(string subject, string catalog);
 }
 
 public class CourseRepository : ICourseRepository
@@ -98,5 +99,13 @@ public class CourseRepository : ICourseRepository
             && course.Version != null)
         .OrderByDescending(course => course.Version)
         .Select(course => course.Version)
+        .FirstOrDefaultAsync();
+
+    public async Task<Course?> GetPublishedVersion(string subject, string catalog) => await _dbContext.Courses
+        .Where(course =>
+            course.Subject == subject
+            && course.Catalog == catalog
+            && course.Published)
+        .Include(course => course.CourseCourseComponents)
         .FirstOrDefaultAsync();
 }
