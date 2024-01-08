@@ -46,7 +46,7 @@ function DossierTable({
     useIcons,
 }) {
     return (
-        <TableContainer borderRadius="xl" boxShadow="xl" border="2px" margin={"20px"}>
+        <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
             <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "auto" }}>
                 <Thead backgroundColor={"#e2e8f0"}>
                     <Tr display={"flex"}>
