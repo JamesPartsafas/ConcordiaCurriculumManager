@@ -543,11 +543,20 @@ export default function DossierReview() {
                                                                             <b>Joe User</b>{" "}
                                                                         </Text> */}
                                                                         <Text>
-                                                                            <b>
-                                                                                {message.createdDate
-                                                                                    .toString()
-                                                                                    .substring(0, 10)}
-                                                                            </b>{" "}
+                                                                            {message.createdDate
+                                                                                .toString()
+                                                                                .substring(0, 10)}{" "}
+                                                                            {new Date(message.createdDate)
+                                                                                .getHours()
+                                                                                .toString()}
+                                                                            :
+                                                                            {new Date(message.createdDate)
+                                                                                .getMinutes()
+                                                                                .toString()}
+                                                                            :
+                                                                            {new Date(message.createdDate)
+                                                                                .getSeconds()
+                                                                                .toString()}
                                                                         </Text>
                                                                         <Text>{message.message}</Text>
                                                                         <Button marginTop={5}>
@@ -580,11 +589,20 @@ export default function DossierReview() {
                                                                             <b>Joe User</b>{" "}
                                                                         </Text> */}
                                                                         <Text>
-                                                                            <b>
-                                                                                {filteredMessage.createdDate
-                                                                                    .toString()
-                                                                                    .substring(0, 10)}
-                                                                            </b>{" "}
+                                                                            {filteredMessage.createdDate
+                                                                                .toString()
+                                                                                .substring(0, 10)}{" "}
+                                                                            {new Date(filteredMessage.createdDate)
+                                                                                .getHours()
+                                                                                .toString()}
+                                                                            :
+                                                                            {new Date(filteredMessage.createdDate)
+                                                                                .getMinutes()
+                                                                                .toString()}
+                                                                            :
+                                                                            {new Date(filteredMessage.createdDate)
+                                                                                .getSeconds()
+                                                                                .toString()}
                                                                         </Text>
                                                                         <Text>{filteredMessage.message}</Text>
                                                                         <Button marginTop={5}>
