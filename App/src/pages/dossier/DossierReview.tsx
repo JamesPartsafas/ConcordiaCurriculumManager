@@ -516,13 +516,50 @@ export default function DossierReview() {
                                 <Stack>
                                     <Tabs defaultIndex={currentGroup?.stageIndex}>
                                         <TabList>
-                                            {/* <Tab>All Groups</Tab> */}
+                                            <Tab>All Groups</Tab>
                                             {dossierDetails?.approvalStages
                                                 ?.sort((a, b) => a.stageIndex - b.stageIndex)
                                                 .map((stage) => <Tab key={stage.groupId}>{stage.group.name}</Tab>)}
                                         </TabList>
 
                                         <TabPanels>
+                                            <TabPanel>
+                                                {dossierDetails?.discussion.messages?.map((message) => (
+                                                    <Card key={message.id}>
+                                                        {dossierDetails?.approvalStages
+                                                            .filter((stage) => message.groupId == stage.groupId)
+                                                            .sort(
+                                                                (a, b) =>
+                                                                    new Date(b.createdDate).getTime() -
+                                                                    new Date(a.createdDate).getTime()
+                                                            )
+                                                            .map((filteredGroup) => (
+                                                                <CardBody key={filteredGroup.groupId}>
+                                                                    <Box bg={"gray.200"} p={2}>
+                                                                        <Text>
+                                                                            <b>{filteredGroup.group.name}</b>{" "}
+                                                                        </Text>
+                                                                        {/* <Text>
+                                                                            <b>Joe User</b>{" "}
+                                                                        </Text> */}
+                                                                        <Text>
+                                                                            <b>
+                                                                                {message.createdDate
+                                                                                    .toString()
+                                                                                    .substring(0, 10)}
+                                                                            </b>{" "}
+                                                                        </Text>
+                                                                        <Text>{message.message}</Text>
+                                                                        <Button marginTop={5}>
+                                                                            <ArrowLeftIcon marginRight={5} />
+                                                                            Reply
+                                                                        </Button>
+                                                                    </Box>
+                                                                </CardBody>
+                                                            ))}
+                                                    </Card>
+                                                ))}
+                                            </TabPanel>
                                             {dossierDetails?.approvalStages?.map((stage) => (
                                                 <TabPanel key={stage.groupId}>
                                                     <Card>
