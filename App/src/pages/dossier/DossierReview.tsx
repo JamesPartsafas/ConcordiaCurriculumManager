@@ -512,47 +512,45 @@ export default function DossierReview() {
 
                                         <TabPanels>
                                             <TabPanel>
-                                                {dossierDetails?.discussion.messages?.map((message) => (
-                                                    <Card key={message.id}>
-                                                        {dossierDetails?.approvalStages
-                                                            .filter((stage) => message.groupId == stage.groupId)
-                                                            .sort(
-                                                                (a, b) =>
-                                                                    new Date(b.createdDate).getTime() -
-                                                                    new Date(a.createdDate).getTime()
-                                                            )
-                                                            .map((filteredGroup) => (
-                                                                <CardBody key={filteredGroup.groupId}>
-                                                                    <Box bg={"gray.200"} p={2}>
-                                                                        <Text>
-                                                                            <b>{filteredGroup.group.name}</b>{" "}
-                                                                        </Text>
-                                                                        <Text>
-                                                                            {message.createdDate
-                                                                                .toString()
-                                                                                .substring(0, 10)}{" "}
-                                                                            {new Date(message.createdDate)
-                                                                                .getHours()
-                                                                                .toString()}
-                                                                            :
-                                                                            {new Date(message.createdDate)
-                                                                                .getMinutes()
-                                                                                .toString()}
-                                                                            :
-                                                                            {new Date(message.createdDate)
-                                                                                .getSeconds()
-                                                                                .toString()}
-                                                                        </Text>
-                                                                        <Text>{message.message}</Text>
-                                                                        <Button marginTop={5}>
-                                                                            <ArrowLeftIcon marginRight={5} />
-                                                                            Reply
-                                                                        </Button>
-                                                                    </Box>
-                                                                </CardBody>
-                                                            ))}
-                                                    </Card>
-                                                ))}
+                                                {dossierDetails?.discussion.messages
+                                                    ?.slice(0)
+                                                    .reverse()
+                                                    .map((message) => (
+                                                        <Card key={message.id}>
+                                                            {dossierDetails?.approvalStages
+                                                                .filter((stage) => message.groupId == stage.groupId)
+                                                                .map((filteredGroup) => (
+                                                                    <CardBody key={filteredGroup.groupId}>
+                                                                        <Box bg={"gray.200"} p={2}>
+                                                                            <Text>
+                                                                                <b>{filteredGroup.group.name}</b>{" "}
+                                                                            </Text>
+                                                                            <Text>
+                                                                                {message.createdDate
+                                                                                    .toString()
+                                                                                    .substring(0, 10)}{" "}
+                                                                                {new Date(message.createdDate)
+                                                                                    .getHours()
+                                                                                    .toString()}
+                                                                                :
+                                                                                {new Date(message.createdDate)
+                                                                                    .getMinutes()
+                                                                                    .toString()}
+                                                                                :
+                                                                                {new Date(message.createdDate)
+                                                                                    .getSeconds()
+                                                                                    .toString()}
+                                                                            </Text>
+                                                                            <Text>{message.message}</Text>
+                                                                            <Button marginTop={5}>
+                                                                                <ArrowLeftIcon marginRight={5} />
+                                                                                Reply
+                                                                            </Button>
+                                                                        </Box>
+                                                                    </CardBody>
+                                                                ))}
+                                                        </Card>
+                                                    ))}
                                             </TabPanel>
                                             {dossierDetails?.approvalStages?.map((stage) => (
                                                 <TabPanel key={stage.groupId}>
