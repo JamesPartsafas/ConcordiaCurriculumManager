@@ -44,7 +44,6 @@ export default function DossierReview() {
     const { isOpen: isOpenForward, onOpen: onOpenForward, onClose: onCloseForward } = useDisclosure();
     const { isOpen: isOpenReturn, onOpen: onOpenReturn, onClose: onCloseReturn } = useDisclosure();
     const { isOpen: isOpenReject, onOpen: onOpenReject, onClose: onCloseReject } = useDisclosure();
-    //const [loading, setLoading] = useState<boolean>(false);
     const cancelRef = React.useRef();
     const toast = useToast();
     const [message, setMessage] = useState("");
@@ -98,8 +97,6 @@ export default function DossierReview() {
                                 variant="solid"
                                 width="fit-content"
                                 height="40px"
-                                //isLoading={loading}
-                                loadingText="Deleting"
                                 onClick={() => {
                                     handleSubmitRequest();
                                     onCloseMessage();
@@ -148,8 +145,6 @@ export default function DossierReview() {
                                 variant="solid"
                                 width="fit-content"
                                 height="40px"
-                                //isLoading={loading}
-                                loadingText="Deleting"
                                 onClick={() => {
                                     handleForwardDossier();
                                     navigate(BaseRoutes.DossiersToReview);
@@ -195,8 +190,6 @@ export default function DossierReview() {
                                 variant="solid"
                                 width="fit-content"
                                 height="40px"
-                                //isLoading={loading}
-                                loadingText="Deleting"
                                 onClick={() => {
                                     handleReturnDossier();
                                     navigate(BaseRoutes.DossiersToReview);
@@ -241,8 +234,6 @@ export default function DossierReview() {
                                 variant="solid"
                                 width="fit-content"
                                 height="40px"
-                                //isLoading={loading}
-                                loadingText="Deleting"
                                 onClick={() => {
                                     handleRejectDossier();
                                     navigate(BaseRoutes.DossiersToReview);
@@ -311,7 +302,6 @@ export default function DossierReview() {
                 .then(() => {
                     showToast(toast, "Success!", "Message successfully sent.", "success");
                     requestDossierDetails(dossierId);
-                    //toggleLoading(false);
                 })
                 .catch((e) => {
                     if (e.response.status == 403) {
@@ -324,7 +314,6 @@ export default function DossierReview() {
                     } else {
                         showToast(toast, "Error!", "One or more validation errors occurred", "error");
                     }
-                    //toggleLoading(false);
                 });
         }
     };
@@ -497,7 +486,6 @@ export default function DossierReview() {
                                             width="auto"
                                             height="50px"
                                             variant="solid"
-                                            // isLoading={isLoading}
                                             onClick={() => {
                                                 onOpenMessage();
                                             }}
@@ -539,9 +527,6 @@ export default function DossierReview() {
                                                                         <Text>
                                                                             <b>{filteredGroup.group.name}</b>{" "}
                                                                         </Text>
-                                                                        {/* <Text>
-                                                                            <b>Joe User</b>{" "}
-                                                                        </Text> */}
                                                                         <Text>
                                                                             {message.createdDate
                                                                                 .toString()
@@ -585,9 +570,6 @@ export default function DossierReview() {
                                                                         <Text>
                                                                             <b>{stage.group.name}</b>{" "}
                                                                         </Text>
-                                                                        {/* <Text>
-                                                                            <b>Joe User</b>{" "}
-                                                                        </Text> */}
                                                                         <Text>
                                                                             {filteredMessage.createdDate
                                                                                 .toString()
