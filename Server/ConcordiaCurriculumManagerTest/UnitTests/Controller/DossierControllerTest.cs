@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.Controllers;
+using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
@@ -153,6 +154,19 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
             dossierService.Setup(d => d.GetDossierReportByDossierId(It.IsAny<Guid>())).Throws(new NotFoundException());
 
             await dossierController.GetDossierReportByDossierId(Guid.NewGuid());
+        }
+
+        [TestMethod]
+        public async Task GetChangesAcrossAllDossiers_ValidCall_ReturnsCourseChanges()
+        {
+            var courseChanges = TestData.GetSampleCourseChange();
+            dossierService.Setup(d => d.GetChangesAcrossAllDossiers()).ReturnsAsync(courseChanges);
+
+            var actionResult = await dossierController.GetChangesAcrossAllDossiers();
+            var objectResult = (ObjectResult)actionResult;
+
+            Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+            mapper.Verify(mock => mock.Map<CourseChangesDTO>(courseChanges), Times.Once());
         }
     }
 }

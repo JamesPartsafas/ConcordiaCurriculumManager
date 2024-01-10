@@ -31,6 +31,7 @@ public interface IDossierRepository
     public Task<Dossier?> GetDossierReportByDossierId(Guid dossierId);
     public Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId);
     public Task<bool> CheckIfCourseRequestExists(Guid dossierId, string subject, string catalog);
+    public Task<IList<Course>> GetChangesAcrossAllDossiers();
 }
 
 public class DossierRepository : IDossierRepository
@@ -243,5 +244,19 @@ public class DossierRepository : IDossierRepository
             }
        }
        return false;
+    }
+
+    public async Task<IList<Course>> GetChangesAcrossAllDossiers()
+    {
+        var query = _dbContext.Courses.FromSqlInterpolated(
+                $@"SELECT DISTINCT ON (""CourseID"") c.* FROM ""Courses"" c WHERE ""Version"" IS NOT NULL AND ""Published"" = false ORDER BY ""CourseID"", ""Version"" DESC"
+            );
+
+        query = query.Include(course => course.CourseCourseComponents)
+            .Include(course => course.CourseCreationRequest)
+            .Include(course => course.CourseModificationRequest)
+            .Include(course => course.CourseDeletionRequest);
+
+        return await query.ToListAsync();
     }
 }
