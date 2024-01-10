@@ -1,5 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { DossierDetailsDTO, DossierDetailsResponse, DossierStateEnum, dossierStateToString } from "../../models/dossier";
+import {
+    DossierDetailsDTO,
+    DossierDetailsResponse,
+    DossierStateEnum,
+    dossierStateToString,
+} from "../../models/dossier";
 import { getDossierDetails } from "../../services/dossier";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -269,7 +274,9 @@ export default function DossierDetails() {
     }
 
     function isUserACurrentReviewer() {
-        return dossierDetails?.approvalStages?.find((stage) => stage.isCurrentStage)?.group?.members?.find((member) => member.id === user.id);
+        return dossierDetails?.approvalStages
+            ?.find((stage) => stage.isCurrentStage)
+            ?.group?.members?.find((member) => member.id === user.id);
     }
 
     return (
@@ -368,7 +375,10 @@ export default function DossierDetails() {
                                         <Button
                                             variant="solid"
                                             style="primary"
-                                            isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
                                             onClick={() => {
                                                 editCourseCreationRequest(courseCreationRequest);
                                             }}
@@ -378,7 +388,10 @@ export default function DossierDetails() {
                                         <Button
                                             variant="outline"
                                             style="secondary"
-                                            isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
                                             onClick={() => {
                                                 setSelectedCourseCreationRequest(courseCreationRequest);
                                                 onOpen();
@@ -481,7 +494,10 @@ export default function DossierDetails() {
                                         <Button
                                             variant="solid"
                                             style="secondary"
-                                            isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
                                             onClick={() => {
                                                 editCourseModificationRequest(courseModificationRequest);
                                             }}
@@ -491,7 +507,10 @@ export default function DossierDetails() {
                                         <Button
                                             variant="outline"
                                             style="primary"
-                                            isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
                                             onClick={() => {
                                                 setSelectedCourseModificationRequest(courseModificationRequest);
                                                 onOpen();
@@ -594,7 +613,10 @@ export default function DossierDetails() {
                                         <Button
                                             variant="solid"
                                             style="primary"
-                                            isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
                                             onClick={() => {
                                                 navigate(BaseRoutes.DeleteCourseEdit.replace(":dossierId", dossierId), {
                                                     state: { key: courseDeletionRequest },
@@ -606,7 +628,10 @@ export default function DossierDetails() {
                                         <Button
                                             variant="outline"
                                             style="primary"
-                                            isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
                                             onClick={() => {
                                                 setSelectedCourseDeletionRequest(courseDeletionRequest);
                                                 onOpen();
