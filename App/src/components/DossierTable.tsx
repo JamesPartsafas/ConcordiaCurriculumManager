@@ -26,6 +26,8 @@ DossierTable.propTypes = {
     setDossierModalTitle: PropTypes.func,
     displayDossierModal: PropTypes.func,
     handleNavigateToDossierDetails: PropTypes.func,
+    handleNavigateToDossierReview: PropTypes.func,
+    handleNavigateToDossierReport: PropTypes.func,
     setCurrentPage: PropTypes.func,
     currentPage: PropTypes.number,
     totalResults: PropTypes.number,
@@ -41,6 +43,8 @@ function DossierTable({
     setDossierModalTitle,
     displayDossierModal,
     handleNavigateToDossierDetails,
+    handleNavigateToDossierReview,
+    handleNavigateToDossierReport,
     setCurrentPage,
     currentPage,
     totalResults,
@@ -109,7 +113,7 @@ function DossierTable({
                                 {(useIcons || reviewIcons) && (
                                     <IconButton
                                         ml={2}
-                                        aria-label="Edit"
+                                        aria-label="Details"
                                         icon={<InfoIcon />}
                                         onClick={() => {
                                             setSelectedDossier(dossier);
@@ -124,6 +128,7 @@ function DossierTable({
                                         icon={<ArrowDownIcon />}
                                         onClick={() => {
                                             setSelectedDossier(dossier);
+                                            handleNavigateToDossierReview(dossier.id);
                                         }}
                                     />
                                 )}
@@ -133,6 +138,7 @@ function DossierTable({
                                     icon={<ViewIcon />}
                                     onClick={() => {
                                         setSelectedDossier(dossier);
+                                        handleNavigateToDossierReport(dossier.id);
                                     }}
                                 />
                             </Td>

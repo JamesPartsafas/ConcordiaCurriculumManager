@@ -153,6 +153,10 @@ export default function Dossiers() {
         navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
     }
 
+    function handleNavigateToDossierReport(dossierId: string) {
+        navigate(BaseRoutes.DossierReport.replace(":dossierId", dossierId));
+    }
+
     return (
         <div>
             <Container maxW={"5xl"} mt={5}>
@@ -196,6 +200,7 @@ export default function Dossiers() {
                             setDossierModalTitle={setDossierModalTitle}
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                            handleNavigateToDossierReport={handleNavigateToDossierReport}
                             setCurrentPage={setCurrentPage}
                             currentPage={currentPage}
                             totalResults={totalResults}
@@ -241,6 +246,7 @@ export default function Dossiers() {
                             setDossierModalTitle={setDossierModalTitle}
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                            handleNavigateToDossierReport={handleNavigateToDossierReport}
                             setCurrentPage={setCurrentPage}
                             currentPage={currentPage}
                             totalResults={totalResults}
@@ -261,6 +267,7 @@ export default function Dossiers() {
                         setDossierModalTitle={setDossierModalTitle}
                         displayDossierModal={displayDossierModal}
                         handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                        handleNavigateToDossierReport={handleNavigateToDossierReport}
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         totalResults={totalResults}
@@ -281,6 +288,7 @@ export default function Dossiers() {
                             setDossierModalTitle={setDossierModalTitle}
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                            handleNavigateToDossierReport={handleNavigateToDossierReport}
                             setCurrentPage={setCurrentPage}
                             currentPage={currentPage}
                             totalResults={totalResults}

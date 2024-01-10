@@ -46,6 +46,10 @@ export default function DossiersToReview() {
         navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
     }
 
+    function handleNavigateToDossierReview(dossierId: string) {
+        navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId));
+    }
+
     return (
         <Box maxW="5xl" m="auto">
             <Container maxW={"5xl"} mt={5}>
@@ -82,6 +86,7 @@ export default function DossiersToReview() {
                     endIndex={endIndex}
                     onOpen={onOpen}
                     handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                    handleNavigateToDossierReview={handleNavigateToDossierReview}
                     setCurrentPage={setCurrentPage}
                     currentPage={currentPage}
                     totalResults={totalResults}
