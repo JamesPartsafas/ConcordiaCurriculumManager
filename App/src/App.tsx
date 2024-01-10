@@ -63,7 +63,13 @@ export function App() {
     return (
         <>
             <UserContext.Provider value={user}>
-                {isLoggedIn && <Header setUser={setUser} setIsLoggedIn={setIsLoggedIn}></Header>}
+                {isLoggedIn && (
+                    <Header
+                        setUser={setUser}
+                        setIsLoggedIn={setIsLoggedIn}
+                        setIsAdminOrGroupMaster={setIsAdminorGroupMaster}
+                    ></Header>
+                )}
                 <Routes>
                     <Route
                         path={BaseRoutes.Home}
@@ -75,7 +81,13 @@ export function App() {
                     />
                     <Route
                         path={BaseRoutes.Login}
-                        element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn} />}
+                        element={
+                            <Login
+                                setUser={setUser}
+                                setIsLoggedIn={setIsLoggedIn}
+                                setIsAdminOrGroupMaster={setIsAdminorGroupMaster}
+                            />
+                        }
                     />
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
                     <Route
@@ -91,7 +103,11 @@ export function App() {
                     <Route
                         path={BaseRoutes.AddUserToGroup}
                         element={
-                            isAdminorGroupMaster == true ? <AddingUserToGroup /> : <Navigate to={BaseRoutes.Login} />
+                            isAdminorGroupMaster == true ? (
+                                <AddingUserToGroup />
+                            ) : (
+                                <Navigate to={BaseRoutes.Login} />
+                            )
                         }
                     />
                     <Route
