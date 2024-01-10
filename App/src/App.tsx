@@ -103,11 +103,7 @@ export function App() {
                     <Route
                         path={BaseRoutes.AddUserToGroup}
                         element={
-                            isAdminorGroupMaster == true ? (
-                                <AddingUserToGroup />
-                            ) : (
-                                <Navigate to={BaseRoutes.Login} />
-                            )
+                            isAdminorGroupMaster == true ? <AddingUserToGroup /> : <Navigate to={BaseRoutes.Login} />
                         }
                     />
                     <Route
