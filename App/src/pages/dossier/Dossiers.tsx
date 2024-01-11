@@ -195,9 +195,9 @@ export default function Dossiers() {
                             myDossiers={myDossiers}
                             startIndex={startIndex}
                             endIndex={endIndex}
-                            setSelectedDossier={setSelectedDossier}
                             onOpen={onOpen}
                             setDossierModalTitle={setDossierModalTitle}
+                            setSelectedDossier={setSelectedDossier}
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
                             handleNavigateToDossierReport={handleNavigateToDossierReport}
@@ -241,9 +241,9 @@ export default function Dossiers() {
                             myDossiers={reviewedDossiers}
                             startIndex={startIndex}
                             endIndex={endIndex}
-                            setSelectedDossier={setSelectedDossier}
                             onOpen={onOpen}
                             setDossierModalTitle={setDossierModalTitle}
+                            setSelectedDossier={setSelectedDossier}
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
                             handleNavigateToDossierReport={handleNavigateToDossierReport}
@@ -251,7 +251,7 @@ export default function Dossiers() {
                             currentPage={currentPage}
                             totalResults={totalResults}
                             useIcons={false}
-                            reviewIcons={false}
+                            reviewIcons={true}
                         />
                     </div>
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -262,9 +262,9 @@ export default function Dossiers() {
                         myDossiers={approvedDossiers}
                         startIndex={startIndex}
                         endIndex={endIndex}
-                        setSelectedDossier={setSelectedDossier}
                         onOpen={onOpen}
                         setDossierModalTitle={setDossierModalTitle}
+                        setSelectedDossier={setSelectedDossier}
                         displayDossierModal={displayDossierModal}
                         handleNavigateToDossierDetails={handleNavigateToDossierDetails}
                         handleNavigateToDossierReport={handleNavigateToDossierReport}
@@ -272,7 +272,7 @@ export default function Dossiers() {
                         currentPage={currentPage}
                         totalResults={totalResults}
                         useIcons={false}
-                        reviewIcons={false}
+                        reviewIcons={true}
                     />
 
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -283,9 +283,9 @@ export default function Dossiers() {
                             myDossiers={rejectedDossiers}
                             startIndex={startIndex}
                             endIndex={endIndex}
-                            setSelectedDossier={setSelectedDossier}
                             onOpen={onOpen}
                             setDossierModalTitle={setDossierModalTitle}
+                            setSelectedDossier={setSelectedDossier}
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
                             handleNavigateToDossierReport={handleNavigateToDossierReport}
@@ -293,7 +293,7 @@ export default function Dossiers() {
                             currentPage={currentPage}
                             totalResults={totalResults}
                             useIcons={false}
-                            reviewIcons={false}
+                            reviewIcons={true}
                         />
                     </div>
                 </Flex>

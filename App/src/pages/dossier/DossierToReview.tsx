@@ -16,6 +16,7 @@ export default function DossiersToReview() {
 
     const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
     const resultsPerPage = 5;
     const totalResults = myDossiers.length;
 
@@ -25,6 +26,7 @@ export default function DossiersToReview() {
     useEffect(() => {
         getAllDossiersRequired();
         console.log(user);
+        console.log(selectedDossier);
     }, []);
 
     function getAllDossiersRequired() {
@@ -85,6 +87,7 @@ export default function DossiersToReview() {
                     startIndex={startIndex}
                     endIndex={endIndex}
                     onOpen={onOpen}
+                    setSelectedDossier={setSelectedDossier}
                     handleNavigateToDossierDetails={handleNavigateToDossierDetails}
                     handleNavigateToDossierReview={handleNavigateToDossierReview}
                     setCurrentPage={setCurrentPage}
