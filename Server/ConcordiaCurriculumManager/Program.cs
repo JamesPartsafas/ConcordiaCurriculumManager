@@ -13,6 +13,7 @@ using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ConcordiaCurriculumManager;
 
@@ -31,7 +32,7 @@ public class Program
         {
             builder.Configuration.AddEnvironmentVariables();
         }
-        
+
         var identitySettings = builder.Configuration
                             .GetSection(IdentitySettings.SectionName)
                             .Get<IdentitySettings>();
@@ -72,7 +73,8 @@ public class Program
                        .Validate(dbSettings => dbSettings.ConnectionString is not null);
 
         var dbDataSource = new NpgsqlDataSourceBuilder(dbSetting!.ConnectionString).Build();
-        builder.Services.AddDbContext<CCMDbContext>((options) => {
+        builder.Services.AddDbContext<CCMDbContext>((options) =>
+        {
             options.UseNpgsql(dbDataSource);
         });
 
@@ -82,14 +84,18 @@ public class Program
             .ReadFrom.Configuration(context.Configuration)
             .Enrich.FromLogContext();
         });
-        
+
         AddServices(builder.Services);
 
         builder.Services.AddMemoryCache();
         builder.Services.AddAutoMapper(typeof(Program));
 
-        builder.Services.AddControllers(options => {
+        builder.Services.AddControllers(options =>
+        {
             options.Filters.Add<ExceptionHandlerFilter>();
+        }).AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         });
 
         builder.Services.AddEndpointsApiExplorer();
@@ -174,6 +180,7 @@ public class Program
 
         services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
         services.AddScoped<ICourseService, CourseService>();
+        services.AddScoped<ICourseGroupingService, CourseGroupingService>();
         services.AddScoped<IDossierService, DossierService>();
         services.AddScoped<IDossierReviewService, DossierReviewService>();
         services.AddScoped<IGroupService, GroupService>();
@@ -182,6 +189,7 @@ public class Program
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddScoped<ICourseRepository, CourseRepository>();
+        services.AddScoped<ICourseGroupingRepository, CourseGroupingRepository>();
         services.AddScoped<IDossierRepository, DossierRepository>();
         services.AddScoped<IDossierReviewRepository, DossierReviewRepository>();
     }

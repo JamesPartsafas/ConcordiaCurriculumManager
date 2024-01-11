@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
@@ -40,6 +41,12 @@ public class CCMDbContext : DbContext
 
     public DbSet<CourseReference> CourseReferences { get; set; }
 
+    public DbSet<CourseGrouping> CourseGroupings { get; set; }
+
+    public DbSet<CourseGroupingReference> CourseGroupingReferences { get; set; }
+
+    public DbSet<CourseIdentifier> CourseIdentifiers { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -48,6 +55,7 @@ public class CCMDbContext : DbContext
         ConfigureCourseReferencesRelationship(modelBuilder);
         ConfigureGroupUserRelationship(modelBuilder);
         ConfigureDossierReviewRelationships(modelBuilder);
+        ConfigureCourseGroupingRelationships(modelBuilder);
     }
 
     private static void ConfigureCourseReferencesRelationship(ModelBuilder modelBuilder)
@@ -150,5 +158,42 @@ public class CCMDbContext : DbContext
             .HasMany(group => group.ApprovalStages)
             .WithOne(stage => stage.Group)
             .HasForeignKey(stage => stage.GroupId);
+
+        modelBuilder.Entity<Dossier>()
+            .HasOne(dossier => dossier.Discussion)
+            .WithOne(discussion => discussion.Dossier)
+            .HasForeignKey<DossierDiscussion>(discussion => discussion.DossierId);
+
+        modelBuilder.Entity<DossierDiscussion>()
+            .HasMany(discussion => discussion.Messages)
+            .WithOne(message => message.DossierDiscussion)
+            .HasForeignKey(message => message.DossierDiscussionId);
+
+        modelBuilder.Entity<DiscussionMessage>()
+            .HasOne(message => message.Author)
+            .WithMany()
+            .HasForeignKey(message => message.AuthorId);
+
+        modelBuilder.Entity<DiscussionMessage>()
+            .HasOne(message => message.Group)
+            .WithMany()
+            .HasForeignKey(message => message.GroupId);
+
+        modelBuilder.Entity<DiscussionMessage>()
+            .HasOne(message => message.ParentDiscussionMessage)
+            .WithMany()
+            .HasForeignKey(message => message.ParentDiscussionMessageId);
+    }
+
+    private static void ConfigureCourseGroupingRelationships(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<CourseGrouping>()
+            .HasMany(cg => cg.SubGroupingReferences)
+            .WithOne()
+            .HasForeignKey(sgr => sgr.ParentGroupId);
+
+        modelBuilder.Entity<CourseGrouping>()
+            .HasMany(cg => cg.CourseIdentifiers)
+            .WithMany();
     }
 }

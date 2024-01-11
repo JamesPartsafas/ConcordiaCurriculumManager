@@ -28,6 +28,10 @@ public interface IDossierRepository
     public Task<bool> DeleteCourseModificationRequest(CourseModificationRequest courseModificationRequest);
     public Task<bool> DeleteCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
     public Task<IList<User>> GetCurrentlyReviewingGroupMasters(Guid dossierId);
+    public Task<Dossier?> GetDossierReportByDossierId(Guid dossierId);
+    public Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId);
+    public Task<bool> CheckIfCourseRequestExists(Guid dossierId, string subject, string catalog);
+    public Task<IList<Course>> GetChangesAcrossAllDossiers();
 }
 
 public class DossierRepository : IDossierRepository
@@ -67,8 +71,19 @@ public class DossierRepository : IDossierRepository
     }
 
     public async Task<Dossier?> GetDossierByDossierId(Guid dossierId) => await _dbContext.Dossiers
-        .Select(ObjectSelectors.DossierSelector())
         .Where(d => d.Id == dossierId)
+        .Include(d => d.CourseCreationRequests)
+        .ThenInclude(c => c.NewCourse)
+        .Include(d => d.CourseDeletionRequests)
+        .ThenInclude(c => c.Course)
+        .Include(d => d.CourseModificationRequests)
+        .ThenInclude(c => c.Course)
+        .Include(d => d.ApprovalStages)
+        .ThenInclude(a => a.Group == null ? null : a.Group.Members)
+        .Include(d => d.ApprovalStages)
+        .ThenInclude(a => a.Group == null ? null : a.Group.GroupMasters)
+        .Include(dossier => dossier.Discussion)
+        .ThenInclude(discussion => discussion.Messages)
         .FirstOrDefaultAsync();
 
     public async Task<bool> SaveDossier(Dossier dossier)
@@ -173,5 +188,75 @@ public class DossierRepository : IDossierRepository
             return new List<User>();
 
         return stage.Group.GroupMasters;
+    }
+
+    public async Task<Dossier?> GetDossierReportByDossierId(Guid dossierId)
+    {
+        return await _dbContext.Dossiers
+        .Where(d => d.Id == dossierId)
+        .Include(d => d.Initiator)
+        .Include(d => d.CourseCreationRequests)
+            .ThenInclude(ccr => ccr.NewCourse)
+                .ThenInclude(nc => nc!.SupportingFiles)
+            .Include(d => d.CourseCreationRequests)
+                .ThenInclude(ccr => ccr.NewCourse)
+                    .ThenInclude(nc => nc!.CourseCourseComponents)
+        .Include(d => d.CourseModificationRequests)
+            .ThenInclude(cmr => cmr.Course)
+                .ThenInclude(cr => cr!.SupportingFiles)
+            .Include(d => d.CourseModificationRequests)
+                .ThenInclude(cmr => cmr.Course)
+                    .ThenInclude(cr => cr!.CourseCourseComponents)
+        .Include(d => d.CourseDeletionRequests)
+            .ThenInclude(cmr => cmr.Course)
+                .ThenInclude(cr => cr!.SupportingFiles)
+            .Include(d => d.CourseModificationRequests)
+                .ThenInclude(cmr => cmr.Course)
+                    .ThenInclude(cr => cr!.CourseCourseComponents)
+        .Include(d => d.ApprovalStages)
+            .ThenInclude(a => a.Group)
+        .FirstOrDefaultAsync();
+    }
+
+    public async Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId)
+    {
+        return await _dbContext.Dossiers
+            .Include(d => d.ApprovalStages)
+            .ThenInclude(a => a.Group)
+            .Where(d => d.ApprovalStages.Where(a => a.IsCurrentStage).First().Group!.Members.Any(m => m.Id.Equals(userId)))
+            .ToListAsync();
+    }
+
+    public async Task<bool> CheckIfCourseRequestExists(Guid dossierId, string subject, string catalog)
+    {
+       var dossier = await GetDossierByDossierId(dossierId);
+
+       var courseRequests = dossier!.CourseCreationRequests.Select(r => r.NewCourse)
+                            .Concat(dossier.CourseModificationRequests.Select(r => r.Course))
+                            .Concat(dossier.CourseDeletionRequests.Select(r => r.Course))
+                            .Where(c => c != null);
+       
+        foreach (var course in courseRequests)
+       {
+            if (course!.Subject.Equals(subject) && course.Catalog.Equals(catalog)) 
+            {
+                return true;
+            }
+       }
+       return false;
+    }
+
+    public async Task<IList<Course>> GetChangesAcrossAllDossiers()
+    {
+        var query = _dbContext.Courses.FromSqlInterpolated(
+                $@"SELECT DISTINCT ON (""CourseID"") c.* FROM ""Courses"" c WHERE ""Version"" IS NOT NULL AND ""Published"" = false ORDER BY ""CourseID"", ""Version"" DESC"
+            );
+
+        query = query.Include(course => course.CourseCourseComponents)
+            .Include(course => course.CourseCreationRequest)
+            .Include(course => course.CourseModificationRequest)
+            .Include(course => course.CourseDeletionRequest);
+
+        return await query.ToListAsync();
     }
 }

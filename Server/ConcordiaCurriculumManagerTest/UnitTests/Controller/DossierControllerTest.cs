@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.Controllers;
+using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
@@ -131,6 +132,41 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
             var objectResult = (ObjectResult)actionResult;
 
             Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task GetDossierReportByDossierId_ValidCall_ReturnsDossierReport()
+        {
+            var dossierReport = TestData.GetSampleDossierReport();
+            dossierService.Setup(d => d.GetDossierReportByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossierReport);
+
+            var actionResult = await dossierController.GetDossierReportByDossierId(It.IsAny<Guid>());
+            var objectResult = (ObjectResult)actionResult;
+
+            Assert.AreEqual((int)HttpStatusCode.Created, objectResult.StatusCode);
+            mapper.Verify(mock => mock.Map<DossierReportDTO>(dossierReport), Times.Once());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public async Task GetDossierReportByDossierId_InvalidCall_Returns404()
+        {
+            dossierService.Setup(d => d.GetDossierReportByDossierId(It.IsAny<Guid>())).Throws(new NotFoundException());
+
+            await dossierController.GetDossierReportByDossierId(Guid.NewGuid());
+        }
+
+        [TestMethod]
+        public async Task GetChangesAcrossAllDossiers_ValidCall_ReturnsCourseChanges()
+        {
+            var courseChanges = TestData.GetSampleCourseChange();
+            dossierService.Setup(d => d.GetChangesAcrossAllDossiers()).ReturnsAsync(courseChanges);
+
+            var actionResult = await dossierController.GetChangesAcrossAllDossiers();
+            var objectResult = (ObjectResult)actionResult;
+
+            Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+            mapper.Verify(mock => mock.Map<CourseChangesDTO>(courseChanges), Times.Once());
         }
     }
 }

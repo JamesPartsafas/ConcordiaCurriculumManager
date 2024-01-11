@@ -40,6 +40,7 @@ export interface Course {
     supportingFiles: object;
     resourceImplication: string;
     courseID?: number;
+    comment: string;
 }
 
 export interface newCourse extends Course {
@@ -115,3 +116,41 @@ export const componentMappings = {
     "Tutorial/Lab": "TL",
     Workshop: "WKS",
 };
+
+export interface CourseDataResponse {
+    data: Course;
+}
+
+export interface CourseCreationRequestDTOResponse {
+    data: {
+        id: string;
+        dossierId: string;
+        rationale: string | null;
+        resourceImplication: string | null;
+        comment: string | null;
+        conflict: string | null;
+        newCourseID: string;
+        newCourse: Course;
+    };
+}
+
+export interface CourseModificationRequestDTOResponse {
+    data: {
+        id: string;
+        dossierId: string;
+        rationale: string | null;
+        resourceImplication: string | null;
+        comment: string | null;
+        conflict: string | null;
+        courseID: string;
+        course: Course;
+    };
+}
+
+export interface EditCourseCreationRequestDTO extends Course {
+    id: string;
+}
+
+export interface EditCourseModificationRequestDTO extends Course {
+    id: string;
+}

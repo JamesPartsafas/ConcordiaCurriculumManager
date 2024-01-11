@@ -16,6 +16,7 @@ public class DossierServiceTest
 {
     private Mock<IDossierRepository> dossierRepository = null!;
     private Mock<ILogger<DossierService>> logger = null!;
+    private Mock<ICourseRepository> courseRepository = null!;
     private DossierService dossierService = null!;
 
     [TestInitialize]
@@ -23,8 +24,9 @@ public class DossierServiceTest
     {
         logger = new Mock<ILogger<DossierService>>();
         dossierRepository = new Mock<IDossierRepository>();
+        courseRepository = new Mock<ICourseRepository>();
 
-        dossierService = new DossierService(logger.Object, dossierRepository.Object);
+        dossierService = new DossierService(logger.Object, dossierRepository.Object, courseRepository.Object);
     }
 
     [TestMethod]
@@ -118,13 +120,7 @@ public class DossierServiceTest
     public async Task Edit_DossierDoesNotUpdate_LogsAndThrowsException()
     {
         var user = TestData.GetSampleUser();
-        var dossier = new Dossier
-        {
-            InitiatorId = user.Id,
-            Title = "test title",
-            Description = "test description",
-            State = DossierStateEnum.Created
-        };
+        var dossier = TestData.GetSampleDossier();
 
         var editDossier = new EditDossierDTO
         {
@@ -146,13 +142,7 @@ public class DossierServiceTest
     public async Task EditDossierForUser_ValidInput_Succeeds()
     {
         var user = TestData.GetSampleUser();
-        var dossier = new Dossier
-        {
-            InitiatorId = user.Id,
-            Title = "test title",
-            Description = "test description",
-            State = DossierStateEnum.Created
-        };
+        var dossier = TestData.GetSampleDossier();
 
         var editDossier = new EditDossierDTO
         {
@@ -187,13 +177,7 @@ public class DossierServiceTest
     public async Task DeleteDossier_DoesNotUpdate_LogsAndThrowsException()
     {
         var user = TestData.GetSampleUser();
-        var dossier = new Dossier
-        {
-            InitiatorId = user.Id,
-            Title = "test title",
-            Description = "test description",
-            State = DossierStateEnum.Created
-        };
+        var dossier = TestData.GetSampleDossier();
 
         dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
         dossierRepository.Setup(d => d.DeleteDossier(It.IsAny<Dossier>())).ReturnsAsync(false);
@@ -207,14 +191,7 @@ public class DossierServiceTest
     public async Task DeleteDossierValidInput_Succeeds()
     {
         var user = TestData.GetSampleUser();
-        var dossier = new Dossier
-        {
-            Id = Guid.NewGuid(),
-            InitiatorId = user.Id,
-            Title = "test title",
-            Description = "test description",
-            State = DossierStateEnum.Created
-        };
+        var dossier = TestData.GetSampleDossier();
 
         var deletedDossier = dossier.Id;
 
@@ -232,7 +209,7 @@ public class DossierServiceTest
         var user = TestData.GetSampleUser();
         var dossier = TestData.GetSampleDossier(user);
 
-        dossierRepository.Setup(d => d.GetDossierByDossierId(user.Id)).ReturnsAsync(dossier);
+        dossierRepository.Setup(d => d.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
 
         var returnedDossier = await dossierService.GetDossierForUserOrThrow(dossier.Id, user.Id);
 
@@ -357,6 +334,48 @@ public class DossierServiceTest
         await dossierService.GetCourseDeletionRequest(TestData.GetSampleCourseDeletionRequest().Id);
 
         logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    public async Task GetDossierReportByDossierId_ValidInput_ReturnsDossierReport()
+    {
+        var dossier = TestData.GetSampleDossier();
+        dossierRepository.Setup(d => d.GetDossierReportByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
+
+        var dossierReport = await dossierService.GetDossierReportByDossierId(dossier.Id);
+
+        Assert.IsNotNull(dossierReport);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task GetDossierReportByDossierId_InvalidInput_Throws()
+    {
+        dossierRepository.Setup(d => d.GetDossierReportByDossierId(It.IsAny<Guid>())).ReturnsAsync((Dossier)null!);
+
+        await dossierService.GetDossierReportByDossierId(TestData.GetSampleDossier().Id);
+
+        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
+    }
+
+    [TestMethod]
+    public async Task GetDossiersRequiredReview_ValidInput_ReturnsDossiersRequireReview()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+        var dossiers = new List<Dossier> { dossier };
+        dossierRepository.Setup(d => d.GetDossiersRequiredReview(It.IsAny<Guid>())).ReturnsAsync(dossiers);
+
+        await dossierService.GetDossiersRequiredReview(dossier.InitiatorId);
+    }
+
+    [TestMethod]
+    public async Task GetChangesAcrossAllDossiers_ValidCall_ReturnsCourseChanges()
+    {   
+        dossierRepository.Setup(d => d.GetChangesAcrossAllDossiers()).ReturnsAsync(new List<Course> { TestData.GetSampleAcceptedCourse()});
+
+        var courseChanges = await dossierService.GetChangesAcrossAllDossiers();
+
+        Assert.IsNotNull(courseChanges);
     }
 }
 

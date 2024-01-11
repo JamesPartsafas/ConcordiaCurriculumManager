@@ -28,6 +28,7 @@ import { Link } from "react-router-dom";
 export interface HeaderProps {
     setUser: (user: User | null) => void;
     setIsLoggedIn: (isLoggedIn: boolean) => void;
+    setIsAdminOrGroupMaster: (isAdminOrGroupMaster: boolean) => void;
 }
 
 export default function Header(props: HeaderProps) {
@@ -40,6 +41,7 @@ export default function Header(props: HeaderProps) {
             () => {
                 props.setUser(null);
                 props.setIsLoggedIn(false);
+                props.setIsAdminOrGroupMaster(false);
                 navigate(BaseRoutes.Login);
                 showToast(toast, "Success!", "You have successfully logged out.", "success");
             },
@@ -260,7 +262,7 @@ const NAV_ITEMS: Array<NavItem> = [
     },
     {
         label: "Review Proposal",
-        href: "#",
+        href: "/dossierstoreview",
     },
     {
         label: "Current Change Log",

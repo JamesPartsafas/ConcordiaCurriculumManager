@@ -1,15 +1,32 @@
-import { Container, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { useState } from "react";
+import {
+    Container,
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    Td,
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay,
+} from "@chakra-ui/react";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import { isAdmin } from "../services/auth";
 import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../services/group";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { BaseRoutes } from "../constants";
 import { UserContext } from "../App";
 
 export default function DisplayManageableGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
+    const [deleteGroupId, setDeleteGroupId] = useState<string | null>(null);
     const user = useContext(UserContext);
+    const cancelRef = useRef();
 
     useEffect(() => {
         GetAllGroups()
@@ -30,6 +47,12 @@ export default function DisplayManageableGroups() {
                 console.log(err);
             });
     }, [user]);
+
+    const onDeleteGroup = (groupId) => {
+        console.log(`Deleting group with ID: ${groupId}`);
+        // Incomplete yet
+        setDeleteGroupId(null);
+    };
 
     return (
         <div>
@@ -124,7 +147,13 @@ export default function DisplayManageableGroups() {
                                     {isAdmin(user) && (
                                         <Td whiteSpace="nowrap" padding="16px" textAlign="center">
                                             <Link to={BaseRoutes.ManageableGroup}>
-                                                <Button style="primary" variant="outline" width="50%" height="40px">
+                                                <Button
+                                                    style="primary"
+                                                    variant="outline"
+                                                    width="50%"
+                                                    height="40px"
+                                                    onClick={() => setDeleteGroupId(group.id)}
+                                                >
                                                     Delete {/**for Future Edit Group Name */}
                                                 </Button>
                                             </Link>
@@ -146,6 +175,36 @@ export default function DisplayManageableGroups() {
                             Back to Home Page
                         </Button>
                     </Link>
+                    <AlertDialog
+                        isOpen={deleteGroupId !== null}
+                        leastDestructiveRef={cancelRef}
+                        onClose={() => setDeleteGroupId(null)}
+                    >
+                        <AlertDialogOverlay>
+                            <AlertDialogContent>
+                                <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                                    Delete Group
+                                </AlertDialogHeader>
+
+                                <AlertDialogBody>Are you sure? This action cannot be undone.</AlertDialogBody>
+
+                                <AlertDialogFooter>
+                                    <Button ref={cancelRef} onClick={() => setDeleteGroupId(null)}>
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        colorScheme="red"
+                                        onClick={() => {
+                                            onDeleteGroup(deleteGroupId);
+                                        }}
+                                        ml={3}
+                                    >
+                                        Delete
+                                    </Button>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialogOverlay>
+                    </AlertDialog>
                 </div>
             </Container>
         </div>

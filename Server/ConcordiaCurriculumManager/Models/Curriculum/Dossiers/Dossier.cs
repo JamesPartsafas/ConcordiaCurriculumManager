@@ -27,6 +27,8 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
         public IList<ApprovalStage> ApprovalStages { get; set; } = new List<ApprovalStage>();
 
+        public required DossierDiscussion Discussion { get; set; }
+
         public void MarkAsRejected()
         {
             if (State != DossierStateEnum.InReview)
@@ -72,14 +74,14 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
             State = DossierStateEnum.Approved;
 
-            foreach (var request in CourseCreationRequests)
-                request.MarkAsAccepted();
+            foreach (var creationRequest in CourseCreationRequests)
+                creationRequest.MarkAsAccepted(currentVersions);
 
-            foreach (var request in CourseModificationRequests)
-                request.MarkAsAccepted(currentVersions);
+            foreach (var modificationRequest in CourseModificationRequests)
+                modificationRequest.MarkAsAccepted(currentVersions);
 
-            foreach (var request in CourseDeletionRequests)
-                request.MarkAsDeleted(currentVersions);
+            foreach (var deletionRequest in CourseDeletionRequests)
+                deletionRequest.MarkAsDeleted(currentVersions);
         }
 
         public IList<ApprovalStage> PrepareForPublishing(DossierSubmissionDTO dto)

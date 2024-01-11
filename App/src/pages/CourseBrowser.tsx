@@ -1,69 +1,95 @@
-import React from "react";
-import Select from "react-select";
+import React, { useEffect, useState } from "react";
+import Select from "../components/Select";
 import { Box, Button, Container, FormLabel, Heading, Stack } from "@chakra-ui/react";
-
+import { useNavigate } from "react-router-dom";
+import { Input } from "@chakra-ui/react";
+import { AllCourseSettings } from "../models/course";
+import { getAllCourseSettings } from "../services/course";
 interface SubjectItem {
     value: string;
-    label: string;
 }
 
-const SUBJECT_ITEMS: Array<SubjectItem> = [
-    { value: "COMP", label: "COMP" },
-    { value: "SOEN", label: "SOEN" },
-    { value: "ENGR", label: "ENGR" },
-];
+export default function CourseBrowser() {
+    const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
 
-interface CatalogItem {
-    value: string;
-    label: string;
-}
+    useEffect(() => {
+        requestCourseSettings();
+    }, []);
 
-const CATALOG_ITEMS: Array<CatalogItem> = [
-    { value: "201", label: "201" },
-    { value: "301", label: "301" },
-    { value: "401", label: "401" },
-];
+    function requestCourseSettings() {
+        getAllCourseSettings().then((res) => {
+            setCourseSettings(res.data);
+        });
+        console.log(courseSettings);
+    }
 
-function CourseBrowser() {
+    const navigate = useNavigate();
+    // State variables to store selected values
+    const [selectedSubject, setSelectedSubject] = useState<SubjectItem | null>(null);
+    const [catalog, setCatalog] = useState<string>("");
+
+    // Function to handle subject selection
+    const handleSubjectChange = (selectedOption: SubjectItem | null) => {
+        setSelectedSubject(selectedOption);
+    };
+
+    // Function to handle catalog selection
     return (
-        <form>
-            <Container maxW="lg" py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>
-                <Stack spacing="8">
-                    <Stack spacing="6">
-                        <Heading textAlign="center" size="lg">
-                            Course Browser
-                        </Heading>
-                    </Stack>
+        <>
+            {courseSettings && (
+                <form>
+                    <Container maxW="lg" py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>
+                        <Stack spacing="8">
+                            <Stack spacing="6">
+                                <Heading textAlign="center" size="lg">
+                                    Course Browser
+                                </Heading>
+                            </Stack>
 
-                    <Box
-                        py={{ base: "0", sm: "8" }}
-                        px={{ base: "4", sm: "10" }}
-                        bg={{ base: "transparent", sm: "bg.surface" }}
-                        boxShadow={{ base: "none", sm: "2xl" }}
-                        borderRadius={{ base: "none", sm: "xl" }}
-                    >
-                        <Stack spacing="5">
-                            <FormLabel htmlFor="subject">Subject</FormLabel>
+                            <Box
+                                py={{ base: "0", sm: "8" }}
+                                px={{ base: "4", sm: "10" }}
+                                bg={{ base: "transparent", sm: "bg.surface" }}
+                                boxShadow={{ base: "none", sm: "2xl" }}
+                                borderRadius={{ base: "none", sm: "xl" }}
+                            >
+                                <Stack spacing="5">
+                                    <FormLabel htmlFor="subject">Subject</FormLabel>
 
-                            <Select options={SUBJECT_ITEMS} />
+                                    <Select options={courseSettings?.courseSubjects} onSelect={handleSubjectChange} />
 
-                            <FormLabel htmlFor="catalog">Catalog N°</FormLabel>
+                                    <FormLabel htmlFor="catalog">Catalog N°</FormLabel>
 
-                            <Select options={CATALOG_ITEMS} />
+                                    <Input
+                                        onChange={(e) => setCatalog(e.target.value)}
+                                        htmlSize={4}
+                                        width="auto"
+                                        value={catalog}
+                                    />
+                                </Stack>
+                                <div>
+                                    <Box h={6} />
+                                </div>
+
+                                <Stack spacing="6">
+                                    <Button
+                                        isDisabled={selectedSubject ? false : true}
+                                        onClick={() =>
+                                            navigate(`/CourseDetails?subject=${selectedSubject}&catalog=${catalog}`)
+                                        }
+                                        backgroundColor="#932439"
+                                        color="white"
+                                        _hover={{ bg: "#7A1D2E" }}
+                                        type="submit"
+                                    >
+                                        Enter
+                                    </Button>
+                                </Stack>
+                            </Box>
                         </Stack>
-                        <div>
-                            <Box h={6} />
-                        </div>
-
-                        <Stack spacing="6">
-                            <Button backgroundColor="#932439" color="white" hover={{ bg: "#7A1D2E" }} type="submit">
-                                Enter
-                            </Button>
-                        </Stack>
-                    </Box>
-                </Stack>
-            </Container>
-        </form>
+                    </Container>
+                </form>
+            )}
+        </>
     );
 }
-export default CourseBrowser;

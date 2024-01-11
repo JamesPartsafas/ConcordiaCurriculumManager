@@ -1,4 +1,5 @@
-﻿using ConcordiaCurriculumManager.Services;
+﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ConcordiaCurriculumManager.Security.Requirements.Handlers;
@@ -46,8 +47,39 @@ public class OwnerOfDossierHandler : AuthorizationHandler<OwnerOfDossierRequirem
 
         var dossier = await _dossierService.GetDossierDetailsById(parsedDossierId);
 
-        if (dossier is null || !dossier.InitiatorId.Equals(parsedUserId))
+        if (dossier is null)
         {
+            _logger.LogWarning("User is authenticated without a valid Id claim");
+            context.Fail();
+            return;
+        }
+
+        var isDossierPublished = !dossier.State.Equals(DossierStateEnum.Created);
+
+        if (!isDossierPublished)
+        {
+            if (dossier.InitiatorId.Equals(parsedUserId))
+            {
+                context.Succeed(requirement);
+                return;
+            }
+
+            context.Fail();
+            return;
+        }
+
+        var currentApprovalStage = dossier.ApprovalStages.Where(stage => stage.IsCurrentStage).FirstOrDefault();
+        var reviewingGroup = currentApprovalStage?.Group;
+
+        if (reviewingGroup is null)
+        {
+            context.Fail();
+            return;
+        }
+
+        if (isDossierPublished && !reviewingGroup.Members.Exists(m => m.Id.Equals(parsedUserId)))
+        {
+            _logger.LogWarning($"User {userId} attempted to access a dossier they are not currently reviewing");
             context.Fail();
             return;
         }

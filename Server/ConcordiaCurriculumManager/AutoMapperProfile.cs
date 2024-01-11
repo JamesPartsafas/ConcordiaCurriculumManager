@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO;
+using ConcordiaCurriculumManager.DTO.CourseGrouping;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
+using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
 
 namespace ConcordiaCurriculumManager;
@@ -33,6 +37,22 @@ public class AutoMapper : Profile
             .ReverseMap();
         CreateMap<CourseCreationRequest, CourseCreationRequestCourseDetailsDTO>().ReverseMap();
         CreateMap<CourseModificationRequest, CourseModificationRequestCourseDetailsDTO>().ReverseMap();
+        CreateMap<ApprovalStage, ApprovalStageDTO>();
+        CreateMap<DossierDiscussion, DossierDiscussionDTO>().ReverseMap();
+        CreateMap<CreateDossierDiscussionMessageDTO, DiscussionMessage>();
+        CreateMap<DiscussionMessage, DossierDiscussionMessageDTO>();
+        CreateMap<CourseDeletionRequest, CourseDeletionRequestCourseDetailsDTO>().ReverseMap();
+        CreateMap<DossierReport, DossierReportDTO>()
+            .ForMember(dest => dest.InitiatorId, opt => opt.MapFrom(d => d.Dossier.InitiatorId))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(d => d.Dossier.Title))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(d => d.Dossier.Description))
+            .ForMember(dest => dest.State, opt => opt.MapFrom(d => d.Dossier.State))
+            .ForMember(dest => dest.CourseCreationRequests, opt => opt.MapFrom(d => d.Dossier.CourseCreationRequests))
+            .ForMember(dest => dest.CourseModificationRequests, opt => opt.MapFrom(d => d.Dossier.CourseModificationRequests))
+            .ForMember(dest => dest.CourseDeletionRequests, opt => opt.MapFrom(d => d.Dossier.CourseDeletionRequests))
+            .ForMember(dest => dest.ApprovalStages, opt => opt.MapFrom(d => d.Dossier.ApprovalStages));
+        CreateMap<CourseGroupingReference, CourseGroupingReferenceDTO>();
+        CreateMap<CourseGrouping, CourseGroupingDTO>();
+        CreateMap<CourseChanges, CourseChangesDTO>();
     }
-
 }

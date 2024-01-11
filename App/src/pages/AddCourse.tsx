@@ -22,22 +22,43 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { addCourse, getAllCourseSettings } from "../services/course";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+    addCourse,
+    editCourseCreationRequest,
+    editCourseModificationRequest,
+    getAllCourseSettings,
+    modifyCourse,
+} from "../services/course";
 import {
     AllCourseSettings,
     Course,
     CourseCareer,
     CourseComponent,
     CourseComponents,
+    EditCourseCreationRequestDTO,
+    EditCourseModificationRequestDTO,
     componentMappings,
 } from "../models/course";
+import CourseDifferenceViewer from "../components/VersionDifference";
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
 import Button from "../components/Button";
+import { BaseRoutes } from "../constants";
+import CoursePreview from "../components/CoursePreview";
 
 export default function AddCourse() {
     const toast = useToast();
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const state = location.state;
+    const { pathname } = location;
+    const isEditPage = pathname.includes("edit-course");
+    const pageTitle = !isEditPage ? "Add Course" : "Edit Course";
+
+    const [oldCourse, setOldCourse] = useState<Course>(null);
+    const [newCourse, setNewCourse] = useState<Course>(null);
     // Form managment and error handling states
     const [isLoading, toggleLoading] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
@@ -47,6 +68,7 @@ export default function AddCourse() {
     const [courseCreditError, setCourseCreditError] = useState(true);
     const [courseCareersError, setCourseCareersError] = useState(true);
 
+    const [courseID, setCourseID] = useState<number>(null);
     const [selectedComponent, setSelectedComponent] = useState<string>(
         '{"componentCode":0,"componentName":"Conference"}'
     );
@@ -65,6 +87,8 @@ export default function AddCourse() {
     const [rational, setRational] = useState("");
     const [courseNotes, setCourseNotes] = useState("");
     const [resourceImplication, setResourceImplication] = useState("");
+    const [equivalentCourses, setEquivalentCourses] = useState("");
+    const [comment, setComment] = useState("");
 
     // File upload states
     const [fileName, setFileName] = useState("");
@@ -78,36 +102,83 @@ export default function AddCourse() {
         // Find course carrer code
         const career = allCourseSettings?.courseCareers.find((career) => career.careerName === value);
         setCouresCareer(career);
+        setNewCourse({
+            ...newCourse,
+            career: career.careerCode,
+        });
     };
     const handleChangeDepartment = (value: string) => {
         if (value.length === 0) setCourseSubjectError(true);
         else setCourseSubjectError(false);
+        setNewCourse({
+            ...newCourse,
+            subject: value,
+        });
         setDepartment(value);
     };
     const handleChangeCourseNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.currentTarget.value.length === 0) setCourseCodeError(true);
         else setCourseCodeError(false);
         setCourseNumber(e.currentTarget.value);
+        setNewCourse({
+            ...newCourse,
+            catalog: e.currentTarget.value,
+        });
     };
     const handleChangeCourseName = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.currentTarget.value.length === 0) setCourseNameError(true);
         else setCourseNameError(false);
         setCourseName(e.currentTarget.value);
+        setNewCourse({
+            ...newCourse,
+            title: e.currentTarget.value,
+        });
     };
     const handleChangeCourseCredits = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.currentTarget.value.length === 0) setCourseCreditError(true);
         else setCourseCreditError(false);
         setCourseCredits(e.currentTarget.value);
+        setNewCourse({
+            ...newCourse,
+            creditValue: e.currentTarget.value,
+        });
     };
-    const handleChangeCourseDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+    const handleChangeCourseDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setCourseDescription(e.currentTarget.value);
-    const handleChangeCourseRequesites = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+        setNewCourse({
+            ...newCourse,
+            description: e.currentTarget.value,
+        });
+    };
+
+    const handleChangeCourseRequesites = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setCourseRequesites(e.currentTarget.value);
-    const handleChangeResourceImplication = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+        setNewCourse({
+            ...newCourse,
+            preReqs: e.currentTarget.value,
+        });
+    };
+    const handleChangeResourceImplication = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setResourceImplication(e.currentTarget.value);
-    const handleChangeRational = (e: React.ChangeEvent<HTMLTextAreaElement>) => setRational(e.currentTarget.value);
-    const handleChangeCourseNotes = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+        setNewCourse({
+            ...newCourse,
+            resourceImplication: e.currentTarget.value,
+        });
+    };
+    const handleChangeRational = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setRational(e.currentTarget.value);
+        setNewCourse({
+            ...newCourse,
+            rationale: e.currentTarget.value,
+        });
+    };
+    const handleChangeCourseNotes = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setCourseNotes(e.currentTarget.value);
+        setNewCourse({
+            ...newCourse,
+            courseNotes: e.currentTarget.value,
+        });
+    };
     const handleAddComponent = () => {
         const selectedItem: CourseComponent = JSON.parse(selectedComponent) as CourseComponent;
         // check if course component already exists
@@ -126,20 +197,46 @@ export default function AddCourse() {
             },
         ]);
         setComponents(components.filter((component) => component !== selectedItem));
+        setNewCourse({
+            ...newCourse,
+            componentCodes: {
+                ...newCourse?.componentCodes,
+                [componentMappings[selectedItem.componentName]]: 3,
+            },
+        });
     };
     const handleRemoveComponent = (index: number) => {
-        setComponents([...components, courseComponents[index]]);
+        setComponents([...components, courseComponents[index]]); // update list of components
         setCourseComponents(courseComponents.filter((_component, componentIndex) => componentIndex !== index));
+        // Remove component with component name as key from component codes object
+        setNewCourse({
+            ...newCourse,
+            componentCodes: Object.keys(newCourse.componentCodes).reduce((object, key) => {
+                if (key !== componentMappings[courseComponents[index].componentName]) {
+                    object[key] = newCourse.componentCodes[key];
+                }
+                return object;
+            }, {}),
+        });
+    };
+    const handleChangeEquivalentCourses = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setEquivalentCourses(e.currentTarget.value);
+        setNewCourse({
+            ...newCourse,
+            equivalentCourses: e.currentTarget.value,
+        });
     };
 
+    const handleChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => setComment(e.currentTarget.value);
     const handleSubmitCourse = () => {
         setFormSubmitted(true);
-        if (courseCodeError || courseCreditError || courseNameError || courseSubjectError) {
+        if (courseCodeError || courseCreditError || courseNameError || courseSubjectError || courseCareersError) {
             showToast(toast, "Error!", "One or more validation errors occurred", "error");
             return;
         } else {
             toggleLoading(true);
             const course: Course = {
+                courseID: courseID,
                 subject: department,
                 catalog: courseNumber,
                 title: courseName,
@@ -147,25 +244,30 @@ export default function AddCourse() {
                 creditValue: courseCredits,
                 preReqs: courseRequesites,
                 career: courseCareer.careerCode,
-                equivalentCourses: "",
+                equivalentCourses: equivalentCourses,
                 componentCodes: getCourseComponentsObject(courseComponents),
                 dossierId: dossierId,
                 courseNotes: courseNotes,
                 rationale: rational,
                 supportingFiles: supportingFiles,
                 resourceImplication: resourceImplication,
+                comment: comment,
             };
-            addCourse(course)
-                .then(() => {
-                    showToast(toast, "Success!", "Course added successfully.", "success");
-                    toggleLoading(false);
-                    clearForm();
-                    setFormSubmitted(false);
-                })
-                .catch((e) => {
-                    showToast(toast, "Error!", e.response.data.detail, "error");
-                    toggleLoading(false);
-                });
+            if (pathname.includes("add-course")) {
+                addCourse(course)
+                    .then(() => {
+                        showToast(toast, "Success!", "Course added successfully.", "success");
+                        toggleLoading(false);
+                        clearForm();
+                        setFormSubmitted(false);
+                        navigate("/dossierdetails/" + dossierId);
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                        showToast(toast, "Error!", e.response.data, "error");
+                        toggleLoading(false);
+                    });
+            } else if (pathname.includes("edit-course")) editAction(course);
         }
     };
     const handleFileNameChange = (event) => {
@@ -201,6 +303,13 @@ export default function AddCourse() {
         const newCourseComponents = [...courseComponents];
         newCourseComponents[index].hours = hours;
         setCourseComponents(newCourseComponents);
+        setNewCourse({
+            ...newCourse,
+            componentCodes: {
+                ...newCourse.componentCodes,
+                [componentMappings[courseComponents[index].componentName]]: hours,
+            },
+        });
     };
     const getCourseComponentsObject = (courseComponents: CourseComponents[]) => {
         const courseComponentsObject = {};
@@ -232,8 +341,136 @@ export default function AddCourse() {
         setCourseNotes("");
         setResourceImplication("");
         setSupportingFiles({});
+        setEquivalentCourses("");
     };
 
+    const getCourseCarreer = (careerCode: number) => {
+        const carrer = allCourseSettings?.courseCareers.find((career) => career.careerCode == careerCode);
+        return carrer;
+    };
+
+    const editAction = (course: Course) => {
+        if (state.api === "editCreationRequest") {
+            //edit a creation request
+            const creationRequestToEdit: EditCourseCreationRequestDTO = {
+                ...course,
+                id: state?.id,
+            };
+            editCourseCreationRequest(dossierId, creationRequestToEdit)
+                .then(() => {
+                    showToast(toast, "Success!", "Course creation request modified successfully.", "success");
+                    toggleLoading(false);
+                    navigate("/dossierdetails/" + dossierId);
+                })
+                .catch(() => {
+                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                    toggleLoading(false);
+                });
+        } else if (state.api === "editModificationRequest") {
+            //edit an existing modification request
+            const modificationRequestToEdit: EditCourseModificationRequestDTO = {
+                ...course,
+                id: state?.id,
+            };
+            editCourseModificationRequest(dossierId, modificationRequestToEdit)
+                .then(() => {
+                    showToast(toast, "Success!", "Course modification request modified successfully.", "success");
+                    toggleLoading(false);
+                    navigate("/dossierdetails/" + dossierId);
+                })
+                .catch(() => {
+                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                    toggleLoading(false);
+                    navigate("/dossierdetails/" + dossierId);
+                });
+        } else {
+            //create a new modification request
+            modifyCourse(course)
+                .then(() => {
+                    showToast(toast, "Success!", "Course modified successfully.", "success");
+                    toggleLoading(false);
+                    navigate("/dossierdetails/" + dossierId);
+                })
+                .catch(() => {
+                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                    toggleLoading(false);
+                });
+        }
+    };
+    const setCourseData = () => {
+        const courseDetails: Course = {
+            courseID: state?.courseID,
+            subject: state?.subject,
+            catalog: state?.catalog,
+            title: state?.title,
+            description: state?.description,
+            creditValue: state?.creditValue,
+            preReqs: state?.preReqs,
+            career: state?.career,
+            equivalentCourses: state?.equivalentCourses,
+            componentCodes: state?.componentCodes,
+            dossierId: dossierId,
+            courseNotes: state?.courseNotes,
+            rationale: state?.rationale || "",
+            supportingFiles: state?.supportingFiles,
+            resourceImplication: state?.resourceImplication || "",
+            comment: state?.comment || "",
+        };
+        const courseDetails2: Course = {
+            courseID: state?.courseID,
+            subject: state?.subject,
+            catalog: state?.catalog,
+            title: state?.title,
+            description: state?.description,
+            creditValue: state?.creditValue,
+            preReqs: state?.preReqs,
+            career: state?.career,
+            equivalentCourses: state?.equivalentCourses,
+            componentCodes: state?.componentCodes,
+            dossierId: dossierId,
+            courseNotes: state?.courseNotes,
+            rationale: state?.rationale || "",
+            supportingFiles: state?.supportingFiles,
+            resourceImplication: state?.resourceImplication || "",
+            comment: state?.comment || "",
+        };
+        setOldCourse(courseDetails);
+        setNewCourse(courseDetails2);
+        // set values
+        setCourseID(courseDetails?.courseID);
+        setDepartment(courseDetails?.subject);
+        setCourseName(courseDetails?.title);
+        setCourseDescription(courseDetails?.description);
+        setCourseCredits(courseDetails?.creditValue);
+        setCourseRequesites(courseDetails?.preReqs);
+        setCourseNumber(courseDetails?.catalog);
+        setSupportingFiles(courseDetails?.supportingFiles);
+        setEquivalentCourses(courseDetails?.equivalentCourses);
+        setCourseNotes(courseDetails?.courseNotes);
+        setRational(courseDetails?.rationale);
+        setResourceImplication(courseDetails?.resourceImplication);
+        setCouresCareer(getCourseCarreer(courseDetails?.career));
+        // find course components in allCourseSettings that match component codes of coursdDetails
+        const courseComponentsTemp = allCourseSettings?.courseComponents
+            .filter((component) =>
+                Object.keys(courseDetails?.componentCodes || {}).includes(componentMappings[component.componentName])
+            )
+            .map((filteredComponent) => {
+                const code = componentMappings[filteredComponent.componentName];
+                const hours = courseDetails.componentCodes[code];
+                return {
+                    ...filteredComponent,
+                    hours: hours,
+                };
+            });
+        setCourseComponents(courseComponentsTemp || []);
+        // update errors
+        setCourseSubjectError(false);
+        setCourseNameError(false);
+        setCourseCreditError(false);
+        setCourseCodeError(false);
+        setCourseCareersError(false);
+    };
     useEffect(() => {
         getAllCourseSettings()
             .then((res) => {
@@ -246,18 +483,40 @@ export default function AddCourse() {
                 showToast(toast, "Error!", err.message, "error");
             });
     }, []);
+
+    useEffect(() => {
+        if (allCourseSettings && pathname.includes("edit-course")) setCourseData();
+    }, [allCourseSettings]);
     return (
         // display if AllCourseSettings is not null
         <>
             {allCourseSettings && (
                 <Box>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        width="100px"
+                        height="40px"
+                        ml={8}
+                        mt={5}
+                        onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
+                    >
+                        Back
+                    </Button>
                     <form>
+                        {oldCourse && newCourse && isEditPage && (
+                            <CourseDifferenceViewer
+                                oldCourse={oldCourse}
+                                newCourse={newCourse}
+                                allCourseSettings={allCourseSettings}
+                            ></CourseDifferenceViewer>
+                        )}
                         <Flex>
                             <Stack w="35%" p={8}>
                                 <Stack>
                                     <Center>
                                         <Heading as="h1" size="2xl" color="brandRed">
-                                            Add Course
+                                            {pageTitle}
                                         </Heading>
                                     </Center>
                                 </Stack>
@@ -269,8 +528,9 @@ export default function AddCourse() {
                                                 options={courseCareers}
                                                 onSelect={handleChangeCourseCareer}
                                                 width="100%"
+                                                value={courseCareer ? courseCareer.careerName : "Select Course Career"}
                                             />
-                                            <FormErrorMessage>Subject is required</FormErrorMessage>
+                                            <FormErrorMessage>Course Career is required</FormErrorMessage>
                                         </FormControl>
                                         <FormControl isInvalid={courseSubjectError && formSubmitted}>
                                             <FormLabel m={0}>Subject</FormLabel>
@@ -278,6 +538,7 @@ export default function AddCourse() {
                                                 options={allCourseSettings?.courseSubjects}
                                                 onSelect={handleChangeDepartment}
                                                 width="100%"
+                                                value={department ? department : "Select Subject"}
                                             />
                                             <FormErrorMessage>Subject is required</FormErrorMessage>
                                         </FormControl>
@@ -308,11 +569,10 @@ export default function AddCourse() {
                                     <Stack>
                                         <FormControl isInvalid={courseCreditError && formSubmitted}>
                                             <FormLabel m={0}>Credits</FormLabel>
-                                            <NumberInput>
+                                            <NumberInput value={courseCredits}>
                                                 <NumberInputField
                                                     placeholder="Credits"
                                                     pl="16px"
-                                                    value={courseCredits}
                                                     onChange={handleChangeCourseCredits}
                                                 />
                                             </NumberInput>
@@ -338,14 +598,14 @@ export default function AddCourse() {
                                 <Stack>
                                     <Center>
                                         <Heading as="h2" size="xl" color="brandRed">
-                                            <Text align="center">Resource Implication</Text>
+                                            <Text align="center">Equivalent Courses</Text>
                                         </Heading>
                                     </Center>
                                     <Stack>
                                         <Textarea
-                                            value={resourceImplication}
-                                            onChange={handleChangeResourceImplication}
-                                            placeholder="Enter resource implication..."
+                                            value={equivalentCourses}
+                                            onChange={handleChangeEquivalentCourses}
+                                            placeholder="Enter equivalent courses..."
                                             minH={"100px"}
                                         ></Textarea>
                                     </Stack>
@@ -418,58 +678,22 @@ export default function AddCourse() {
                                     </Stack>
                                 </Stack>
                             </Stack>
+
                             <Stack w="65%" p={8}>
-                                <Stack>
-                                    <Center>
-                                        <Heading as="h2" size="xl" color="brandRed">
-                                            Version Preview
-                                        </Heading>
-                                    </Center>
-                                    <Stack>
-                                        <Card>
-                                            <CardBody>
-                                                <Box bg={"gray.200"} p={2}>
-                                                    <Heading size="xl">
-                                                        {department} {courseNumber} {courseName}{" "}
-                                                        {courseCredits === "" ? null : (
-                                                            <Text display={"inline"}>
-                                                                {"("}
-                                                                {courseCredits}{" "}
-                                                                {parseInt(courseCredits) === 1 ? "credit)" : "credits)"}
-                                                            </Text>
-                                                        )}
-                                                    </Heading>
-                                                    <Text>
-                                                        <b>Course Career:</b>{" "}
-                                                        {courseCareer ? courseCareer.careerName : "Not specified"}
-                                                    </Text>
-                                                    <Text>
-                                                        <b>Description:</b>{" "}
-                                                        {courseDescription
-                                                            ? courseDescription
-                                                            : "No description for this class"}
-                                                    </Text>
-                                                    <Text>
-                                                        <b>Prerequisites and Corerequisites:</b>{" "}
-                                                        {courseRequesites ? courseRequesites : "None"}
-                                                    </Text>
-                                                    <Text>
-                                                        <b>Component(s):</b>{" "}
-                                                        {courseComponents.length === 0
-                                                            ? "Not Available"
-                                                            : courseComponents.map(
-                                                                  (component) =>
-                                                                      component.componentName +
-                                                                      " " +
-                                                                      component.hours +
-                                                                      " hour(s) per week. "
-                                                              )}
-                                                    </Text>
-                                                </Box>
-                                            </CardBody>
-                                        </Card>
-                                    </Stack>
-                                </Stack>
+                                {!isEditPage && (
+                                    <CoursePreview
+                                        courseCareer={courseCareer?.careerName}
+                                        courseDescription={courseDescription}
+                                        coursePreReqs={courseRequesites}
+                                        courseTitle={courseName}
+                                        courseCreditValue={courseCredits}
+                                        courseEquivalentCourses={equivalentCourses}
+                                        courseNotes={courseNotes}
+                                        courseSubject={department}
+                                        courseCatalog={courseNumber}
+                                        courseComponents={courseComponents}
+                                    ></CoursePreview>
+                                )}
                                 <Stack>
                                     <Center>
                                         <Heading as="h2" size="xl" color="brandRed">
@@ -598,6 +822,21 @@ export default function AddCourse() {
                                 <Stack>
                                     <Center>
                                         <Heading as="h2" size="xl" color="brandRed">
+                                            <Text align="center">Resource Implication</Text>
+                                        </Heading>
+                                    </Center>
+                                    <Stack>
+                                        <Textarea
+                                            value={resourceImplication}
+                                            onChange={handleChangeResourceImplication}
+                                            placeholder="Enter resource implication..."
+                                            minH={"100px"}
+                                        ></Textarea>
+                                    </Stack>
+                                </Stack>
+                                <Stack>
+                                    <Center>
+                                        <Heading as="h2" size="xl" color="brandRed">
                                             <Text align="center">Rationale</Text>
                                         </Heading>
                                     </Center>
@@ -621,6 +860,21 @@ export default function AddCourse() {
                                             value={courseNotes}
                                             onChange={handleChangeCourseNotes}
                                             placeholder="Enter course notes..."
+                                            minH={"100px"}
+                                        ></Textarea>
+                                    </Stack>
+                                </Stack>
+                                <Stack>
+                                    <Center>
+                                        <Heading as="h2" size="xl" color="brandRed">
+                                            <Text align="center">Comments</Text>
+                                        </Heading>
+                                    </Center>
+                                    <Stack>
+                                        <Textarea
+                                            value={comment}
+                                            onChange={handleChangeComment}
+                                            placeholder="Enter comments..."
                                             minH={"100px"}
                                         ></Textarea>
                                     </Stack>

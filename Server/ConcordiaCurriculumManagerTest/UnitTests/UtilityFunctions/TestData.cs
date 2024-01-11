@@ -6,6 +6,7 @@ using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 public static class TestData
@@ -297,12 +298,18 @@ public static class TestData
     // DOSSIER DATA
     public static Dossier GetSampleDossier()
     {
+        var dossierId = Guid.NewGuid();
         return new Dossier
         {
+            Id = dossierId,
             InitiatorId = Guid.NewGuid(),
             State = DossierStateEnum.Created,
             Title = "test title",
-            Description = "test description"
+            Description = "test description",
+            Discussion = new()
+            {
+                DossierId = dossierId
+            }
         };
     }
 
@@ -320,6 +327,10 @@ public static class TestData
             {
                 new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 0, IsCurrentStage = true, IsFinalStage = false },
                 new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 1, IsCurrentStage = false, IsFinalStage = true },
+            },
+            Discussion = new()
+            {
+                DossierId = dossierId
             }
         };
     }
@@ -338,19 +349,29 @@ public static class TestData
             {
                 new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 0, IsCurrentStage = false, IsFinalStage = false },
                 new ApprovalStage { GroupId = Guid.NewGuid(), DossierId = dossierId, StageIndex = 1, IsCurrentStage = true, IsFinalStage = true },
+            },
+            Discussion = new()
+            {
+                DossierId = dossierId
             }
         };
     }
 
     public static Dossier GetSampleDossier(User user)
     {
+        var dossierId = Guid.NewGuid();
         return new Dossier
         {
+            Id = dossierId,
             Initiator = user,
             InitiatorId = user.Id,
             Title = "Dossier 1",
             Description = "Text description of a dossier.",
             State = DossierStateEnum.Created,
+            Discussion = new()
+            {
+                DossierId = dossierId
+            }
         };
     }
 
@@ -435,6 +456,114 @@ public static class TestData
         };
     }
 
+    public static DiscussionMessage GetSampleDiscussionMessage()
+    {
+        return new DiscussionMessage
+        {
+            DossierDiscussionId = Guid.NewGuid(),
+            GroupId = Guid.NewGuid(),
+            AuthorId = Guid.NewGuid(),
+            Message = "This is a test message"
+        };
+    }
+
+    public static Dossier GetSampleDossierWithDiscussion()
+    {
+        var dossier = GetSampleDossier();
+        dossier.State = DossierStateEnum.InReview;
+        dossier.Discussion = new()
+        {
+            DossierId = dossier.Id
+        };
+
+        return dossier;
+    }
+
+    public static CourseChanges GetSampleCourseChange() 
+    {
+        return new CourseChanges
+        {
+            CourseCreationRequests = new List<CourseCreationRequest>
+            {
+                GetSampleCourseCreationRequest()
+            },
+            CourseModificationRequests = new List<CourseModificationRequest>
+            {
+                GetSampleCourseModificationRequest()
+            },
+            CourseDeletionRequests = new List<CourseDeletionRequest>
+            {
+                GetSampleCourseDeletionRequest()
+            },
+            OldCourses = new List<Course>
+            {
+                GetSampleCourse()
+            }
+        };
+    }
+
+    // DOSSIER REVIEWS DTO
+    public static CreateDossierDiscussionMessageDTO GetSampleCreateDossierDiscussionMessageDTO()
+    {
+        return new CreateDossierDiscussionMessageDTO
+        {
+            Message = "This is a test message",
+            GroupId = Guid.NewGuid()
+        };
+    }
+
+    public static DossierDiscussionMessageDTO GetSampleDossierDiscussionMessageDTO()
+    {
+        return new DossierDiscussionMessageDTO
+        {
+            Id = Guid.NewGuid(),
+            Message = "This is a test message",
+            GroupId = Guid.NewGuid(),
+            CreatedDate = DateTime.Now,
+            ModifiedDate = DateTime.Now
+        };
+    }
+
+    public static DossierDiscussionDTO GetSampleDossierDiscussionDTO()
+    {
+        var message = GetSampleDossierDiscussionMessageDTO();
+
+        return new DossierDiscussionDTO
+        {
+            DossierId = Guid.NewGuid(),
+            Messages = new List<DossierDiscussionMessageDTO> { message }
+        };
+    }
+
+    public static DossierDetailsDTO GetSampleDossierWithDiscussionDTO()
+    {
+        var discusssion = GetSampleDossierDiscussionDTO();
+
+        var dossier = new DossierDetailsDTO
+        {
+            Id = Guid.NewGuid(),
+            InitiatorId = Guid.NewGuid(),
+            Title = "Title",
+            Description = "Description",
+            State = DossierStateEnum.InReview,
+            CreatedDate = DateTime.Now,
+            ModifiedDate = DateTime.Now,
+            Discussion = discusssion
+        };
+
+        discusssion.DossierId = dossier.Id;
+
+        return dossier;
+    }
+
+    public static DossierReport GetSampleDossierReport()
+    {
+        return new DossierReport
+        { Dossier = GetSampleDossier(),
+           OldCourses = new List<Course> { GetSampleCourse() }
+        };
+    }
+
     // GROUPS
     public static Group GetSampleGroup()
     {
@@ -442,6 +571,61 @@ public static class TestData
         {
             Id = Guid.NewGuid(),
             Name = "Senate"
+        };
+    }
+
+    // COURSE GROUPINGS
+    public static CourseGrouping GetSampleCourseGrouping()
+    {
+        var id1 = Guid.NewGuid();
+        var id2 = Guid.NewGuid();
+        var common1 = Guid.NewGuid();
+        var common2 = Guid.NewGuid();
+        var course = GetSampleAcceptedCourse();
+
+        return new CourseGrouping
+        {
+            Id = id1,
+            CommonIdentifier = common1,
+            Name = "Top level",
+            RequiredCredits = "30.00",
+            IsTopLevel = true,
+            School = SchoolEnum.GinaCody,
+            State = CourseGroupingStateEnum.Accepted,
+            Published = true,
+            SubGroupingReferences = new List<CourseGroupingReference>
+            {
+                {
+                    new CourseGroupingReference
+                    {
+                        ParentGroupId = id1,
+                        ChildGroupCommonIdentifier = common2,
+                        GroupingType = GroupingTypeEnum.SubGrouping
+                    }
+                }
+            },
+            SubGroupings = new List<CourseGrouping>
+            {
+                {
+                    new CourseGrouping
+                    {
+                        Id = id2,
+                        CommonIdentifier = common2,
+                        Name = "subgroup",
+                        RequiredCredits = "10.00",
+                        IsTopLevel = false,
+                        School = SchoolEnum.GinaCody,
+                        State = CourseGroupingStateEnum.Accepted,
+                        Published = true,
+                        SubGroupingReferences = new List<CourseGroupingReference>(),
+                        SubGroupings = new List<CourseGrouping>(),
+                        CourseIdentifiers = new List<CourseIdentifier>() { { new CourseIdentifier { ConcordiaCourseId = course.CourseID } } },
+                        Courses = new List<Course>() { { course } }
+                    }
+                }
+            },
+            CourseIdentifiers = new List<CourseIdentifier>() { { new CourseIdentifier { ConcordiaCourseId = course.CourseID } } },
+            Courses = new List<Course>() { { course } }
         };
     }
 }
