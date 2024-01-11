@@ -21,6 +21,7 @@ import { submitDossierForReview } from "../../services/dossierreview";
 import { showToast } from "../../utils/toastUtils";
 import { useNavigate } from "react-router-dom";
 import { BaseRoutes } from "../../constants";
+import { group } from "console";
 
 interface EditApprovalStagesModalProps {
     open: boolean;
@@ -37,10 +38,10 @@ export default function EditApprovalStagesModal(props: EditApprovalStagesModalPr
     const toast = useToast();
     const [loading, setLoading] = useState<boolean>(false);
     const [approvalStages, setApprovalStages] = useState<ApprovalStage[]>([]);
-    const [deletedStages, setDeletedStages] = useState<ApprovalStage[]>([]);
+    const [otherStages, setOtherStages] = useState<ApprovalStage[]>([]);
     const navigate = useNavigate();
 
-    const groupOrder = {
+    const defaultGroupOrder = {
         "Department Curriculum Committee": 1,
         "Department Consul": 2,
         "Faculty Undergraduate Committee": 3,
@@ -55,15 +56,27 @@ export default function EditApprovalStagesModal(props: EditApprovalStagesModalPr
 
     function initializeApprovalStages() {
         GetAllGroups().then((groups: MultiGroupResponseDTO) => {
-            const sortedGroups = groups.data
+            const includedGroups = [];
+            const excludedGroups = [];
+
+            groups.data.forEach((group) => {
+                if (defaultGroupOrder[group.name]) {
+                    includedGroups.push(group);
+                } else {
+                    excludedGroups.push({ group: group, stageIndex: 0 });
+                }
+            });
+
+            const sortedIncludedGroups = includedGroups
                 .sort((a, b) => {
-                    const orderA = groupOrder[a.name] || Number.MAX_VALUE;
-                    const orderB = groupOrder[b.name] || Number.MAX_VALUE;
+                    const orderA = defaultGroupOrder[a.name] || Number.MAX_VALUE;
+                    const orderB = defaultGroupOrder[b.name] || Number.MAX_VALUE;
                     return orderA - orderB;
                 })
                 .map((group, index) => ({ group: group, stageIndex: index }));
 
-            setApprovalStages(sortedGroups);
+            setApprovalStages(sortedIncludedGroups);
+            setOtherStages(excludedGroups);
         });
     }
 
@@ -102,7 +115,7 @@ export default function EditApprovalStagesModal(props: EditApprovalStagesModalPr
             const [removedStage] = prevStages.splice(stageIndex, 1);
 
             // Update the deletedStages state
-            setDeletedStages((prevDeleted) => {
+            setOtherStages((prevDeleted) => {
                 // Check if the stage is already in the deleted stages
                 if (prevDeleted.some((deletedStage) => deletedStage.group.id === groupId)) {
                     return prevDeleted;
@@ -118,7 +131,7 @@ export default function EditApprovalStagesModal(props: EditApprovalStagesModalPr
     }
 
     function addBackStage(groupId: string) {
-        setDeletedStages((prevDeleted) => {
+        setOtherStages((prevDeleted) => {
             // Find the index of the stage with the given group id in the deleted stages
             const stageIndex = prevDeleted.findIndex((stage) => stage.group.id === groupId);
             if (stageIndex === -1) return prevDeleted; // If not found, return the original array
@@ -201,13 +214,13 @@ export default function EditApprovalStagesModal(props: EditApprovalStagesModalPr
                                 </Box>
                             ))}
 
-                            <Box position="relative" padding="10">
+                            <Box position="relative" padding="6">
                                 <Divider />
                                 <AbsoluteCenter bg="white" px="4">
-                                    Deleted Stages
+                                    Other Groups
                                 </AbsoluteCenter>
                             </Box>
-                            {deletedStages.map((stage) => (
+                            {otherStages.map((stage) => (
                                 <Box
                                     mt={2}
                                     mb={2}
