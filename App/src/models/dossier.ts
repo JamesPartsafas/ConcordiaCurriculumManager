@@ -1,5 +1,5 @@
 import { GroupDTO } from "../services/group";
-import { CourseCreationRequest, CourseDeletionRequest, CourseModificationRequest } from "./course";
+import { Course, CourseCreationRequest, CourseDeletionRequest, CourseModificationRequest } from "./course";
 
 export interface DossierDTO {
     id: string;
@@ -67,6 +67,22 @@ export enum DossierStateEnum {
     InReview = 1,
     Rejected = 2,
     Approved = 3,
+}
+
+export interface DossierReportDTO {
+    approvalStages: ApprovalStage[];
+    courseCreationRequests: CourseCreationRequest[];
+    courseModificationRequests: CourseModificationRequest[];
+    courseDeletionRequests: CourseDeletionRequest[];
+    description: string | null;
+    initiatiorId: string;
+    oldCourses: Course[];
+    state: number;
+    title: string | null;
+}
+
+export interface DossierReportResponse {
+    data: DossierReportDTO;
 }
 
 export function dossierStateToString(dossier: DossierDTO | DossierDetailsDTO | null): string {
