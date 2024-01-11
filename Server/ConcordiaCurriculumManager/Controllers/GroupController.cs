@@ -129,12 +129,12 @@ public class GroupController : Controller
     }
 
     [HttpPut("{groupId}")]
-    [Authorize(Policies.IsGroupMasterOrAdmin)]
+    [Authorize(Roles = RoleNames.Admin)]
     [SwaggerResponse(StatusCodes.Status200OK, "Group updated successfully")]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Group does not exist")]
-    public async Task<IActionResult> UpdateGroup(Guid id, [FromBody] GroupCreateDTO groupDto)
+    public async Task<IActionResult> UpdateGroup(Guid groupId, [FromBody] GroupCreateDTO groupDto)
     {
-        var result = await _groupService.UpdateGroupAsync(id, groupDto);
+        var result = await _groupService.UpdateGroupAsync(groupId, groupDto);
         if (result)
         {
             return Ok();
@@ -144,12 +144,12 @@ public class GroupController : Controller
     }
 
     [HttpDelete("{groupId}")]
-    [Authorize(Policies.IsGroupMasterOrAdmin)]
+    [Authorize(Roles = RoleNames.Admin)]
     [SwaggerResponse(StatusCodes.Status200OK, "Group has been deleted")]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Group does not exist")]
-    public async Task<IActionResult> DeleteGroup(Guid id)
+    public async Task<IActionResult> DeleteGroup(Guid groupId)
     {
-        var deleted = await _groupService.DeleteGroupAsync(id);
+        var deleted = await _groupService.DeleteGroupAsync(groupId);
         if (deleted)
         {
             return Ok();
