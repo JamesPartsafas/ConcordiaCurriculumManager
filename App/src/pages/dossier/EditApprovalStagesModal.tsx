@@ -21,7 +21,6 @@ import { submitDossierForReview } from "../../services/dossierreview";
 import { showToast } from "../../utils/toastUtils";
 import { useNavigate } from "react-router-dom";
 import { BaseRoutes } from "../../constants";
-import { group } from "console";
 
 interface EditApprovalStagesModalProps {
     open: boolean;
