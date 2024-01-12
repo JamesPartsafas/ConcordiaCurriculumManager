@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import AddingMasterToGroup from "../src/pages/AddGroupMaster";
+import AddingMasterToGroup from "../src/pages/groups/AddGroupMaster";
 
 describe("Add Master to Group Test Case", () => {
     it("validate function should render all elements ", () => {

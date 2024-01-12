@@ -48,7 +48,7 @@ export default function DossiersToReview() {
 
     return (
         <Box maxW="5xl" m="auto">
-            <Container maxW={"5xl"} mt={5}>
+            <Container maxW={"5xl"} mt={5} pl={0}>
                 <Button
                     style="primary"
                     variant="outline"
@@ -64,6 +64,7 @@ export default function DossiersToReview() {
                     width="fit-content"
                     height="40px"
                     alignSelf="flex-end"
+                    ml="2"
                     isDisabled={!user.roles.includes(UserRoles.Initiator)}
                     onClick={() => {
                         navigate(BaseRoutes.Dossiers);
