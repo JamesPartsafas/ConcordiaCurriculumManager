@@ -15,13 +15,13 @@ import {
     AlertDialogOverlay,
     Box,
 } from "@chakra-ui/react";
-import Button from "../components/Button";
+import Button from "../../components/Button";
 import { Link } from "react-router-dom";
-import { isAdmin } from "../services/auth";
-import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../services/group";
+import { isAdmin } from "../../services/auth";
+import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../../services/group";
 import { useContext, useEffect, useRef } from "react";
-import { BaseRoutes } from "../constants";
-import { UserContext } from "../App";
+import { BaseRoutes } from "../../constants";
+import { UserContext } from "../../App";
 
 export default function DisplayManageableGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
@@ -201,7 +201,8 @@ export default function DisplayManageableGroups() {
                                     Cancel
                                 </Button>
                                 <Button
-                                    colorScheme="red"
+                                    style="primary"
+                                    variant="solid"
                                     onClick={() => {
                                         onDeleteGroup(deleteGroupId);
                                     }}

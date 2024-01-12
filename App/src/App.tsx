@@ -17,13 +17,13 @@ import { LoadingProvider } from "./utils/loadingContext"; // Import the provider
 import { BaseRoutes } from "./constants";
 import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
-import DisplayManageableGroups from "./pages/ManageableGroups";
-import AddingUserToGroup from "./pages/addUserToGroup";
-import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
+import DisplayManageableGroups from "./pages/groups/ManageableGroups";
+import AddingUserToGroup from "./pages/groups/addUserToGroup";
+import RemovingUserFromGroup from "./pages/groups/RemoveUserFromGroup";
 import DeleteCourse from "./pages/DeleteCourse";
 import DossierDetails from "./pages/dossier/DossierDetails";
-import AddingMasterToGroup from "./pages/AddGroupMaster";
-import RemovingMasterFromGroup from "./pages/RemoveGroupMaster";
+import AddingMasterToGroup from "./pages/groups/AddGroupMaster";
+import RemovingMasterFromGroup from "./pages/groups/RemoveGroupMaster";
 import DossiersToReview from "./pages/dossier/DossierToReview";
 import CreateGroup from "./pages/CreateGroup";
 import DeleteCourseEdit from "./pages/DeleteCourseEdit";
