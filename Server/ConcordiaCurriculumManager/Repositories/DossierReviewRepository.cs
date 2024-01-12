@@ -42,6 +42,7 @@ public class DossierReviewRepository : IDossierReviewRepository
     {
         return await _dbContext.Dossiers
             .Where(dossier => dossier.Id.Equals(dossierId))
+            .Include(dossier => dossier.Initiator)
             .Include(dossier => dossier.ApprovalStages)
             .Include(dossier => dossier.CourseCreationRequests)
             .ThenInclude(creationRequests => creationRequests.NewCourse)
