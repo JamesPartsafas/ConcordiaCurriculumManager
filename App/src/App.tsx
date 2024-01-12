@@ -25,7 +25,7 @@ import DossierDetails from "./pages/dossier/DossierDetails";
 import AddingMasterToGroup from "./pages/groups/AddGroupMaster";
 import RemovingMasterFromGroup from "./pages/groups/RemoveGroupMaster";
 import DossiersToReview from "./pages/dossier/DossierToReview";
-import CreateGroup from "./pages/CreateGroup";
+import CreateGroup from "./pages/groups/CreateGroup";
 import DeleteCourseEdit from "./pages/DeleteCourseEdit";
 import CourseDetails from "./pages/CourseDetails";
 import Header from "./shared/Header";
