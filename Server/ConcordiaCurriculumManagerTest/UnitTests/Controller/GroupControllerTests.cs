@@ -85,5 +85,53 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Controllers
 
             await _groupController.GetGroupById(Guid.NewGuid());
         }
+
+        [TestMethod]
+        public async Task UpdateGroup_WithValidData_ReturnsOk()
+        {
+            var groupId = Guid.NewGuid();
+            var groupDto = new GroupCreateDTO { Name = "Updated Name" };
+            _groupService.Setup(s => s.UpdateGroupAsync(groupId, groupDto))
+                        .ReturnsAsync(true);
+
+            var result = await _groupController.UpdateGroup(groupId, groupDto);
+
+            Assert.IsInstanceOfType(result, typeof(OkResult));
+        }
+
+        [TestMethod]
+        public async Task UpdateGroup_WhenUpdateFails_ReturnsNotFound()
+        {
+            var groupId = Guid.NewGuid();
+            var groupDto = new GroupCreateDTO { Name = "Updated Name" };
+            _groupService.Setup(s => s.UpdateGroupAsync(groupId, groupDto))
+                        .ReturnsAsync(false);
+
+            var result = await _groupController.UpdateGroup(groupId, groupDto);
+
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        }
+
+        [TestMethod]
+        public async Task DeleteGroup_ReturnOk_WhenDeletionIsSuccessful()
+        {
+            var groupId = Guid.NewGuid();
+            _groupService.Setup(s => s.DeleteGroupAsync(groupId)).ReturnsAsync(true);
+
+            var result = await _groupController.DeleteGroup(groupId);
+
+            Assert.IsInstanceOfType(result, typeof(OkResult));
+        }
+
+        [TestMethod]
+        public async Task DeleteGroup_ReturnsNotFound_WhenDeletionFails()
+        {
+            var groupId = Guid.NewGuid();
+            _groupService.Setup(s => s.DeleteGroupAsync(groupId)).ReturnsAsync(false);
+
+            var result = await _groupController.DeleteGroup(groupId);
+
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        }
     }
 }

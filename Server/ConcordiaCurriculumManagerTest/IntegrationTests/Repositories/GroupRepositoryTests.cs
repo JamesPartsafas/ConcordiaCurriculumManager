@@ -28,7 +28,7 @@ public class GroupRepositoryTests
     public static void ClassCleanup() => dbContext.Dispose();
 
     [TestInitialize]
-    public void TestInitialize() 
+    public void TestInitialize()
     {
         groupRepository = new GroupRepository(dbContext);
     }
@@ -332,5 +332,33 @@ public class GroupRepositoryTests
 
         Assert.IsTrue(validIds.Contains(group1.Id));
         Assert.IsTrue(validIds.Contains(group2.Id));
+    }
+
+    [TestMethod]
+    public async Task UpdateGroupAsync_WithValidData_ShouldReturnTrue()
+    {
+        dbContext.Groups.Add(TestData.GetSampleGroup());
+        dbContext.SaveChanges();
+
+        var testGroup = dbContext.Groups.First();
+        testGroup.Name = "Updated Name";
+
+        var result = await groupRepository.UpdateGroupAsync(testGroup);
+
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public async Task DeleteGroupAsync_ExistingGroupId_ReturnsTrue()
+    {
+        var group1 = TestData.GetSampleGroup();
+
+        dbContext.Groups.Add(group1);
+
+        await dbContext.SaveChangesAsync();
+
+        var result = await groupRepository.DeleteGroupAsync(group1.Id);
+
+        Assert.IsTrue(result);
     }
 }
