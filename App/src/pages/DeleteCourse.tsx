@@ -83,8 +83,13 @@ export default function DeleteCourse() {
                     toggleLoading(false);
                     navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
                 })
-                .catch(() => {
-                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                .catch((err) => {
+                    showToast(
+                        toast,
+                        "Error!",
+                        err.response ? err.response.data : "One or more validation errors occurred",
+                        "error"
+                    );
                     toggleLoading(false);
                 });
         }
