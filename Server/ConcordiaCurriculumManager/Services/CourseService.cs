@@ -36,13 +36,20 @@ public class CourseService : ICourseService
     private readonly ICourseRepository _courseRepository;
     private readonly IDossierService _dossierService;
     private readonly IDossierRepository _dossierRepository;
+    private readonly ICourseGroupingRepository _courseGroupingRepository;
 
-    public CourseService(ILogger<CourseService> logger, ICourseRepository courseRepository, IDossierService dossierService, IDossierRepository dossierRepository)
+    public CourseService(
+        ILogger<CourseService> logger,
+        ICourseRepository courseRepository,
+        IDossierService dossierService,
+        IDossierRepository dossierRepository,
+        ICourseGroupingRepository courseGroupingRepository)
     {
         _logger = logger;
         _courseRepository = courseRepository;
         _dossierService = dossierService;
         _dossierRepository = dossierRepository;
+        _courseGroupingRepository = courseGroupingRepository;
     }
 
     public IEnumerable<CourseCareerDTO> GetAllCourseCareers()
@@ -181,6 +188,8 @@ public class CourseService : ICourseService
         }
 
         var oldCourse = await GetCourseDataOrThrowOnDeleted(deletion.Subject, deletion.Catalog);
+
+        await VerifyCourseIsNotInCourseGroupingOrThrow(oldCourse);
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(deletion.DossierId, userId);
 
@@ -328,5 +337,15 @@ public class CourseService : ICourseService
         }
 
         return currentCourseVersions;
+    }
+
+    private async Task VerifyCourseIsNotInCourseGroupingOrThrow(Course course)
+    {
+        var grouping = await _courseGroupingRepository.GetCourseGroupingContainingCourse(course);
+
+        if (grouping != null)
+            throw new BadRequestException(
+                $"A deletion request cannot be made for {course.Subject} {course.Catalog} as it is part of the {grouping.Name} course grouping"
+            );
     }
 }

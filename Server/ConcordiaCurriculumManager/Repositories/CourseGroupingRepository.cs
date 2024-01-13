@@ -9,6 +9,7 @@ public interface ICourseGroupingRepository
 {
     public Task<CourseGrouping?> GetCourseGroupingById(Guid groupingId);
     public Task<CourseGrouping?> GetCourseGroupingByCommonIdentifier(Guid commonId);
+    public Task<CourseGrouping?> GetCourseGroupingContainingCourse(Course course);
 }
 
 public class CourseGroupingRepository : ICourseGroupingRepository
@@ -33,5 +34,10 @@ public class CourseGroupingRepository : ICourseGroupingRepository
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
         .OrderByDescending(cg => cg.Version)
+        .FirstOrDefaultAsync();
+
+    public async Task<CourseGrouping?> GetCourseGroupingContainingCourse(Course course) => await _dbContext.CourseGroupings
+        .Include(cg => cg.CourseIdentifiers)
+        .Where(cg => cg.CourseIdentifiers.Any(ci => ci.ConcordiaCourseId.Equals(course.CourseID)))
         .FirstOrDefaultAsync();
 }
