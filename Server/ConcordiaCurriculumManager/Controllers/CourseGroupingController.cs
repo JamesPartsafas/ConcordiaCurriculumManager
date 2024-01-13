@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO.CourseGrouping;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
 using ConcordiaCurriculumManager.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,5 +33,17 @@ public class CourseGroupingController : Controller
         var courseGroupingDTO = _mapper.Map<CourseGroupingDTO>(courseGrouping);
 
         return Ok(courseGroupingDTO);
+    }
+
+    [HttpGet(nameof(GetCourseGroupingsBySchool) + "/{school}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course grouping data retrieved")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetCourseGroupingsBySchool([FromRoute, Required] SchoolEnum school)
+    {
+        var courseGroupings = await _courseGroupingService.GetCourseGroupingsBySchoolNonRecursive(school);
+        var courseGroupingDTOs = _mapper.Map<ICollection<CourseGroupingDTO>>(courseGroupings);
+
+        return Ok(courseGroupingDTOs);
     }
 }

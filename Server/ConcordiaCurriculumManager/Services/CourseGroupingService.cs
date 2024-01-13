@@ -9,6 +9,7 @@ public interface ICourseGroupingService
 {
     public Task<CourseGrouping> GetCourseGrouping(Guid groupingId);
     public Task<CourseGrouping> GetCourseGroupingByCommonIdentifier(Guid commonId);
+    public Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchoolNonRecursive(SchoolEnum school);
 }
 
 public class CourseGroupingService : ICourseGroupingService
@@ -43,6 +44,9 @@ public class CourseGroupingService : ICourseGroupingService
 
         return grouping;
     }
+
+    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchoolNonRecursive(SchoolEnum school) =>
+        await _courseGroupingRepository.GetCourseGroupingsBySchool(school);
 
     private async Task QueryRelatedCourseGroupingData(CourseGrouping grouping)
     {

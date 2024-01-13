@@ -82,4 +82,17 @@ public class CourseGroupingServiceTest
         courseGroupingRepository.Verify(mock => mock.GetCourseGroupingByCommonIdentifier(It.IsAny<Guid>()), Times.Never());
         courseRepository.Verify(mock => mock.GetCoursesByConcordiaCourseIds(It.IsAny<List<int>>()), Times.Once());
     }
+
+    [TestMethod]
+    public async Task GetCourseGroupingBySchool_WithValidSchool_QueriesOnlyOnce()
+    {
+        var grouping = TestData.GetSampleCourseGrouping();
+        var groupings = new List<CourseGrouping> { { grouping } };
+
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingsBySchool(grouping.School)).ReturnsAsync(groupings);
+
+        var output = await courseGroupingService.GetCourseGroupingsBySchoolNonRecursive(grouping.School);
+
+        courseGroupingRepository.Verify(mock => mock.GetCourseGroupingsBySchool(It.IsAny<SchoolEnum>()), Times.Once());
+    }
 }
