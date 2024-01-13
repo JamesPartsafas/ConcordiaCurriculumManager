@@ -1,4 +1,5 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum;
+﻿using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Services;
@@ -94,5 +95,25 @@ public class CourseGroupingServiceTest
         var output = await courseGroupingService.GetCourseGroupingsBySchoolNonRecursive(grouping.School);
 
         courseGroupingRepository.Verify(mock => mock.GetCourseGroupingsBySchool(It.IsAny<SchoolEnum>()), Times.Once());
+    }
+
+    [TestMethod]
+    public async Task GetCourseGroupingLikeName_WithValidName_QueriesOnlyOnce()
+    {
+        var grouping = TestData.GetSampleCourseGrouping();
+        var groupings = new List<CourseGrouping> { { grouping } };
+
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingsLikeName(grouping.Name)).ReturnsAsync(groupings);
+
+        var output = await courseGroupingService.GetCourseGroupingsLikeName(grouping.Name);
+
+        courseGroupingRepository.Verify(mock => mock.GetCourseGroupingsLikeName(It.IsAny<string>()), Times.Once());
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(InvalidInputException))]
+    public async Task GetCourseGroupingLikeName_WithEmptyName_ThrowsInvalidInputException()
+    {
+        var output = await courseGroupingService.GetCourseGroupingsLikeName(" ");
     }
 }
