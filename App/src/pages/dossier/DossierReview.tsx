@@ -51,6 +51,7 @@ export default function DossierReview() {
     const [messageError, setMessageError] = useState(true);
     const [currentGroup, setCurrentGroup] = useState<ApprovalStage | null>(null);
     const [isGroupMaster, setIsGroupMaster] = useState(false);
+    const [isPartOfCurrentStageGroup, setIsPartOfCurrentStageGroup] = useState(false);
     const user = useContext(UserContext);
 
     const navigate = useNavigate();
@@ -65,6 +66,7 @@ export default function DossierReview() {
         const currentStageGroup = dossierDetailsData.data.approvalStages.filter((stage) => stage.isCurrentStage)[0];
         setCurrentGroup(currentStageGroup);
         setIsGroupMaster(user.masteredGroups?.includes(currentStageGroup?.groupId));
+        setIsPartOfCurrentStageGroup(user.groups?.includes(currentStageGroup?.groupId));
     }
 
     function messageAlertDialog() {
@@ -467,7 +469,7 @@ export default function DossierReview() {
                             </Stack>
                         </Stack>
                         <Stack w="75%" p={8}>
-                            {dossierDetails?.state == 2 || dossierDetails?.state == 3 ? (
+                            {!isPartOfCurrentStageGroup || dossierDetails?.state == 2 || dossierDetails?.state == 3 ? (
                                 ""
                             ) : (
                                 <Stack>
