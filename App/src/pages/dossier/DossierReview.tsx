@@ -352,10 +352,18 @@ export default function DossierReview() {
                                     <b>State:</b> {dossierStateToString(dossierDetails)}
                                 </Text>
                                 <Text>
-                                    <b>Created:</b> {dossierDetails?.createdDate?.toString()}
+                                    <b>Created: </b>
+                                    {dossierDetails?.createdDate.toString().substring(0, 10)}{" "}
+                                    {new Date(dossierDetails?.createdDate).getHours().toString()}:
+                                    {new Date(dossierDetails?.createdDate).getMinutes().toString()}:
+                                    {new Date(dossierDetails?.createdDate).getSeconds().toString()}
                                 </Text>
                                 <Text>
-                                    <b>Updated:</b> {dossierDetails?.modifiedDate?.toString()}
+                                    <b>Updated: </b>
+                                    {dossierDetails?.modifiedDate.toString().substring(0, 10)}{" "}
+                                    {new Date(dossierDetails?.modifiedDate).getHours().toString()}:
+                                    {new Date(dossierDetails?.modifiedDate).getMinutes().toString()}:
+                                    {new Date(dossierDetails?.modifiedDate).getSeconds().toString()}
                                 </Text>
                                 {dossierDetails?.state == 3 ? (
                                     <Text fontWeight={"bold"} fontSize={20} color={"green"}>
