@@ -348,9 +348,15 @@ export default function DossierReview() {
                                 <Heading color={"black"}>{dossierDetails?.title}</Heading>
                                 <Kbd>{dossierDetails?.id}</Kbd>
                                 <Text>{dossierDetails?.description}</Text>
-                                <Text>state: {dossierStateToString(dossierDetails)}</Text>
-                                <Text>created: {dossierDetails?.createdDate?.toString()}</Text>
-                                <Text>updated: {dossierDetails?.modifiedDate?.toString()}</Text>
+                                <Text>
+                                    <b>State:</b> {dossierStateToString(dossierDetails)}
+                                </Text>
+                                <Text>
+                                    <b>Created:</b> {dossierDetails?.createdDate?.toString()}
+                                </Text>
+                                <Text>
+                                    <b>Updated:</b> {dossierDetails?.modifiedDate?.toString()}
+                                </Text>
                                 {dossierDetails?.state == 3 ? (
                                     <Text fontWeight={"bold"} fontSize={20} color={"green"}>
                                         This dossier has been approved.
@@ -360,7 +366,9 @@ export default function DossierReview() {
                                         This dossier has been rejected.
                                     </Text>
                                 ) : (
-                                    <Text>current group: {currentGroup?.group.name}</Text>
+                                    <Text>
+                                        <b>Current Group:</b> {currentGroup?.group.name}
+                                    </Text>
                                 )}
                             </Stack>
                             {isGroupMaster && dossierDetails.state == 1 ? (
