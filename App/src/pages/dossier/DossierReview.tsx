@@ -469,51 +469,7 @@ export default function DossierReview() {
                             </Stack>
                         </Stack>
                         <Stack w="75%" p={8}>
-                            {!isPartOfCurrentStageGroup || dossierDetails?.state == 2 || dossierDetails?.state == 3 ? (
-                                ""
-                            ) : (
-                                <Stack>
-                                    <Center>
-                                        <Heading as="h2" size="xl" color="brandRed">
-                                            <Text align="center">Add Message</Text>
-                                        </Heading>
-                                    </Center>
-                                    {/* <Stack mb={2}>
-                                    <Text as="span">
-                                        ***You are a member of the{" "}
-                                        <Text as="span" fontWeight={"bold"} fontSize={20}>
-                                            Gina Cody School Faculty Council
-                                        </Text>
-                                        ***
-                                    </Text>
-                                </Stack> */}
-                                    <Stack>
-                                        <FormControl isInvalid={messageError && formSubmitted}>
-                                            <Textarea
-                                                onChange={handleChangeMessage}
-                                                value={message}
-                                                placeholder={"Add message to discussion board..."}
-                                                minH={"150px"}
-                                            ></Textarea>
-                                            <FormErrorMessage>Message cannot be empty.</FormErrorMessage>
-                                        </FormControl>
-                                    </Stack>
-                                    <Stack>
-                                        <Button
-                                            style="primary"
-                                            width="auto"
-                                            height="50px"
-                                            variant="solid"
-                                            onClick={() => {
-                                                onOpenMessage();
-                                            }}
-                                        >
-                                            Submit
-                                        </Button>
-                                    </Stack>
-                                </Stack>
-                            )}
-                            <Stack marginTop={16}>
+                            <Stack>
                                 <Center>
                                     <Heading as="h2" size="xl" color="brandRed">
                                         Discussion Board
@@ -617,6 +573,41 @@ export default function DossierReview() {
                                     </Tabs>
                                 </Stack>
                             </Stack>
+                            {!isPartOfCurrentStageGroup || dossierDetails?.state == 2 || dossierDetails?.state == 3 ? (
+                                ""
+                            ) : (
+                                <Stack marginTop={10}>
+                                    <Center>
+                                        <Heading as="h2" size="xl" color="brandRed">
+                                            <Text align="center">Add Message</Text>
+                                        </Heading>
+                                    </Center>
+                                    <Stack>
+                                        <FormControl isInvalid={messageError && formSubmitted}>
+                                            <Textarea
+                                                onChange={handleChangeMessage}
+                                                value={message}
+                                                placeholder={"Add message to discussion board..."}
+                                                minH={"150px"}
+                                            ></Textarea>
+                                            <FormErrorMessage>Message cannot be empty.</FormErrorMessage>
+                                        </FormControl>
+                                    </Stack>
+                                    <Stack>
+                                        <Button
+                                            style="primary"
+                                            width="auto"
+                                            height="50px"
+                                            variant="solid"
+                                            onClick={() => {
+                                                onOpenMessage();
+                                            }}
+                                        >
+                                            Submit
+                                        </Button>
+                                    </Stack>
+                                </Stack>
+                            )}
                         </Stack>
                     </Flex>
                 </form>
