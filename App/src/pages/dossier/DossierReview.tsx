@@ -484,89 +484,93 @@ export default function DossierReview() {
                                                 .map((stage) => <Tab key={stage.groupId}>{stage.group.name}</Tab>)}
                                         </TabList>
 
-                                        <TabPanels>
-                                            <TabPanel>
-                                                {dossierDetails?.discussion.messages.map((message) => (
-                                                    <Card key={message.id}>
-                                                        {dossierDetails?.approvalStages
-                                                            .filter((stage) => message.groupId == stage.groupId)
-                                                            .map((filteredGroup) => (
-                                                                <CardBody key={filteredGroup.groupId}>
-                                                                    <Box bg={"gray.200"} p={2}>
-                                                                        <Text>
-                                                                            <b>{filteredGroup.group.name}</b>{" "}
-                                                                        </Text>
-                                                                        <Text>
-                                                                            {message.createdDate
-                                                                                .toString()
-                                                                                .substring(0, 10)}{" "}
-                                                                            {new Date(message.createdDate)
-                                                                                .getHours()
-                                                                                .toString()}
-                                                                            :
-                                                                            {new Date(message.createdDate)
-                                                                                .getMinutes()
-                                                                                .toString()}
-                                                                            :
-                                                                            {new Date(message.createdDate)
-                                                                                .getSeconds()
-                                                                                .toString()}
-                                                                        </Text>
-                                                                        <Text>{message.message}</Text>
-                                                                        <Button marginTop={5}>
-                                                                            <ArrowLeftIcon marginRight={5} />
-                                                                            Reply
-                                                                        </Button>
-                                                                    </Box>
-                                                                </CardBody>
-                                                            ))}
-                                                    </Card>
-                                                ))}
-                                            </TabPanel>
-                                            {dossierDetails?.approvalStages?.map((stage) => (
-                                                <TabPanel key={stage.groupId}>
-                                                    <Card>
-                                                        {dossierDetails?.discussion.messages
-                                                            .filter((message) => stage.groupId == message.groupId)
-                                                            .sort(
-                                                                (a, b) =>
-                                                                    new Date(a.createdDate).getTime() -
-                                                                    new Date(b.createdDate).getTime()
-                                                            )
-                                                            .map((filteredMessage) => (
-                                                                <CardBody key={filteredMessage.id}>
-                                                                    <Box bg={"gray.200"} p={2}>
-                                                                        <Text>
-                                                                            <b>{stage.group.name}</b>{" "}
-                                                                        </Text>
-                                                                        <Text>
-                                                                            {filteredMessage.createdDate
-                                                                                .toString()
-                                                                                .substring(0, 10)}{" "}
-                                                                            {new Date(filteredMessage.createdDate)
-                                                                                .getHours()
-                                                                                .toString()}
-                                                                            :
-                                                                            {new Date(filteredMessage.createdDate)
-                                                                                .getMinutes()
-                                                                                .toString()}
-                                                                            :
-                                                                            {new Date(filteredMessage.createdDate)
-                                                                                .getSeconds()
-                                                                                .toString()}
-                                                                        </Text>
-                                                                        <Text>{filteredMessage.message}</Text>
-                                                                        <Button marginTop={5}>
-                                                                            <ArrowLeftIcon marginRight={5} />
-                                                                            Reply
-                                                                        </Button>
-                                                                    </Box>
-                                                                </CardBody>
-                                                            ))}
-                                                    </Card>
+                                        {dossierDetails?.discussion.messages.length > 0 ? (
+                                            <TabPanels>
+                                                <TabPanel>
+                                                    {dossierDetails?.discussion.messages.map((message) => (
+                                                        <Card key={message.id}>
+                                                            {dossierDetails?.approvalStages
+                                                                .filter((stage) => message.groupId == stage.groupId)
+                                                                .map((filteredGroup) => (
+                                                                    <CardBody key={filteredGroup.groupId}>
+                                                                        <Box bg={"gray.200"} p={2}>
+                                                                            <Text>
+                                                                                <b>{filteredGroup.group.name}</b>{" "}
+                                                                            </Text>
+                                                                            <Text>
+                                                                                {message.createdDate
+                                                                                    .toString()
+                                                                                    .substring(0, 10)}{" "}
+                                                                                {new Date(message.createdDate)
+                                                                                    .getHours()
+                                                                                    .toString()}
+                                                                                :
+                                                                                {new Date(message.createdDate)
+                                                                                    .getMinutes()
+                                                                                    .toString()}
+                                                                                :
+                                                                                {new Date(message.createdDate)
+                                                                                    .getSeconds()
+                                                                                    .toString()}
+                                                                            </Text>
+                                                                            <Text>{message.message}</Text>
+                                                                            <Button marginTop={5}>
+                                                                                <ArrowLeftIcon marginRight={5} />
+                                                                                Reply
+                                                                            </Button>
+                                                                        </Box>
+                                                                    </CardBody>
+                                                                ))}
+                                                        </Card>
+                                                    ))}
                                                 </TabPanel>
-                                            ))}
-                                        </TabPanels>
+                                                {dossierDetails?.approvalStages?.map((stage) => (
+                                                    <TabPanel key={stage.groupId}>
+                                                        <Card>
+                                                            {dossierDetails?.discussion.messages
+                                                                .filter((message) => stage.groupId == message.groupId)
+                                                                .sort(
+                                                                    (a, b) =>
+                                                                        new Date(a.createdDate).getTime() -
+                                                                        new Date(b.createdDate).getTime()
+                                                                )
+                                                                .map((filteredMessage) => (
+                                                                    <CardBody key={filteredMessage.id}>
+                                                                        <Box bg={"gray.200"} p={2}>
+                                                                            <Text>
+                                                                                <b>{stage.group.name}</b>{" "}
+                                                                            </Text>
+                                                                            <Text>
+                                                                                {filteredMessage.createdDate
+                                                                                    .toString()
+                                                                                    .substring(0, 10)}{" "}
+                                                                                {new Date(filteredMessage.createdDate)
+                                                                                    .getHours()
+                                                                                    .toString()}
+                                                                                :
+                                                                                {new Date(filteredMessage.createdDate)
+                                                                                    .getMinutes()
+                                                                                    .toString()}
+                                                                                :
+                                                                                {new Date(filteredMessage.createdDate)
+                                                                                    .getSeconds()
+                                                                                    .toString()}
+                                                                            </Text>
+                                                                            <Text>{filteredMessage.message}</Text>
+                                                                            <Button marginTop={5}>
+                                                                                <ArrowLeftIcon marginRight={5} />
+                                                                                Reply
+                                                                            </Button>
+                                                                        </Box>
+                                                                    </CardBody>
+                                                                ))}
+                                                        </Card>
+                                                    </TabPanel>
+                                                ))}
+                                            </TabPanels>
+                                        ) : (
+                                            <Text marginTop={4}>There are no current messages.</Text>
+                                        )}
                                     </Tabs>
                                 </Stack>
                             </Stack>
