@@ -18,6 +18,7 @@ public class CourseServiceTest
     private Mock<ILogger<CourseService>> logger = null!;
     private CourseService courseService = null!;
     private Mock<IDossierRepository> dossierRepository = null!;
+    private Mock<ICourseGroupingRepository> courseGroupingRepository = null!;
 
     [TestInitialize]
     public void TestInitialize()
@@ -26,8 +27,9 @@ public class CourseServiceTest
         courseRepository = new Mock<ICourseRepository>();
         dossierService = new Mock<IDossierService>();
         dossierRepository = new Mock<IDossierRepository>();
+        courseGroupingRepository = new Mock<ICourseGroupingRepository>();
 
-        courseService = new CourseService(logger.Object, courseRepository.Object, dossierService.Object, dossierRepository.Object);
+        courseService = new CourseService(logger.Object, courseRepository.Object, dossierService.Object, dossierRepository.Object, courseGroupingRepository.Object);
     }
 
     [TestMethod]
@@ -413,6 +415,20 @@ public class CourseServiceTest
         var courseDeletionRequest = await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
 
         Assert.IsNotNull(courseDeletionRequest);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task InitiateCourseDeletion_CourseIsPartOfGrouping_Throws()
+    {
+        var user = TestData.GetSampleUser();
+        var dossier = TestData.GetSampleDossier(user);
+        var course = TestData.GetSampleCourse();
+        courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
+        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingContainingCourse(course)).ReturnsAsync(TestData.GetSampleCourseGrouping());
+
+        await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
     }
 
     [TestMethod]

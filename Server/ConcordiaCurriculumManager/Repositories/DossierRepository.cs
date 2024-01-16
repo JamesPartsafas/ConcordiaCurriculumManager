@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
@@ -32,6 +33,7 @@ public interface IDossierRepository
     public Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId);
     public Task<bool> CheckIfCourseRequestExists(Guid dossierId, string subject, string catalog);
     public Task<IList<Course>> GetChangesAcrossAllDossiers();
+    public Task<User> GetDossierInitiator(Guid dossierId);
 }
 
 public class DossierRepository : IDossierRepository
@@ -64,7 +66,8 @@ public class DossierRepository : IDossierRepository
         return result > 0;
     }
 
-    public async Task<List<Dossier>> GetDossiersByID(Guid userId) {
+    public async Task<List<Dossier>> GetDossiersByID(Guid userId)
+    {
         return await _dbContext.Dossiers
             .Where(d => d.InitiatorId.Equals(userId))
             .ToListAsync();
@@ -93,13 +96,15 @@ public class DossierRepository : IDossierRepository
         return result > 0;
     }
 
-    public async Task<bool> UpdateDossier(Dossier dossier) {
+    public async Task<bool> UpdateDossier(Dossier dossier)
+    {
         _dbContext.Dossiers.Update(dossier);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
 
-    public async Task<bool> DeleteDossier(Dossier dossier) {
+    public async Task<bool> DeleteDossier(Dossier dossier)
+    {
         _dbContext.Dossiers.Remove(dossier);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
@@ -229,21 +234,21 @@ public class DossierRepository : IDossierRepository
 
     public async Task<bool> CheckIfCourseRequestExists(Guid dossierId, string subject, string catalog)
     {
-       var dossier = await GetDossierByDossierId(dossierId);
+        var dossier = await GetDossierByDossierId(dossierId);
 
-       var courseRequests = dossier!.CourseCreationRequests.Select(r => r.NewCourse)
-                            .Concat(dossier.CourseModificationRequests.Select(r => r.Course))
-                            .Concat(dossier.CourseDeletionRequests.Select(r => r.Course))
-                            .Where(c => c != null);
-       
+        var courseRequests = dossier!.CourseCreationRequests.Select(r => r.NewCourse)
+                             .Concat(dossier.CourseModificationRequests.Select(r => r.Course))
+                             .Concat(dossier.CourseDeletionRequests.Select(r => r.Course))
+                             .Where(c => c != null);
+
         foreach (var course in courseRequests)
-       {
-            if (course!.Subject.Equals(subject) && course.Catalog.Equals(catalog)) 
+        {
+            if (course!.Subject.Equals(subject) && course.Catalog.Equals(catalog))
             {
                 return true;
             }
-       }
-       return false;
+        }
+        return false;
     }
 
     public async Task<IList<Course>> GetChangesAcrossAllDossiers()
@@ -258,5 +263,25 @@ public class DossierRepository : IDossierRepository
             .Include(course => course.CourseDeletionRequest);
 
         return await query.ToListAsync();
+    }
+
+    public async Task<User> GetDossierInitiator(Guid dossierId)
+    {
+        var dossier = await _dbContext.Dossiers
+            .Where(dossier => dossier.Id.Equals(dossierId))
+            .Include(dossier => dossier.Initiator)
+            .FirstOrDefaultAsync();
+
+        if (dossier is null)
+        {
+            throw new NotFoundException("The specificed dossier does not exist");
+        }
+
+        if (dossier.Initiator is null)
+        {
+            throw new BadRequestException("A dossier exists without an initiator");
+        }
+
+        return dossier.Initiator;
     }
 }

@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import DisplayManageableGroups from "../src/pages/ManageableGroups";
+import DisplayManageableGroups from "../src/pages/groups/ManageableGroups";
 import { UserContext } from "../src/App";
 import { User } from "../src/models/user";
 

@@ -9,11 +9,6 @@ namespace ConcordiaCurriculumManager.Repositories;
 
 public static class ObjectSelectors
 {
-    public static Expression<Func<Role, Role>> RoleSelector() => role => new Role
-    {
-        UserRole = role.UserRole
-    };
-
     public static Expression<Func<User, User>> UserSelector() => user => new User
     {
         Id = user.Id,
@@ -65,91 +60,5 @@ public static class ObjectSelectors
                 UserRole = role.UserRole
             })
         })
-    };
-
-    public static Expression<Func<Course, Course>> CourseSelector() => course => new Course
-    {
-        Id = course.Id,
-        CreatedDate = course.CreatedDate,
-        ModifiedDate = course.ModifiedDate,
-        CourseID = course.CourseID,
-        Subject = course.Subject,
-        Catalog = course.Catalog,
-        Title = course.Title,
-        Description = course.Description,
-        CourseNotes = course.CourseNotes,
-        CreditValue = course.CreditValue,
-        PreReqs = course.PreReqs,
-        Career = course.Career,
-        EquivalentCourses = course.EquivalentCourses,
-        CourseState = course.CourseState,
-        Version = course.Version,
-        Published = course.Published,
-        CourseCourseComponents = course.CourseCourseComponents != null ? (ICollection<CourseCourseComponent>)course.CourseCourseComponents.Select(component => new CourseCourseComponent
-        {
-            Id = component.Id,
-            CreatedDate = component.CreatedDate,
-            ModifiedDate = component.ModifiedDate,
-            CourseComponent = component.CourseComponent,
-            ComponentCode = component.ComponentCode,
-            CourseId = component.CourseId,
-            HoursPerWeek = component.HoursPerWeek
-        }) : null,
-        CourseCreationRequest = course.CourseCreationRequest != null ? new CourseCreationRequest
-        {
-            Id = course.CourseCreationRequest.Id,
-            CreatedDate = course.CourseCreationRequest.CreatedDate,
-            ModifiedDate = course.CourseCreationRequest.ModifiedDate,
-            NewCourseId = course.CourseCreationRequest.NewCourseId,
-            NewCourse = course.CourseCreationRequest.NewCourse,
-            DossierId = course.CourseCreationRequest.DossierId,
-            ResourceImplication = course.CourseCreationRequest.ResourceImplication,
-            Rationale = course.CourseCreationRequest.Rationale,
-            Comment = course.CourseCreationRequest.Comment
-        } : null,
-        CourseModificationRequest = course.CourseModificationRequest != null ? new CourseModificationRequest
-        {
-            Id = course.CourseModificationRequest.Id,
-            CreatedDate = course.CourseModificationRequest.CreatedDate,
-            ModifiedDate = course.CourseModificationRequest.ModifiedDate,
-            CourseId = course.CourseModificationRequest.CourseId,
-            Course = course.CourseModificationRequest.Course,
-            DossierId = course.CourseModificationRequest.DossierId,
-            ResourceImplication = course.CourseModificationRequest.ResourceImplication,
-            Rationale = course.CourseModificationRequest.Rationale,
-            Comment = course.CourseModificationRequest.Comment
-        } : null,
-        CourseDeletionRequest = course.CourseDeletionRequest != null ? new CourseDeletionRequest
-        {
-            Id = course.CourseDeletionRequest.Id,
-            CreatedDate = course.CourseDeletionRequest.CreatedDate,
-            ModifiedDate = course.CourseDeletionRequest.ModifiedDate,
-            CourseId = course.CourseDeletionRequest.CourseId,
-            Course = course.CourseDeletionRequest.Course,
-            DossierId = course.CourseDeletionRequest.DossierId,
-            ResourceImplication = course.CourseDeletionRequest.ResourceImplication,
-            Rationale = course.CourseDeletionRequest.Rationale,
-            Comment = course.CourseDeletionRequest.Comment
-        } : null,
-        CourseReferenced = course.CourseReferenced != null ? (ICollection<CourseReference>)course.CourseReferenced.Select(courseRefenced => new CourseReference
-        {
-            Id = courseRefenced.Id,
-            CreatedDate = courseRefenced.CreatedDate,
-            ModifiedDate = courseRefenced.ModifiedDate,
-            CourseReferencingId = courseRefenced.CourseReferencingId,
-            CourseReferencing = courseRefenced.CourseReferencing,
-            CourseReferencedId = courseRefenced.CourseReferencedId,
-            CourseReferenced = courseRefenced.CourseReferenced
-        }) : null,
-        CourseReferencing = course.CourseReferencing != null ? (ICollection<CourseReference>)course.CourseReferencing.Select(courseRefencing => new CourseReference
-        {
-            Id = courseRefencing.Id,
-            CreatedDate = courseRefencing.CreatedDate,
-            ModifiedDate = courseRefencing.ModifiedDate,
-            CourseReferencingId = courseRefencing.CourseReferencingId,
-            CourseReferencing = courseRefencing.CourseReferencing,
-            CourseReferencedId = courseRefencing.CourseReferencedId,
-            CourseReferenced = courseRefencing.CourseReferenced
-        }) : null,
     };
 }

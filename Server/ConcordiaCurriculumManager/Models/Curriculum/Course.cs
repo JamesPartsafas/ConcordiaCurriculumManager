@@ -43,9 +43,9 @@ public class Course : BaseModel
     public CourseDeletionRequest? CourseDeletionRequest { get; set; }
 
     // Self-reference related fields
-    public ICollection<CourseReference>? CourseReferenced { get; set; }
+    public ICollection<CourseReference> CourseReferenced { get; set; } = new List<CourseReference>();
 
-    public ICollection<CourseReference>? CourseReferencing { get; set; }
+    public ICollection<CourseReference> CourseReferencing { get; set; } = new List<CourseReference>();
 
     public bool IsCourseStateFinalized() => CourseState == CourseStateEnum.Accepted || CourseState == CourseStateEnum.Deleted;
 

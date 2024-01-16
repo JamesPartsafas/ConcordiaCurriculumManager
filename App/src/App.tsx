@@ -17,15 +17,15 @@ import { LoadingProvider } from "./utils/loadingContext"; // Import the provider
 import { BaseRoutes } from "./constants";
 import axios from "axios";
 import Dossiers from "./pages/dossier/Dossiers";
-import DisplayManageableGroups from "./pages/ManageableGroups";
-import AddingUserToGroup from "./pages/addUserToGroup";
-import RemovingUserFromGroup from "./pages/RemoveUserFromGroup";
+import DisplayManageableGroups from "./pages/groups/ManageableGroups";
+import AddingUserToGroup from "./pages/groups/addUserToGroup";
+import RemovingUserFromGroup from "./pages/groups/RemoveUserFromGroup";
 import DeleteCourse from "./pages/DeleteCourse";
 import DossierDetails from "./pages/dossier/DossierDetails";
-import AddingMasterToGroup from "./pages/AddGroupMaster";
-import RemovingMasterFromGroup from "./pages/RemoveGroupMaster";
+import AddingMasterToGroup from "./pages/groups/AddGroupMaster";
+import RemovingMasterFromGroup from "./pages/groups/RemoveGroupMaster";
 import DossiersToReview from "./pages/dossier/DossierToReview";
-import CreateGroup from "./pages/CreateGroup";
+import CreateGroup from "./pages/groups/CreateGroup";
 import DeleteCourseEdit from "./pages/DeleteCourseEdit";
 import CourseDetails from "./pages/CourseDetails";
 import Header from "./shared/Header";
@@ -64,7 +64,13 @@ export function App() {
     return (
         <>
             <UserContext.Provider value={user}>
-                {isLoggedIn && <Header setUser={setUser} setIsLoggedIn={setIsLoggedIn}></Header>}
+                {isLoggedIn && (
+                    <Header
+                        setUser={setUser}
+                        setIsLoggedIn={setIsLoggedIn}
+                        setIsAdminOrGroupMaster={setIsAdminorGroupMaster}
+                    ></Header>
+                )}
                 <Routes>
                     <Route
                         path={BaseRoutes.Home}
@@ -76,7 +82,13 @@ export function App() {
                     />
                     <Route
                         path={BaseRoutes.Login}
-                        element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn} />}
+                        element={
+                            <Login
+                                setUser={setUser}
+                                setIsLoggedIn={setIsLoggedIn}
+                                setIsAdminOrGroupMaster={setIsAdminorGroupMaster}
+                            />
+                        }
                     />
                     <Route path={BaseRoutes.Register} element={<Register setUser={setUser} />} />
                     <Route
