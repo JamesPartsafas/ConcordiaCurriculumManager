@@ -157,6 +157,10 @@ export default function Dossiers() {
         navigate(BaseRoutes.DossierReport.replace(":dossierId", dossierId));
     }
 
+    function handleNavigateToDossierReview(dossierId: string) {
+        navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId));
+    }
+
     return (
         <div>
             <Container maxW={"5xl"} mt={5} pl={0}>
@@ -247,6 +251,7 @@ export default function Dossiers() {
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
                             handleNavigateToDossierReport={handleNavigateToDossierReport}
+                            handleNavigateToDossierReview={handleNavigateToDossierReview}
                             setCurrentPage={setCurrentPage}
                             currentPage={currentPage}
                             totalResults={totalResults}
@@ -268,6 +273,7 @@ export default function Dossiers() {
                         displayDossierModal={displayDossierModal}
                         handleNavigateToDossierDetails={handleNavigateToDossierDetails}
                         handleNavigateToDossierReport={handleNavigateToDossierReport}
+                        handleNavigateToDossierReview={handleNavigateToDossierReview}
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         totalResults={totalResults}
@@ -289,6 +295,7 @@ export default function Dossiers() {
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
                             handleNavigateToDossierReport={handleNavigateToDossierReport}
+                            handleNavigateToDossierReview={handleNavigateToDossierReview}
                             setCurrentPage={setCurrentPage}
                             currentPage={currentPage}
                             totalResults={totalResults}
