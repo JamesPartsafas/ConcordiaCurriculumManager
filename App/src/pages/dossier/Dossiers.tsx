@@ -153,6 +153,14 @@ export default function Dossiers() {
         navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
     }
 
+    function handleNavigateToDossierReport(dossierId: string) {
+        navigate(BaseRoutes.DossierReport.replace(":dossierId", dossierId));
+    }
+
+    function handleNavigateToDossierReview(dossierId: string) {
+        navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId));
+    }
+
     return (
         <div>
             <Container maxW={"5xl"} mt={5} pl={0}>
@@ -191,15 +199,17 @@ export default function Dossiers() {
                             myDossiers={myDossiers}
                             startIndex={startIndex}
                             endIndex={endIndex}
-                            setSelectedDossier={setSelectedDossier}
                             onOpen={onOpen}
                             setDossierModalTitle={setDossierModalTitle}
+                            setSelectedDossier={setSelectedDossier}
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                            handleNavigateToDossierReport={handleNavigateToDossierReport}
                             setCurrentPage={setCurrentPage}
                             currentPage={currentPage}
                             totalResults={totalResults}
                             useIcons={true}
+                            reviewIcons={false}
                         />
                     </div>
                     <Tooltip
@@ -235,15 +245,18 @@ export default function Dossiers() {
                             myDossiers={reviewedDossiers}
                             startIndex={startIndex}
                             endIndex={endIndex}
-                            setSelectedDossier={setSelectedDossier}
                             onOpen={onOpen}
                             setDossierModalTitle={setDossierModalTitle}
+                            setSelectedDossier={setSelectedDossier}
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                            handleNavigateToDossierReport={handleNavigateToDossierReport}
+                            handleNavigateToDossierReview={handleNavigateToDossierReview}
                             setCurrentPage={setCurrentPage}
                             currentPage={currentPage}
                             totalResults={totalResults}
                             useIcons={false}
+                            reviewIcons={true}
                         />
                     </div>
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -254,15 +267,18 @@ export default function Dossiers() {
                         myDossiers={approvedDossiers}
                         startIndex={startIndex}
                         endIndex={endIndex}
-                        setSelectedDossier={setSelectedDossier}
                         onOpen={onOpen}
                         setDossierModalTitle={setDossierModalTitle}
+                        setSelectedDossier={setSelectedDossier}
                         displayDossierModal={displayDossierModal}
                         handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                        handleNavigateToDossierReport={handleNavigateToDossierReport}
+                        handleNavigateToDossierReview={handleNavigateToDossierReview}
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         totalResults={totalResults}
                         useIcons={false}
+                        reviewIcons={true}
                     />
 
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -273,15 +289,18 @@ export default function Dossiers() {
                             myDossiers={rejectedDossiers}
                             startIndex={startIndex}
                             endIndex={endIndex}
-                            setSelectedDossier={setSelectedDossier}
                             onOpen={onOpen}
                             setDossierModalTitle={setDossierModalTitle}
+                            setSelectedDossier={setSelectedDossier}
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                            handleNavigateToDossierReport={handleNavigateToDossierReport}
+                            handleNavigateToDossierReview={handleNavigateToDossierReview}
                             setCurrentPage={setCurrentPage}
                             currentPage={currentPage}
                             totalResults={totalResults}
                             useIcons={false}
+                            reviewIcons={true}
                         />
                     </div>
                 </Flex>

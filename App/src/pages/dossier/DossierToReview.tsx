@@ -16,6 +16,7 @@ export default function DossiersToReview() {
 
     const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
     const resultsPerPage = 5;
     const totalResults = myDossiers.length;
 
@@ -25,6 +26,7 @@ export default function DossiersToReview() {
     useEffect(() => {
         getAllDossiersRequired();
         console.log(user);
+        console.log(selectedDossier);
     }, []);
 
     function getAllDossiersRequired() {
@@ -44,6 +46,14 @@ export default function DossiersToReview() {
 
     function handleNavigateToDossierDetails(dossierId: string) {
         navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
+    }
+
+    function handleNavigateToDossierReview(dossierId: string) {
+        navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId));
+    }
+
+    function handleNavigateToDossierReport(dossierId: string) {
+        navigate(BaseRoutes.DossierReport.replace(":dossierId", dossierId));
     }
 
     return (
@@ -82,11 +92,15 @@ export default function DossiersToReview() {
                     startIndex={startIndex}
                     endIndex={endIndex}
                     onOpen={onOpen}
+                    setSelectedDossier={setSelectedDossier}
                     handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                    handleNavigateToDossierReview={handleNavigateToDossierReview}
+                    handleNavigateToDossierReport={handleNavigateToDossierReport}
                     setCurrentPage={setCurrentPage}
                     currentPage={currentPage}
                     totalResults={totalResults}
                     useIcons={false}
+                    reviewIcons={true}
                 />
             </Flex>
         </Box>
