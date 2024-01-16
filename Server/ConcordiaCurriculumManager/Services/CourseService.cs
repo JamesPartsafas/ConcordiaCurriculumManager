@@ -2,6 +2,7 @@
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
@@ -37,19 +38,22 @@ public class CourseService : ICourseService
     private readonly IDossierService _dossierService;
     private readonly IDossierRepository _dossierRepository;
     private readonly ICourseGroupingRepository _courseGroupingRepository;
+    private readonly ICourseIdentifiersRepository _courseIdentifiersRepository;
 
     public CourseService(
         ILogger<CourseService> logger,
         ICourseRepository courseRepository,
         IDossierService dossierService,
         IDossierRepository dossierRepository,
-        ICourseGroupingRepository courseGroupingRepository)
+        ICourseGroupingRepository courseGroupingRepository,
+        ICourseIdentifiersRepository courseIdentifierRepository)
     {
         _logger = logger;
         _courseRepository = courseRepository;
         _dossierService = dossierService;
         _dossierRepository = dossierRepository;
         _courseGroupingRepository = courseGroupingRepository;
+        _courseIdentifiersRepository = courseIdentifierRepository;
     }
 
     public IEnumerable<CourseCareerDTO> GetAllCourseCareers()
@@ -139,6 +143,18 @@ public class CourseService : ICourseService
             Comment = initiation.Comment,
             Conflict = string.Empty,
         };
+
+        var courseIdentifier = await _courseIdentifiersRepository.GetCourseIdentifierByConcordiaCourseId(course.CourseID);
+
+        if (courseIdentifier is null)
+        {
+            courseIdentifier = new CourseIdentifier
+            {
+                Id = Guid.NewGuid(),
+                ConcordiaCourseId = course.CourseID
+            };
+            await _courseIdentifiersRepository.SaveCourseIdentifier(courseIdentifier);
+        }
 
         await _dossierService.SaveCourseCreationRequest(courseCreationRequest);
 
