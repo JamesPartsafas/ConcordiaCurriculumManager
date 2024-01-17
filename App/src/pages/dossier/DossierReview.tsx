@@ -620,34 +620,11 @@ export default function DossierReview() {
                                                                         new Date(b.createdDate).getTime()
                                                                 )
                                                                 .map((filteredMessage) => (
-                                                                    <CardBody key={filteredMessage.id}>
-                                                                        <Box bg={"gray.200"} p={2}>
-                                                                            <Text>
-                                                                                <b>{stage.group.name}</b>{" "}
-                                                                            </Text>
-                                                                            <Text>
-                                                                                {filteredMessage.createdDate
-                                                                                    .toString()
-                                                                                    .substring(0, 10)}{" "}
-                                                                                {new Date(filteredMessage.createdDate)
-                                                                                    .getHours()
-                                                                                    .toString()}
-                                                                                :
-                                                                                {new Date(filteredMessage.createdDate)
-                                                                                    .getMinutes()
-                                                                                    .toString()}
-                                                                                :
-                                                                                {new Date(filteredMessage.createdDate)
-                                                                                    .getSeconds()
-                                                                                    .toString()}
-                                                                            </Text>
-                                                                            <Text>{filteredMessage.message}</Text>
-                                                                            <Button marginTop={5}>
-                                                                                <ArrowLeftIcon marginRight={5} />
-                                                                                Reply
-                                                                            </Button>
-                                                                        </Box>
-                                                                    </CardBody>
+                                                                    <Message
+                                                                        key={filteredMessage.id}
+                                                                        message={filteredMessage}
+                                                                        group={stage}
+                                                                    />
                                                                 ))}
                                                         </Card>
                                                     </TabPanel>
