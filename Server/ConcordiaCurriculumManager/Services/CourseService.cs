@@ -127,11 +127,14 @@ public class CourseService : ICourseService
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(initiation.DossierId, userId);
 
-        int concordiaCourseId = courseFromDb != null ? courseFromDb.CourseID : (await _courseRepository.GetMaxCourseId()) + 1;
+        var courseInProposal = await _courseRepository.GetCourseInProposalBySubjectAndCatalog(initiation.Subject, initiation.Catalog);
+
+        int concordiaCourseId;
+        if (courseFromDb != null) concordiaCourseId = courseFromDb.CourseID;
+        else if (courseInProposal != null) concordiaCourseId = courseInProposal.CourseID;
+        else concordiaCourseId = (await _courseRepository.GetMaxCourseId()) + 1;
 
         var course = Course.CreateCourseFromDTOData(initiation, concordiaCourseId, null);
-
-        var courseInProposal = await _courseRepository.GetCourseInProposalBySubjectAndCatalog(course.Subject, course.Catalog);
 
         if (courseInProposal is null && courseFromDb is null)
         {
