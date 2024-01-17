@@ -11,7 +11,6 @@ import {
     Tfoot,
     Spacer,
     Flex,
-    Tooltip,
 } from "@chakra-ui/react";
 import { Button as ChakraButton } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon, InfoIcon, ViewIcon, ArrowDownIcon } from "@chakra-ui/icons";
