@@ -50,8 +50,6 @@ export default function Dossiers() {
     // const startIndex = myCreatedDossiers.length === 0 ? 0 : (currentPage - 1) * resultsPerPage + 1;
     // const endIndex = Math.min(currentPage * resultsPerPage, totalResults);
 
-
-
     const cancelRef = React.useRef();
 
     useEffect(() => {
@@ -281,7 +279,6 @@ export default function Dossiers() {
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
                             handleNavigateToDossierReport={handleNavigateToDossierReport}
                             handleNavigateToDossierReview={handleNavigateToDossierReview}
-
                             useIcons={false}
                             reviewIcons={true}
                         />

@@ -47,14 +47,11 @@ function DossierTable({
     useIcons,
     reviewIcons,
 }) {
-
-
     const [currentPage, setCurrentPage] = useState<number>(1);
     const totalResults = dossiers.length;
     const resultsPerPage = 5;
     const startIndex = dossiers.length === 0 ? 0 : (currentPage - 1) * resultsPerPage + 1;
     const endIndex = Math.min(currentPage * resultsPerPage, totalResults);
-
 
     return (
         <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
