@@ -4,8 +4,9 @@ import { BaseRoutes } from "../../constants";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../App";
 import { useContext, useEffect, useState } from "react";
-import { DossierDetailsDTO, DossierDetailsResponse } from "../../models/dossier";
+import { DossierDetailsDTO, DossierDetailsResponse, dossierStateToString } from "../../models/dossier";
 import { getDossierDetails } from "../../services/dossier";
+import { UserRoles } from "../../models/user";
 
 export default function DossierReport() {
     const navigate = useNavigate();
@@ -31,10 +32,56 @@ export default function DossierReport() {
                     variant="outline"
                     height="40px"
                     width="fit-content"
+                    ml="2"
                     onClick={() => navigate(BaseRoutes.Home)}
                 >
                     Return to Home
                 </Button>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    width="fit-content"
+                    height="40px"
+                    ml="2"
+                    isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                    onClick={() => {
+                        navigate(BaseRoutes.DossiersToReview);
+                    }}
+                >
+                    Dossiers To Review
+                </Button>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    ml="2"
+                    onClick={() => navigate(BaseRoutes.Dossiers)}
+                >
+                    My Dossiers
+                </Button>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    ml="2"
+                    onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
+                >
+                    Dossier Details
+                </Button>
+                {dossierStateToString(dossierDetails) != "Created" && (
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        height="40px"
+                        width="fit-content"
+                        ml="2"
+                        onClick={() => navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId))}
+                    >
+                        Dossier Review
+                    </Button>
+                )}
             </Container>
         </div>
     );
