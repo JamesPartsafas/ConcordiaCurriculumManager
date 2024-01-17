@@ -131,6 +131,18 @@ public class CourseService : ICourseService
 
         var course = Course.CreateCourseFromDTOData(initiation, concordiaCourseId, null);
 
+        var courseInProposal = await _courseRepository.GetCourseInProposalBySubjectAndCatalog(course.Subject, course.Catalog);
+
+        if (courseInProposal is null && courseFromDb is null)
+        {
+            var courseIdentifier = new CourseIdentifier
+            {
+                Id = Guid.NewGuid(),
+                ConcordiaCourseId = course.CourseID
+            };
+            await _courseIdentifiersRepository.SaveCourseIdentifier(courseIdentifier);
+        }
+
         await SaveCourseForUserOrThrow(course, userId);
 
         var courseCreationRequest = new CourseCreationRequest 
@@ -143,18 +155,6 @@ public class CourseService : ICourseService
             Comment = initiation.Comment,
             Conflict = string.Empty,
         };
-
-        var courseIdentifier = await _courseIdentifiersRepository.GetCourseIdentifierByConcordiaCourseId(course.CourseID);
-
-        if (courseIdentifier is null)
-        {
-            courseIdentifier = new CourseIdentifier
-            {
-                Id = Guid.NewGuid(),
-                ConcordiaCourseId = course.CourseID
-            };
-            await _courseIdentifiersRepository.SaveCourseIdentifier(courseIdentifier);
-        }
 
         await _dossierService.SaveCourseCreationRequest(courseCreationRequest);
 
