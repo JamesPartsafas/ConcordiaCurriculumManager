@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
  * @param param0 options (array of options), onSelect (function to handle selected option), width (string)
  * @returns
  */
-function AutocompleteInput({ options, onSelect, width, value }) {
+function AutocompleteInput({ options, onSelect, width, value, isDisabled }) {
     const [inputValue, setInputValue] = useState("");
 
     const handleSelect = (value) => {
@@ -19,7 +19,7 @@ function AutocompleteInput({ options, onSelect, width, value }) {
     }, [value]);
     return (
         <AutoComplete onChange={(vals) => handleSelect(vals)} openOnFocus>
-            <AutoCompleteInput width={width} placeholder={inputValue} />
+            <AutoCompleteInput width={width} placeholder={inputValue} isDisabled={isDisabled} />
             <AutoCompleteList>
                 {options.map((option, index) => (
                     <AutoCompleteItem
@@ -41,5 +41,6 @@ AutocompleteInput.propTypes = {
     width: PropTypes.string,
     placeholder: PropTypes.string,
     value: PropTypes.string,
+    isDisabled: !PropTypes.bool.isRequired,
 };
 export default AutocompleteInput;
