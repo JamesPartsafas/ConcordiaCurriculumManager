@@ -88,47 +88,41 @@ function DossierTable({
 
                             <Td width={"25%"}>
                                 {useIcons && (
-                                    <Tooltip label="Delete dossier">
-                                        <IconButton
-                                            aria-label="Delete"
-                                            icon={<DeleteIcon />}
-                                            backgroundColor={"#932439"}
-                                            color={"white"}
-                                            onClick={() => {
-                                                setSelectedDossier(dossier);
-                                                onOpen();
-                                            }}
-                                        />
-                                    </Tooltip>
+                                    <IconButton
+                                        aria-label="Delete"
+                                        icon={<DeleteIcon />}
+                                        backgroundColor={"#932439"}
+                                        color={"white"}
+                                        onClick={() => {
+                                            setSelectedDossier(dossier);
+                                            onOpen();
+                                        }}
+                                    />
                                 )}
                                 {useIcons && (
-                                    <Tooltip label="Edit dossier">
-                                        <IconButton
-                                            ml={2}
-                                            aria-label="Edit"
-                                            icon={<EditIcon />}
-                                            backgroundColor={"#0072a8"}
-                                            color={"white"}
-                                            onClick={() => {
-                                                setSelectedDossier(dossier);
-                                                setDossierModalTitle("edit");
-                                                displayDossierModal();
-                                            }}
-                                        />
-                                    </Tooltip>
+                                    <IconButton
+                                        ml={2}
+                                        aria-label="Edit"
+                                        icon={<EditIcon />}
+                                        backgroundColor={"#0072a8"}
+                                        color={"white"}
+                                        onClick={() => {
+                                            setSelectedDossier(dossier);
+                                            setDossierModalTitle("edit");
+                                            displayDossierModal();
+                                        }}
+                                    />
                                 )}
                                 {(useIcons || reviewIcons) && (
-                                    <Tooltip label="Dossier details">
-                                        <IconButton
-                                            ml={2}
-                                            aria-label="Details"
-                                            icon={<InfoIcon />}
-                                            onClick={() => {
-                                                setSelectedDossier(dossier);
-                                                handleNavigateToDossierDetails(dossier.id);
-                                            }}
-                                        />
-                                    </Tooltip>
+                                    <IconButton
+                                        ml={2}
+                                        aria-label="Details"
+                                        icon={<InfoIcon />}
+                                        onClick={() => {
+                                            setSelectedDossier(dossier);
+                                            handleNavigateToDossierDetails(dossier.id);
+                                        }}
+                                    />
                                 )}
                                 {reviewIcons && (
                                     <IconButton
