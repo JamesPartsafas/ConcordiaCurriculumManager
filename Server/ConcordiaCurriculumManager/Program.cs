@@ -206,5 +206,6 @@ public class Program
         services.AddScoped<ICourseGroupingRepository, CourseGroupingRepository>();
         services.AddScoped<IDossierRepository, DossierRepository>();
         services.AddScoped<IDossierReviewRepository, DossierReviewRepository>();
+        services.AddScoped<ICourseIdentifiersRepository, CourseIdentifiersRepository>();
     }
 }

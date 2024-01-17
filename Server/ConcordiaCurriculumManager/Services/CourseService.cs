@@ -2,6 +2,7 @@
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
@@ -37,19 +38,22 @@ public class CourseService : ICourseService
     private readonly IDossierService _dossierService;
     private readonly IDossierRepository _dossierRepository;
     private readonly ICourseGroupingRepository _courseGroupingRepository;
+    private readonly ICourseIdentifiersRepository _courseIdentifiersRepository;
 
     public CourseService(
         ILogger<CourseService> logger,
         ICourseRepository courseRepository,
         IDossierService dossierService,
         IDossierRepository dossierRepository,
-        ICourseGroupingRepository courseGroupingRepository)
+        ICourseGroupingRepository courseGroupingRepository,
+        ICourseIdentifiersRepository courseIdentifierRepository)
     {
         _logger = logger;
         _courseRepository = courseRepository;
         _dossierService = dossierService;
         _dossierRepository = dossierRepository;
         _courseGroupingRepository = courseGroupingRepository;
+        _courseIdentifiersRepository = courseIdentifierRepository;
     }
 
     public IEnumerable<CourseCareerDTO> GetAllCourseCareers()
@@ -123,9 +127,24 @@ public class CourseService : ICourseService
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(initiation.DossierId, userId);
 
-        int concordiaCourseId = courseFromDb != null ? courseFromDb.CourseID : (await _courseRepository.GetMaxCourseId()) + 1;
+        var courseInProposal = await _courseRepository.GetCourseInProposalBySubjectAndCatalog(initiation.Subject, initiation.Catalog);
+
+        int concordiaCourseId;
+        if (courseFromDb != null) concordiaCourseId = courseFromDb.CourseID;
+        else if (courseInProposal != null) concordiaCourseId = courseInProposal.CourseID;
+        else concordiaCourseId = (await _courseRepository.GetMaxCourseId()) + 1;
 
         var course = Course.CreateCourseFromDTOData(initiation, concordiaCourseId, null);
+
+        if (courseInProposal is null && courseFromDb is null)
+        {
+            var courseIdentifier = new CourseIdentifier
+            {
+                Id = Guid.NewGuid(),
+                ConcordiaCourseId = course.CourseID
+            };
+            await _courseIdentifiersRepository.SaveCourseIdentifier(courseIdentifier);
+        }
 
         await SaveCourseForUserOrThrow(course, userId);
 
