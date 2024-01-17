@@ -160,7 +160,7 @@ function DossierTable({
                                     p={4}
                                     variant="outline"
                                     onClick={() => setCurrentPage(currentPage - 1)}
-                                    isDisabled={startIndex == 1}
+                                    isDisabled={startIndex == 0 || startIndex == 1}
                                 >
                                     Previous
                                 </ChakraButton>
