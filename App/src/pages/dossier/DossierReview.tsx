@@ -609,26 +609,30 @@ export default function DossierReview() {
                                                         </Card>
                                                     ))}
                                                 </TabPanel>
-                                                {dossierDetails?.approvalStages?.map((stage) => (
-                                                    <TabPanel key={stage.groupId}>
-                                                        <Card>
-                                                            {dossierDetails?.discussion.messages
-                                                                .filter((message) => stage.groupId == message.groupId)
-                                                                .sort(
-                                                                    (a, b) =>
-                                                                        new Date(a.createdDate).getTime() -
-                                                                        new Date(b.createdDate).getTime()
-                                                                )
-                                                                .map((filteredMessage) => (
-                                                                    <Message
-                                                                        key={filteredMessage.id}
-                                                                        message={filteredMessage}
-                                                                        group={stage}
-                                                                    />
-                                                                ))}
-                                                        </Card>
-                                                    </TabPanel>
-                                                ))}
+                                                {dossierDetails?.approvalStages
+                                                    ?.sort((a, b) => a.stageIndex - b.stageIndex)
+                                                    .map((stage) => (
+                                                        <TabPanel key={stage.groupId}>
+                                                            <Card>
+                                                                {dossierDetails?.discussion.messages
+                                                                    .filter(
+                                                                        (message) => stage.groupId == message.groupId
+                                                                    )
+                                                                    .sort(
+                                                                        (a, b) =>
+                                                                            new Date(a.createdDate).getTime() -
+                                                                            new Date(b.createdDate).getTime()
+                                                                    )
+                                                                    .map((filteredMessage) => (
+                                                                        <Message
+                                                                            key={filteredMessage.id}
+                                                                            message={filteredMessage}
+                                                                            group={stage}
+                                                                        />
+                                                                    ))}
+                                                            </Card>
+                                                        </TabPanel>
+                                                    ))}
                                             </TabPanels>
                                         ) : (
                                             <Text marginTop={4}>There are no current messages.</Text>
