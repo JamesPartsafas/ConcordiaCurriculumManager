@@ -1,5 +1,12 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
-import { ApprovalStage, DossierDetailsDTO, DossierDetailsResponse, dossierStateToString } from "../../models/dossier";
+import {
+    ApprovalStage,
+    DossierDetailsDTO,
+    DossierDetailsResponse,
+    DossierDiscussionMessage,
+    dossierStateToString,
+} from "../../models/dossier";
 import { getDossierDetails } from "../../services/dossier";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
@@ -58,6 +65,7 @@ export default function DossierReview() {
 
     useEffect(() => {
         requestDossierDetails(dossierId);
+        console.log(dossierDetails);
     }, [dossierId]);
 
     async function requestDossierDetails(dossierId: string) {
@@ -320,6 +328,106 @@ export default function DossierReview() {
         }
     };
 
+    const handleReplyRequest = (replyMessage, messageId) => {
+        const dossierForReviewDTO = {
+            message: replyMessage,
+            groupId: currentGroup?.groupId,
+            parentDiscussionMessageId: messageId,
+        };
+
+        reviewDossier(dossierId, dossierForReviewDTO)
+            .then(() => {
+                showToast(toast, "Success!", "Reply successfully sent.", "success");
+                requestDossierDetails(dossierId);
+            })
+            .catch((e) => {
+                if (e.response.status == 403) {
+                    showToast(
+                        toast,
+                        "Error!",
+                        "You need to be part of the current stage group to reply to the message.",
+                        "error"
+                    );
+                } else {
+                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                }
+            });
+    };
+
+    const Message = ({ message, group }: { message: DossierDiscussionMessage; group: ApprovalStage }) => {
+        const [showReplyInput, setShowReplyInput] = useState(false);
+        const [replyText, setReplyText] = useState("");
+        const [replyError, setReplyError] = useState(true);
+        const [replySubmitted, setReplySubmitted] = useState(false);
+
+        const handleToggleReply = () => {
+            setShowReplyInput(!showReplyInput);
+            if (!showReplyInput) {
+                setReplyText("");
+            }
+        };
+
+        const handleChangeReply = (e) => {
+            if (e.currentTarget.value.length === 0 || e.currentTarget.value.trim() === "") setReplyError(true);
+            else setReplyError(false);
+            setReplyText(e.currentTarget.value);
+        };
+
+        const handleSubmitReply = () => {
+            setReplySubmitted(true);
+            if (replyError) {
+                showToast(toast, "Error!", "Your reply cannot be an empty message.", "error");
+            } else {
+                handleReplyRequest(replyText, message.id);
+                setReplyText("");
+                setShowReplyInput(false);
+                setReplyError(false);
+            }
+        };
+
+        return (
+            <CardBody key={group.groupId}>
+                <Box bg={"gray.200"} p={2}>
+                    <Text>
+                        <b>{group.group.name}</b>{" "}
+                    </Text>
+                    <Text>
+                        {message.createdDate.toString().substring(0, 10)}{" "}
+                        {new Date(message.createdDate).getHours().toString()}:
+                        {new Date(message.createdDate).getMinutes().toString()}:
+                        {new Date(message.createdDate).getSeconds().toString()}
+                    </Text>
+                    <Text>{message.message}</Text>
+                    <Button onClick={handleToggleReply} marginTop={5}>
+                        <ArrowLeftIcon marginRight={5} />
+                        {showReplyInput ? "Cancel Reply" : "Reply"}
+                    </Button>
+                    {showReplyInput && (
+                        <Box marginTop={4}>
+                            <FormControl isInvalid={replyError && replySubmitted}>
+                                <Textarea
+                                    onChange={handleChangeReply}
+                                    placeholder={"Reply to message..."}
+                                    value={replyText}
+                                    minH={"50px"}
+                                    background={"white"}
+                                    marginBottom={2}
+                                ></Textarea>
+                                <FormErrorMessage fontSize={16} marginBottom={2}>
+                                    Reply cannot be empty.
+                                </FormErrorMessage>
+                            </FormControl>
+
+                            <Button style="primary" width="auto" variant="solid" onClick={handleSubmitReply}>
+                                Submit reply
+                            </Button>
+                        </Box>
+                    )}
+                </Box>
+            </CardBody>
+        );
+    };
+
     return (
         <>
             <Box>
@@ -492,34 +600,11 @@ export default function DossierReview() {
                                                             {dossierDetails?.approvalStages
                                                                 .filter((stage) => message.groupId == stage.groupId)
                                                                 .map((filteredGroup) => (
-                                                                    <CardBody key={filteredGroup.groupId}>
-                                                                        <Box bg={"gray.200"} p={2}>
-                                                                            <Text>
-                                                                                <b>{filteredGroup.group.name}</b>{" "}
-                                                                            </Text>
-                                                                            <Text>
-                                                                                {message.createdDate
-                                                                                    .toString()
-                                                                                    .substring(0, 10)}{" "}
-                                                                                {new Date(message.createdDate)
-                                                                                    .getHours()
-                                                                                    .toString()}
-                                                                                :
-                                                                                {new Date(message.createdDate)
-                                                                                    .getMinutes()
-                                                                                    .toString()}
-                                                                                :
-                                                                                {new Date(message.createdDate)
-                                                                                    .getSeconds()
-                                                                                    .toString()}
-                                                                            </Text>
-                                                                            <Text>{message.message}</Text>
-                                                                            <Button marginTop={5}>
-                                                                                <ArrowLeftIcon marginRight={5} />
-                                                                                Reply
-                                                                            </Button>
-                                                                        </Box>
-                                                                    </CardBody>
+                                                                    <Message
+                                                                        key={message.id}
+                                                                        message={message}
+                                                                        group={filteredGroup}
+                                                                    />
                                                                 ))}
                                                         </Card>
                                                     ))}
