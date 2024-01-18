@@ -1,12 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
-import {
-    ApprovalStage,
-    DossierDetailsDTO,
-    DossierDetailsResponse,
-    DossierDiscussionMessage,
-    dossierStateToString,
-} from "../../models/dossier";
+import { ApprovalStage, DossierDetailsDTO, DossierDetailsResponse, dossierStateToString } from "../../models/dossier";
 import { getDossierDetails } from "../../services/dossier";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
@@ -65,7 +59,6 @@ export default function DossierReview() {
 
     useEffect(() => {
         requestDossierDetails(dossierId);
-        console.log(dossierDetails);
     }, [dossierId]);
 
     async function requestDossierDetails(dossierId: string) {
@@ -354,7 +347,10 @@ export default function DossierReview() {
             });
     };
 
-    const Message = ({ message, group }: { message: DossierDiscussionMessage; group: ApprovalStage }) => {
+    const Message = ({ message, messages, group, depth }) => {
+        const marginLeft = `${depth * 20}px`;
+        const colorDepth = `gray.${depth * 100 + 200}`;
+
         const [showReplyInput, setShowReplyInput] = useState(false);
         const [replyText, setReplyText] = useState("");
         const [replyError, setReplyError] = useState(true);
@@ -386,45 +382,85 @@ export default function DossierReview() {
         };
 
         return (
-            <CardBody key={group.groupId}>
-                <Box bg={"gray.200"} p={2}>
-                    <Text>
-                        <b>{group.group.name}</b>{" "}
-                    </Text>
-                    <Text>
-                        {message.createdDate.toString().substring(0, 10)}{" "}
-                        {new Date(message.createdDate).getHours().toString()}:
-                        {new Date(message.createdDate).getMinutes().toString()}:
-                        {new Date(message.createdDate).getSeconds().toString()}
-                    </Text>
-                    <Text>{message.message}</Text>
-                    <Button onClick={handleToggleReply} marginTop={5}>
-                        <ArrowLeftIcon marginRight={5} />
-                        {showReplyInput ? "Cancel Reply" : "Reply"}
-                    </Button>
-                    {showReplyInput && (
-                        <Box marginTop={4}>
-                            <FormControl isInvalid={replyError && replySubmitted}>
-                                <Textarea
-                                    onChange={handleChangeReply}
-                                    placeholder={"Reply to message..."}
-                                    value={replyText}
-                                    minH={"50px"}
-                                    background={"white"}
-                                    marginBottom={2}
-                                ></Textarea>
-                                <FormErrorMessage fontSize={16} marginBottom={2}>
-                                    Reply cannot be empty.
-                                </FormErrorMessage>
-                            </FormControl>
+            <div style={{ marginLeft }}>
+                <CardBody key={group.groupId}>
+                    <Box bg={colorDepth} p={2}>
+                        <Text>
+                            <b>{group.group.name}</b>{" "}
+                        </Text>
+                        <Text>
+                            {message.createdDate.toString().substring(0, 10)}{" "}
+                            {new Date(message.createdDate).getHours().toString()}:
+                            {new Date(message.createdDate).getMinutes().toString()}:
+                            {new Date(message.createdDate).getSeconds().toString()}
+                        </Text>
+                        <Text>{message.message}</Text>
+                        <Button onClick={handleToggleReply} marginTop={2}>
+                            <ArrowLeftIcon marginRight={5} />
+                            {showReplyInput ? "Cancel Reply" : "Reply"}
+                        </Button>
+                        {showReplyInput && (
+                            <Box marginTop={4}>
+                                <FormControl isInvalid={replyError && replySubmitted}>
+                                    <Textarea
+                                        onChange={handleChangeReply}
+                                        placeholder={"Reply to message..."}
+                                        value={replyText}
+                                        minH={"50px"}
+                                        background={"white"}
+                                        marginBottom={2}
+                                    ></Textarea>
+                                    <FormErrorMessage fontSize={16} marginBottom={2}>
+                                        Reply cannot be empty.
+                                    </FormErrorMessage>
+                                </FormControl>
 
-                            <Button style="primary" width="auto" variant="solid" onClick={handleSubmitReply}>
-                                Submit reply
-                            </Button>
-                        </Box>
-                    )}
-                </Box>
-            </CardBody>
+                                <Button style="primary" width="auto" variant="solid" onClick={handleSubmitReply}>
+                                    Submit reply
+                                </Button>
+                            </Box>
+                        )}
+                    </Box>
+                </CardBody>
+                {messages
+                    .filter((m) => m.parentDiscussionMessageId === message.id)
+                    .map((childMessage) => (
+                        <Message
+                            key={childMessage.id}
+                            message={childMessage}
+                            messages={messages}
+                            group={group}
+                            depth={depth + 1}
+                        />
+                    ))}
+            </div>
+        );
+    };
+
+    const AllGroupsMessageList = () => {
+        const allMessages = dossierDetails?.discussion.messages;
+        const rootMessages = dossierDetails?.discussion.messages.filter((m) => !m.parentDiscussionMessageId);
+
+        return (
+            <div>
+                {rootMessages
+                    .sort((a, b) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime())
+                    .map((message) => (
+                        <Card key={message.id}>
+                            {dossierDetails?.approvalStages
+                                .filter((stage) => message.groupId == stage.groupId)
+                                .map((filteredGroup) => (
+                                    <Message
+                                        key={message.id}
+                                        message={message}
+                                        messages={allMessages}
+                                        group={filteredGroup}
+                                        depth={0}
+                                    />
+                                ))}
+                        </Card>
+                    ))}
+            </div>
         );
     };
 
@@ -595,19 +631,7 @@ export default function DossierReview() {
                                         {dossierDetails?.discussion.messages.length > 0 ? (
                                             <TabPanels>
                                                 <TabPanel>
-                                                    {dossierDetails?.discussion.messages.map((message) => (
-                                                        <Card key={message.id}>
-                                                            {dossierDetails?.approvalStages
-                                                                .filter((stage) => message.groupId == stage.groupId)
-                                                                .map((filteredGroup) => (
-                                                                    <Message
-                                                                        key={message.id}
-                                                                        message={message}
-                                                                        group={filteredGroup}
-                                                                    />
-                                                                ))}
-                                                        </Card>
-                                                    ))}
+                                                    <AllGroupsMessageList />
                                                 </TabPanel>
                                                 {dossierDetails?.approvalStages
                                                     ?.sort((a, b) => a.stageIndex - b.stageIndex)
@@ -616,7 +640,9 @@ export default function DossierReview() {
                                                             <Card>
                                                                 {dossierDetails?.discussion.messages
                                                                     .filter(
-                                                                        (message) => stage.groupId == message.groupId
+                                                                        (message) =>
+                                                                            stage.groupId == message.groupId &&
+                                                                            !message.parentDiscussionMessageId
                                                                     )
                                                                     .sort(
                                                                         (a, b) =>
@@ -628,6 +654,10 @@ export default function DossierReview() {
                                                                             key={filteredMessage.id}
                                                                             message={filteredMessage}
                                                                             group={stage}
+                                                                            messages={
+                                                                                dossierDetails?.discussion.messages
+                                                                            }
+                                                                            depth={0}
                                                                         />
                                                                     ))}
                                                             </Card>
