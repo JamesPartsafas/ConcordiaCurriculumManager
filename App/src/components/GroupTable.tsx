@@ -24,10 +24,10 @@ function GroupTable({
     endIndex,
     setSelectedGroup,
     onOpen,
-    setDeleteGroupId,
+    // setDeleteGroupId,
     setCurrentPage,
     currentPage,
-    totalResults,
+    // totalResults,
     useIcons,
     groupsPerPage,
 }) {
