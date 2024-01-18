@@ -2,10 +2,13 @@
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
+using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 using System.Collections.Generic;
+using System.Data;
 
 namespace ConcordiaCurriculumManager.Services;
 
@@ -34,13 +37,23 @@ public class CourseService : ICourseService
     private readonly ICourseRepository _courseRepository;
     private readonly IDossierService _dossierService;
     private readonly IDossierRepository _dossierRepository;
+    private readonly ICourseGroupingRepository _courseGroupingRepository;
+    private readonly ICourseIdentifiersRepository _courseIdentifiersRepository;
 
-    public CourseService(ILogger<CourseService> logger, ICourseRepository courseRepository, IDossierService dossierService, IDossierRepository dossierRepository)
+    public CourseService(
+        ILogger<CourseService> logger,
+        ICourseRepository courseRepository,
+        IDossierService dossierService,
+        IDossierRepository dossierRepository,
+        ICourseGroupingRepository courseGroupingRepository,
+        ICourseIdentifiersRepository courseIdentifierRepository)
     {
         _logger = logger;
         _courseRepository = courseRepository;
         _dossierService = dossierService;
         _dossierRepository = dossierRepository;
+        _courseGroupingRepository = courseGroupingRepository;
+        _courseIdentifiersRepository = courseIdentifierRepository;
     }
 
     public IEnumerable<CourseCareerDTO> GetAllCourseCareers()
@@ -105,11 +118,33 @@ public class CourseService : ICourseService
             throw new BadRequestException("The course already exists and is accepted");
         }
 
+        var isDuplicate = await _dossierRepository.CheckIfCourseRequestExists(initiation.DossierId, initiation.Subject, initiation.Catalog);
+
+        if (isDuplicate)
+        {
+            throw new BadRequestException("A course request for " + initiation.Subject + " " + initiation.Catalog + " already exists in this dossier.");
+        }
+
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(initiation.DossierId, userId);
 
-        int concordiaCourseId = courseFromDb != null ? courseFromDb.CourseID : (await _courseRepository.GetMaxCourseId()) + 1;
+        var courseInProposal = await _courseRepository.GetCourseInProposalBySubjectAndCatalog(initiation.Subject, initiation.Catalog);
+
+        int concordiaCourseId;
+        if (courseFromDb != null) concordiaCourseId = courseFromDb.CourseID;
+        else if (courseInProposal != null) concordiaCourseId = courseInProposal.CourseID;
+        else concordiaCourseId = (await _courseRepository.GetMaxCourseId()) + 1;
 
         var course = Course.CreateCourseFromDTOData(initiation, concordiaCourseId, null);
+
+        if (courseInProposal is null && courseFromDb is null)
+        {
+            var courseIdentifier = new CourseIdentifier
+            {
+                Id = Guid.NewGuid(),
+                ConcordiaCourseId = course.CourseID
+            };
+            await _courseIdentifiersRepository.SaveCourseIdentifier(courseIdentifier);
+        }
 
         await SaveCourseForUserOrThrow(course, userId);
 
@@ -131,6 +166,13 @@ public class CourseService : ICourseService
 
     public async Task<CourseModificationRequest> InitiateCourseModification(CourseModificationInitiationDTO modification, Guid userId)
     {
+        var isDuplicate = await _dossierRepository.CheckIfCourseRequestExists(modification.DossierId, modification.Subject, modification.Catalog);
+
+        if (isDuplicate)
+        {
+            throw new BadRequestException("A course request for " + modification.Subject + " " + modification.Catalog + " already exists in this dossier.");
+        }
+
         var oldCourse = await GetCourseDataOrThrowOnDeleted(modification.Subject, modification.Catalog);
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(modification.DossierId, userId);
@@ -157,7 +199,16 @@ public class CourseService : ICourseService
 
     public async Task<CourseDeletionRequest> InitiateCourseDeletion(CourseDeletionInitiationDTO deletion, Guid userId)
     {
+        var isDuplicate = await _dossierRepository.CheckIfCourseRequestExists(deletion.DossierId, deletion.Subject, deletion.Catalog);
+
+        if (isDuplicate)
+        {
+            throw new BadRequestException("A course request for " + deletion.Subject + " " + deletion.Catalog + " already exists in this dossier.");
+        }
+
         var oldCourse = await GetCourseDataOrThrowOnDeleted(deletion.Subject, deletion.Catalog);
+
+        await VerifyCourseIsNotInCourseGroupingOrThrow(oldCourse);
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(deletion.DossierId, userId);
 
@@ -305,5 +356,15 @@ public class CourseService : ICourseService
         }
 
         return currentCourseVersions;
+    }
+
+    private async Task VerifyCourseIsNotInCourseGroupingOrThrow(Course course)
+    {
+        var grouping = await _courseGroupingRepository.GetCourseGroupingContainingCourse(course);
+
+        if (grouping != null)
+            throw new BadRequestException(
+                $"A deletion request cannot be made for {course.Subject} {course.Catalog} as it is part of the {grouping.Name} course grouping"
+            );
     }
 }

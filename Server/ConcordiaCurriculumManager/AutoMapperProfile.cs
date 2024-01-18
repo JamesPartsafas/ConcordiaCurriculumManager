@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO;
+using ConcordiaCurriculumManager.DTO.CourseGrouping;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
@@ -7,6 +8,7 @@ using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
@@ -49,5 +51,8 @@ public class AutoMapper : Profile
             .ForMember(dest => dest.CourseModificationRequests, opt => opt.MapFrom(d => d.Dossier.CourseModificationRequests))
             .ForMember(dest => dest.CourseDeletionRequests, opt => opt.MapFrom(d => d.Dossier.CourseDeletionRequests))
             .ForMember(dest => dest.ApprovalStages, opt => opt.MapFrom(d => d.Dossier.ApprovalStages));
+        CreateMap<CourseGroupingReference, CourseGroupingReferenceDTO>();
+        CreateMap<CourseGrouping, CourseGroupingDTO>();
+        CreateMap<CourseChanges, CourseChangesDTO>();
     }
 }

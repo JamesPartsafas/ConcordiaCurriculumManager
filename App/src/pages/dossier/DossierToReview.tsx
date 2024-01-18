@@ -1,11 +1,13 @@
-import { Text, useDisclosure, Flex, Box } from "@chakra-ui/react";
+import { Text, useDisclosure, Flex, Box, Container } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
 import { getDossierRequiredReview } from "../../services/dossier";
 import { DossierDTO, GetMyDossiersResponse } from "../../models/dossier";
 import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button";
 import DossierTable from "../../components/DossierTable";
+import { UserRoles } from "../../models/user";
 
 export default function DossiersToReview() {
     const user = useContext(UserContext);
@@ -14,6 +16,7 @@ export default function DossiersToReview() {
 
     const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
     const resultsPerPage = 5;
     const totalResults = myDossiers.length;
 
@@ -23,6 +26,7 @@ export default function DossiersToReview() {
     useEffect(() => {
         getAllDossiersRequired();
         console.log(user);
+        console.log(selectedDossier);
     }, []);
 
     function getAllDossiersRequired() {
@@ -44,8 +48,41 @@ export default function DossiersToReview() {
         navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
     }
 
+    function handleNavigateToDossierReview(dossierId: string) {
+        navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId));
+    }
+
+    function handleNavigateToDossierReport(dossierId: string) {
+        navigate(BaseRoutes.DossierReport.replace(":dossierId", dossierId));
+    }
+
     return (
         <Box maxW="5xl" m="auto">
+            <Container maxW={"5xl"} mt={5} pl={0}>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    onClick={() => navigate(BaseRoutes.Home)}
+                >
+                    Return to Home
+                </Button>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    width="fit-content"
+                    height="40px"
+                    alignSelf="flex-end"
+                    ml="2"
+                    isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                    onClick={() => {
+                        navigate(BaseRoutes.Dossiers);
+                    }}
+                >
+                    My Dossiers
+                </Button>
+            </Container>
             <Flex flexDirection="column">
                 <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                     {user?.firstName + "'s"} Dossiers Under Review
@@ -55,11 +92,15 @@ export default function DossiersToReview() {
                     startIndex={startIndex}
                     endIndex={endIndex}
                     onOpen={onOpen}
+                    setSelectedDossier={setSelectedDossier}
                     handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                    handleNavigateToDossierReview={handleNavigateToDossierReview}
+                    handleNavigateToDossierReport={handleNavigateToDossierReport}
                     setCurrentPage={setCurrentPage}
                     currentPage={currentPage}
                     totalResults={totalResults}
                     useIcons={false}
+                    reviewIcons={true}
                 />
             </Flex>
         </Box>

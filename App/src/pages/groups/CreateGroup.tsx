@@ -1,11 +1,11 @@
 import { Box, Container, FormControl, FormLabel, Heading, HStack, Input, Stack } from "@chakra-ui/react";
-import logo from "../assets/logo.png";
+import logo from "../../assets/logo.png";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { GroupCreateDTO, GroupResponseDTO } from "../services/group";
-import { CreateGroupCall } from "../services/group";
-import Button from "../components/Button";
-import { BaseRoutes } from "../constants";
+import { GroupCreateDTO, GroupResponseDTO } from "../../services/group";
+import { CreateGroupCall } from "../../services/group";
+import Button from "../../components/Button";
+import { BaseRoutes } from "../../constants";
 import { useState } from "react";
 
 export default function CreateGroup() {

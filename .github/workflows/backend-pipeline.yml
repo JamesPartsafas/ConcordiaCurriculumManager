@@ -49,10 +49,12 @@ jobs:
         service_id: ${{ secrets.RENDER_BACKEND_SERVICE_ID }}
         api_key: ${{ secrets.RENDER_BACKEND_API_KEY }}
         db_string: ${{ secrets.RENDER_BACKEND_DB_STRING }}
+        sender_email: ${{ secrets.SENDER_EMAIL }}
+        sender_pass: ${{ secrets.SENDER_PASS }}
       run: |
         hs256_key=${{ steps.generate-key.outputs.hs256_key }}
         chmod +x ./Scripts/ApplyProdAppSettings.sh
-        ./Scripts/ApplyProdAppSettings.sh "$service_id" "$api_key" "$hs256_key" "$db_string"
+        ./Scripts/ApplyProdAppSettings.sh "$service_id" "$api_key" "$hs256_key" "$db_string" "$sender_email" "$sender_pass"
 
     - name: Deploy
       env:

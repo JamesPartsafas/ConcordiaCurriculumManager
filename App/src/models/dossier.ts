@@ -1,3 +1,4 @@
+import { GroupDTO } from "../services/group";
 import { CourseCreationRequest, CourseDeletionRequest, CourseModificationRequest } from "./course";
 
 export interface DossierDTO {
@@ -19,6 +20,20 @@ export interface DossierDetailsDTO {
     courseCreationRequests: CourseCreationRequest[];
     courseModificationRequests: CourseModificationRequest[];
     courseDeletionRequests: CourseDeletionRequest[];
+    approvalStages: ApprovalStage[];
+    discussion: DossierDiscussion;
+}
+
+export interface ApprovalStage {
+    id: string;
+    createdDate: Date;
+    modifiedDate: Date;
+    groupId: string;
+    group: GroupDTO;
+    dossierId: string;
+    stageIndex: number;
+    isCurrentStage: boolean;
+    isFinalStage: boolean;
 }
 
 export interface DossierDTOResponse {
@@ -31,6 +46,20 @@ export interface GetMyDossiersResponse {
 
 export interface DossierDetailsResponse {
     data: DossierDetailsDTO;
+}
+
+export interface DossierDiscussion {
+    dossierId: string;
+    messages: DossierDiscussionMessage[];
+}
+
+export interface DossierDiscussionMessage {
+    id: string;
+    message: string;
+    groupId: string;
+    parentDiscussionMessageId: string;
+    createdDate: Date;
+    modifiedDate: Date;
 }
 
 export enum DossierStateEnum {

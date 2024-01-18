@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Security;
@@ -110,5 +111,15 @@ public class DossierController : Controller
         var dossiers = await _dossierService.GetDossiersRequiredReview(userId);
         var dossiersDTOs = _mapper.Map<List<DossierDTO>>(dossiers);
         return Ok(dossiersDTOs);
+    }
+
+    [HttpGet(nameof(GetChangesAcrossAllDossiers))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Changes retrieved")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetChangesAcrossAllDossiers()
+    {
+        var changes = await _dossierService.GetChangesAcrossAllDossiers();
+        var changesDTO = _mapper.Map<CourseChangesDTO>(changes);
+        return Ok(changesDTO);
     }
 }

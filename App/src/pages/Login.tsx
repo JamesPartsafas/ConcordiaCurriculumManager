@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
-import { AuthenticationResponse, decodeTokenToUser, login, LoginDTO } from "../services/auth";
+import { AuthenticationResponse, decodeTokenToUser, isAdminOrGroupMaster, login, LoginDTO } from "../services/auth";
 import { User } from "../models/user";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -27,6 +27,7 @@ import { showToast } from "../utils/toastUtils";
 export interface LoginProps {
     setUser: (user: User | null) => void;
     setIsLoggedIn: (isLoggedIn: boolean) => void;
+    setIsAdminOrGroupMaster: (isAdminOrGroupMaster: boolean) => void;
 }
 
 export default function Login(props: LoginProps) {
@@ -52,6 +53,7 @@ export default function Login(props: LoginProps) {
                         const user: User = decodeTokenToUser(res.data.accessToken);
                         props.setUser(user);
                         props.setIsLoggedIn(true);
+                        props.setIsAdminOrGroupMaster(isAdminOrGroupMaster(user));
                         navigate("/");
                     }
                 },
