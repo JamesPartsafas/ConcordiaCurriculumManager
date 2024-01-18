@@ -410,7 +410,8 @@ export default function DossierReview() {
                             {new Date(message.createdDate).getSeconds().toString()}
                         </Text>
                         <Text>{message.message}</Text>
-                        {!user.groups?.includes(group.groupId) ? null : (
+                        {!user.groups?.includes(group.groupId) ||
+                        !user.groups?.includes(currentGroup.groupId) ? null : (
                             <Button onClick={handleToggleReply} marginTop={2}>
                                 <ArrowLeftIcon marginRight={5} />
                                 {showReplyInput ? "Cancel Reply" : "Reply"}
