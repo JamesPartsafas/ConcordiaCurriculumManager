@@ -54,7 +54,6 @@ export default function DisplayManageableGroups() {
 
     const indexOfLastGroup = currentPage * groupsPerPage;
     const indexOfFirstGroup = indexOfLastGroup - groupsPerPage;
-    const currentGroups = myGroups.slice(indexOfFirstGroup, indexOfLastGroup);
 
     return (
         <Box overflowX="auto" width="100vw" height="100vh" padding="2vw">
