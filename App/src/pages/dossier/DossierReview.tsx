@@ -382,7 +382,7 @@ export default function DossierReview() {
         };
 
         return (
-            <div style={{ marginLeft }}>
+            <div style={{ marginLeft: marginLeft }}>
                 <CardBody key={group.groupId}>
                     <Box bg={colorDepth} p={2}>
                         <Text>
