@@ -395,10 +395,13 @@ export default function DossierReview() {
                             {new Date(message.createdDate).getSeconds().toString()}
                         </Text>
                         <Text>{message.message}</Text>
-                        <Button onClick={handleToggleReply} marginTop={2}>
-                            <ArrowLeftIcon marginRight={5} />
-                            {showReplyInput ? "Cancel Reply" : "Reply"}
-                        </Button>
+                        {!user.groups?.includes(group.groupId) ? null : (
+                            <Button onClick={handleToggleReply} marginTop={2}>
+                                <ArrowLeftIcon marginRight={5} />
+                                {showReplyInput ? "Cancel Reply" : "Reply"}
+                            </Button>
+                        )}
+
                         {showReplyInput && (
                             <Box marginTop={4}>
                                 <FormControl isInvalid={replyError && replySubmitted}>
