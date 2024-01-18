@@ -53,6 +53,7 @@ export default function DeleteCourseEdit() {
         version: 0,
         published: false,
         courseState: 0,
+        comment: "",
     };
     const emptyCourseDeletionRequest: CourseDeletionRequest = {
         course: emptyCourse,

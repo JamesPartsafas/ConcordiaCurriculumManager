@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import RemoveUserFromGroup from "../src/pages/RemoveUserFromGroup";
+import RemoveUserFromGroup from "../src/pages/groups/RemoveUserFromGroup";
 
 describe("Add User to Group Test Case", () => {
     it("validate function should render all elements ", () => {

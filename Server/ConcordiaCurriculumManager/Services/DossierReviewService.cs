@@ -28,6 +28,7 @@ public class DossierReviewService : IDossierReviewService
     private readonly IDossierRepository _dossierRepository;
     private readonly IDossierReviewRepository _dossierReviewRepository;
     private readonly IUserAuthenticationService _userAuthenticationService;
+    private readonly IEmailService _emailService;
 
     public DossierReviewService(
         ILogger<DossierReviewService> logger,
@@ -36,7 +37,8 @@ public class DossierReviewService : IDossierReviewService
         ICourseService courseService,
         IDossierRepository dossierRepository,
         IDossierReviewRepository dossierReviewRepository,
-        IUserAuthenticationService userAuthenticationService)
+        IUserAuthenticationService userAuthenticationService,
+        IEmailService emailService)
     {
         _logger = logger;
         _dossierService = dossierService;
@@ -45,6 +47,7 @@ public class DossierReviewService : IDossierReviewService
         _dossierRepository = dossierRepository;
         _dossierReviewRepository = dossierReviewRepository;
         _userAuthenticationService = userAuthenticationService;
+        _emailService = emailService;
     }
 
     public async Task SubmitDossierForReview(DossierSubmissionDTO dto)
@@ -118,10 +121,23 @@ public class DossierReviewService : IDossierReviewService
         dossier.MarkAsAccepted(courseVersions);
 
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
+        var emailAddress = dossier.Initiator?.Email;
+
+        if (emailAddress is null)
+        {
+            var initiator = await _dossierRepository.GetDossierInitiator(dossier.Id);
+            emailAddress = initiator.Email;
+        }
+
         if (isDossierSaved)
+        {
+            _ = _emailService.SendEmail(emailAddress, $"Dossier {dossier.Title} has been approved", $"{dossier.Title} ({dossier.Id}) has been approved!");
             _logger.LogInformation($"Dossier {dossier.Id} successfully accepted and removed from the review process");
+        }
         else
+        {
             _logger.LogError($"Encountered error attempting to accept dossier {dossier.Id} and remove it from the review process");
+        }
     }
 
     public async Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message)

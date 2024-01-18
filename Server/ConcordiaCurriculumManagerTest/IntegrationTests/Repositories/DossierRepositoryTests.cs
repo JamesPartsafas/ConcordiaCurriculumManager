@@ -1,9 +1,12 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+﻿using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
+using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories;
 
@@ -308,5 +311,48 @@ public class DossierRepositoryTests
 
         var result = await dossierRepository.GetDossiersRequiredReview(dossier.Id);
         Assert.IsNotNull(result);
+    }
+
+    [TestMethod]
+    public async Task CheckIfCourseRequestExists_ReturnsTrue()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+        var course = TestData.GetSampleCourse();
+        var courseCreationRequest = TestData.GetSampleCourseCreationRequest(dossier, course);
+
+        dbContext.Dossiers.Add(dossier);
+        dbContext.Courses.Add(course);
+        dbContext.CourseCreationRequests.Add(courseCreationRequest);
+        await dbContext.SaveChangesAsync();
+
+        var result = await dossierRepository.CheckIfCourseRequestExists(dossier.Id, courseCreationRequest.NewCourse!.Subject, courseCreationRequest.NewCourse.Catalog);
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public async Task GetDossierInitiator_ValidDossierId_ReturnsInitiator()
+    {
+        var dossier = TestData.GetSampleDossier();
+        var dossierId = dossier.Id;
+        var initiator = TestData.GetSampleUser();
+        dossier.Initiator = initiator;
+
+        dbContext.Users.Add(initiator);
+        dbContext.Dossiers.Add(dossier);
+        await dbContext.SaveChangesAsync();
+
+        var result = await dossierRepository.GetDossierInitiator(dossierId);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(initiator, result);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task GetDossierInitiator_InvalidDossierId_ThrowsNotFoundException()
+    {
+        var dossier = TestData.GetSampleDossier();
+        var dossierId = dossier.Id;
+        await dossierRepository.GetDossierInitiator(dossierId);
     }
 }

@@ -153,24 +153,33 @@ export default function Dossiers() {
         navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
     }
 
+    function handleNavigateToDossierReport(dossierId: string) {
+        navigate(BaseRoutes.DossierReport.replace(":dossierId", dossierId));
+    }
+
+    function handleNavigateToDossierReview(dossierId: string) {
+        navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId));
+    }
+
     return (
-        <>
-            <Container maxW={"5xl"} mt={5}>
+        <div>
+            <Container maxW={"5xl"} mt={5} pl={0}>
                 <Button
                     style="primary"
                     variant="outline"
                     height="40px"
-                    width="100px"
+                    width="fit-content"
                     onClick={() => navigate(BaseRoutes.Home)}
                 >
-                    Back
+                    Return to Home
                 </Button>
                 <Button
                     style="primary"
                     variant="outline"
-                    width="175px"
+                    width="fit-content"
                     height="40px"
                     alignSelf="flex-end"
+                    ml="2"
                     isDisabled={!user.roles.includes(UserRoles.Initiator)}
                     onClick={() => {
                         navigate(BaseRoutes.DossiersToReview);
@@ -185,21 +194,24 @@ export default function Dossiers() {
 
             <Box maxW="5xl" m="auto">
                 <Flex flexDirection="column">
-                    <DossierTable
-                        myDossiers={myDossiers}
-                        startIndex={startIndex}
-                        endIndex={endIndex}
-                        setSelectedDossier={setSelectedDossier}
-                        onOpen={onOpen}
-                        setDossierModalTitle={setDossierModalTitle}
-                        displayDossierModal={displayDossierModal}
-                        handleNavigateToDossierDetails={handleNavigateToDossierDetails}
-                        setCurrentPage={setCurrentPage}
-                        currentPage={currentPage}
-                        totalResults={totalResults}
-                        useIcons={true}
-                    />
-
+                    <div style={{ margin: "5px" }}>
+                        <DossierTable
+                            myDossiers={myDossiers}
+                            startIndex={startIndex}
+                            endIndex={endIndex}
+                            onOpen={onOpen}
+                            setDossierModalTitle={setDossierModalTitle}
+                            setSelectedDossier={setSelectedDossier}
+                            displayDossierModal={displayDossierModal}
+                            handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                            handleNavigateToDossierReport={handleNavigateToDossierReport}
+                            setCurrentPage={setCurrentPage}
+                            currentPage={currentPage}
+                            totalResults={totalResults}
+                            useIcons={true}
+                            reviewIcons={false}
+                        />
+                    </div>
                     <Tooltip
                         label="Only Initiators can create dossiers"
                         isDisabled={user.roles.includes(UserRoles.Initiator)}
@@ -228,22 +240,25 @@ export default function Dossiers() {
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                         {user?.firstName + "'s"} Dossiers Under Review
                     </Text>
-
-                    <DossierTable
-                        myDossiers={reviewedDossiers}
-                        startIndex={startIndex}
-                        endIndex={endIndex}
-                        setSelectedDossier={setSelectedDossier}
-                        onOpen={onOpen}
-                        setDossierModalTitle={setDossierModalTitle}
-                        displayDossierModal={displayDossierModal}
-                        handleNavigateToDossierDetails={handleNavigateToDossierDetails}
-                        setCurrentPage={setCurrentPage}
-                        currentPage={currentPage}
-                        totalResults={totalResults}
-                        useIcons={false}
-                    />
-
+                    <div style={{ margin: "5px" }}>
+                        <DossierTable
+                            myDossiers={reviewedDossiers}
+                            startIndex={startIndex}
+                            endIndex={endIndex}
+                            onOpen={onOpen}
+                            setDossierModalTitle={setDossierModalTitle}
+                            setSelectedDossier={setSelectedDossier}
+                            displayDossierModal={displayDossierModal}
+                            handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                            handleNavigateToDossierReport={handleNavigateToDossierReport}
+                            handleNavigateToDossierReview={handleNavigateToDossierReview}
+                            setCurrentPage={setCurrentPage}
+                            currentPage={currentPage}
+                            totalResults={totalResults}
+                            useIcons={false}
+                            reviewIcons={true}
+                        />
+                    </div>
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                         {user?.firstName + "'s"} Approved Dossiers
                     </Text>
@@ -252,35 +267,42 @@ export default function Dossiers() {
                         myDossiers={approvedDossiers}
                         startIndex={startIndex}
                         endIndex={endIndex}
-                        setSelectedDossier={setSelectedDossier}
                         onOpen={onOpen}
                         setDossierModalTitle={setDossierModalTitle}
+                        setSelectedDossier={setSelectedDossier}
                         displayDossierModal={displayDossierModal}
                         handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                        handleNavigateToDossierReport={handleNavigateToDossierReport}
+                        handleNavigateToDossierReview={handleNavigateToDossierReview}
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         totalResults={totalResults}
                         useIcons={false}
+                        reviewIcons={true}
                     />
 
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                         {user?.firstName + "'s"} Rejected Dossiers
                     </Text>
-
-                    <DossierTable
-                        myDossiers={rejectedDossiers}
-                        startIndex={startIndex}
-                        endIndex={endIndex}
-                        setSelectedDossier={setSelectedDossier}
-                        onOpen={onOpen}
-                        setDossierModalTitle={setDossierModalTitle}
-                        displayDossierModal={displayDossierModal}
-                        handleNavigateToDossierDetails={handleNavigateToDossierDetails}
-                        setCurrentPage={setCurrentPage}
-                        currentPage={currentPage}
-                        totalResults={totalResults}
-                        useIcons={false}
-                    />
+                    <div style={{ margin: "5px" }}>
+                        <DossierTable
+                            myDossiers={rejectedDossiers}
+                            startIndex={startIndex}
+                            endIndex={endIndex}
+                            onOpen={onOpen}
+                            setDossierModalTitle={setDossierModalTitle}
+                            setSelectedDossier={setSelectedDossier}
+                            displayDossierModal={displayDossierModal}
+                            handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                            handleNavigateToDossierReport={handleNavigateToDossierReport}
+                            handleNavigateToDossierReview={handleNavigateToDossierReview}
+                            setCurrentPage={setCurrentPage}
+                            currentPage={currentPage}
+                            totalResults={totalResults}
+                            useIcons={false}
+                            reviewIcons={true}
+                        />
+                    </div>
                 </Flex>
             </Box>
 
@@ -295,6 +317,6 @@ export default function Dossiers() {
                     closeModal={closeDossierModal}
                 />
             )}
-        </>
+        </div>
     );
 }

@@ -1,0 +1,630 @@
+{
+  "TableName": "CourseGroupings, CourseGroupingReferences, and CourseGroupingCourseIdentifier",
+  "AutoGenerateCreatedDate": true,
+  "AutoGenerateModifiedDate": true,
+  "Data": [
+    {
+      "Id": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+      "CommonIdentifier": "88ca0d2c-284a-4d58-aa95-bd9afabb65b1",
+      "Name": "Humanities General Education Electives for Engineering and Computer Science Students",
+      "RequiredCredits": "N/A",
+      "IsTopLevel": false,
+      "School": 0,
+      "Description": "",
+      "Notes": "",
+      "State": 0,
+      "Version": 1,
+      "Published": true,
+      "CourseGroupingReferences": [],
+      "CourseGroupingCourseIdentifier": [
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "25baf426-5d4d-4e81-b0c8-71bdc6b35c20"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "8b640af1-69e0-4651-8022-41aad63a9328"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "53a2db75-4f37-4b8d-925e-1021acfa29a4"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "459452f7-474c-4120-896e-01d4ecdb49bc"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "5ead40ed-64e5-49cb-9052-0baa46831b8c"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "02140bde-6852-4dc9-973d-dc512b6385e9"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "455d71a7-a971-4e0a-be59-fe8b89133ccc"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "9712f3a2-5fa7-4a7c-89ed-0944697358ac"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "3f276f5b-b6ab-41a1-bae7-4183e8daafc5"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "782e9cd9-17d4-495f-9a3e-46a0fdd0fc67"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "001935e9-4474-475c-81a8-87881f4bd3fb"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "5bb1996e-14b7-4a6f-8f88-8171bd229dfc"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "7ecdeb5f-43ab-40c6-a4fb-287f23da3b35"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "34c1be62-322b-4cdb-9730-f9843a442e74"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "b01e7629-9239-4af9-9143-2b438c0a111f"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "80351a7e-3a62-4b22-8658-d94aced2249d"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "b42f30b4-4a93-4bf1-9f69-6b5346f2cd30"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "40d97a06-eebc-45c0-85fe-d02696b339d0"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "16934c1e-2af4-4af8-8998-6dc7c46f42a5"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "7597d425-6456-4aea-949f-e87fa1fd409b"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "cf1277fb-5927-4666-bd6a-e2a6aaedc5ca"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "928fc204-3e21-46a1-9955-915297c7c474"
+        },
+        {
+          "CourseGroupingId": "e12777d3-8127-4d77-9d3d-1ac98ff2c04a",
+          "CourseIdentifiersId": "f1b14ae3-0589-42c2-81ae-35724c2c6217"
+        }
+      ]
+    },
+    {
+      "Id": "5c1c2a03-7501-4117-bf68-18956da04922",
+      "CommonIdentifier": "6118d80f-a5f5-467b-9504-2004e517cad8",
+      "Name": "Social Sciences General Education Electives for Engineering and Computer Science Students",
+      "RequiredCredits": "N/A",
+      "IsTopLevel": false,
+      "School": 0,
+      "Description": "",
+      "Notes": "",
+      "State": 0,
+      "Version": 1,
+      "Published": true,
+      "CourseGroupingReferences": [],
+      "CourseGroupingCourseIdentifier": [
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "9c0996bc-403a-40de-a85b-ffe258513fdb"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "8ebeb05d-a164-4973-8742-f76ff8311c4c"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "f1db623e-d594-4fcc-8554-9f40f2d5edc7"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "952ef1fe-b62f-4230-8c5f-2447d992412d"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "b7a372fa-8bae-4c31-ae6f-5894817e0cfe"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "655644b7-8d84-4e92-9c4f-fb436047c020"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "1390f7f4-e419-4c12-abfd-e21db42fb40f"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "ba0f036b-a117-463c-8543-7ad6a553ab87"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "a28004bb-e8f8-4a8d-98fe-6041ffcec3b0"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "76da6812-a8fe-44c1-b6c6-d7dede0a39bd"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "05df0161-ce3b-45c5-baac-e55a151c58bd"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "922e2621-7a2e-40a0-86b3-8a16171c3007"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "fda55a94-4d26-4732-9919-8df7075d9d37"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "7c569b56-1983-4020-90eb-73ad1893ccde"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "88d84e1f-6bdd-40db-904f-4f87b6cc08eb"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "21c985cb-424e-419f-9b13-747bb26807cf"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "a0ecc5db-94de-4220-b9ef-39ae15741ecb"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "57fad6e6-8c06-462a-96bc-f5936c0088b6"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "47010e0c-48fb-46df-96ad-266c29a56a44"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "75c3659b-fa27-45aa-9632-60c9fa3b5bd4"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "73403e4b-da50-46a8-9d04-ed65a662f0b1"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "e9758837-5ef0-4164-b633-545c349b5da2"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "28e6f58e-a568-4497-b862-e9974c5c715f"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "43d47d3d-f913-4f03-a746-8fa32d7235e0"
+        },
+        {
+          "CourseGroupingId": "5c1c2a03-7501-4117-bf68-18956da04922",
+          "CourseIdentifiersId": "ff0f8ca7-a27a-4243-bfd8-f30f713e2641"
+        }
+      ]
+    },
+    {
+      "Id": "c414b8b0-dd74-4743-bba0-e6d3e2aa16ca",
+      "CommonIdentifier": "48ba74d1-0eb2-4197-bbd2-836b7dbc7b56",
+      "Name": "Other Complementary Studies General Education Electives for Engineering and Computer Science Students",
+      "RequiredCredits": "N/A",
+      "IsTopLevel": false,
+      "School": 0,
+      "Description": "",
+      "Notes": "",
+      "State": 0,
+      "Version": 1,
+      "Published": true,
+      "CourseGroupingReferences": [],
+      "CourseGroupingCourseIdentifier": [
+        {
+          "CourseGroupingId": "c414b8b0-dd74-4743-bba0-e6d3e2aa16ca",
+          "CourseIdentifiersId": "71a2f5f9-50cb-4f87-90c4-aa74e52dc8f0"
+        },
+        {
+          "CourseGroupingId": "c414b8b0-dd74-4743-bba0-e6d3e2aa16ca",
+          "CourseIdentifiersId": "2cc479ec-6428-428e-a620-58517c337144"
+        },
+        {
+          "CourseGroupingId": "c414b8b0-dd74-4743-bba0-e6d3e2aa16ca",
+          "CourseIdentifiersId": "7bcd6399-1614-4aab-a684-dd97fd82c096"
+        },
+        {
+          "CourseGroupingId": "c414b8b0-dd74-4743-bba0-e6d3e2aa16ca",
+          "CourseIdentifiersId": "2367e1d3-df52-4603-8227-4e27b91f971c"
+        }
+      ]
+    },
+    {
+      "Id": "e110ad49-7334-4927-95a8-56abe2129556",
+      "CommonIdentifier": "bb4079f3-5542-4436-aaeb-4ff40d0c4d6c",
+      "Name": "General Education Electives",
+      "RequiredCredits": "3.00",
+      "IsTopLevel": false,
+      "School": 0,
+      "Description": "To fulfill the requirements of the General Education Elective or General Electives, students may choose the courses from the three lists below:",
+      "Notes": "In some instances, students may have to complete specific prerequisites before taking any of the following courses. Those prerequisite courses are not counted towards their program unless they are specifically listed on the student’s offer of admission or listed as courses required for the completion of their programs. The relevant prerequisites in each case are stated in the departmental course descriptions.\nPrior to registering, students who do not have any specified prerequisites for a course must obtain permission of the relevant Department.\nAn ESL course or an introductory course that deals with the acquisition of a language will not be considered as a General Education elective or a General Elective.\nShould students wish to take a course not listed below, they must receive written permission from the Student Academic Services Office of the Gina Cody School of Engineering and Computer Science prior to taking the course.\nStudents in the Extended Credit Program (ECP) or the Mature Entry Program (MEP) (see Section 14.2.3 Gina Cody School of Engineering and Computer Science under Section 14.2 Program Requirements) or any other students who have been assigned credits in Humanities and Social Sciences must select those credits from the two corresponding lists below. Those credits cannot be chosen from the list of Other Complementary Studies.",
+      "State": 0,
+      "Version": 1,
+      "Published": true,
+      "CourseGroupingReferences": [
+        {
+          "Id": "71d1324f-785f-4ec0-97e3-40d0e27323d6",
+          "ChildGroupCommonIdentifier": "88ca0d2c-284a-4d58-aa95-bd9afabb65b1",
+          "GroupingType": 0
+        },
+        {
+          "Id": "7bdf8f09-d2f9-44a0-b875-81b5db9f9e72",
+          "ChildGroupCommonIdentifier": "6118d80f-a5f5-467b-9504-2004e517cad8",
+          "GroupingType": 0
+        },
+        {
+          "Id": "6e961b47-9f5c-4d89-8b61-c7fa4e35da97",
+          "ChildGroupCommonIdentifier": "48ba74d1-0eb2-4197-bbd2-836b7dbc7b56",
+          "GroupingType": 0
+        }
+      ],
+      "CourseGroupingCourseIdentifier": []
+    },
+    {
+      "Id": "60f21159-dc45-498c-a71f-19fbce2de52c",
+      "CommonIdentifier": "86072b4b-c98e-458b-8f8e-230eca367fe3",
+      "Name": "Engineering Core",
+      "RequiredCredits": "30.50",
+      "IsTopLevel": false,
+      "School": 0,
+      "Description": "To be recommended for the degree of BEng, students must satisfactorily complete the courses of the Engineering Core as well as those specified for their particular program in subsequent sections in accordance with the graduation requirements in Section 71.10.5 Graduation Regulations.",
+      "Notes": "(1) The Engineering Core credits for students in the BEng in Building Engineering are reduced from 30.5 credits to 29 credits since Building Engineering students are not required to take ENGR 202 in their program. (2) The Engineering Core credits for students in the BEng in Mechanical Engineering, BEng in Industrial Engineering and BEng in Aerospace Engineering programs are reduced from 30.5 credits to 27 credits since Mechanical, Industrial and Aerospace Engineering students are not required to take ELEC 275 in their program. Students in the BEng in Electrical Engineering and the BEng in Computer Engineering shall replace ELEC 275 with ELEC 273. (3) Students in the BEng in Software Engineering may replace ENGR 391 with COMP 361. (4) Students in BEng in Building Engineering shall replace ENGR 392 with BLDG 482. (5) Students must select three General Education elective credits from one of the lists in Section 71.110 Complementary Studies for Engineering and Computer Science Students. Students in the BEng in Industrial Engineering shall take ACCO 220 as their General Education elective.",
+      "State": 0,
+      "Version": 1,
+      "Published": true,
+      "CourseGroupingReferences": [
+        {
+          "Id": "ae2302c8-90ad-42bd-bf51-a5d5d82fd111",
+          "ChildGroupCommonIdentifier": "bb4079f3-5542-4436-aaeb-4ff40d0c4d6c",
+          "GroupingType": 0
+        }
+      ],
+      "CourseGroupingCourseIdentifier": [
+        {
+          "CourseGroupingId": "60f21159-dc45-498c-a71f-19fbce2de52c",
+          "CourseIdentifiersId": "16185114-d578-49e3-b7ce-79a9a3362b0b"
+        },
+        {
+          "CourseGroupingId": "60f21159-dc45-498c-a71f-19fbce2de52c",
+          "CourseIdentifiersId": "9ac96095-e7fe-4ffc-b6b7-648a0589f757"
+        },
+        {
+          "CourseGroupingId": "60f21159-dc45-498c-a71f-19fbce2de52c",
+          "CourseIdentifiersId": "722dd728-5309-4d77-946e-0f1a7fdfe1a6"
+        },
+        {
+          "CourseGroupingId": "60f21159-dc45-498c-a71f-19fbce2de52c",
+          "CourseIdentifiersId": "1ce69831-efd2-4e91-8396-5b283ad0d75b"
+        },
+        {
+          "CourseGroupingId": "60f21159-dc45-498c-a71f-19fbce2de52c",
+          "CourseIdentifiersId": "98538f31-15df-4dac-9ae7-9221b7f083d6"
+        },
+        {
+          "CourseGroupingId": "60f21159-dc45-498c-a71f-19fbce2de52c",
+          "CourseIdentifiersId": "2eae373e-899a-41de-9bfd-d39968c2c629"
+        },
+        {
+          "CourseGroupingId": "60f21159-dc45-498c-a71f-19fbce2de52c",
+          "CourseIdentifiersId": "848d17f5-219b-4a00-ae52-e2c79fac66b9"
+        },
+        {
+          "CourseGroupingId": "60f21159-dc45-498c-a71f-19fbce2de52c",
+          "CourseIdentifiersId": "1806c778-1733-4736-97cd-c8d363c6a705"
+        },
+        {
+          "CourseGroupingId": "60f21159-dc45-498c-a71f-19fbce2de52c",
+          "CourseIdentifiersId": "4ed7f416-ff91-41e9-9bcb-cc15b4b50a24"
+        },
+        {
+          "CourseGroupingId": "60f21159-dc45-498c-a71f-19fbce2de52c",
+          "CourseIdentifiersId": "11a1467e-d43b-44c6-b3ca-ce75dd3e7c3a"
+        }
+      ]
+    },
+    {
+      "Id": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+      "CommonIdentifier": "73112808-947c-40b1-aef6-ba7739b27031",
+      "Name": "Industrial Engineering Core",
+      "RequiredCredits": "81.00",
+      "IsTopLevel": false,
+      "School": 0,
+      "Description": "",
+      "Notes": "Students may replace INDU 490 with ENGR 490 if they are interested in a multidisciplinary project that requires collaboration with students from other engineering departments. In order for students to register in ENGR 490, their projects must be approved by the ENGR 490 Design Committee before the start of the fall term.",
+      "State": 0,
+      "Version": 1,
+      "Published": true,
+      "CourseGroupingReferences": [],
+      "CourseGroupingCourseIdentifier": [
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "e7786719-d5e0-4006-9653-aab11a76bd55"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "e6ceeb10-6905-415b-aa91-82f9dcdbc39a"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "a981618e-7f4d-4646-bcd5-161b329ef7fc"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "0c00de90-f6b1-466c-9fd5-753878f8a438"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "fddc4ce6-a8a0-4881-8c3a-c27492f14510"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "08dcf7cc-d743-4741-8ae6-03ac66320328"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "b43eb496-4974-4fe6-a15f-568a6c898331"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "b33c1fa4-720a-460f-a861-53312cce036d"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "3a147000-f30c-4a94-9e2d-141a829ce17b"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "2c1b264d-01ba-4800-93ea-6cfdcc3294fb"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "6d9ca0de-3701-439c-8524-78ce8ac60df0"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "c97a4ff8-d7f0-4d2e-a838-24420801c3f3"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "99c2692b-9daa-43da-91a0-95680460a6d7"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "353c94c5-1b5b-4ec3-b54f-24fa7ee0efd6"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "c9703f8b-aa9c-46b5-84d3-9dbc42a0a6f4"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "7ad07c3e-1606-4875-9fcc-599a5baa985b"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "00532040-52ef-4cd6-b7fa-eedd7817c619"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "068c286d-4dc4-4b13-b625-c62d41436270"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "ac8d080c-5497-42f9-88b8-f1d9213c6322"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "64d5c61a-54b2-49a5-a2f3-a5b21debc80b"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "c0b7d20d-0f75-4794-a0b9-9a9bb869077b"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "512c3424-7e35-4d39-a0f5-4d7fa934d7f7"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "50614887-7096-4dc4-9e94-503f55d7f0d9"
+        },
+        {
+          "CourseGroupingId": "a08103a9-3705-4c8e-a584-28a82c2924ee",
+          "CourseIdentifiersId": "b3b60d06-d134-4a34-83af-1ac88034d265"
+        }
+      ]
+    },
+    {
+      "Id": "8d33564f-3681-451a-bdd7-a8c42c6ae88b",
+      "CommonIdentifier": "bc580104-0e03-4af7-85a9-6d68230d4071",
+      "Name": "INDU Courses",
+      "RequiredCredits": "N/A",
+      "IsTopLevel": false,
+      "School": 0,
+      "Description": "Students must take at least three courses from the following list:",
+      "Notes": "",
+      "State": 0,
+      "Version": 1,
+      "Published": true,
+      "CourseGroupingReferences": [],
+      "CourseGroupingCourseIdentifier": [
+        {
+          "CourseGroupingId": "8d33564f-3681-451a-bdd7-a8c42c6ae88b",
+          "CourseIdentifiersId": "f6369301-7817-4959-9bb6-30a6a1c4d6df"
+        },
+        {
+          "CourseGroupingId": "8d33564f-3681-451a-bdd7-a8c42c6ae88b",
+          "CourseIdentifiersId": "570cd2db-dbd8-468f-943e-8ae45624a9b2"
+        },
+        {
+          "CourseGroupingId": "8d33564f-3681-451a-bdd7-a8c42c6ae88b",
+          "CourseIdentifiersId": "7df3cd5a-23ae-45fd-b3d3-99b039b31364"
+        },
+        {
+          "CourseGroupingId": "8d33564f-3681-451a-bdd7-a8c42c6ae88b",
+          "CourseIdentifiersId": "d70eb659-13f6-41ca-b1cc-d582ebc6e4f7"
+        },
+        {
+          "CourseGroupingId": "8d33564f-3681-451a-bdd7-a8c42c6ae88b",
+          "CourseIdentifiersId": "656ab16e-33b7-487f-b74d-a91cae9f6cca"
+        },
+        {
+          "CourseGroupingId": "8d33564f-3681-451a-bdd7-a8c42c6ae88b",
+          "CourseIdentifiersId": "c6538538-fe45-44c3-910d-8d81ddda5645"
+        },
+        {
+          "CourseGroupingId": "8d33564f-3681-451a-bdd7-a8c42c6ae88b",
+          "CourseIdentifiersId": "8a12ddab-ac41-4065-8d47-994b5be2d32e"
+        },
+        {
+          "CourseGroupingId": "8d33564f-3681-451a-bdd7-a8c42c6ae88b",
+          "CourseIdentifiersId": "10f78adf-d6c5-4300-b85e-d007fa0e7c8a"
+        }
+      ]
+    },
+    {
+      "Id": "e601e777-c152-4e2d-a59f-fdbea66ac4de",
+      "CommonIdentifier": "21c1277f-dcf4-4796-9455-cf18562a2a7b",
+      "Name": "Other Industrial Engineering Elective Courses",
+      "RequiredCredits": "N/A",
+      "IsTopLevel": false,
+      "School": 0,
+      "Description": "Students may take no more than one course from the following list:",
+      "Notes": "",
+      "State": 0,
+      "Version": 1,
+      "Published": true,
+      "CourseGroupingReferences": [],
+      "CourseGroupingCourseIdentifier": [
+        {
+          "CourseGroupingId": "e601e777-c152-4e2d-a59f-fdbea66ac4de",
+          "CourseIdentifiersId": "9d182e66-4f2a-479c-9cbf-470d5441a3ed"
+        },
+        {
+          "CourseGroupingId": "e601e777-c152-4e2d-a59f-fdbea66ac4de",
+          "CourseIdentifiersId": "924a043e-0278-47f9-a821-fec3ad8cb63c"
+        },
+        {
+          "CourseGroupingId": "e601e777-c152-4e2d-a59f-fdbea66ac4de",
+          "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+        },
+        {
+          "CourseGroupingId": "e601e777-c152-4e2d-a59f-fdbea66ac4de",
+          "CourseIdentifiersId": "96ac755b-6fa3-4c3e-ace4-ed280476708a"
+        },
+        {
+          "CourseGroupingId": "e601e777-c152-4e2d-a59f-fdbea66ac4de",
+          "CourseIdentifiersId": "7bcd6399-1614-4aab-a684-dd97fd82c096"
+        }
+      ]
+    },
+    {
+      "Id": "e550eccf-3393-4073-9a85-dfb540fb174d",
+      "CommonIdentifier": "623e9718-54ee-4179-986c-4b664b998e9b",
+      "Name": "Engineering Core for Industrial Engineering",
+      "RequiredCredits": "27.00",
+      "IsTopLevel": false,
+      "School": 0,
+      "Description": "",
+      "Notes": "",
+      "State": 0,
+      "Version": 1,
+      "Published": true,
+      "CourseGroupingReferences": [
+        {
+          "Id": "f1f87a9b-a489-4932-8daf-0ee089b3019d",
+          "ChildGroupCommonIdentifier": "86072b4b-c98e-458b-8f8e-230eca367fe3",
+          "GroupingType": 0
+        }
+      ],
+      "CourseGroupingCourseIdentifier": []
+    },
+    {
+      "Id": "5594b354-d1cc-4b47-b55b-c873ffc671a6",
+      "CommonIdentifier": "4a8a12cd-1555-4d69-931b-40bae1951c18",
+      "Name": "Industrial Engineering Electives",
+      "RequiredCredits": "12.00",
+      "IsTopLevel": false,
+      "School": 0,
+      "Description": "12 credits minimum chosen from at least three INDU Courses Students may take no more than one course from the Other Industrial Engineering Elective Courses list.",
+      "Notes": "",
+      "State": 0,
+      "Version": 1,
+      "Published": true,
+      "CourseGroupingReferences": [
+        {
+          "Id": "05d02846-9226-4f36-ad71-8e49668df97f",
+          "ChildGroupCommonIdentifier": "bc580104-0e03-4af7-85a9-6d68230d4071",
+          "GroupingType": 0
+        },
+        {
+          "Id": "cc6494bf-c3d1-4dd4-b123-cbdee8aa9b41",
+          "ChildGroupCommonIdentifier": "21c1277f-dcf4-4796-9455-cf18562a2a7b",
+          "GroupingType": 0
+        }
+      ],
+      "CourseGroupingCourseIdentifier": []
+    },
+    {
+      "Id": "bdc47eed-7567-4d80-8e93-d5b41fa2059e",
+      "CommonIdentifier": "188ae971-1256-4b87-9939-47a2763893ff",
+      "Name": "BEng in Industrial Engineering",
+      "RequiredCredits": "120.00",
+      "IsTopLevel": true,
+      "School": 0,
+      "Description": "The program in Industrial Engineering consists of the Engineering Core, the Industrial Engineering Core, and elective credits as shown below. The minimum length of the program is 120 credits.",
+      "Notes": "",
+      "State": 0,
+      "Version": 1,
+      "Published": true,
+      "CourseGroupingReferences": [
+        {
+          "Id": "f436869f-606b-401c-9b22-5b1fdcb7abb1",
+          "ChildGroupCommonIdentifier": "623e9718-54ee-4179-986c-4b664b998e9b",
+          "GroupingType": 0
+        },
+        {
+          "Id": "cdc5abc5-5607-4a43-b530-7523f62e50f5",
+          "ChildGroupCommonIdentifier": "73112808-947c-40b1-aef6-ba7739b27031",
+          "GroupingType": 0
+        },
+        {
+          "Id": "2280c5cd-d461-4765-a343-7447682d927d",
+          "ChildGroupCommonIdentifier": "4a8a12cd-1555-4d69-931b-40bae1951c18",
+          "GroupingType": 0
+        }
+      ],
+      "CourseGroupingCourseIdentifier": []
+    }
+  ]
+}
