@@ -1,30 +1,28 @@
-import { useState } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
     Container,
-    Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
+    Box,
+    Button,
     AlertDialog,
     AlertDialogBody,
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogContent,
     AlertDialogOverlay,
+    Flex,
 } from "@chakra-ui/react";
-import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import { isAdmin } from "../services/auth";
 import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../services/group";
-import { useContext, useEffect, useRef } from "react";
 import { BaseRoutes } from "../constants";
 import { UserContext } from "../App";
+import GroupTable from "../components/GroupTable";
 
 export default function DisplayManageableGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
     const [deleteGroupId, setDeleteGroupId] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const groupsPerPage = 5;
     const user = useContext(UserContext);
     const cancelRef = useRef();
 
@@ -54,10 +52,21 @@ export default function DisplayManageableGroups() {
         setDeleteGroupId(null);
     };
 
+    const indexOfLastGroup = currentPage * groupsPerPage;
+    const indexOfFirstGroup = indexOfLastGroup - groupsPerPage;
+
     return (
-        <div>
-            <Container maxW="3xl" height="80vh" display="flex" alignItems="center" justifyContent="center">
-                <div>
+        <Box overflowX="auto" width="100vw" height="100vh" padding="2vw">
+            <Container
+                maxW="5xl"
+                height="80vh"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                mt={10}
+                mb={10}
+            >
+                <Box>
                     <h1
                         style={{
                             textAlign: "center",
@@ -69,125 +78,50 @@ export default function DisplayManageableGroups() {
                     >
                         Group Information
                     </h1>
-                    <Table variant="simple" size="lg">
-                        <Thead>
-                            <Tr>
-                                <Th whiteSpace="nowrap">Group Name</Th>
-                                <Th whiteSpace="nowrap">Applications to Approve</Th>
-                                <Th whiteSpace="nowrap">Number of Members</Th>
-                                <Th whiteSpace="nowrap">Manage Members</Th>
-                                {isAdmin(user) && <Th whiteSpace="nowrap">Manage Masters</Th>}
-                                {isAdmin(user) && <Th whiteSpace="nowrap">Edit Group</Th>}
-                                {isAdmin(user) && <Th whiteSpace="nowrap">Delete Group</Th>}
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {myGroups.map((group, index) => (
-                                <Tr key={index}>
-                                    <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                                        {group.name}
-                                    </Td>
-                                    <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                                        {0}
-                                    </Td>
-                                    <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                                        {group.members?.length ?? 0}
-                                    </Td>
-                                    <Td whiteSpace="nowrap" padding="16px">
-                                        <Link
-                                            to={BaseRoutes.AddUserToGroup}
-                                            state={{ gid: group.id, name: group.name }}
-                                        >
-                                            <Button style="primary" variant="outline" width="50%" height="40px">
-                                                Add
-                                            </Button>
-                                        </Link>
-                                        {(group.members?.length || 0) !== 0 && (
-                                            <Link
-                                                to={BaseRoutes.RemoveUserFromGroup}
-                                                state={{ gid: group.id, name: group.name }}
-                                            >
-                                                <Button style="primary" variant="outline" width="50%" height="40px">
-                                                    Remove
-                                                </Button>
-                                            </Link>
-                                        )}
-                                    </Td>
-                                    {isAdmin(user) && (
-                                        <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                                            <Link
-                                                to={BaseRoutes.AddGroupMaster}
-                                                state={{ gid: group.id, name: group.name }}
-                                            >
-                                                <Button style="primary" variant="outline" width="50%" height="40px">
-                                                    Add
-                                                </Button>
-                                            </Link>
-                                            {(group.groupMasters?.length || 0) !== 0 && (
-                                                <Link
-                                                    to={BaseRoutes.RemoveGroupMaster}
-                                                    state={{ gid: group.id, name: group.name }}
-                                                >
-                                                    <Button style="primary" variant="outline" width="50%" height="40px">
-                                                        Remove
-                                                    </Button>
-                                                </Link>
-                                            )}
-                                        </Td>
-                                    )}
-                                    {isAdmin(user) && (
-                                        <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                                            <Link to={BaseRoutes.ManageableGroup}>
-                                                <Button style="primary" variant="outline" width="50%" height="40px">
-                                                    Edit {/**for Future Edit Group Name */}
-                                                </Button>
-                                            </Link>
-                                        </Td>
-                                    )}
-                                    {isAdmin(user) && (
-                                        <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                                            <Link to={BaseRoutes.ManageableGroup}>
-                                                <Button
-                                                    style="primary"
-                                                    variant="outline"
-                                                    width="50%"
-                                                    height="40px"
-                                                    onClick={() => setDeleteGroupId(group.id)}
-                                                >
-                                                    Delete {/**for Future Edit Group Name */}
-                                                </Button>
-                                            </Link>
-                                        </Td>
-                                    )}
-                                </Tr>
-                            ))}
-                        </Tbody>
-                    </Table>
-                    {isAdmin(user) && (
+
+                    {/* Replace the table rendering with the new GroupTable component */}
+                    <GroupTable
+                        myGroups={myGroups}
+                        startIndex={indexOfFirstGroup + 1}
+                        endIndex={indexOfLastGroup}
+                        setSelectedGroup={(group) => setDeleteGroupId(group.id)}
+                        onOpen={() => console.log("Open dialog")}
+                        setDeleteGroupId={setDeleteGroupId}
+                        setCurrentPage={setCurrentPage}
+                        currentPage={currentPage}
+                        totalResults={myGroups.length}
+                        useIcons={isAdmin(user)}
+                        groupsPerPage={groupsPerPage}
+                    />
+
+                    <Flex justify="center" mt={4}>
                         <Link to={BaseRoutes.CreateGroup}>
-                            <Button style="primary" variant="solid" width="100%" height="40px">
+                            <Button color="white" backgroundColor={"#932439"} variant="solid" height="40px">
                                 Create Group
                             </Button>
                         </Link>
-                    )}
-                    <Link to={BaseRoutes.Home}>
-                        <Button style="primary" variant="solid" width="100%" height="40px">
-                            Back to Home Page
-                        </Button>
-                    </Link>
+                    </Flex>
+
+                    <Flex justify="center" mt={4}>
+                        <Link to={BaseRoutes.Home}>
+                            <Button color="white" backgroundColor={"#932439"} variant="solid" height="40px">
+                                Back to Home Page
+                            </Button>
+                        </Link>
+                    </Flex>
+
                     <AlertDialog
                         isOpen={deleteGroupId !== null}
                         leastDestructiveRef={cancelRef}
                         onClose={() => setDeleteGroupId(null)}
+                        size="sm"
                     >
                         <AlertDialogOverlay>
                             <AlertDialogContent>
                                 <AlertDialogHeader fontSize="lg" fontWeight="bold">
                                     Delete Group
                                 </AlertDialogHeader>
-
                                 <AlertDialogBody>Are you sure? This action cannot be undone.</AlertDialogBody>
-
                                 <AlertDialogFooter>
                                     <Button ref={cancelRef} onClick={() => setDeleteGroupId(null)}>
                                         Cancel
@@ -205,8 +139,8 @@ export default function DisplayManageableGroups() {
                             </AlertDialogContent>
                         </AlertDialogOverlay>
                     </AlertDialog>
-                </div>
+                </Box>
             </Container>
-        </div>
+        </Box>
     );
 }
