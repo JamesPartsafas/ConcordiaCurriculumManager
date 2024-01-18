@@ -1,6 +1,11 @@
-/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
-import { ApprovalStage, DossierDetailsDTO, DossierDetailsResponse, dossierStateToString } from "../../models/dossier";
+import {
+    ApprovalStage,
+    DossierDetailsDTO,
+    DossierDetailsResponse,
+    dossierStateToString,
+    DossierDiscussionMessage,
+} from "../../models/dossier";
 import { getDossierDetails } from "../../services/dossier";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
@@ -347,7 +352,17 @@ export default function DossierReview() {
             });
     };
 
-    const Message = ({ message, messages, group, depth }) => {
+    const Message = ({
+        message,
+        messages,
+        group,
+        depth,
+    }: {
+        message: DossierDiscussionMessage;
+        messages: DossierDiscussionMessage[];
+        group: ApprovalStage;
+        depth: number;
+    }) => {
         const marginLeft = `${depth * 20}px`;
         const colorDepth = `gray.${depth * 100 + 200}`;
 
