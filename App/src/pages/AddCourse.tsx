@@ -528,6 +528,7 @@ export default function AddCourse() {
                                                 options={courseCareers}
                                                 onSelect={handleChangeCourseCareer}
                                                 width="100%"
+                                                isDisabled={isEditPage}
                                                 value={courseCareer ? courseCareer.careerName : "Select Course Career"}
                                             />
                                             <FormErrorMessage>Course Career is required</FormErrorMessage>
@@ -538,6 +539,7 @@ export default function AddCourse() {
                                                 options={allCourseSettings?.courseSubjects}
                                                 onSelect={handleChangeDepartment}
                                                 width="100%"
+                                                isDisabled={isEditPage}
                                                 value={department ? department : "Select Subject"}
                                             />
                                             <FormErrorMessage>Subject is required</FormErrorMessage>
@@ -550,6 +552,7 @@ export default function AddCourse() {
                                                 placeholder="Course Code"
                                                 pl="16px"
                                                 value={courseNumber}
+                                                isDisabled={isEditPage}
                                                 onChange={handleChangeCourseNumber}
                                             />
                                             <FormErrorMessage>Course code is required</FormErrorMessage>

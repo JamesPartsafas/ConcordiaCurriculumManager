@@ -628,4 +628,13 @@ public static class TestData
             Courses = new List<Course>() { { course } }
         };
     }
+
+    public static CourseIdentifier GetSampleCourseIdentifier()
+    {
+        return new CourseIdentifier
+        {
+            Id = Guid.NewGuid(),
+            ConcordiaCourseId = 999999,
+        };
+    }
 }
