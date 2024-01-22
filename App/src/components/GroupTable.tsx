@@ -1,8 +1,9 @@
 import React from "react";
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, IconButton, Spacer, Flex, Text } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
+import { Button, Table, Thead, Tbody, Tr, Th, Td, Spacer, Flex, Text } from "@chakra-ui/react";
 import { Button as ChakraButton } from "@chakra-ui/react";
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import PropTypes from "prop-types";
+import { BaseRoutes } from "../constants";
 
 GroupTable.propTypes = {
     myGroups: PropTypes.array,
@@ -16,106 +17,160 @@ GroupTable.propTypes = {
     totalResults: PropTypes.number,
     useIcons: PropTypes.bool,
     groupsPerPage: PropTypes.number,
+    onEditGroup: PropTypes.func,
 };
 
 function GroupTable({
     myGroups,
     startIndex,
     endIndex,
-    setSelectedGroup,
     onOpen,
-    // setDeleteGroupId,
     setCurrentPage,
     currentPage,
-    // totalResults,
-    useIcons,
     groupsPerPage,
+    onEditGroup,
+    setDeleteGroupId,
 }) {
+    const handleEditGroup = (groupId) => {
+        onEditGroup(groupId);
+        onOpen();
+    };
+
+    const onDeleteGroup = (groupId) => {
+        setDeleteGroupId(groupId);
+        // Handle delete functionality
+    };
+
     return (
-        <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
-            <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "fixed" }}>
-                <Thead backgroundColor={"#e2e8f0"}>
-                    <Tr display={"flex"}>
-                        <Th flex="1">Group Name</Th>
-                        <Th flex="1">Applications to Approve</Th>
-                        <Th flex="1">Number of Members</Th>
-                        <Th flex="1">Delete Group</Th>
-                        <Th flex="1">Edit Group</Th>
-                        {useIcons && <Th flex="1"></Th>}
-                    </Tr>
-                </Thead>
-                <Tbody>
-                    {myGroups.slice(startIndex - 1, endIndex).map((group) => (
-                        <Tr key={group.id} display={"flex"}>
-                            <Td flex="1">{group.name}</Td>
-                            <Td flex="1">{0}</Td>
-                            <Td flex="1">{group.members?.length ?? 0}</Td>
-                            {useIcons && (
-                                <>
-                                    <Td flex="1">
-                                        <IconButton
-                                            aria-label="Delete"
-                                            icon={<DeleteIcon />}
-                                            backgroundColor={"#932439"}
-                                            color={"white"}
-                                            onClick={() => {
-                                                setSelectedGroup(group);
-                                                onOpen();
-                                            }}
-                                        />
-                                    </Td>
-                                    <Td flex="1">
-                                        <IconButton
-                                            ml={2}
-                                            aria-label="Edit"
-                                            icon={<EditIcon />}
-                                            backgroundColor={"#0072a8"}
-                                            color={"white"}
-                                            onClick={() => {
-                                                // edit code
-                                            }}
-                                        />
-                                    </Td>
-                                </>
+        <Table variant="simple" size="md" borderRadius="xl" boxShadow="xl" border="2px">
+            <Thead backgroundColor={"#e2e8f0"}>
+                <Tr>
+                    <Th whiteSpace="nowrap" textAlign={"center"}>
+                        Group Name
+                    </Th>
+                    <Th whiteSpace="nowrap" textAlign={"center"}>
+                        Applications to Approve
+                    </Th>
+                    <Th whiteSpace="nowrap" textAlign={"center"}>
+                        Number of Members
+                    </Th>
+                    <Th whiteSpace="nowrap" textAlign={"center"}>
+                        Manage Members
+                    </Th>
+                    <Th whiteSpace="nowrap" textAlign={"center"}>
+                        Manage Masters
+                    </Th>
+                    <Th whiteSpace="nowrap" textAlign={"center"}>
+                        Delete Group
+                    </Th>
+                    <Th whiteSpace="nowrap" textAlign={"center"}>
+                        Edit Group
+                    </Th>
+                </Tr>
+            </Thead>
+            <Tbody>
+                {myGroups.slice(startIndex - 1, endIndex).map((group) => (
+                    <Tr key={group.id}>
+                        <Td whiteSpace="nowrap" padding="17px" textAlign="center">
+                            {group.name}
+                        </Td>
+                        <Td whiteSpace="nowrap" padding="16px" textAlign="center">
+                            {0}
+                        </Td>
+                        <Td whiteSpace="nowrap" padding="16px" textAlign="center">
+                            {group.members?.length ?? 0}
+                        </Td>
+                        <Td whiteSpace="nowrap" padding="16px">
+                            <Link to={BaseRoutes.AddUserToGroup} state={{ gid: group.id, name: group.name }}>
+                                <Button colorScheme="primary" variant="outline" width="25%" height="40px" mr={1}>
+                                    Add
+                                </Button>
+                            </Link>
+                            {(group.members?.length || 0) !== 0 && (
+                                <Link to={BaseRoutes.RemoveUserFromGroup} state={{ gid: group.id, name: group.name }}>
+                                    <Button colorScheme="primary" variant="outline" width="43%" height="40px">
+                                        Remove
+                                    </Button>
+                                </Link>
                             )}
-                        </Tr>
-                    ))}
-                </Tbody>
-                <Tbody>
-                    <Tr>
-                        <Td height={20}>
-                            <Flex>
-                                <Text alignSelf="center">
-                                    Showing {startIndex} to {endIndex} of {myGroups.length} results
-                                </Text>
-                                <Spacer />
-                                <ChakraButton
-                                    mr={4}
-                                    p={4}
+                        </Td>
+                        <Td whiteSpace="nowrap" padding="16px">
+                            <Link to={BaseRoutes.AddGroupMaster} state={{ gid: group.id, name: group.name }}>
+                                <Button colorScheme="primary" variant="outline" width="25%" height="40px" mr={1}>
+                                    Add
+                                </Button>
+                            </Link>
+                            {(group.members?.length || 0) !== 0 && (
+                                <Link to={BaseRoutes.RemoveGroupMaster} state={{ gid: group.id, name: group.name }}>
+                                    <Button colorScheme="primary" variant="outline" width="43%" height="40px">
+                                        Remove
+                                    </Button>
+                                </Link>
+                            )}
+                        </Td>
+                        <Td whiteSpace="nowrap" padding="16px">
+                            <Link to={BaseRoutes.ManageableGroup}>
+                                <Button
+                                    colorScheme="primary"
                                     variant="outline"
-                                    onClick={() => setCurrentPage(currentPage - 1)}
-                                    isDisabled={startIndex === 1}
+                                    width="50%"
+                                    height="40px"
+                                    onClick={() => onDeleteGroup(group.id)}
                                 >
-                                    Prev
-                                </ChakraButton>
-                                <ChakraButton
-                                    p={4}
+                                    Delete
+                                </Button>
+                            </Link>
+                        </Td>
+                        <Td whiteSpace="nowrap" padding="16px">
+                            <Link to={BaseRoutes.ManageableGroup}>
+                                <Button
+                                    colorScheme="primary"
                                     variant="outline"
-                                    onClick={() =>
-                                        setCurrentPage((prevPage) =>
-                                            prevPage * groupsPerPage >= myGroups.length ? prevPage : prevPage + 1
-                                        )
-                                    }
-                                    isDisabled={endIndex >= myGroups.length}
+                                    width="50%"
+                                    height="40px"
+                                    onClick={() => handleEditGroup(group.id)}
                                 >
-                                    Next
-                                </ChakraButton>
-                            </Flex>
+                                    Edit
+                                </Button>
+                            </Link>
                         </Td>
                     </Tr>
-                </Tbody>
-            </Table>
-        </TableContainer>
+                ))}
+            </Tbody>
+            <Tbody>
+                <Tr>
+                    <Td height={20}>
+                        <Flex>
+                            <Text alignSelf="center">
+                                Showing {startIndex} to {endIndex} of {myGroups.length} results
+                            </Text>
+                            <Spacer />
+                            <ChakraButton
+                                mr={4}
+                                p={4}
+                                variant="outline"
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                                isDisabled={startIndex === 1}
+                            >
+                                Prev
+                            </ChakraButton>
+                            <ChakraButton
+                                p={4}
+                                variant="outline"
+                                onClick={() =>
+                                    setCurrentPage((prevPage) =>
+                                        prevPage * groupsPerPage >= myGroups.length ? prevPage : prevPage + 1
+                                    )
+                                }
+                                isDisabled={endIndex >= myGroups.length}
+                            >
+                                Next
+                            </ChakraButton>
+                        </Flex>
+                    </Td>
+                </Tr>
+            </Tbody>
+        </Table>
     );
 }
 
