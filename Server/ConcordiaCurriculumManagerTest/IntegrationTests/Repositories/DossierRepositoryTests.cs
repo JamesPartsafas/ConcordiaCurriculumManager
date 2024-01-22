@@ -355,4 +355,16 @@ public class DossierRepositoryTests
         var dossierId = dossier.Id;
         await dossierRepository.GetDossierInitiator(dossierId);
     }
+
+    [TestMethod]
+    public async Task GetAllNonApprovedDossiers_ReturnsTrue()
+    {
+        var dossier = TestData.GetSampleDossier();
+
+        dbContext.Dossiers.Add(dossier);
+        await dbContext.SaveChangesAsync();
+
+        var result = await dossierRepository.GetAllNonApprovedDossiers();
+        Assert.IsNotNull(result);
+    }
 }
