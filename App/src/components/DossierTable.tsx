@@ -16,6 +16,7 @@ import { Button as ChakraButton } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon, InfoIcon, ViewIcon, ArrowDownIcon } from "@chakra-ui/icons";
 import { dossierStateToString } from "../models/dossier";
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 DossierTable.propTypes = {
     myDossiers: PropTypes.array,
@@ -35,9 +36,7 @@ DossierTable.propTypes = {
     reviewIcons: PropTypes.bool,
 };
 function DossierTable({
-    myDossiers,
-    startIndex,
-    endIndex,
+    myDossiers: dossiers,
     onOpen,
     setDossierModalTitle,
     setSelectedDossier,
@@ -45,12 +44,15 @@ function DossierTable({
     handleNavigateToDossierDetails,
     handleNavigateToDossierReview,
     handleNavigateToDossierReport,
-    setCurrentPage,
-    currentPage,
-    totalResults,
     useIcons,
     reviewIcons,
 }) {
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const totalResults = dossiers.length;
+    const resultsPerPage = 5;
+    const startIndex = dossiers.length === 0 ? 0 : (currentPage - 1) * resultsPerPage + 1;
+    const endIndex = Math.min(currentPage * resultsPerPage, totalResults);
+
     return (
         <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
             <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "auto" }}>
@@ -69,7 +71,7 @@ function DossierTable({
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {myDossiers.slice(startIndex - 1, endIndex).map((dossier) => (
+                    {dossiers.slice(startIndex - 1, endIndex).map((dossier) => (
                         <Tr key={dossier.id} display={"flex"}>
                             <Td minW={"200px"} maxW={"200px"}>
                                 {dossier.title}
@@ -150,7 +152,7 @@ function DossierTable({
                         <Td height={20}>
                             <Flex>
                                 <Text alignSelf="center">
-                                    Showing {startIndex} to {endIndex} of {myDossiers.length} results
+                                    Showing {startIndex} to {endIndex} of {dossiers.length} results
                                 </Text>
                                 <Spacer />
                                 <ChakraButton
@@ -158,7 +160,7 @@ function DossierTable({
                                     p={4}
                                     variant="outline"
                                     onClick={() => setCurrentPage(currentPage - 1)}
-                                    isDisabled={startIndex == 1}
+                                    isDisabled={startIndex == 0 || startIndex == 1}
                                 >
                                     Previous
                                 </ChakraButton>
