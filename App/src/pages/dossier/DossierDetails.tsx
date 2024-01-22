@@ -288,16 +288,6 @@ export default function DossierDetails() {
                 <Button
                     style="primary"
                     variant="outline"
-                    height="40px"
-                    width="fit-content"
-                    ml="2"
-                    onClick={() => navigate(BaseRoutes.Home)}
-                >
-                    Return to Home
-                </Button>
-                <Button
-                    style="primary"
-                    variant="outline"
                     width="fit-content"
                     height="40px"
                     ml="2"
