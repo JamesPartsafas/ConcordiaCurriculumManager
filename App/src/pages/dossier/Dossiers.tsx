@@ -34,21 +34,21 @@ export default function Dossiers() {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const navigate = useNavigate();
 
-    const [myDossiers, setMyDossiers] = useState<DossierDTO[]>([]);
-    const [reviewedDossiers, setReviewedDossiers] = useState<DossierDTO[]>([]);
-    const [approvedDossiers, setApprovedDossiers] = useState<DossierDTO[]>([]);
-    const [rejectedDossiers, setRejectedDossiers] = useState<DossierDTO[]>([]);
+    const [myCreatedDossiers, setMyCreatedDossiers] = useState<DossierDTO[]>([]);
+    const [myUnderReviewDossiers, setMyUnderReviewDossiers] = useState<DossierDTO[]>([]);
+    const [myApprovedDossiers, setMyApprovedDossiers] = useState<DossierDTO[]>([]);
+    const [myRejectedDossiers, setMyRejectedDossiers] = useState<DossierDTO[]>([]);
     const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
     const [dossierModalAction, setDossierModalTitle] = useState<"add" | "edit">();
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const resultsPerPage = 5;
-    const totalResults = myDossiers.length;
-
-    const startIndex = myDossiers.length === 0 ? 0 : (currentPage - 1) * resultsPerPage + 1;
-    const endIndex = Math.min(currentPage * resultsPerPage, totalResults);
+    // pagination for Created
+    // const [currentPage, setCurrentPage] = useState<number>(1);
+    // const resultsPerPage = 5;
+    // const totalResults = myCreatedDossiers.length;
+    // const startIndex = myCreatedDossiers.length === 0 ? 0 : (currentPage - 1) * resultsPerPage + 1;
+    // const endIndex = Math.min(currentPage * resultsPerPage, totalResults);
 
     const cancelRef = React.useRef();
 
@@ -61,10 +61,10 @@ export default function Dossiers() {
         getMyDossiers()
             .then(
                 (res: GetMyDossiersResponse) => {
-                    setMyDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.Created));
-                    setReviewedDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.InReview));
-                    setApprovedDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.Approved));
-                    setRejectedDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.Rejected));
+                    setMyCreatedDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.Created));
+                    setMyUnderReviewDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.InReview));
+                    setMyApprovedDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.Approved));
+                    setMyRejectedDossiers(res.data.filter((dossier) => dossier.state === DossierStateEnum.Rejected));
                 },
                 (rej) => {
                     console.log(rej);
@@ -81,7 +81,7 @@ export default function Dossiers() {
         console.log(dossier);
         deleteDossierById(dossier.id).then(
             () => {
-                myDossiers.splice(myDossiers.indexOf(dossier), 1);
+                myCreatedDossiers.splice(myCreatedDossiers.indexOf(dossier), 1);
                 showToast(toast, "Success!", "Dossier deleted.", "success");
                 setLoading(false);
                 onClose();
@@ -153,9 +153,17 @@ export default function Dossiers() {
         navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
     }
 
+    function handleNavigateToDossierReport(dossierId: string) {
+        navigate(BaseRoutes.DossierReport.replace(":dossierId", dossierId));
+    }
+
+    function handleNavigateToDossierReview(dossierId: string) {
+        navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId));
+    }
+
     return (
         <div>
-            <Container maxW={"5xl"} mt={5}>
+            <Container maxW={"5xl"} mt={5} pl={0}>
                 <Button
                     style="primary"
                     variant="outline"
@@ -188,18 +196,15 @@ export default function Dossiers() {
                 <Flex flexDirection="column">
                     <div style={{ margin: "5px" }}>
                         <DossierTable
-                            myDossiers={myDossiers}
-                            startIndex={startIndex}
-                            endIndex={endIndex}
-                            setSelectedDossier={setSelectedDossier}
+                            myDossiers={myCreatedDossiers}
                             onOpen={onOpen}
                             setDossierModalTitle={setDossierModalTitle}
+                            setSelectedDossier={setSelectedDossier}
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
-                            setCurrentPage={setCurrentPage}
-                            currentPage={currentPage}
-                            totalResults={totalResults}
+                            handleNavigateToDossierReport={handleNavigateToDossierReport}
                             useIcons={true}
+                            reviewIcons={false}
                         />
                     </div>
                     <Tooltip
@@ -232,18 +237,16 @@ export default function Dossiers() {
                     </Text>
                     <div style={{ margin: "5px" }}>
                         <DossierTable
-                            myDossiers={reviewedDossiers}
-                            startIndex={startIndex}
-                            endIndex={endIndex}
-                            setSelectedDossier={setSelectedDossier}
+                            myDossiers={myUnderReviewDossiers}
                             onOpen={onOpen}
                             setDossierModalTitle={setDossierModalTitle}
+                            setSelectedDossier={setSelectedDossier}
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
-                            setCurrentPage={setCurrentPage}
-                            currentPage={currentPage}
-                            totalResults={totalResults}
+                            handleNavigateToDossierReport={handleNavigateToDossierReport}
+                            handleNavigateToDossierReview={handleNavigateToDossierReview}
                             useIcons={false}
+                            reviewIcons={true}
                         />
                     </div>
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -251,18 +254,16 @@ export default function Dossiers() {
                     </Text>
 
                     <DossierTable
-                        myDossiers={approvedDossiers}
-                        startIndex={startIndex}
-                        endIndex={endIndex}
-                        setSelectedDossier={setSelectedDossier}
+                        myDossiers={myApprovedDossiers}
                         onOpen={onOpen}
                         setDossierModalTitle={setDossierModalTitle}
+                        setSelectedDossier={setSelectedDossier}
                         displayDossierModal={displayDossierModal}
                         handleNavigateToDossierDetails={handleNavigateToDossierDetails}
-                        setCurrentPage={setCurrentPage}
-                        currentPage={currentPage}
-                        totalResults={totalResults}
+                        handleNavigateToDossierReport={handleNavigateToDossierReport}
+                        handleNavigateToDossierReview={handleNavigateToDossierReview}
                         useIcons={false}
+                        reviewIcons={true}
                     />
 
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
@@ -270,18 +271,16 @@ export default function Dossiers() {
                     </Text>
                     <div style={{ margin: "5px" }}>
                         <DossierTable
-                            myDossiers={rejectedDossiers}
-                            startIndex={startIndex}
-                            endIndex={endIndex}
-                            setSelectedDossier={setSelectedDossier}
+                            myDossiers={myRejectedDossiers}
                             onOpen={onOpen}
                             setDossierModalTitle={setDossierModalTitle}
+                            setSelectedDossier={setSelectedDossier}
                             displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
-                            setCurrentPage={setCurrentPage}
-                            currentPage={currentPage}
-                            totalResults={totalResults}
+                            handleNavigateToDossierReport={handleNavigateToDossierReport}
+                            handleNavigateToDossierReview={handleNavigateToDossierReview}
                             useIcons={false}
+                            reviewIcons={true}
                         />
                     </div>
                 </Flex>
@@ -293,7 +292,7 @@ export default function Dossiers() {
                 <DossierModal
                     action={dossierModalAction}
                     dossier={selectedDossier}
-                    dossierList={myDossiers}
+                    dossierList={myCreatedDossiers}
                     open={showDossierModal}
                     closeModal={closeDossierModal}
                 />

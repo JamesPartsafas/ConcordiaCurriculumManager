@@ -13,38 +13,46 @@ import {
     Flex,
 } from "@chakra-ui/react";
 import { Button as ChakraButton } from "@chakra-ui/react";
-import { DeleteIcon, EditIcon, InfoIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon, InfoIcon, ViewIcon, ArrowDownIcon } from "@chakra-ui/icons";
 import { dossierStateToString } from "../models/dossier";
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 DossierTable.propTypes = {
     myDossiers: PropTypes.array,
     startIndex: PropTypes.number,
     endIndex: PropTypes.number,
-    setSelectedDossier: PropTypes.func,
     onOpen: PropTypes.func,
     setDossierModalTitle: PropTypes.func,
+    setSelectedDossier: PropTypes.func,
     displayDossierModal: PropTypes.func,
     handleNavigateToDossierDetails: PropTypes.func,
+    handleNavigateToDossierReview: PropTypes.func,
+    handleNavigateToDossierReport: PropTypes.func,
     setCurrentPage: PropTypes.func,
     currentPage: PropTypes.number,
     totalResults: PropTypes.number,
     useIcons: PropTypes.bool,
+    reviewIcons: PropTypes.bool,
 };
 function DossierTable({
-    myDossiers,
-    startIndex,
-    endIndex,
-    setSelectedDossier,
+    myDossiers: dossiers,
     onOpen,
     setDossierModalTitle,
+    setSelectedDossier,
     displayDossierModal,
     handleNavigateToDossierDetails,
-    setCurrentPage,
-    currentPage,
-    totalResults,
+    handleNavigateToDossierReview,
+    handleNavigateToDossierReport,
     useIcons,
+    reviewIcons,
 }) {
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const totalResults = dossiers.length;
+    const resultsPerPage = 5;
+    const startIndex = dossiers.length === 0 ? 0 : (currentPage - 1) * resultsPerPage + 1;
+    const endIndex = Math.min(currentPage * resultsPerPage, totalResults);
+
     return (
         <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
             <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "auto" }}>
@@ -53,7 +61,7 @@ function DossierTable({
                         <Th minW={"200px"} maxW={"200px"}>
                             Title
                         </Th>
-                        <Th minW={"500px"} maxW={"500px"}>
+                        <Th minW={"450px"} maxW={"450px"}>
                             Description
                         </Th>
                         <Th minW={"120px"} maxW={"120px"}>
@@ -63,12 +71,12 @@ function DossierTable({
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {myDossiers.slice(startIndex - 1, endIndex).map((dossier) => (
+                    {dossiers.slice(startIndex - 1, endIndex).map((dossier) => (
                         <Tr key={dossier.id} display={"flex"}>
                             <Td minW={"200px"} maxW={"200px"}>
                                 {dossier.title}
                             </Td>
-                            <Td minW={"500px"} maxW={"500px"}>
+                            <Td minW={"450px"} maxW={"450px"}>
                                 <Text overflow="hidden" textOverflow="ellipsis" maxW={"500px"}>
                                     {dossier.description}
                                 </Text>
@@ -77,8 +85,8 @@ function DossierTable({
                                 {dossierStateToString(dossier)}
                             </Td>
 
-                            {useIcons && (
-                                <Td width={"25%"}>
+                            <Td width={"25%"}>
+                                {useIcons && (
                                     <IconButton
                                         aria-label="Delete"
                                         icon={<DeleteIcon />}
@@ -89,6 +97,8 @@ function DossierTable({
                                             onOpen();
                                         }}
                                     />
+                                )}
+                                {useIcons && (
                                     <IconButton
                                         ml={2}
                                         aria-label="Edit"
@@ -101,17 +111,39 @@ function DossierTable({
                                             displayDossierModal();
                                         }}
                                     />
+                                )}
+                                {(useIcons || reviewIcons) && (
                                     <IconButton
                                         ml={2}
-                                        aria-label="Edit"
+                                        aria-label="Details"
                                         icon={<InfoIcon />}
                                         onClick={() => {
                                             setSelectedDossier(dossier);
                                             handleNavigateToDossierDetails(dossier.id);
                                         }}
                                     />
-                                </Td>
-                            )}
+                                )}
+                                {reviewIcons && (
+                                    <IconButton
+                                        ml={2}
+                                        aria-label="Review"
+                                        icon={<ArrowDownIcon />}
+                                        onClick={() => {
+                                            setSelectedDossier(dossier);
+                                            handleNavigateToDossierReview(dossier.id);
+                                        }}
+                                    />
+                                )}
+                                <IconButton
+                                    ml={2}
+                                    aria-label="Report"
+                                    icon={<ViewIcon />}
+                                    onClick={() => {
+                                        setSelectedDossier(dossier);
+                                        handleNavigateToDossierReport(dossier.id);
+                                    }}
+                                />
+                            </Td>
                         </Tr>
                     ))}
                 </Tbody>
@@ -120,7 +152,7 @@ function DossierTable({
                         <Td height={20}>
                             <Flex>
                                 <Text alignSelf="center">
-                                    Showing {startIndex} to {endIndex} of {myDossiers.length} results
+                                    Showing {startIndex} to {endIndex} of {dossiers.length} results
                                 </Text>
                                 <Spacer />
                                 <ChakraButton
@@ -128,7 +160,7 @@ function DossierTable({
                                     p={4}
                                     variant="outline"
                                     onClick={() => setCurrentPage(currentPage - 1)}
-                                    isDisabled={startIndex == 1}
+                                    isDisabled={startIndex == 0 || startIndex == 1}
                                 >
                                     Previous
                                 </ChakraButton>

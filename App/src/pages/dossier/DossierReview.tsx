@@ -1,5 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { ApprovalStage, DossierDetailsDTO, DossierDetailsResponse, dossierStateToString } from "../../models/dossier";
+import {
+    ApprovalStage,
+    DossierDetailsDTO,
+    DossierDetailsResponse,
+    dossierStateToString,
+    DossierDiscussionMessage,
+} from "../../models/dossier";
 import { getDossierDetails } from "../../services/dossier";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
@@ -51,6 +57,7 @@ export default function DossierReview() {
     const [messageError, setMessageError] = useState(true);
     const [currentGroup, setCurrentGroup] = useState<ApprovalStage | null>(null);
     const [isGroupMaster, setIsGroupMaster] = useState(false);
+    const [isPartOfCurrentStageGroup, setIsPartOfCurrentStageGroup] = useState(false);
     const user = useContext(UserContext);
 
     const navigate = useNavigate();
@@ -65,6 +72,7 @@ export default function DossierReview() {
         const currentStageGroup = dossierDetailsData.data.approvalStages.filter((stage) => stage.isCurrentStage)[0];
         setCurrentGroup(currentStageGroup);
         setIsGroupMaster(user.masteredGroups?.includes(currentStageGroup?.groupId));
+        setIsPartOfCurrentStageGroup(user.groups?.includes(currentStageGroup?.groupId));
     }
 
     function messageAlertDialog() {
@@ -318,6 +326,163 @@ export default function DossierReview() {
         }
     };
 
+    const handleReplyRequest = (replyMessage, messageId) => {
+        const dossierForReviewDTO = {
+            message: replyMessage,
+            groupId: currentGroup?.groupId,
+            parentDiscussionMessageId: messageId,
+        };
+
+        reviewDossier(dossierId, dossierForReviewDTO)
+            .then(() => {
+                showToast(toast, "Success!", "Reply successfully sent.", "success");
+                requestDossierDetails(dossierId);
+            })
+            .catch((e) => {
+                if (e.response.status == 403) {
+                    showToast(
+                        toast,
+                        "Error!",
+                        "You need to be part of the current stage group to reply to the message.",
+                        "error"
+                    );
+                } else {
+                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                }
+            });
+    };
+
+    const Message = ({
+        message,
+        messages,
+        group,
+        depth,
+    }: {
+        message: DossierDiscussionMessage;
+        messages: DossierDiscussionMessage[];
+        group: ApprovalStage;
+        depth: number;
+    }) => {
+        const marginLeft = `${depth * 20}px`;
+        const colorDepth = `gray.${depth * 100 + 200}`;
+
+        const [showReplyInput, setShowReplyInput] = useState(false);
+        const [replyText, setReplyText] = useState("");
+        const [replyError, setReplyError] = useState(true);
+        const [replySubmitted, setReplySubmitted] = useState(false);
+
+        const handleToggleReply = () => {
+            setShowReplyInput(!showReplyInput);
+            if (!showReplyInput) {
+                setReplyText("");
+            }
+        };
+
+        const handleChangeReply = (e) => {
+            if (e.currentTarget.value.length === 0 || e.currentTarget.value.trim() === "") setReplyError(true);
+            else setReplyError(false);
+            setReplyText(e.currentTarget.value);
+        };
+
+        const handleSubmitReply = () => {
+            setReplySubmitted(true);
+            if (replyError) {
+                showToast(toast, "Error!", "Your reply cannot be an empty message.", "error");
+            } else {
+                handleReplyRequest(replyText, message.id);
+                setReplyText("");
+                setShowReplyInput(false);
+                setReplyError(false);
+            }
+        };
+
+        return (
+            <div style={{ marginLeft: marginLeft }}>
+                <CardBody key={group.groupId}>
+                    <Box bg={colorDepth} p={2}>
+                        <Text>
+                            <b>{group.group.name}</b>{" "}
+                        </Text>
+                        <Text>
+                            {message.createdDate.toString().substring(0, 10)}{" "}
+                            {new Date(message.createdDate).getHours().toString()}:
+                            {new Date(message.createdDate).getMinutes().toString()}:
+                            {new Date(message.createdDate).getSeconds().toString()}
+                        </Text>
+                        <Text>{message.message}</Text>
+                        {!user.groups?.includes(group.groupId) ||
+                        !user.groups?.includes(currentGroup.groupId) ? null : (
+                            <Button onClick={handleToggleReply} marginTop={2}>
+                                <ArrowLeftIcon marginRight={5} />
+                                {showReplyInput ? "Cancel Reply" : "Reply"}
+                            </Button>
+                        )}
+
+                        {showReplyInput && (
+                            <Box marginTop={4}>
+                                <FormControl isInvalid={replyError && replySubmitted}>
+                                    <Textarea
+                                        onChange={handleChangeReply}
+                                        placeholder={"Reply to message..."}
+                                        value={replyText}
+                                        minH={"50px"}
+                                        background={"white"}
+                                        marginBottom={2}
+                                    ></Textarea>
+                                    <FormErrorMessage fontSize={16} marginBottom={2}>
+                                        Reply cannot be empty.
+                                    </FormErrorMessage>
+                                </FormControl>
+
+                                <Button style="primary" width="auto" variant="solid" onClick={handleSubmitReply}>
+                                    Submit reply
+                                </Button>
+                            </Box>
+                        )}
+                    </Box>
+                </CardBody>
+                {messages
+                    .filter((m) => m.parentDiscussionMessageId === message.id)
+                    .map((childMessage) => (
+                        <Message
+                            key={childMessage.id}
+                            message={childMessage}
+                            messages={messages}
+                            group={group}
+                            depth={depth + 1}
+                        />
+                    ))}
+            </div>
+        );
+    };
+
+    const AllGroupsMessageList = () => {
+        const allMessages = dossierDetails?.discussion.messages;
+        const rootMessages = dossierDetails?.discussion.messages.filter((m) => !m.parentDiscussionMessageId);
+
+        return (
+            <div>
+                {rootMessages
+                    .sort((a, b) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime())
+                    .map((message) => (
+                        <Card key={message.id}>
+                            {dossierDetails?.approvalStages
+                                .filter((stage) => message.groupId == stage.groupId)
+                                .map((filteredGroup) => (
+                                    <Message
+                                        key={message.id}
+                                        message={message}
+                                        messages={allMessages}
+                                        group={filteredGroup}
+                                        depth={0}
+                                    />
+                                ))}
+                        </Card>
+                    ))}
+            </div>
+        );
+    };
+
     return (
         <>
             <Box>
@@ -348,9 +513,23 @@ export default function DossierReview() {
                                 <Heading color={"black"}>{dossierDetails?.title}</Heading>
                                 <Kbd>{dossierDetails?.id}</Kbd>
                                 <Text>{dossierDetails?.description}</Text>
-                                <Text>state: {dossierStateToString(dossierDetails)}</Text>
-                                <Text>created: {dossierDetails?.createdDate?.toString()}</Text>
-                                <Text>updated: {dossierDetails?.modifiedDate?.toString()}</Text>
+                                <Text>
+                                    <b>State:</b> {dossierStateToString(dossierDetails)}
+                                </Text>
+                                <Text>
+                                    <b>Created: </b>
+                                    {dossierDetails?.createdDate.toString().substring(0, 10)}{" "}
+                                    {new Date(dossierDetails?.createdDate).getHours().toString()}:
+                                    {new Date(dossierDetails?.createdDate).getMinutes().toString()}:
+                                    {new Date(dossierDetails?.createdDate).getSeconds().toString()}
+                                </Text>
+                                <Text>
+                                    <b>Updated: </b>
+                                    {dossierDetails?.modifiedDate.toString().substring(0, 10)}{" "}
+                                    {new Date(dossierDetails?.modifiedDate).getHours().toString()}:
+                                    {new Date(dossierDetails?.modifiedDate).getMinutes().toString()}:
+                                    {new Date(dossierDetails?.modifiedDate).getSeconds().toString()}
+                                </Text>
                                 {dossierDetails?.state == 3 ? (
                                     <Text fontWeight={"bold"} fontSize={20} color={"green"}>
                                         This dossier has been approved.
@@ -360,7 +539,9 @@ export default function DossierReview() {
                                         This dossier has been rejected.
                                     </Text>
                                 ) : (
-                                    <Text>current group: {currentGroup?.group.name}</Text>
+                                    <Text>
+                                        <b>Current Group:</b> {currentGroup?.group.name}
+                                    </Text>
                                 )}
                             </Stack>
                             {isGroupMaster && dossierDetails.state == 1 ? (
@@ -451,24 +632,72 @@ export default function DossierReview() {
                             </Stack>
                         </Stack>
                         <Stack w="75%" p={8}>
-                            {dossierDetails?.state == 2 || dossierDetails?.state == 3 ? (
+                            <Stack>
+                                <Center>
+                                    <Heading as="h2" size="xl" color="brandRed">
+                                        Discussion Board
+                                    </Heading>
+                                </Center>
+                                <Stack>
+                                    <Tabs defaultIndex={currentGroup?.stageIndex}>
+                                        <TabList>
+                                            <Tab>All Groups</Tab>
+                                            {dossierDetails?.approvalStages
+                                                ?.sort((a, b) => a.stageIndex - b.stageIndex)
+                                                .map((stage) => <Tab key={stage.groupId}>{stage.group.name}</Tab>)}
+                                        </TabList>
+
+                                        {dossierDetails?.discussion.messages.length > 0 ? (
+                                            <TabPanels>
+                                                <TabPanel>
+                                                    <AllGroupsMessageList />
+                                                </TabPanel>
+                                                {dossierDetails?.approvalStages
+                                                    ?.sort((a, b) => a.stageIndex - b.stageIndex)
+                                                    .map((stage) => (
+                                                        <TabPanel key={stage.groupId}>
+                                                            <Card>
+                                                                {dossierDetails?.discussion.messages
+                                                                    .filter(
+                                                                        (message) =>
+                                                                            stage.groupId == message.groupId &&
+                                                                            !message.parentDiscussionMessageId
+                                                                    )
+                                                                    .sort(
+                                                                        (a, b) =>
+                                                                            new Date(a.createdDate).getTime() -
+                                                                            new Date(b.createdDate).getTime()
+                                                                    )
+                                                                    .map((filteredMessage) => (
+                                                                        <Message
+                                                                            key={filteredMessage.id}
+                                                                            message={filteredMessage}
+                                                                            group={stage}
+                                                                            messages={
+                                                                                dossierDetails?.discussion.messages
+                                                                            }
+                                                                            depth={0}
+                                                                        />
+                                                                    ))}
+                                                            </Card>
+                                                        </TabPanel>
+                                                    ))}
+                                            </TabPanels>
+                                        ) : (
+                                            <Text marginTop={4}>There are no current messages.</Text>
+                                        )}
+                                    </Tabs>
+                                </Stack>
+                            </Stack>
+                            {!isPartOfCurrentStageGroup || dossierDetails?.state == 2 || dossierDetails?.state == 3 ? (
                                 ""
                             ) : (
-                                <Stack>
+                                <Stack marginTop={10}>
                                     <Center>
                                         <Heading as="h2" size="xl" color="brandRed">
                                             <Text align="center">Add Message</Text>
                                         </Heading>
                                     </Center>
-                                    {/* <Stack mb={2}>
-                                    <Text as="span">
-                                        ***You are a member of the{" "}
-                                        <Text as="span" fontWeight={"bold"} fontSize={20}>
-                                            Gina Cody School Faculty Council
-                                        </Text>
-                                        ***
-                                    </Text>
-                                </Stack> */}
                                     <Stack>
                                         <FormControl isInvalid={messageError && formSubmitted}>
                                             <Textarea
@@ -495,110 +724,6 @@ export default function DossierReview() {
                                     </Stack>
                                 </Stack>
                             )}
-                            <Stack marginTop={16}>
-                                <Center>
-                                    <Heading as="h2" size="xl" color="brandRed">
-                                        Discussion Board
-                                    </Heading>
-                                </Center>
-                                <Stack>
-                                    <Tabs defaultIndex={currentGroup?.stageIndex}>
-                                        <TabList>
-                                            <Tab>All Groups</Tab>
-                                            {dossierDetails?.approvalStages
-                                                ?.sort((a, b) => a.stageIndex - b.stageIndex)
-                                                .map((stage) => <Tab key={stage.groupId}>{stage.group.name}</Tab>)}
-                                        </TabList>
-
-                                        <TabPanels>
-                                            <TabPanel>
-                                                {dossierDetails?.discussion.messages
-                                                    ?.slice(0)
-                                                    .reverse()
-                                                    .map((message) => (
-                                                        <Card key={message.id}>
-                                                            {dossierDetails?.approvalStages
-                                                                .filter((stage) => message.groupId == stage.groupId)
-                                                                .map((filteredGroup) => (
-                                                                    <CardBody key={filteredGroup.groupId}>
-                                                                        <Box bg={"gray.200"} p={2}>
-                                                                            <Text>
-                                                                                <b>{filteredGroup.group.name}</b>{" "}
-                                                                            </Text>
-                                                                            <Text>
-                                                                                {message.createdDate
-                                                                                    .toString()
-                                                                                    .substring(0, 10)}{" "}
-                                                                                {new Date(message.createdDate)
-                                                                                    .getHours()
-                                                                                    .toString()}
-                                                                                :
-                                                                                {new Date(message.createdDate)
-                                                                                    .getMinutes()
-                                                                                    .toString()}
-                                                                                :
-                                                                                {new Date(message.createdDate)
-                                                                                    .getSeconds()
-                                                                                    .toString()}
-                                                                            </Text>
-                                                                            <Text>{message.message}</Text>
-                                                                            <Button marginTop={5}>
-                                                                                <ArrowLeftIcon marginRight={5} />
-                                                                                Reply
-                                                                            </Button>
-                                                                        </Box>
-                                                                    </CardBody>
-                                                                ))}
-                                                        </Card>
-                                                    ))}
-                                            </TabPanel>
-                                            {dossierDetails?.approvalStages?.map((stage) => (
-                                                <TabPanel key={stage.groupId}>
-                                                    <Card>
-                                                        {dossierDetails?.discussion.messages
-                                                            .filter((message) => stage.groupId == message.groupId)
-                                                            .sort(
-                                                                (a, b) =>
-                                                                    new Date(b.createdDate).getTime() -
-                                                                    new Date(a.createdDate).getTime()
-                                                            )
-                                                            .map((filteredMessage) => (
-                                                                <CardBody key={filteredMessage.id}>
-                                                                    <Box bg={"gray.200"} p={2}>
-                                                                        <Text>
-                                                                            <b>{stage.group.name}</b>{" "}
-                                                                        </Text>
-                                                                        <Text>
-                                                                            {filteredMessage.createdDate
-                                                                                .toString()
-                                                                                .substring(0, 10)}{" "}
-                                                                            {new Date(filteredMessage.createdDate)
-                                                                                .getHours()
-                                                                                .toString()}
-                                                                            :
-                                                                            {new Date(filteredMessage.createdDate)
-                                                                                .getMinutes()
-                                                                                .toString()}
-                                                                            :
-                                                                            {new Date(filteredMessage.createdDate)
-                                                                                .getSeconds()
-                                                                                .toString()}
-                                                                        </Text>
-                                                                        <Text>{filteredMessage.message}</Text>
-                                                                        <Button marginTop={5}>
-                                                                            <ArrowLeftIcon marginRight={5} />
-                                                                            Reply
-                                                                        </Button>
-                                                                    </Box>
-                                                                </CardBody>
-                                                            ))}
-                                                    </Card>
-                                                </TabPanel>
-                                            ))}
-                                        </TabPanels>
-                                    </Tabs>
-                                </Stack>
-                            </Stack>
                         </Stack>
                     </Flex>
                 </form>

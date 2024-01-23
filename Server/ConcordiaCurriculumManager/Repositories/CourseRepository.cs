@@ -18,6 +18,7 @@ public interface ICourseRepository
     public Task<Course?> GetCourseWithSupportingFilesBySubjectAndCatalog(string subject, string catalog);
     public Task<int?> GetCurrentCourseVersion(string subject, string catalog);
     public Task<Course?> GetPublishedVersion(string subject, string catalog);
+    public Task<Course?> GetCourseInProposalBySubjectAndCatalog(string subject, string catalog);
 }
 
 public class CourseRepository : ICourseRepository
@@ -40,7 +41,14 @@ public class CourseRepository : ICourseRepository
             && (course.CourseState == CourseStateEnum.Accepted || course.CourseState == CourseStateEnum.Deleted
             && course.Version != null))
         .OrderByDescending(course => course.Version)
-        .Select(ObjectSelectors.CourseSelector())
+        .Include(course => course.CourseCourseComponents)
+        .Include(course => course.CourseCreationRequest)
+        .Include(course => course.CourseModificationRequest)
+        .Include(course => course.CourseDeletionRequest)
+        .Include(course => course.CourseReferencing)
+        .ThenInclude(cr => cr.CourseReferenced)
+        .Include(course => course.CourseReferenced)
+        .ThenInclude(cr => cr.CourseReferencing)
         .FirstOrDefaultAsync();
 
     public async Task<bool> SaveCourse(Course course)
@@ -78,7 +86,14 @@ public class CourseRepository : ICourseRepository
     public async Task<Course?> GetCourseByCourseId(int courseId) => await _dbContext.Courses
         .Where(course => course.CourseID == courseId && course.CourseState == CourseStateEnum.Accepted)
         .OrderByDescending(course => course.Version)
-        .Select(ObjectSelectors.CourseSelector())
+        .Include(course => course.CourseCourseComponents)
+        .Include(course => course.CourseCreationRequest)
+        .Include(course => course.CourseModificationRequest)
+        .Include(course => course.CourseDeletionRequest)
+        .Include(course => course.CourseReferencing)
+        .ThenInclude(cr => cr.CourseReferenced)
+        .Include(course => course.CourseReferenced)
+        .ThenInclude(cr => cr.CourseReferencing)
         .FirstOrDefaultAsync();
 
     public Task<Course?> GetCourseWithSupportingFilesBySubjectAndCatalog(string subject, string catalog) => _dbContext.Courses
@@ -108,4 +123,11 @@ public class CourseRepository : ICourseRepository
             && course.Published)
         .Include(course => course.CourseCourseComponents)
         .FirstOrDefaultAsync();
+
+    public async Task<Course?> GetCourseInProposalBySubjectAndCatalog(string subject, string catalog) => await _dbContext.Courses
+    .Where(course =>
+            course.Subject == subject
+            && course.Catalog == catalog
+            && course.CourseState == CourseStateEnum.NewCourseProposal)
+    .FirstOrDefaultAsync();
 }

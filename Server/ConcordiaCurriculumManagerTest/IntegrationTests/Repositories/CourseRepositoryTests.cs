@@ -300,4 +300,39 @@ public class CourseRepositoryTests
         Assert.IsNotNull(result.CourseCourseComponents);
         Assert.IsNotNull(result.SupportingFiles);
     }
+
+    [TestMethod]
+    public async Task GetCourseInProposalBySubjectAndCatalog_ValidSubjectAndCatalog_ReturnsCourse()
+    {
+        var id = Guid.NewGuid();
+        var course = new Course
+        {
+            Id = Guid.NewGuid(),
+            CourseID = 1000,
+            Subject = "SOEN",
+            Catalog = "490",
+            Title = "Capstone",
+            Description = "Curriculum manager building simulator",
+            CreditValue = "6",
+            PreReqs = "SOEN 390",
+            CourseNotes = "Lots of fun",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "",
+            CourseState = CourseStateEnum.NewCourseProposal,
+            Version = 1,
+            Published = true,
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                id
+            )
+        };
+
+        dbContext.Courses.Add(course);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseRepository.GetCourseInProposalBySubjectAndCatalog("SOEN", "490");
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(result.CourseID, course.CourseID);
+    }
 }

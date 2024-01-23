@@ -1,4 +1,4 @@
-import CreateGroup from "../src/pages/CreateGroup";
+import CreateGroup from "../src/pages/groups/CreateGroup";
 import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 

@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import AddingUserToGroup from "../src/pages/addUserToGroup";
+import AddingUserToGroup from "../src/pages/groups/addUserToGroup";
 
 describe("Add User to Group Test Case", () => {
     it("validate function should render all elements ", () => {

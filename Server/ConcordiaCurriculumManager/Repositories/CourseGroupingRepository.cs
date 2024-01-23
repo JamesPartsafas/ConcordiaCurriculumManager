@@ -9,6 +9,9 @@ public interface ICourseGroupingRepository
 {
     public Task<CourseGrouping?> GetCourseGroupingById(Guid groupingId);
     public Task<CourseGrouping?> GetCourseGroupingByCommonIdentifier(Guid commonId);
+    public Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchool(SchoolEnum school);
+    public Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name);
+    public Task<CourseGrouping?> GetCourseGroupingContainingCourse(Course course);
 }
 
 public class CourseGroupingRepository : ICourseGroupingRepository
@@ -33,5 +36,24 @@ public class CourseGroupingRepository : ICourseGroupingRepository
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
         .OrderByDescending(cg => cg.Version)
+        .FirstOrDefaultAsync();
+
+    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchool(SchoolEnum school) => await _dbContext.CourseGroupings
+        .Where(cg => cg.School.Equals(school) && cg.IsTopLevel)
+        .Include(cg => cg.SubGroupingReferences)
+        .Include(cg => cg.CourseIdentifiers)
+        .ToListAsync();
+
+    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name) => await _dbContext.CourseGroupings
+        .OrderBy(cg => cg.Id)
+        .Where(cg => cg.Name.ToLower().Contains(name.ToLower()))
+        .Take(10)
+        .Include(cg => cg.SubGroupingReferences)
+        .Include(cg => cg.CourseIdentifiers)
+        .ToListAsync();
+
+    public async Task<CourseGrouping?> GetCourseGroupingContainingCourse(Course course) => await _dbContext.CourseGroupings
+        .Include(cg => cg.CourseIdentifiers)
+        .Where(cg => cg.CourseIdentifiers.Any(ci => ci.ConcordiaCourseId.Equals(course.CourseID)))
         .FirstOrDefaultAsync();
 }

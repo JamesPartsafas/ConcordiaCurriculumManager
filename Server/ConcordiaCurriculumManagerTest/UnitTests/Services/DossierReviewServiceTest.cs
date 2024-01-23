@@ -1,6 +1,8 @@
 ﻿using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
@@ -17,11 +19,13 @@ public class DossierReviewServiceTest
 {
     private Mock<ILogger<DossierReviewService>> logger = null!;
     private Mock<IDossierService> dossierService = null!;
+    private Mock<IEmailService> emailService = null!;
     private Mock<IGroupService> groupService = null!;
     private Mock<ICourseService> courseService = null!;
     private Mock<IDossierRepository> dossierRepository = null!;
     private Mock<IUserAuthenticationService> userService = null!;
     private Mock<IDossierReviewRepository> dossierReviewRepository = null!;
+    private Mock<ICourseRepository> courseRepository = null!;
 
     private DossierReviewService dossierReviewService = null!;
 
@@ -35,6 +39,8 @@ public class DossierReviewServiceTest
         dossierRepository = new Mock<IDossierRepository>();
         userService = new Mock<IUserAuthenticationService>();
         dossierReviewRepository = new Mock<IDossierReviewRepository>();
+        emailService = new Mock<IEmailService>();
+        courseRepository = new Mock<ICourseRepository>();
 
         dossierReviewService = new DossierReviewService(
             logger.Object,
@@ -43,7 +49,9 @@ public class DossierReviewServiceTest
             courseService.Object,
             dossierRepository.Object,
             dossierReviewRepository.Object,
-            userService.Object
+            userService.Object,
+            emailService.Object,
+            courseRepository.Object
         );
     }
 
@@ -171,10 +179,15 @@ public class DossierReviewServiceTest
     }
 
     [TestMethod]
-    public async Task ForwardDossier_WithFinalApprovalStage_Accepts()
+    public async Task ForwardDossier_WithFinalApprovalStage_AcceptsAndSendsEmailWhenUpdateSucceeds()
     {
         var dossier = TestData.GetSampleDossierInFinalStage();
+        var initiator = TestData.GetSampleUser();
 
+        initiator.Id = dossier.InitiatorId;
+        dossier.Initiator = initiator;
+
+        dossierRepository.Setup(dr => dr.UpdateDossier(It.IsAny<Dossier>())).ReturnsAsync(true);
         dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequests(dossier.Id)).ReturnsAsync(dossier);
         courseService.Setup(cs => cs.GetCourseVersions(dossier)).ReturnsAsync(TestData.GetSampleCourseVersionCollection());
 
@@ -183,6 +196,28 @@ public class DossierReviewServiceTest
         Assert.AreEqual(DossierStateEnum.Approved, dossier.State);
         courseService.Verify(mock => mock.GetCourseVersions(dossier), Times.Once());
         dossierRepository.Verify(mock => mock.UpdateDossier(dossier), Times.Once());
+        emailService.Verify(mock => mock.SendEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task ForwardDossier_WithFinalApprovalStage_AcceptsAndDoesNotSendsEmailWhenUpdateFails()
+    {
+        var dossier = TestData.GetSampleDossierInFinalStage();
+        var initiator = TestData.GetSampleUser();
+
+        initiator.Id = dossier.InitiatorId;
+        dossier.Initiator = initiator;
+
+        dossierRepository.Setup(dr => dr.UpdateDossier(It.IsAny<Dossier>())).ReturnsAsync(false);
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequests(dossier.Id)).ReturnsAsync(dossier);
+        courseService.Setup(cs => cs.GetCourseVersions(dossier)).ReturnsAsync(TestData.GetSampleCourseVersionCollection());
+
+        await dossierReviewService.ForwardDossier(dossier.Id);
+
+        Assert.AreEqual(DossierStateEnum.Approved, dossier.State);
+        courseService.Verify(mock => mock.GetCourseVersions(dossier), Times.Once());
+        dossierRepository.Verify(mock => mock.UpdateDossier(dossier), Times.Once());
+        emailService.Verify(mock => mock.SendEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
     }
 
     [TestMethod]

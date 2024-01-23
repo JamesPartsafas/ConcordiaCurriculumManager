@@ -114,4 +114,27 @@ public class CourseTest
         Assert.AreEqual(CourseStateEnum.Deleted, course.CourseState);
         Assert.AreEqual(version, course.Version);
     }
+
+    [TestMethod]
+    public void CloneCourse_ReturnsDeepCopyOfACourse()
+    {
+        var originalCourse = TestData.GetSampleCourse();
+        var clonedCourse = Course.CloneCourse(originalCourse);
+
+        Assert.IsNotNull(clonedCourse);
+        Assert.AreNotEqual(clonedCourse.Id, originalCourse.Id);
+        Assert.AreEqual(clonedCourse.CourseID, originalCourse.CourseID);
+        Assert.AreEqual(clonedCourse.Subject, originalCourse.Subject);
+        Assert.AreEqual(clonedCourse.Catalog, originalCourse.Catalog);
+        Assert.AreEqual(clonedCourse.Title, originalCourse.Title);
+        Assert.AreEqual(clonedCourse.Description, originalCourse.Description);
+        Assert.AreEqual(clonedCourse.CreditValue, originalCourse.CreditValue);
+        Assert.AreEqual(clonedCourse.PreReqs, originalCourse.PreReqs);
+        Assert.AreEqual(clonedCourse.Career, originalCourse.Career);
+        Assert.AreEqual(clonedCourse.EquivalentCourses, originalCourse.EquivalentCourses);
+        Assert.AreEqual(clonedCourse.CourseNotes, originalCourse.CourseNotes);
+        Assert.AreEqual(clonedCourse.CourseState, originalCourse.CourseState);
+        Assert.AreEqual(clonedCourse.Version, originalCourse.Version);
+        Assert.AreEqual(clonedCourse.Published, originalCourse.Published);
+    }
 }

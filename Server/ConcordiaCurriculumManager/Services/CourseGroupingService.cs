@@ -9,6 +9,8 @@ public interface ICourseGroupingService
 {
     public Task<CourseGrouping> GetCourseGrouping(Guid groupingId);
     public Task<CourseGrouping> GetCourseGroupingByCommonIdentifier(Guid commonId);
+    public Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchoolNonRecursive(SchoolEnum school);
+    public Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name);
 }
 
 public class CourseGroupingService : ICourseGroupingService
@@ -42,6 +44,19 @@ public class CourseGroupingService : ICourseGroupingService
         await QueryRelatedCourseGroupingData(grouping);
 
         return grouping;
+    }
+
+    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchoolNonRecursive(SchoolEnum school) =>
+        await _courseGroupingRepository.GetCourseGroupingsBySchool(school);
+
+    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new InvalidInputException("The course grouping name cannot be empty.");
+        }
+
+        return await _courseGroupingRepository.GetCourseGroupingsLikeName(name);
     }
 
     private async Task QueryRelatedCourseGroupingData(CourseGrouping grouping)

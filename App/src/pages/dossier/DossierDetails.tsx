@@ -1,5 +1,10 @@
-import { useEffect, useState } from "react";
-import { DossierDetailsDTO, DossierDetailsResponse, dossierStateToString } from "../../models/dossier";
+import { useContext, useEffect, useState } from "react";
+import {
+    DossierDetailsDTO,
+    DossierDetailsResponse,
+    DossierStateEnum,
+    dossierStateToString,
+} from "../../models/dossier";
 import { getDossierDetails } from "../../services/dossier";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -42,6 +47,7 @@ import DeleteAlert from "../../shared/DeleteAlert";
 import EditCourseModal from "./EditCourseModal";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import EditApprovalStagesModal from "./EditApprovalStagesModal";
+import { UserContext } from "../../App";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
@@ -58,6 +64,7 @@ export default function DossierDetails() {
     const [showApprovalStagesModal, setShowApprovalStagesModal] = useState<boolean>(false);
 
     const navigate = useNavigate();
+    const user = useContext(UserContext);
 
     useEffect(() => {
         requestDossierDetails(dossierId);
@@ -68,7 +75,6 @@ export default function DossierDetails() {
     function requestDossierDetails(dossierId: string) {
         getDossierDetails(dossierId).then((res: DossierDetailsResponse) => {
             setDossierDetails(res.data);
-            // console.log(res.data.approvalStages.sort((a, b) => a.stageIndex - b.stageIndex > 0 ? 1 : -1));
         });
     }
 
@@ -267,6 +273,12 @@ export default function DossierDetails() {
         setShowApprovalStagesModal(false);
     }
 
+    function isUserACurrentReviewer() {
+        return dossierDetails?.approvalStages
+            ?.find((stage) => stage.isCurrentStage)
+            ?.group?.members?.find((member) => member.id === user.id);
+    }
+
     return (
         <>
             {deleteRequestAlert()}
@@ -363,6 +375,10 @@ export default function DossierDetails() {
                                         <Button
                                             variant="solid"
                                             style="primary"
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
                                             onClick={() => {
                                                 editCourseCreationRequest(courseCreationRequest);
                                             }}
@@ -372,6 +388,10 @@ export default function DossierDetails() {
                                         <Button
                                             variant="outline"
                                             style="secondary"
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
                                             onClick={() => {
                                                 setSelectedCourseCreationRequest(courseCreationRequest);
                                                 onOpen();
@@ -392,6 +412,7 @@ export default function DossierDetails() {
                         variant="solid"
                         style="secondary"
                         width="100%"
+                        isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
                         onClick={() => {
                             navigate(BaseRoutes.AddCourse.replace(":dossierId", dossierId));
                         }}
@@ -473,6 +494,10 @@ export default function DossierDetails() {
                                         <Button
                                             variant="solid"
                                             style="secondary"
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
                                             onClick={() => {
                                                 editCourseModificationRequest(courseModificationRequest);
                                             }}
@@ -482,6 +507,10 @@ export default function DossierDetails() {
                                         <Button
                                             variant="outline"
                                             style="primary"
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
                                             onClick={() => {
                                                 setSelectedCourseModificationRequest(courseModificationRequest);
                                                 onOpen();
@@ -502,6 +531,7 @@ export default function DossierDetails() {
                         variant="solid"
                         style="primary"
                         width="100%"
+                        isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
                         onClick={() => {
                             onEditOpen();
                         }}
@@ -583,6 +613,10 @@ export default function DossierDetails() {
                                         <Button
                                             variant="solid"
                                             style="primary"
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
                                             onClick={() => {
                                                 navigate(BaseRoutes.DeleteCourseEdit.replace(":dossierId", dossierId), {
                                                     state: { key: courseDeletionRequest },
@@ -594,6 +628,10 @@ export default function DossierDetails() {
                                         <Button
                                             variant="outline"
                                             style="primary"
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
                                             onClick={() => {
                                                 setSelectedCourseDeletionRequest(courseDeletionRequest);
                                                 onOpen();
@@ -614,6 +652,7 @@ export default function DossierDetails() {
                         variant="solid"
                         style="secondary"
                         width="100%"
+                        isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
                         onClick={() => {
                             navigate(BaseRoutes.DeleteCourse.replace(":dossierId", dossierId));
                         }}
@@ -653,7 +692,7 @@ export default function DossierDetails() {
                         onClick={() => {
                             dispaylayApprovalStagesModal();
                         }}
-                        isDisabled={dossierDetails?.approvalStages.length !== 0}
+                        isDisabled={dossierDetails?.state !== DossierStateEnum.Created}
                     >
                         Edit
                     </Button>

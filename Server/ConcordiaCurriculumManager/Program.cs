@@ -11,6 +11,8 @@ using Microsoft.OpenApi.Models;
 using Npgsql;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
+using System.Net;
+using System.Net.Mail;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -84,6 +86,15 @@ public class Program
             .ReadFrom.Configuration(context.Configuration)
             .Enrich.FromLogContext();
         });
+
+        var senderEmailSettings = builder.Configuration.GetSection(SenderEmailSettings.SectionName).Get<SenderEmailSettings>();
+        if (senderEmailSettings is null || string.IsNullOrWhiteSpace(senderEmailSettings.SenderSMTPHost) || string.IsNullOrWhiteSpace(senderEmailSettings.SenderEmail) || string.IsNullOrWhiteSpace(senderEmailSettings.SenderPassword) || senderEmailSettings.SenderSMTPPort <= 0)
+        {
+            throw new ArgumentException("Invalid Sender Email Settings: SenderSMTPHost, SenderEmail, and SenderPassword are mandatory");
+        }
+
+        builder.Services.AddOptions<SenderEmailSettings>()
+                       .Bind(builder.Configuration.GetSection(SenderEmailSettings.SectionName));
 
         AddServices(builder.Services);
 
@@ -177,6 +188,7 @@ public class Program
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IInputHasherService, InputHasherService>();
         services.AddSingleton<ICacheService<string>, CacheService<string>>();
+        services.AddSingleton<IEmailService, EmailService>();
 
         services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
         services.AddScoped<ICourseService, CourseService>();
@@ -192,5 +204,6 @@ public class Program
         services.AddScoped<ICourseGroupingRepository, CourseGroupingRepository>();
         services.AddScoped<IDossierRepository, DossierRepository>();
         services.AddScoped<IDossierReviewRepository, DossierReviewRepository>();
+        services.AddScoped<ICourseIdentifiersRepository, CourseIdentifiersRepository>();
     }
 }

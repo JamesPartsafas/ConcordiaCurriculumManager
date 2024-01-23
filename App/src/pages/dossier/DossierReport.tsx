@@ -1,80 +1,41 @@
-import { useEffect, useState } from "react";
-import { getDossierReport } from "../../services/dossier";
-import { DossierReportDTO } from "../../models/dossier";
-import {
-    Heading,
-    Center,
-    Text,
-    Card,
-    CardHeader,
-    CardBody,
-    SimpleGrid,
-    CardFooter,
-    Button,
-    Box,
-} from "@chakra-ui/react";
+import { Container, Text } from "@chakra-ui/react";
+import Button from "../../components/Button";
+import { BaseRoutes } from "../../constants";
+import { useNavigate, useParams } from "react-router-dom";
+import { UserContext } from "../../App";
+import { useContext, useEffect, useState } from "react";
+import { DossierDetailsDTO, DossierDetailsResponse } from "../../models/dossier";
+import { getDossierDetails } from "../../services/dossier";
 
 export default function DossierReport() {
-    const [dossierReport, setDossierReport] = useState<DossierReportDTO | null>(null);
-    const items = [
-        { title: "Course Creation Requests:", key: "courseCreationRequests" },
-        { title: "Course Deletion Requests:", key: "courseDeletionRequests" },
-        { title: "Course Modification Requests:", key: "courseModificationRequests" },
-    ];
-
+    const navigate = useNavigate();
+    const user = useContext(UserContext);
+    const { dossierId } = useParams();
+    const [dossierDetails, setDossierDetails] = useState<DossierDetailsDTO | null>(null);
     useEffect(() => {
-        getDossierReport("37581d9d-713f-475c-9668-23971b0e64d0")
-            .then((res) => {
-                setDossierReport(res.data);
-                console.log(res.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
+        requestDossierDetails(dossierId);
+    }, [dossierId]);
+
+    async function requestDossierDetails(dossierId: string) {
+        const dossierDetailsData: DossierDetailsResponse = await getDossierDetails(dossierId);
+        setDossierDetails(dossierDetailsData.data);
+    }
     return (
-        <>
-            {dossierReport ? (
-                <>
-                    <Center mt={4}>
-                        <Heading>{dossierReport.title}</Heading>
-                    </Center>
-                    <Center>
-                        <Text color={"gray.600"} p={2}>
-                            {dossierReport.description}
-                        </Text>
-                    </Center>
-                    {items.map((el, index) => {
-                        return (
-                            <Box key={index}>
-                                <Heading p={4}>{el.title}</Heading>
-                                <SimpleGrid spacing={4} templateColumns="repeat(auto-fill, minmax(200px, 1fr))">
-                                    {dossierReport[el.key].map((el, index) => {
-                                        return (
-                                            <Card key={index}>
-                                                <CardHeader>
-                                                    <Heading size="md">
-                                                        {el.newCourse ? el.newCourse.subject : el.course.subject}{" "}
-                                                        {el.newCourse ? el.newCourse.catalog : el.course.catalog}
-                                                    </Heading>
-                                                </CardHeader>
-                                                <CardBody py={2}>
-                                                    <Text>
-                                                        <b>Comment:</b> {el.comment ? el.comment : "No comment"}
-                                                    </Text>
-                                                </CardBody>
-                                                <CardFooter>
-                                                    <Button>View</Button>
-                                                </CardFooter>
-                                            </Card>
-                                        );
-                                    })}
-                                </SimpleGrid>
-                            </Box>
-                        );
-                    })}
-                </>
-            ) : null}
-        </>
+        <div>
+            <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
+                {user?.firstName + "'s"} Dossier Report of {dossierDetails?.title}
+            </Text>
+            <Container maxW={"5xl"} mt={5}>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    onClick={() => navigate(BaseRoutes.Home)}
+                >
+                    Return to Home
+                </Button>
+            </Container>
+        </div>
     );
 }
