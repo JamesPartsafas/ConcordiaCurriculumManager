@@ -10,6 +10,7 @@ import {
     Text,
     Textarea,
     UnorderedList,
+    flexbox,
 } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
@@ -99,20 +100,25 @@ export default function DossierReport() {
                     {dossierReport?.description}
                 </Box>
 
-                <Box fontSize="xl" marginBottom="2">
-                    <b>Approval Stages:</b>{" "}
+                <Box mb={8}>
+                    <Box display={"flex"} gap={1}>
+                        <Text fontSize="xl" mb={2}>
+                            <b>Approval Stages: </b>
+                        </Text>
+                        <Text alignSelf={"center"}>
+                            {dossierReport?.state === DossierStateEnum.Created && "(Not Sumbitted)"}
+                        </Text>
+                    </Box>
                     <OrderedList>
                         {dossierReport?.approvalStages
                             .sort((a, b) => (a.stageIndex - b.stageIndex > 0 ? 1 : -1))
                             .map((stage, index) => (
-                                <ListItem ml={12} mb={4}>
+                                <ListItem ml={12} mb={2}>
                                     <Box key={index} fontSize="md">
                                         <Text>
                                             {" "}
                                             <b>{stage.group.name}</b> {stage.isCurrentStage ? "(Current Stage)" : ""}
                                         </Text>
-
-                                        {stage.isFinalStage ? "Final Stage" : ""}
                                     </Box>
                                 </ListItem>
                             ))}
