@@ -1,9 +1,11 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Security;
+using System.Runtime.ConstrainedExecution;
 
 namespace ConcordiaCurriculumManager.Services;
 
@@ -29,6 +31,7 @@ public class DossierReviewService : IDossierReviewService
     private readonly IDossierReviewRepository _dossierReviewRepository;
     private readonly IUserAuthenticationService _userAuthenticationService;
     private readonly IEmailService _emailService;
+    private readonly ICourseRepository _courseRepository;
 
     public DossierReviewService(
         ILogger<DossierReviewService> logger,
@@ -38,7 +41,8 @@ public class DossierReviewService : IDossierReviewService
         IDossierRepository dossierRepository,
         IDossierReviewRepository dossierReviewRepository,
         IUserAuthenticationService userAuthenticationService,
-        IEmailService emailService)
+        IEmailService emailService,
+        ICourseRepository courseRepository)
     {
         _logger = logger;
         _dossierService = dossierService;
@@ -48,6 +52,7 @@ public class DossierReviewService : IDossierReviewService
         _dossierReviewRepository = dossierReviewRepository;
         _userAuthenticationService = userAuthenticationService;
         _emailService = emailService;
+        _courseRepository = courseRepository;
     }
 
     public async Task SubmitDossierForReview(DossierSubmissionDTO dto)
@@ -138,6 +143,17 @@ public class DossierReviewService : IDossierReviewService
         {
             _logger.LogError($"Encountered error attempting to accept dossier {dossier.Id} and remove it from the review process");
         }
+
+        var dossiers = await _dossierRepository.GetAllNonApprovedDossiers();
+
+        foreach (var request in dossier.CourseCreationRequests) {
+            await ChangeAllCourseRequests(dossiers, request.NewCourse!.Subject, request.NewCourse.Catalog, "creation");
+        }
+
+        foreach (var request in dossier.CourseDeletionRequests)
+        {
+            await ChangeAllCourseRequests(dossiers, request.Course!.Subject, request.Course.Catalog, "deletion");
+        }
     }
 
     public async Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message)
@@ -170,4 +186,73 @@ public class DossierReviewService : IDossierReviewService
     public async Task<Dossier> GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(Guid dossierId) =>
         await _dossierRepository.GetDossierByDossierId(dossierId)
         ?? throw new NotFoundException("The dossier does not exist.");
+
+    private async Task ChangeAllCourseRequests(IList<Dossier> dossiers, string subject, string catalog, string type) 
+    {
+        foreach (var d in dossiers)
+        {
+            if (type == "creation") 
+            {
+                foreach (var ccr in d.CourseCreationRequests)
+                {
+                    var course = ccr.NewCourse;
+                    if (course!.Subject == subject && course.Catalog == catalog)
+                    {
+                        var clonedCourse = Course.CloneCourse(course);
+                        var courseModificationRequest = new CourseModificationRequest
+                        {
+                            Id = Guid.NewGuid(),
+                            CourseId = clonedCourse.Id,
+                            Course = clonedCourse,
+                            DossierId = d.Id,
+                            Rationale = ccr.Rationale,
+                            ResourceImplication = ccr.ResourceImplication,
+                            Comment = ccr.Comment,
+                            Conflict = ccr.Conflict
+                        };
+                        d.CourseCreationRequests = d.CourseCreationRequests.Where(request => request.NewCourse!.CourseID != course.CourseID).ToList();
+                        await _dossierRepository.DeleteCourseCreationRequest(ccr);
+                        await _courseRepository.SaveCourse(clonedCourse);
+                        await _dossierRepository.SaveCourseModificationRequest(courseModificationRequest);
+                    }
+
+                }
+            }
+            if (type == "deletion")
+            {
+                foreach (var cmr in d.CourseModificationRequests)
+                {
+                    var course = cmr.Course;
+                    if (course!.Subject == subject && course.Catalog == catalog)
+                    {
+                        var clonedCourse = Course.CloneCourse(course);
+                        var courseCreationRequest = new CourseCreationRequest
+                        {
+                            Id = Guid.NewGuid(),
+                            NewCourseId = clonedCourse.Id,
+                            NewCourse = clonedCourse,
+                            DossierId = d.Id,
+                            Rationale = cmr.Rationale,
+                            ResourceImplication = cmr.ResourceImplication,
+                            Comment = cmr.Comment,
+                            Conflict = cmr.Conflict,
+                        };
+                        d.CourseModificationRequests = d.CourseModificationRequests.Where(request => request.Course!.CourseID != course.CourseID).ToList();
+                        await _dossierRepository.DeleteCourseModificationRequest(cmr);
+                        await _courseRepository.SaveCourse(clonedCourse);
+                        await _dossierRepository.SaveCourseCreationRequest(courseCreationRequest);
+                    }
+                }
+                foreach (var cdr in d.CourseDeletionRequests)
+                {
+                    var course = cdr.Course;
+                    if (course!.Subject == subject && course.Catalog == catalog)
+                    {
+                        d.CourseDeletionRequests = d.CourseDeletionRequests.Where(request => request.Course!.CourseID != course.CourseID).ToList();
+                        await _dossierRepository.DeleteCourseDeletionRequest(cdr);
+                    }
+                }
+            }
+        }
+    }
 }

@@ -25,6 +25,7 @@ public class DossierReviewServiceTest
     private Mock<IDossierRepository> dossierRepository = null!;
     private Mock<IUserAuthenticationService> userService = null!;
     private Mock<IDossierReviewRepository> dossierReviewRepository = null!;
+    private Mock<ICourseRepository> courseRepository = null!;
 
     private DossierReviewService dossierReviewService = null!;
 
@@ -39,6 +40,7 @@ public class DossierReviewServiceTest
         userService = new Mock<IUserAuthenticationService>();
         dossierReviewRepository = new Mock<IDossierReviewRepository>();
         emailService = new Mock<IEmailService>();
+        courseRepository = new Mock<ICourseRepository>();
 
         dossierReviewService = new DossierReviewService(
             logger.Object,
@@ -48,7 +50,8 @@ public class DossierReviewServiceTest
             dossierRepository.Object,
             dossierReviewRepository.Object,
             userService.Object,
-            emailService.Object
+            emailService.Object,
+            courseRepository.Object
         );
     }
 
