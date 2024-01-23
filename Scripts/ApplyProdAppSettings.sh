@@ -48,6 +48,7 @@ function main {
     local ratelimit_reset=$(echo "$response_info" | awk '{print $2}')
     local response_body=$(echo "$response_info" | awk '{sub(/([^ ]* ){2}/, ""); print}' | censor_output)
 
+    echo $(echo "$response_info" | awk '{sub(/([^ ]* ){2}/, ""); print}')
     if [[ $response_code -eq 429 ]]; then
         RETRY_COUNT=$((RETRY_COUNT + 1))
         local current_timestamp=$(date +%s)
