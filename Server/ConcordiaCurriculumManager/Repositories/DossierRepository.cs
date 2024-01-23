@@ -230,7 +230,7 @@ public class DossierRepository : IDossierRepository
             .Include(d => d.ApprovalStages)
             .ThenInclude(a => a.Group)
             .Where(d => d.ApprovalStages.Where(a => a.IsCurrentStage).First().Group!.Members.Any(m => m.Id.Equals(userId)))
-            .ToListAsync();
+        .ToListAsync();
     }
 
     public async Task<bool> CheckIfCourseRequestExists(Guid dossierId, string subject, string catalog)

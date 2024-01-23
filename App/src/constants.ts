@@ -17,7 +17,7 @@ export enum BaseRoutes {
     RemoveUserFromGroup = "/removeuserfromgroup",
     DossierDetails = "/dossierdetails/:dossierId",
     DossierReview = "/dossierreview/:dossierId",
-    DossierReport = "/dossierreport/:dossierID",
+    DossierReport = "/dossierreport/:dossierId",
     AddGroupMaster = "/addgroupmaster",
     RemoveGroupMaster = "/removegroupmaster",
     DossiersToReview = "/dossierstoreview",

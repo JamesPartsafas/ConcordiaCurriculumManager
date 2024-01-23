@@ -42,6 +42,7 @@ import React from "react";
 import { forwardDossier, rejectDossier, returnDossier, reviewDossier } from "../../services/dossierreview";
 import { showToast } from "../../utils/toastUtils";
 import { UserContext } from "../../App";
+import { UserRoles } from "../../models/user";
 
 export default function DossierReview() {
     const { dossierId } = useParams();
@@ -490,12 +491,45 @@ export default function DossierReview() {
                     <Button
                         style="primary"
                         variant="outline"
+                        width="fit-content"
                         height="40px"
-                        width="100px"
-                        margin="20px"
-                        onClick={() => navigate(BaseRoutes.Dossiers)} // TODO: change the link to navigate to the Dossiers Review Page
+                        ml="2"
+                        isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                        onClick={() => {
+                            navigate(BaseRoutes.DossiersToReview);
+                        }}
                     >
-                        Back
+                        Dossiers To Review
+                    </Button>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        height="40px"
+                        width="fit-content"
+                        ml="2"
+                        onClick={() => navigate(BaseRoutes.Dossiers)}
+                    >
+                        My Dossiers
+                    </Button>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        height="40px"
+                        width="fit-content"
+                        ml="2"
+                        onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
+                    >
+                        Dossier Details
+                    </Button>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        height="40px"
+                        width="fit-content"
+                        ml="2"
+                        onClick={() => navigate(BaseRoutes.DossierReport.replace(":dossierId", dossierId))}
+                    >
+                        Dossier Report
                     </Button>
                     <Flex>
                         <Stack w="25%" p={8}>
