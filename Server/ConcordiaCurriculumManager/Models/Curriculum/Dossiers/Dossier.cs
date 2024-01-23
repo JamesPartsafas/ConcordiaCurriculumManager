@@ -34,6 +34,10 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
             if (State != DossierStateEnum.InReview)
                 throw new BadRequestException("A dossier that is not currently in review cannot be rejected");
 
+            var currentStage = ApprovalStages.Where(stage => stage.IsCurrentStage).First();
+
+            currentStage.IsCurrentStage = false;
+
             State = DossierStateEnum.Rejected;
         }
 
