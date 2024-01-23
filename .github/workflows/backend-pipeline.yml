@@ -31,7 +31,7 @@ jobs:
   deploy-backend:
     needs:
     - backend-tests
-    if: github.ref == 'refs/heads/main' && needs.backend-tests.result == 'success'
+    # if: github.ref == 'refs/heads/main' && needs.backend-tests.result == 'success'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -56,8 +56,8 @@ jobs:
         chmod +x ./Scripts/ApplyProdAppSettings.sh
         ./Scripts/ApplyProdAppSettings.sh "$service_id" "$api_key" "$hs256_key" "$db_string" "$sender_email" "$sender_pass"
 
-    - name: Deploy
-      env:
-        deploy_url: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK_URL }}
-      run: |
-          curl "$deploy_url"
+    # - name: Deploy
+    #   env:
+    #     deploy_url: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK_URL }}
+    #   run: |
+    #       curl "$deploy_url"
