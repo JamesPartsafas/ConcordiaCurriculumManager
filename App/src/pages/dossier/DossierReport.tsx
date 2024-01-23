@@ -1,16 +1,12 @@
 import {
     Badge,
     Box,
-    Center,
     Container,
     Flex,
     ListItem,
     OrderedList,
     Spacer,
     Text,
-    Textarea,
-    UnorderedList,
-    flexbox,
 } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
@@ -18,13 +14,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../App";
 import { useContext, useEffect, useState } from "react";
 import {
-    DossierDetailsDTO,
-    DossierDetailsResponse,
     DossierReportDTO,
     DossierReportResponse,
     DossierStateEnum,
 } from "../../models/dossier";
-import { getDossierDetails, getDossierReport } from "../../services/dossier";
+import { getDossierReport } from "../../services/dossier";
 import { AllCourseSettings, componentMappings } from "../../models/course";
 import { getAllCourseSettings } from "../../services/course";
 
