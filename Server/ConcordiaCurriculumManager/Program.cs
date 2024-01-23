@@ -88,7 +88,6 @@ public class Program
         });
 
         var senderEmailSettings = builder.Configuration.GetSection(SenderEmailSettings.SectionName).Get<SenderEmailSettings>();
-
         if (senderEmailSettings is null || string.IsNullOrWhiteSpace(senderEmailSettings.SenderSMTPHost) || string.IsNullOrWhiteSpace(senderEmailSettings.SenderEmail) || string.IsNullOrWhiteSpace(senderEmailSettings.SenderPassword) || senderEmailSettings.SenderSMTPPort <= 0)
         {
             throw new ArgumentException("Invalid Sender Email Settings: SenderSMTPHost, SenderEmail, and SenderPassword are mandatory");
