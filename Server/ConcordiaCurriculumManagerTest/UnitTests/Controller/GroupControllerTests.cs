@@ -133,5 +133,15 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Controllers
 
             Assert.IsInstanceOfType(result, typeof(NotFoundResult));
         }
+
+        [TestMethod]
+        public async Task CreateGroup_EmptyName_ReturnsBadRequest()
+        {
+            var groupDto = new GroupCreateDTO { Name = string.Empty };
+            _groupController.ModelState.AddModelError("Name", "Name cannot be empty.");
+            var result = await _groupController.CreateGroup(groupDto);
+
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+        }
     }
 }
