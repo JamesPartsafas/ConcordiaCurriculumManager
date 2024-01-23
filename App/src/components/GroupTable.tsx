@@ -1,9 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { isAdmin } from "../services/auth";
 import { Button, Table, Thead, Tbody, Tr, Th, Td, Spacer, Flex, Text } from "@chakra-ui/react";
 import { Button as ChakraButton } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { BaseRoutes } from "../constants";
+import { UserContext } from "../App";
+import { useContext } from "react";
 
 GroupTable.propTypes = {
     myGroups: PropTypes.array,
@@ -38,8 +41,9 @@ function GroupTable({
 
     const onDeleteGroup = (groupId) => {
         setDeleteGroupId(groupId);
-        // Handle delete functionality
     };
+
+    const user = useContext(UserContext);
 
     return (
         <Table variant="simple" size="md" borderRadius="xl" boxShadow="xl" border="2px">
@@ -57,15 +61,21 @@ function GroupTable({
                     <Th whiteSpace="nowrap" textAlign={"center"}>
                         Manage Members
                     </Th>
-                    <Th whiteSpace="nowrap" textAlign={"center"}>
-                        Manage Masters
-                    </Th>
-                    <Th whiteSpace="nowrap" textAlign={"center"}>
-                        Delete Group
-                    </Th>
-                    <Th whiteSpace="nowrap" textAlign={"center"}>
-                        Edit Group
-                    </Th>
+                    {isAdmin(user) && (
+                        <Th whiteSpace="nowrap" textAlign={"center"}>
+                            Manage Masters
+                        </Th>
+                    )}
+                    {isAdmin(user) && (
+                        <Th whiteSpace="nowrap" textAlign={"center"}>
+                            Delete Group
+                        </Th>
+                    )}
+                    {isAdmin(user) && (
+                        <Th whiteSpace="nowrap" textAlign={"center"}>
+                            Edit Group
+                        </Th>
+                    )}
                 </Tr>
             </Thead>
             <Tbody>
@@ -94,46 +104,52 @@ function GroupTable({
                                 </Link>
                             )}
                         </Td>
-                        <Td whiteSpace="nowrap" padding="16px">
-                            <Link to={BaseRoutes.AddGroupMaster} state={{ gid: group.id, name: group.name }}>
-                                <Button colorScheme="primary" variant="outline" width="25%" height="40px" mr={1}>
-                                    Add
-                                </Button>
-                            </Link>
-                            {(group.members?.length || 0) !== 0 && (
-                                <Link to={BaseRoutes.RemoveGroupMaster} state={{ gid: group.id, name: group.name }}>
-                                    <Button colorScheme="primary" variant="outline" width="43%" height="40px">
-                                        Remove
+                        {isAdmin(user) && (
+                            <Td whiteSpace="nowrap" padding="16px">
+                                <Link to={BaseRoutes.AddGroupMaster} state={{ gid: group.id, name: group.name }}>
+                                    <Button colorScheme="primary" variant="outline" width="25%" height="40px" mr={1}>
+                                        Add
                                     </Button>
                                 </Link>
-                            )}
-                        </Td>
-                        <Td whiteSpace="nowrap" padding="16px">
-                            <Link to={BaseRoutes.ManageableGroup}>
-                                <Button
-                                    colorScheme="primary"
-                                    variant="outline"
-                                    width="50%"
-                                    height="40px"
-                                    onClick={() => onDeleteGroup(group.id)}
-                                >
-                                    Delete
-                                </Button>
-                            </Link>
-                        </Td>
-                        <Td whiteSpace="nowrap" padding="16px">
-                            <Link to={BaseRoutes.ManageableGroup}>
-                                <Button
-                                    colorScheme="primary"
-                                    variant="outline"
-                                    width="50%"
-                                    height="40px"
-                                    onClick={() => handleEditGroup(group.id)}
-                                >
-                                    Edit
-                                </Button>
-                            </Link>
-                        </Td>
+                                {(group.members?.length || 0) !== 0 && (
+                                    <Link to={BaseRoutes.RemoveGroupMaster} state={{ gid: group.id, name: group.name }}>
+                                        <Button colorScheme="primary" variant="outline" width="43%" height="40px">
+                                            Remove
+                                        </Button>
+                                    </Link>
+                                )}
+                            </Td>
+                        )}
+                        {isAdmin(user) && (
+                            <Td whiteSpace="nowrap" padding="16px">
+                                <Link to={BaseRoutes.ManageableGroup}>
+                                    <Button
+                                        colorScheme="primary"
+                                        variant="outline"
+                                        width="50%"
+                                        height="40px"
+                                        onClick={() => onDeleteGroup(group.id)}
+                                    >
+                                        Delete
+                                    </Button>
+                                </Link>
+                            </Td>
+                        )}
+                        {isAdmin(user) && (
+                            <Td whiteSpace="nowrap" padding="16px">
+                                <Link to={BaseRoutes.ManageableGroup}>
+                                    <Button
+                                        colorScheme="primary"
+                                        variant="outline"
+                                        width="50%"
+                                        height="40px"
+                                        onClick={() => handleEditGroup(group.id)}
+                                    >
+                                        Edit
+                                    </Button>
+                                </Link>
+                            </Td>
+                        )}
                     </Tr>
                 ))}
             </Tbody>
