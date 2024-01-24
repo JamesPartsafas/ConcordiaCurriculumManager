@@ -4,6 +4,9 @@ import { useLocation } from "react-router-dom";
 import { Course } from "../models/course";
 import { getCourseData } from "../services/course";
 import { showToast } from "../utils/toastUtils";
+import { useNavigate } from "react-router-dom";
+import { BaseRoutes } from "../constants";
+import Button from "../components/Button";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -14,6 +17,7 @@ export default function CourseDetails() {
     const [courseData, setCourseData] = useState<Course>(null);
     const subject: string = query.get("subject");
     const catalogNumber: number = Number(query.get("catalog"));
+    const navigate = useNavigate();
 
     const toast = useToast();
 
@@ -29,7 +33,7 @@ export default function CourseDetails() {
 
     return (
         <div style={{ maxWidth: "50%", marginLeft: "25%", marginRight: "25%", paddingTop: "100px" }}>
-            <Card key={courseData?.courseID} marginBottom={20} padding={15}>
+            <Card key={courseData?.courseID} marginBottom={20} padding={15} style={{ backgroundColor: "#e9e3d3" }}>
                 <Heading as="h1" size="md" marginBottom={8}>
                     {courseData?.subject} {courseData?.catalog} {courseData?.title} ({parseInt(courseData?.creditValue)}
                     credits)
@@ -46,6 +50,16 @@ export default function CourseDetails() {
                     </Text>{" "}
                     {courseData?.description}{" "}
                 </Text>
+                <Button
+                    style="secondary"
+                    variant="solid"
+                    width="240px"
+                    height="40px"
+                    margin="auto"
+                    onClick={() => navigate(BaseRoutes.CourseBrowser)}
+                >
+                    Go back to browser
+                </Button>
             </Card>
         </div>
     );
