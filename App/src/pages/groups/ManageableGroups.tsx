@@ -1,3 +1,5 @@
+// ManageableGroups.tsx
+
 import React, { useState, useEffect, useContext, useRef } from "react";
 import {
     Container,
@@ -10,10 +12,11 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
     Flex,
+    Input,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { isAdmin } from "../../services/auth";
-import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../../services/group";
+import { GetAllGroups, GroupDTO, MultiGroupResponseDTO, DeleteGroup, UpdateGroup } from "../../services/group";
 import { BaseRoutes } from "../../constants";
 import { UserContext } from "../../App";
 import GroupTable from "../../components/GroupTable";
@@ -21,6 +24,8 @@ import GroupTable from "../../components/GroupTable";
 export default function DisplayManageableGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
     const [deleteGroupId, setDeleteGroupId] = useState<string | null>(null);
+    const [editGroupId, setEditGroupId] = useState<string | null>(null);
+    const [newGroupName, setNewGroupName] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(1);
     const groupsPerPage = 5;
     const user = useContext(UserContext);
@@ -47,9 +52,42 @@ export default function DisplayManageableGroups() {
     }, [user]);
 
     const onDeleteGroup = (groupId) => {
-        console.log(`Deleting group with ID: ${groupId}`);
-        // Incomplete yet
+        DeleteGroup(groupId)
+            .then(() => {
+                GetAllGroups().then((res: MultiGroupResponseDTO) => {
+                    const groups: GroupDTO[] = res.data;
+                    setMyGroups(groups);
+                });
+            })
+            .catch((error) => {
+                console.error("Error deleting group:", error);
+            });
+
         setDeleteGroupId(null);
+    };
+
+    const onEditGroup = (groupId) => {
+        setEditGroupId(groupId);
+        const groupToEdit = myGroups.find((group) => group.id === groupId);
+        setNewGroupName(groupToEdit?.name || "");
+    };
+
+    const onSaveEditGroup = async () => {
+        try {
+            if (editGroupId && newGroupName) {
+                await UpdateGroup(editGroupId, { name: newGroupName });
+
+                GetAllGroups().then((res: MultiGroupResponseDTO) => {
+                    const groups: GroupDTO[] = res.data;
+                    setMyGroups(groups);
+                });
+
+                setEditGroupId(null);
+                setNewGroupName("");
+            }
+        } catch (error) {
+            console.error("Error updating group:", error);
+        }
     };
 
     const indexOfLastGroup = currentPage * groupsPerPage;
@@ -79,7 +117,6 @@ export default function DisplayManageableGroups() {
                         Group Information
                     </h1>
 
-                    {/* Replace the table rendering with the new GroupTable component */}
                     <GroupTable
                         myGroups={myGroups}
                         startIndex={indexOfFirstGroup + 1}
@@ -92,6 +129,7 @@ export default function DisplayManageableGroups() {
                         totalResults={myGroups.length}
                         useIcons={isAdmin(user)}
                         groupsPerPage={groupsPerPage}
+                        onEditGroup={onEditGroup}
                     />
 
                     <Flex justify="center" mt={4}>
@@ -134,6 +172,45 @@ export default function DisplayManageableGroups() {
                                         ml={3}
                                     >
                                         Delete
+                                    </Button>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialogOverlay>
+                    </AlertDialog>
+
+                    <AlertDialog
+                        isOpen={editGroupId !== null}
+                        leastDestructiveRef={cancelRef}
+                        onClose={() => {
+                            setEditGroupId(null);
+                            setNewGroupName("");
+                        }}
+                        size="md"
+                    >
+                        <AlertDialogOverlay>
+                            <AlertDialogContent>
+                                <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                                    Edit Group
+                                </AlertDialogHeader>
+                                <AlertDialogBody>
+                                    <Input
+                                        placeholder="New Group Name"
+                                        value={newGroupName}
+                                        onChange={(e) => setNewGroupName(e.target.value)}
+                                    />
+                                </AlertDialogBody>
+                                <AlertDialogFooter>
+                                    <Button ref={cancelRef} onClick={() => setEditGroupId(null)}>
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        colorScheme="blue"
+                                        onClick={() => {
+                                            onSaveEditGroup();
+                                        }}
+                                        ml={3}
+                                    >
+                                        Save
                                     </Button>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
