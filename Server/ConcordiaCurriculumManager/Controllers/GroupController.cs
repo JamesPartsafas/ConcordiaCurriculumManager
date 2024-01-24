@@ -34,6 +34,11 @@ public class GroupController : Controller
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "An error occured while creating the group")]
     public async Task<IActionResult> CreateGroup([FromBody] GroupCreateDTO groupCreateDTO)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var group = new Group { Name = groupCreateDTO.Name };
         var result = await _groupService.CreateGroupAsync(group);
 
@@ -134,6 +139,11 @@ public class GroupController : Controller
     [SwaggerResponse(StatusCodes.Status404NotFound, "Group does not exist")]
     public async Task<IActionResult> UpdateGroup(Guid groupId, [FromBody] GroupCreateDTO groupDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var result = await _groupService.UpdateGroupAsync(groupId, groupDto);
         if (result)
         {
