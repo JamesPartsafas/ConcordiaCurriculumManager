@@ -1,4 +1,4 @@
-import { useToast, Card, Text, Heading } from "@chakra-ui/react";
+import { Card, Text, Heading } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Course } from "../models/course";
@@ -18,14 +18,14 @@ export default function CourseDetails() {
     const catalogNumber: number = Number(query.get("catalog"));
     const navigate = useNavigate();
 
-    const toast = useToast();
+    //const toast = useToast();
 
     useEffect(() => {
         getCourseData(subject, catalogNumber)
             .then((res) => {
                 setCourseData(res.data);
             })
-            .catch((err) => {
+            .catch(() => {
                 navigate(BaseRoutes.NoData);
             });
     }, []);
@@ -34,14 +34,14 @@ export default function CourseDetails() {
         <div style={{ maxWidth: "50%", marginLeft: "25%", marginRight: "25%", paddingTop: "100px" }}>
             <Card key={courseData?.courseID} marginBottom={20} padding={15} style={{ backgroundColor: "#e9e3d3" }}>
                 <Heading as="h1" size="md" marginBottom={8}>
-                    {courseData?.subject} {courseData?.catalog} {courseData?.title} ({parseInt(courseData?.creditValue)}
-                    {" "}credits)
+                    {courseData?.subject} {courseData?.catalog} {courseData?.title} ({parseInt(courseData?.creditValue)}{" "}
+                    credits)
                 </Heading>
                 <Text marginBottom={5}>
                     <Text as="b" marginRight={2}>
                         Prerequisite/Corequisite:
                     </Text>{" "}
-                    Permission of the GCS is required, subject to change.{" "} {courseData?.preReqs}{" "}
+                    Permission of the GCS is required, subject to change.{courseData?.preReqs}{" "}
                 </Text>
                 <Text marginBottom={5}>
                     <Text as="b" marginRight={2}>
@@ -51,26 +51,28 @@ export default function CourseDetails() {
                 </Text>
                 <Text marginBottom={5}>
                     <Text as="b" marginRight={2}>
-                        Course ID: 
+                        Course ID:
                     </Text>{" "}
-                    {courseData?.courseID}{" "} 
+                    {courseData?.courseID}{" "}
                 </Text>
                 <Text marginBottom={5}>
                     <Text as="b" marginRight={2}>
-                        Career: 
+                        Career:
                     </Text>{" "}
-                    {courseData?.career}{" "} 
+                    {courseData?.career}{" "}
                 </Text>
                 <Text marginBottom={5}>
                     <Text as="b" marginRight={2}>
-                        Course Notes : 
-                    </Text>{" N/A"}
-                {courseData?.courseNotes}{" "}
+                        Course Notes :
+                    </Text>
+                    {" N/A"}
+                    {courseData?.courseNotes}{" "}
                 </Text>
                 <Text marginBottom={5}>
                     <Text as="b" marginRight={2}>
-                    Equivalent Courses: 
-                    </Text>{" Optional / May not apply."}
+                        Equivalent Courses:
+                    </Text>
+                    {" Optional / May not apply."}
                     {courseData?.equivalentCourses}{" "}
                 </Text>
                 {/* Unaware if the following is needed or not */}
