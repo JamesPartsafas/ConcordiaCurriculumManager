@@ -19,6 +19,7 @@ public interface ICourseRepository
     public Task<int?> GetCurrentCourseVersion(string subject, string catalog);
     public Task<Course?> GetPublishedVersion(string subject, string catalog);
     public Task<Course?> GetCourseInProposalBySubjectAndCatalog(string subject, string catalog);
+    public Task<Course?> GetCourseByIdAsync(Guid id);
     public Task<List<Course>> GetCoursesBySubjectAsync(string subjectCode);
 }
 
@@ -131,6 +132,14 @@ public class CourseRepository : ICourseRepository
             && course.Catalog == catalog
             && course.CourseState == CourseStateEnum.NewCourseProposal)
     .FirstOrDefaultAsync();
+
+    public async Task<Course?> GetCourseByIdAsync(Guid id)
+    {
+        return await _dbContext.Courses
+        .Include(c => c.CourseCourseComponents)
+        .Include(c => c.SupportingFiles)
+        .FirstOrDefaultAsync(c => c.Id == id);
+    }
 
     public async Task<List<Course>> GetCoursesBySubjectAsync(string subjectCode)
     {

@@ -687,6 +687,32 @@ public class CourseServiceTest
     }
 
     [TestMethod]
+    public async Task GetCourseByIdAsync_ValidId_ReturnsCourse()
+    {
+        var expectedCourse = TestData.GetSampleCourse();
+        var courseId = expectedCourse.Id;
+
+        courseRepository.Setup(repo => repo.GetCourseByIdAsync(courseId)).ReturnsAsync(expectedCourse);
+
+        var result = await courseService.GetCourseByIdAsync(courseId);
+
+        Assert.IsNotNull(result, "The course should not be null.");
+        Assert.AreEqual(expectedCourse, result, "The retrieved course does not match the expected course.");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException), "A NotFoundException should be thrown when the course does not exist.")]
+    public async Task GetCourseByIdAsync_InvalidId_ThrowsNotFoundException()
+    {
+        var nonExistentCourseId = Guid.NewGuid();
+        courseRepository.Setup(repo => repo.GetCourseByIdAsync(nonExistentCourseId)).ReturnsAsync((Course?)null);
+
+        var result = await courseService.GetCourseByIdAsync(nonExistentCourseId);
+
+        Assert.Fail("Expected a NotFoundException to be thrown.");
+    }
+
+    [TestMethod]
     public async Task GetCoursesBySubjectAsync_ReturnsCoursesForSubject()
     {
         var subjectCode = "SOEN";

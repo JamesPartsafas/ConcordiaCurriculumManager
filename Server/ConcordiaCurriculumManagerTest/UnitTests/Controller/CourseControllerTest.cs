@@ -12,6 +12,7 @@ using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Repositories;
+using ConcordiaCurriculumManager.Models.Curriculum;
 using Microsoft.AspNetCore.Http;
 using ConcordiaCurriculumManager.Models.Curriculum;
 
@@ -433,6 +434,42 @@ public class CourseControllerTest
         var objectResult = (ObjectResult)actionResult;
 
         Assert.AreEqual((int)HttpStatusCode.NotFound, objectResult.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task GetCourseById_ValidId_ReturnsCourse()
+    {
+        var expectedCourse = TestData.GetSampleCourse();
+        var courseId = expectedCourse.Id;
+        var expectedCourseDto = new CourseDataDTO
+        {
+            Id = courseId,
+            CourseID = 2000,
+            Subject = "COMP",
+            Catalog = "1234",
+            Title = "Test Course",
+            Description = "Description of Test Course",
+            CreditValue = "6",
+            PreReqs = "SOEN 390",
+            CourseNotes = "Lots of fun",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "",
+            CourseState = CourseStateEnum.NewCourseProposal,
+            Version = 1,
+            ComponentCodes = new Dictionary<ComponentCodeEnum, int?>(),
+            SupportingFiles = new Dictionary<string, string>()
+        };
+
+        _courseService.Setup(service => service.GetCourseByIdAsync(courseId)).ReturnsAsync(expectedCourse);
+        _mapper.Setup(mapper => mapper.Map<CourseDataDTO>(expectedCourse)).Returns(expectedCourseDto);
+
+        var actionResult = await _courseController.GetCourseById(courseId);
+
+        Assert.IsInstanceOfType(actionResult.Result, typeof(OkObjectResult), "The result should be an OkObjectResult.");
+        var okResult = actionResult.Result as OkObjectResult;
+        Assert.IsNotNull(okResult, "The OK result should not be null.");
+        Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode, "The status code should be 200 (OK).");
+        Assert.AreEqual(expectedCourseDto, okResult.Value, "The returned course DTO does not match the expected value.");
     }
 
     [TestMethod]
