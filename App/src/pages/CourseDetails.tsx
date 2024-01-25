@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Course } from "../models/course";
 import { getCourseData } from "../services/course";
-import { showToast } from "../utils/toastUtils";
 import { useNavigate } from "react-router-dom";
 import { BaseRoutes } from "../constants";
 import Button from "../components/Button";
@@ -27,7 +26,7 @@ export default function CourseDetails() {
                 setCourseData(res.data);
             })
             .catch((err) => {
-                showToast(toast, "Error!", err, "error");
+                navigate(BaseRoutes.NoData);
             });
     }, []);
 
@@ -36,13 +35,13 @@ export default function CourseDetails() {
             <Card key={courseData?.courseID} marginBottom={20} padding={15} style={{ backgroundColor: "#e9e3d3" }}>
                 <Heading as="h1" size="md" marginBottom={8}>
                     {courseData?.subject} {courseData?.catalog} {courseData?.title} ({parseInt(courseData?.creditValue)}
-                    credits)
+                    {" "}credits)
                 </Heading>
                 <Text marginBottom={5}>
                     <Text as="b" marginRight={2}>
                         Prerequisite/Corequisite:
                     </Text>{" "}
-                    Permission of the GCS is required.{" "}
+                    Permission of the GCS is required, subject to change.{" "} {courseData?.preReqs}{" "}
                 </Text>
                 <Text marginBottom={5}>
                     <Text as="b" marginRight={2}>
@@ -50,6 +49,43 @@ export default function CourseDetails() {
                     </Text>{" "}
                     {courseData?.description}{" "}
                 </Text>
+                <Text marginBottom={5}>
+                    <Text as="b" marginRight={2}>
+                        Course ID: 
+                    </Text>{" "}
+                    {courseData?.courseID}{" "} 
+                </Text>
+                <Text marginBottom={5}>
+                    <Text as="b" marginRight={2}>
+                        Career: 
+                    </Text>{" "}
+                    {courseData?.career}{" "} 
+                </Text>
+                <Text marginBottom={5}>
+                    <Text as="b" marginRight={2}>
+                        Course Notes : 
+                    </Text>{" N/A"}
+                {courseData?.courseNotes}{" "}
+                </Text>
+                <Text marginBottom={5}>
+                    <Text as="b" marginRight={2}>
+                    Equivalent Courses: 
+                    </Text>{" Optional / May not apply."}
+                    {courseData?.equivalentCourses}{" "}
+                </Text>
+                {/* Unaware if the following is needed or not */}
+                {/* <Text marginBottom={5}>
+                    <Text as="b" marginRight={2}>
+                    Component Codes: 
+                    </Text>{" "}
+                    {courseData?.componentCodes[1]}{" TBD / Subject to change."}
+                </Text>
+                <Text marginBottom={5}>
+                    <Text as="b" marginRight={2}>
+                    Supporting Files:
+                    </Text>{" "}
+                    {courseData?.supportingFiles[1]}{" TBD / Subject to change."} 
+                </Text>               */}
                 <Button
                     style="secondary"
                     variant="solid"
