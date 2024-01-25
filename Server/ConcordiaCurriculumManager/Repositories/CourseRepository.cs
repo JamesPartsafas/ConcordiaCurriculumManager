@@ -134,6 +134,9 @@ public class CourseRepository : ICourseRepository
 
     public async Task<Course?> GetCourseByIdAsync(Guid id)
     {
-        return await _dbContext.Courses.FirstOrDefaultAsync(c => c.Id == id);
+        return await _dbContext.Courses
+        .Include(c => c.CourseCourseComponents)
+        .Include(c => c.SupportingFiles)
+        .FirstOrDefaultAsync(c => c.Id == id);
     }
 }

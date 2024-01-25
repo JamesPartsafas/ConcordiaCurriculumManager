@@ -377,11 +377,6 @@ public class CourseService : ICourseService
             throw new NotFoundException($"Course with ID: {id} was not found.");
         }
 
-        if (course.CourseState == CourseStateEnum.Deleted)
-        {
-            throw new BadRequestException($"The course with ID: {id} is deleted and cannot be accessed.");
-        }
-
         return course;
     }
 }
