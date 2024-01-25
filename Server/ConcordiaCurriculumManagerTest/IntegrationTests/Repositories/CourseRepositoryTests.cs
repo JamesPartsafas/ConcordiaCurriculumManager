@@ -24,7 +24,7 @@ public class CourseRepositoryTests
     [ClassCleanup]
     public static void ClassCleanup() => dbContext.Dispose();
 
-    [TestInitialize] 
+    [TestInitialize]
     public void TestInitialize()
     {
         courseRepository = new CourseRepository(dbContext);
@@ -343,11 +343,11 @@ public class CourseRepositoryTests
         var expectedCourse = new Course
         {
             Id = id,
-            CourseID = 2000,
-            Subject = "COMP",
-            Catalog = "1234",
-            Title = "Test Course",
-            Description = "Description of Test Course",
+            CourseID = 1000,
+            Subject = "SOEN",
+            Catalog = "490",
+            Title = "Capstone",
+            Description = "Curriculum manager building simulator",
             CreditValue = "6",
             PreReqs = "SOEN 390",
             CourseNotes = "Lots of fun",
@@ -357,9 +357,9 @@ public class CourseRepositoryTests
             Version = 1,
             Published = true,
             CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
-                { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
-                id
-            )
+                    { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                    id
+                )
         };
 
         dbContext.Courses.Add(expectedCourse);
@@ -380,5 +380,43 @@ public class CourseRepositoryTests
         var result = await courseRepository.GetCourseByIdAsync(nonExistentId);
 
         Assert.IsNull(result, "A course was returned for a non-existent ID");
+    }
+
+    [TestMethod]
+    public async Task GetCoursesBySubjectAsync_ReturnsCoursesForSubject()
+    {
+        var subjectCode = "SOEN";
+        var id = Guid.NewGuid();
+        var courses = new List<Course>
+        {
+            new Course {
+                Id = id,
+                CourseID = 1000,
+                Subject = "SOEN",
+                Catalog = "490",
+                Title = "Capstone",
+                Description = "Curriculum manager building simulator",
+                CreditValue = "6",
+                PreReqs = "SOEN 390",
+                CourseNotes = "Lots of fun",
+                Career = CourseCareerEnum.UGRD,
+                EquivalentCourses = "",
+                CourseState = CourseStateEnum.NewCourseProposal,
+                Version = 1,
+                Published = true,
+                CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                    { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                    id
+                )
+            }
+        };
+
+        dbContext.Courses.AddRange(courses);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseRepository.GetCoursesBySubjectAsync(subjectCode);
+
+        Assert.AreEqual(11, result.Count());
+        Assert.IsTrue(result.All(c => c.Subject == subjectCode));
     }
 }

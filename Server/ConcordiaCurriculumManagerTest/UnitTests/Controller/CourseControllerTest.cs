@@ -13,6 +13,7 @@ using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Models.Curriculum;
+using Microsoft.AspNetCore.Http;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 
@@ -468,5 +469,65 @@ public class CourseControllerTest
         Assert.IsNotNull(okResult, "The OK result should not be null.");
         Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode, "The status code should be 200 (OK).");
         Assert.AreEqual(expectedCourseDto, okResult.Value, "The returned course DTO does not match the expected value.");
+    }
+
+    [TestMethod]
+    public async Task GetCoursesBySubject_ReturnsOkWithCourses()
+    {
+        var subjectCode = "SOEN";
+        var id = Guid.NewGuid();
+        var courses = new List<Course>
+        {
+            new Course {
+                Id = Guid.NewGuid(),
+                CourseID = 1000,
+                Subject = "SOEN",
+                Catalog = "490",
+                Title = "Capstone",
+                Description = "Curriculum manager building simulator",
+                CreditValue = "6",
+                PreReqs = "SOEN 390",
+                CourseNotes = "Lots of fun",
+                Career = CourseCareerEnum.UGRD,
+                EquivalentCourses = "",
+                CourseState = CourseStateEnum.NewCourseProposal,
+                Version = 1,
+                Published = true,
+                CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                    { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                    id
+                )
+            },
+            new Course {
+                Id = Guid.NewGuid(),
+                CourseID = 2000,
+                Subject = "SOEN",
+                Catalog = "390",
+                Title = "Mini-Capstone",
+                Description = "Mini-Capstone",
+                CreditValue = "6",
+                PreReqs = "SOEN 390",
+                CourseNotes = "Lots of fun",
+                Career = CourseCareerEnum.UGRD,
+                EquivalentCourses = "",
+                CourseState = CourseStateEnum.NewCourseProposal,
+                Version = 1,
+                Published = true,
+                CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                    { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                    id
+                )
+            }
+        };
+
+        _courseService.Setup(service => service.GetCoursesBySubjectAsync(subjectCode))
+            .ReturnsAsync(courses);
+
+        var actionResult = await _courseController.GetCoursesBySubject(subjectCode);
+
+        var okResult = actionResult.Result as OkObjectResult;
+        Assert.IsNotNull(okResult);
+        Assert.IsInstanceOfType(okResult.Value, typeof(IEnumerable<CourseDataDTO>));
+        var resultValue = okResult.Value as IEnumerable<CourseDataDTO>;
     }
 }

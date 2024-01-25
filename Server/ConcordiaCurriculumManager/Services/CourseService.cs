@@ -7,6 +7,7 @@ using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using Microsoft.AspNetCore.Mvc.Formatters.Xml;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Data;
 
@@ -30,6 +31,7 @@ public interface ICourseService
     public Task<Course> GetCourseDataWithSupportingFilesOrThrowOnDeleted(string subject, string catalog);
     public Task<ICollection<CourseVersion>> GetCourseVersions(Dossier dossier);
     public Task<Course> GetCourseByIdAsync(Guid id);
+    public Task<IEnumerable<Course>> GetCoursesBySubjectAsync(string subjectCode);
 }
 
 public class CourseService : ICourseService
@@ -87,7 +89,7 @@ public class CourseService : ICourseService
 
     public async Task<Course> GetCourseDataOrThrowOnDeleted(string subject, string catalog)
     {
-        var course = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog) 
+        var course = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog)
             ?? throw new InvalidInputException($"The course {subject}-{catalog} does not exist.");
 
         if (course.CourseState == CourseStateEnum.Deleted)
@@ -149,7 +151,7 @@ public class CourseService : ICourseService
 
         await SaveCourseForUserOrThrow(course, userId);
 
-        var courseCreationRequest = new CourseCreationRequest 
+        var courseCreationRequest = new CourseCreationRequest
         {
             Id = Guid.NewGuid(),
             NewCourseId = course.Id,
@@ -234,7 +236,7 @@ public class CourseService : ICourseService
     }
 
     public async Task<CourseCreationRequest?> EditCourseCreationRequest(EditCourseCreationRequestDTO edit)
-    { 
+    {
         var courseCreationRequest = await _dossierService.GetCourseCreationRequest(edit.Id);
 
         courseCreationRequest.EditRequestData(edit);
@@ -282,7 +284,7 @@ public class CourseService : ICourseService
         {
             throw new Exception($"Error deleting ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
         }
-        
+
         _logger.LogInformation($"Deleted ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
     }
 
@@ -378,5 +380,10 @@ public class CourseService : ICourseService
         }
 
         return course;
+    }
+
+    public async Task<IEnumerable<Course>> GetCoursesBySubjectAsync(string subjectCode)
+    {
+        return await _courseRepository.GetCoursesBySubjectAsync(subjectCode);
     }
 }

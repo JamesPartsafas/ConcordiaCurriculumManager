@@ -240,4 +240,21 @@ public class CourseController : Controller
         var courseDetailsDto = _mapper.Map<CourseDataDTO>(course);
         return Ok(courseDetailsDto);
     }
+
+    [HttpGet("BySubject/{subjectCode}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Courses for the specified subject retrieved", typeof(IEnumerable<CourseDataDTO>))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Subject not found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult<IEnumerable<CourseDataDTO>>> GetCoursesBySubject(string subjectCode)
+    {
+        var courses = await _courseService.GetCoursesBySubjectAsync(subjectCode);
+
+        if (courses == null || !courses.Any())
+        {
+            return NotFound($"No courses found for subject: {subjectCode}");
+        }
+
+        var courseDtos = _mapper.Map<IEnumerable<CourseDataDTO>>(courses);
+        return Ok(courseDtos);
+    }
 }
