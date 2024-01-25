@@ -14,7 +14,6 @@ using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using Microsoft.AspNetCore.Http;
-using ConcordiaCurriculumManager.Models.Curriculum;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 
