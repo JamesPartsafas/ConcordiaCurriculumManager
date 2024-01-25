@@ -12,6 +12,8 @@ using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Repositories;
+using Microsoft.AspNetCore.Http;
+using ConcordiaCurriculumManager.Models.Curriculum;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 
@@ -163,7 +165,7 @@ public class CourseControllerTest
         var subject = "SOEN";
         var catalog = "490";
         var course = TestData.GetSampleCourse();
-       _courseService.Setup(cr => cr.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog)).ReturnsAsync(course);
+        _courseService.Setup(cr => cr.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog)).ReturnsAsync(course);
 
         var actionResult = await _courseController.GetCourseData(subject, catalog);
         var objectResult = (ObjectResult)actionResult;
@@ -193,7 +195,7 @@ public class CourseControllerTest
         var courseCreationRequestDTO = TestData.GetSampleCourseCreationRequestDTO(course, dossier);
         var courseCreationRequest = TestData.GetSampleCourseCreationRequest(dossier, course);
         var editCourseCreationRequestDTO = TestData.GetSampleEditCourseCreationRequestDTO();
-;
+        ;
         _courseService.Setup(x => x.EditCourseCreationRequest(editCourseCreationRequestDTO)).ReturnsAsync(courseCreationRequest);
         _mapper.Setup(x => x.Map<CourseCreationRequestDTO>(It.IsAny<CourseCreationRequest>())).Returns(courseCreationRequestDTO);
 
@@ -431,5 +433,65 @@ public class CourseControllerTest
         var objectResult = (ObjectResult)actionResult;
 
         Assert.AreEqual((int)HttpStatusCode.NotFound, objectResult.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task GetCoursesBySubject_ReturnsOkWithCourses()
+    {
+        var subjectCode = "SOEN";
+        var id = Guid.NewGuid();
+        var courses = new List<Course>
+        {
+            new Course {
+                Id = Guid.NewGuid(),
+                CourseID = 1000,
+                Subject = "SOEN",
+                Catalog = "490",
+                Title = "Capstone",
+                Description = "Curriculum manager building simulator",
+                CreditValue = "6",
+                PreReqs = "SOEN 390",
+                CourseNotes = "Lots of fun",
+                Career = CourseCareerEnum.UGRD,
+                EquivalentCourses = "",
+                CourseState = CourseStateEnum.NewCourseProposal,
+                Version = 1,
+                Published = true,
+                CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                    { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                    id
+                )
+            },
+            new Course {
+                Id = Guid.NewGuid(),
+                CourseID = 2000,
+                Subject = "SOEN",
+                Catalog = "390",
+                Title = "Mini-Capstone",
+                Description = "Mini-Capstone",
+                CreditValue = "6",
+                PreReqs = "SOEN 390",
+                CourseNotes = "Lots of fun",
+                Career = CourseCareerEnum.UGRD,
+                EquivalentCourses = "",
+                CourseState = CourseStateEnum.NewCourseProposal,
+                Version = 1,
+                Published = true,
+                CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                    { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                    id
+                )
+            }
+        };
+
+        _courseService.Setup(service => service.GetCoursesBySubjectAsync(subjectCode))
+            .ReturnsAsync(courses);
+
+        var actionResult = await _courseController.GetCoursesBySubject(subjectCode);
+
+        var okResult = actionResult.Result as OkObjectResult;
+        Assert.IsNotNull(okResult);
+        Assert.IsInstanceOfType(okResult.Value, typeof(IEnumerable<CourseDataDTO>));
+        var resultValue = okResult.Value as IEnumerable<CourseDataDTO>;
     }
 }

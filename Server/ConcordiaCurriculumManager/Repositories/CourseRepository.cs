@@ -19,6 +19,7 @@ public interface ICourseRepository
     public Task<int?> GetCurrentCourseVersion(string subject, string catalog);
     public Task<Course?> GetPublishedVersion(string subject, string catalog);
     public Task<Course?> GetCourseInProposalBySubjectAndCatalog(string subject, string catalog);
+    public Task<List<Course>> GetCoursesBySubjectAsync(string subjectCode);
 }
 
 public class CourseRepository : ICourseRepository
@@ -35,9 +36,9 @@ public class CourseRepository : ICourseRepository
     public async Task<int> GetMaxCourseId() => (await _dbContext.Courses.MaxAsync(course => (int?)course.CourseID)) ?? 0;
 
     public Task<Course?> GetCourseBySubjectAndCatalog(string subject, string catalog) => _dbContext.Courses
-        .Where(course => 
-            course.Subject == subject 
-            && course.Catalog == catalog 
+        .Where(course =>
+            course.Subject == subject
+            && course.Catalog == catalog
             && (course.CourseState == CourseStateEnum.Accepted || course.CourseState == CourseStateEnum.Deleted
             && course.Version != null))
         .OrderByDescending(course => course.Version)
@@ -60,8 +61,8 @@ public class CourseRepository : ICourseRepository
     }
 
     public async Task<Course?> GetCourseByCourseIdAndLatestVersion(int courseId) => await _dbContext.Courses
-    .Where(course => 
-        course.CourseID == courseId 
+    .Where(course =>
+        course.CourseID == courseId
         && course.CourseState == CourseStateEnum.Accepted
         && course.Version != null)
     .OrderByDescending(course => course.Version)
@@ -130,4 +131,13 @@ public class CourseRepository : ICourseRepository
             && course.Catalog == catalog
             && course.CourseState == CourseStateEnum.NewCourseProposal)
     .FirstOrDefaultAsync();
+
+    public async Task<List<Course>> GetCoursesBySubjectAsync(string subjectCode)
+    {
+        return await _dbContext.Courses
+            .Where(c => c.Subject == subjectCode)
+            .Include(c => c.CourseCourseComponents)
+            .Include(c => c.SupportingFiles)
+            .ToListAsync();
+    }
 }

@@ -335,4 +335,82 @@ public class CourseRepositoryTests
         Assert.IsNotNull(result);
         Assert.AreEqual(result.CourseID, course.CourseID);
     }
+
+    [TestMethod]
+    public async Task GetCoursesBySubjectAsync_ReturnsCoursesForSubject()
+    {
+        var subjectCode = "SOEN";
+        var id = Guid.NewGuid();
+        var courses = new List<Course>
+        {
+            new Course {
+                Id = Guid.NewGuid(),
+                CourseID = 1000,
+                Subject = "SOEN",
+                Catalog = "490",
+                Title = "Capstone",
+                Description = "Curriculum manager building simulator",
+                CreditValue = "6",
+                PreReqs = "SOEN 390",
+                CourseNotes = "Lots of fun",
+                Career = CourseCareerEnum.UGRD,
+                EquivalentCourses = "",
+                CourseState = CourseStateEnum.NewCourseProposal,
+                Version = 1,
+                Published = true,
+                CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                    { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                    id
+                )
+            },
+            new Course {
+                Id = Guid.NewGuid(),
+                CourseID = 2000,
+                Subject = "SOEN",
+                Catalog = "390",
+                Title = "Mini-Capstone",
+                Description = "Mini-Capstone",
+                CreditValue = "6",
+                PreReqs = "SOEN 390",
+                CourseNotes = "Lots of fun",
+                Career = CourseCareerEnum.UGRD,
+                EquivalentCourses = "",
+                CourseState = CourseStateEnum.NewCourseProposal,
+                Version = 1,
+                Published = true,
+                CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                    { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                    id
+                )
+            } ,
+            new Course {
+                Id = Guid.NewGuid(),
+                CourseID = 2000,
+                Subject = "COMP",
+                Catalog = "345",
+                Title = "TestTitle",
+                Description = "TestDesc",
+                CreditValue = "6",
+                PreReqs = "SOEN 390",
+                CourseNotes = "Lots of fun",
+                Career = CourseCareerEnum.UGRD,
+                EquivalentCourses = "",
+                CourseState = CourseStateEnum.NewCourseProposal,
+                Version = 1,
+                Published = true,
+                CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                    { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                    id
+                )
+            }
+        };
+
+        dbContext.Courses.AddRange(courses);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseRepository.GetCoursesBySubjectAsync(subjectCode);
+
+        Assert.AreEqual(2, result.Count());
+        Assert.IsTrue(result.All(c => c.Subject == subjectCode));
+    }
 }
