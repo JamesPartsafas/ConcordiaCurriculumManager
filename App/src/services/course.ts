@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AllCourseSettings, Course } from "../models/course";
+import { AllCourseSettings, Course, CourseDataResponse } from "../models/course";
 
 interface GetAllCourseSettingsResponse {
     data: AllCourseSettings;
@@ -86,7 +86,7 @@ export function editCourseDeletionRequest(
     return axios.put(`${CourseAPIEndpoints.EditCourseDeletionRequest}/${dossierId}`, courseDeletionRequest);
 }
 
-export function getCourseData(subject: string, catalog: number): Promise<unknown> {
+export function getCourseData(subject: string, catalog: number): Promise<CourseDataResponse> {
     return axios.get(`${CourseAPIEndpoints.GetCourseData}/${subject}/${catalog}`);
 }
 
