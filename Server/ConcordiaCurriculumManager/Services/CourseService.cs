@@ -29,6 +29,7 @@ public interface ICourseService
     public Task DeleteCourseDeletionRequest(Guid courseRequestId);
     public Task<Course> GetCourseDataWithSupportingFilesOrThrowOnDeleted(string subject, string catalog);
     public Task<ICollection<CourseVersion>> GetCourseVersions(Dossier dossier);
+    public Task<Course> GetCourseByIdAsync(Guid id);
 }
 
 public class CourseService : ICourseService
@@ -366,5 +367,16 @@ public class CourseService : ICourseService
             throw new BadRequestException(
                 $"A deletion request cannot be made for {course.Subject} {course.Catalog} as it is part of the {grouping.Name} course grouping"
             );
+    }
+
+    public async Task<Course> GetCourseByIdAsync(Guid id)
+    {
+        var course = await _courseRepository.GetCourseByIdAsync(id);
+        if (course == null)
+        {
+            throw new NotFoundException($"Course with ID: {id} was not found.");
+        }
+
+        return course;
     }
 }
