@@ -10,13 +10,13 @@ export default {
             {
                 tsconfig: "./tsconfig-test.json",
                 diagnostics: {
-                    exclude: ["!*/.test.ts?(x)", "**/*.css"],
+                    exclude: ["!*/.test.ts?(x)"],
                 },
             },
         ],
     },
     moduleNameMapper: {
         "\\.(gif|ttf|eot|svg|png)$": "<rootDir>/__mocks__/image_mock.tsx",
+        "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
     },
-    transformIgnorePatterns: ["/node_modules/", "^.+\\.css$"],
 };
