@@ -1,30 +1,15 @@
-import {
-    Badge,
-    Box,
-    Container,
-    Flex,
-    ListItem,
-    OrderedList,
-    Spacer,
-    Text,
-} from "@chakra-ui/react";
+import { Badge, Box, Container, Flex, ListItem, OrderedList, Spacer, Text } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { useNavigate, useParams } from "react-router-dom";
-import { UserContext } from "../../App";
-import { useContext, useEffect, useState } from "react";
-import {
-    DossierReportDTO,
-    DossierReportResponse,
-    DossierStateEnum,
-} from "../../models/dossier";
+import { useEffect, useState } from "react";
+import { DossierReportDTO, DossierReportResponse, DossierStateEnum } from "../../models/dossier";
 import { getDossierReport } from "../../services/dossier";
 import { AllCourseSettings, componentMappings } from "../../models/course";
 import { getAllCourseSettings } from "../../services/course";
 
 export default function DossierReport() {
     const navigate = useNavigate();
-    const user = useContext(UserContext);
     const { dossierId } = useParams();
     const [dossierReport, setDossierReport] = useState<DossierReportDTO | null>(null);
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
@@ -107,8 +92,8 @@ export default function DossierReport() {
                         {dossierReport?.approvalStages
                             .sort((a, b) => (a.stageIndex - b.stageIndex > 0 ? 1 : -1))
                             .map((stage, index) => (
-                                <ListItem ml={12} mb={2}>
-                                    <Box key={index} fontSize="md">
+                                <ListItem ml={12} mb={2} key={index}>
+                                    <Box fontSize="md">
                                         <Text>
                                             {" "}
                                             <b>{stage.group.name}</b> {stage.isCurrentStage ? "(Current Stage)" : ""}
