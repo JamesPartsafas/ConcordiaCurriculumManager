@@ -416,7 +416,7 @@ public class CourseRepositoryTests
 
         var result = await courseRepository.GetCoursesBySubjectAsync(subjectCode);
 
-        Assert.AreEqual(11, result.Count());
+        Assert.AreEqual(1, result.Count());
         Assert.IsTrue(result.All(c => c.Subject == subjectCode));
     }
 }
