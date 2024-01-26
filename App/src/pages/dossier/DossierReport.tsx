@@ -1,4 +1,4 @@
-import { Badge, Box, Container, Flex, ListItem, OrderedList, Spacer, Text } from "@chakra-ui/react";
+import { Badge, Box, Container, Flex, Heading, ListItem, OrderedList, Spacer, Text } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,6 +7,8 @@ import { DossierReportDTO, DossierReportResponse, DossierStateEnum } from "../..
 import { getDossierReport } from "../../services/dossier";
 import { AllCourseSettings, componentMappings } from "../../models/course";
 import { getAllCourseSettings } from "../../services/course";
+import CourseDifferenceViewer from "../../components/VersionDifference";
+import { Divider } from "@chakra-ui/react";
 
 export default function DossierReport() {
     const navigate = useNavigate();
@@ -22,6 +24,7 @@ export default function DossierReport() {
     async function requestDossierReport(dossierId: string) {
         const dossierReportData: DossierReportResponse = await getDossierReport(dossierId);
         setDossierReport(dossierReportData.data);
+        console.log(dossierReportData.data);
     }
 
     async function requestAllCareerSettings() {
@@ -31,7 +34,7 @@ export default function DossierReport() {
 
     return (
         <div>
-            <Container maxW={"70%"} mt={5} mb={2}>
+            <Container maxW={"90%"} mt={5} mb={2}>
                 <Button
                     style="primary"
                     variant="outline"
@@ -104,9 +107,9 @@ export default function DossierReport() {
                     </OrderedList>
                 </Box>
 
-                <Text fontSize="xl" as="b">
+                <Heading fontSize="4xl" mb={4} mt={4}>
                     Course Creation Requests:
-                </Text>
+                </Heading>
 
                 <OrderedList ml={12} mt={2} mb={10}>
                     {dossierReport?.courseCreationRequests?.length === 0 && (
@@ -117,7 +120,7 @@ export default function DossierReport() {
 
                     {dossierReport?.courseCreationRequests?.map((courseCreationRequest, index) => (
                         <ListItem key={index} backgroundColor={"brandRed600"} p={5} borderRadius={"xl"} mb={2}>
-                            <div key={index}>
+                            <div>
                                 <Flex mb={6} gap={12} flexWrap={"wrap"}>
                                     <Box>
                                         <Text fontSize="md">
@@ -212,9 +215,7 @@ export default function DossierReport() {
                     ))}
                 </OrderedList>
 
-                <Text fontSize="xl" as="b">
-                    Course Deletion Requests:
-                </Text>
+                <Heading size="2xl">Course Deletion Requests:</Heading>
 
                 <OrderedList ml={12} mt={2}>
                     {dossierReport?.courseDeletionRequests?.length === 0 && (
@@ -225,7 +226,7 @@ export default function DossierReport() {
 
                     {dossierReport?.courseDeletionRequests.map((courseCreationRequest, index) => (
                         <ListItem key={index} backgroundColor={"brandGray200"} p={5} borderRadius={"xl"} mb={2}>
-                            <div key={index}>
+                            <div>
                                 <Flex mb={6} gap={12} flexWrap={"wrap"}>
                                     <Box>
                                         <Text fontSize="md">
@@ -319,6 +320,43 @@ export default function DossierReport() {
                         </ListItem>
                     ))}
                 </OrderedList>
+                <Heading fontSize="4xl" mb={4} mt={4}>
+                    Course Modification Requests:
+                </Heading>
+                {dossierReport?.courseModificationRequests?.map((courseModificationRequest, index) => (
+                    <>
+                        <Heading size={"md"} mb={2}>
+                            {index + 1}. {courseModificationRequest.course.subject}{" "}
+                            {courseModificationRequest.course.catalog} {courseModificationRequest.course.title}
+                        </Heading>
+                        <Text fontSize="md" marginBottom="3">
+                            <b> Ressource Implications: </b>
+                            {courseModificationRequest.resourceImplication == ""
+                                ? "N/A"
+                                : courseModificationRequest.resourceImplication}
+                        </Text>
+
+                        <Text fontSize="md" marginBottom="3">
+                            <b>Comments: </b>
+                            {courseModificationRequest.comment == "" ? "N/A" : courseModificationRequest.comment}
+                        </Text>
+
+                        <Text fontSize="md" marginBottom="3">
+                            <b>Conflicts: </b>
+                            {courseModificationRequest.conflict == "" ? "N/A" : courseModificationRequest.comment}
+                        </Text>
+                        <Text fontSize="md" marginBottom="3">
+                            <b>Rationale: </b>
+                            {courseModificationRequest.rationale == "" ? "N/A" : courseModificationRequest.rationale}
+                        </Text>
+                        <CourseDifferenceViewer
+                            oldCourse={dossierReport?.oldCourses[index]}
+                            newCourse={courseModificationRequest.course}
+                            allCourseSettings={allCourseSettings}
+                        ></CourseDifferenceViewer>
+                        <Divider />
+                    </>
+                ))}
             </Container>
         </div>
     );
