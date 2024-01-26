@@ -294,12 +294,16 @@ export default function DossierDetails() {
                     Back
                 </Button>
                 <div style={{ margin: "auto", width: "fit-content" }}>
-                    <Heading color={"brandRed"}>{dossierDetails?.title}</Heading>
-                    <Kbd>{dossierDetails?.id}</Kbd>
-                    <Text>{dossierDetails?.description}</Text>
+                    <Heading textAlign={"center"} color={"brandRed"}>
+                        {dossierDetails?.title}
+                    </Heading>
+                     Id: <Kbd>{dossierDetails?.id}</Kbd>
+                    <Box p={"8px 16px"} mb={3} mt={2} width={"100%"} backgroundColor={"gray.100"} borderRadius={"lg"}>
+                        {dossierDetails?.description}
+                    </Box>
                     <Text>state: {dossierStateToString(dossierDetails)}</Text>
-                    <Text>created: {dossierDetails?.createdDate?.toString()}</Text>
-                    <Text>updated: {dossierDetails?.modifiedDate?.toString()}</Text>
+                    <Text>created: {new Date(dossierDetails?.createdDate)?.toLocaleString()}</Text>
+                    <Text>updated: {new Date(dossierDetails?.modifiedDate)?.toLocaleString()}</Text>
                 </div>
                 <Box backgroundColor={"brandRed"} m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
                     <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>

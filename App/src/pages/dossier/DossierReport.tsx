@@ -131,7 +131,7 @@ export default function DossierReport() {
                     )}
 
                     {dossierReport?.courseCreationRequests?.map((courseCreationRequest, index) => (
-                        <ListItem key={index} backgroundColor={"brandRed600"} p={5} borderRadius={"xl"}>
+                        <ListItem key={index} backgroundColor={"brandRed600"} p={5} borderRadius={"xl"} mb={2}>
                             <div key={index}>
                                 <Flex mb={6} gap={12} flexWrap={"wrap"}>
                                     <Box>
@@ -239,7 +239,7 @@ export default function DossierReport() {
                     )}
 
                     {dossierReport?.courseDeletionRequests.map((courseCreationRequest, index) => (
-                        <ListItem key={index} backgroundColor={"brandGray200"} p={5} borderRadius={"xl"}>
+                        <ListItem key={index} backgroundColor={"brandGray200"} p={5} borderRadius={"xl"} mb={2}>
                             <div key={index}>
                                 <Flex mb={6} gap={12} flexWrap={"wrap"}>
                                     <Box>
