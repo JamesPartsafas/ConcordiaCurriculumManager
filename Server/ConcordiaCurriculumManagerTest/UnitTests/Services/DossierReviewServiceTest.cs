@@ -130,7 +130,7 @@ public class DossierReviewServiceTest
     [TestMethod]
     public async Task RejectDossier_ValidDossier_MarksDossierForRejection()
     {
-        var dossier = TestData.GetSampleDossier();
+        var dossier = TestData.GetSampleDossierInInitialStage();
         dossier.State = DossierStateEnum.InReview;
 
         dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStages(dossier.Id)).ReturnsAsync(dossier);

@@ -31,6 +31,7 @@ import CourseDetails from "./pages/CourseDetails";
 import Header from "./shared/Header";
 import DossierReview from "./pages/dossier/DossierReview";
 import DossierReport from "./pages/dossier/DossierReport";
+import NoData from "./pages/NoData";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -170,6 +171,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.CourseDetails}
                         element={isLoggedIn == true ? <CourseDetails /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.NoData}
+                        element={isLoggedIn == true ? <NoData /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
                     <Route path={"report"} element={<DossierReport />} />

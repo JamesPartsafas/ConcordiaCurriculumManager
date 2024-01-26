@@ -229,7 +229,9 @@ public class DossierRepository : IDossierRepository
         return await _dbContext.Dossiers
             .Include(d => d.ApprovalStages)
             .ThenInclude(a => a.Group)
-            .Where(d => d.ApprovalStages.Where(a => a.IsCurrentStage).First().Group!.Members.Any(m => m.Id.Equals(userId)))
+            .Where(d => d.ApprovalStages.Where(a => a.IsCurrentStage).First()
+                .Group!.Members.Any(m => m.Id.Equals(userId))
+                && d.State == DossierStateEnum.InReview)
             .ToListAsync();
     }
 

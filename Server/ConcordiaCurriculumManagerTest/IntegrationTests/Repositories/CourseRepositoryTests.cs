@@ -24,7 +24,7 @@ public class CourseRepositoryTests
     [ClassCleanup]
     public static void ClassCleanup() => dbContext.Dispose();
 
-    [TestInitialize] 
+    [TestInitialize]
     public void TestInitialize()
     {
         courseRepository = new CourseRepository(dbContext);
@@ -334,5 +334,89 @@ public class CourseRepositoryTests
 
         Assert.IsNotNull(result);
         Assert.AreEqual(result.CourseID, course.CourseID);
+    }
+
+    [TestMethod]
+    public async Task GetCourseByIdAsync_ValidId_ReturnsCourse()
+    {
+        var id = Guid.NewGuid();
+        var expectedCourse = new Course
+        {
+            Id = id,
+            CourseID = 1000,
+            Subject = "SOEN",
+            Catalog = "490",
+            Title = "Capstone",
+            Description = "Curriculum manager building simulator",
+            CreditValue = "6",
+            PreReqs = "SOEN 390",
+            CourseNotes = "Lots of fun",
+            Career = CourseCareerEnum.UGRD,
+            EquivalentCourses = "",
+            CourseState = CourseStateEnum.NewCourseProposal,
+            Version = 1,
+            Published = true,
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                    { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                    id
+                )
+        };
+
+        dbContext.Courses.Add(expectedCourse);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseRepository.GetCourseByIdAsync(expectedCourse.Id);
+
+        Assert.IsNotNull(result, "No course was returned from the repository");
+        Assert.AreEqual(expectedCourse.Id, result.Id, "The ID of the returned course does not match the expected ID");
+        Assert.AreEqual(expectedCourse.Subject, result.Subject, "The Subject of the returned course does not match the expected Subject");
+    }
+
+    [TestMethod]
+    public async Task GetCourseByIdAsync_InvalidId_ReturnsNull()
+    {
+        var nonExistentId = Guid.NewGuid();
+
+        var result = await courseRepository.GetCourseByIdAsync(nonExistentId);
+
+        Assert.IsNull(result, "A course was returned for a non-existent ID");
+    }
+
+    [TestMethod]
+    public async Task GetCoursesBySubjectAsync_ReturnsCoursesForSubject()
+    {
+        var subjectCode = "SOEN";
+        var id = Guid.NewGuid();
+        var courses = new List<Course>
+        {
+            new Course {
+                Id = id,
+                CourseID = 1000,
+                Subject = "SOEN",
+                Catalog = "490",
+                Title = "Capstone",
+                Description = "Curriculum manager building simulator",
+                CreditValue = "6",
+                PreReqs = "SOEN 390",
+                CourseNotes = "Lots of fun",
+                Career = CourseCareerEnum.UGRD,
+                EquivalentCourses = "",
+                CourseState = CourseStateEnum.NewCourseProposal,
+                Version = 1,
+                Published = true,
+                CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                    { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                    id
+                )
+            }
+        };
+
+        dbContext.Courses.AddRange(courses);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseRepository.GetCoursesBySubjectAsync(subjectCode);
+
+        Assert.AreEqual(11, result.Count());
+        Assert.IsTrue(result.All(c => c.Subject == subjectCode));
     }
 }

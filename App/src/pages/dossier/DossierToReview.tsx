@@ -85,7 +85,7 @@ export default function DossiersToReview() {
             </Container>
             <Flex flexDirection="column">
                 <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
-                    {user?.firstName + "'s"} Dossiers Under Review
+                    Dossiers Requiring Your Review
                 </Text>
                 <DossierTable
                     myDossiers={myDossiers}
