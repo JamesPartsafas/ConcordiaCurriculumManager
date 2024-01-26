@@ -18,4 +18,5 @@ export default {
     moduleNameMapper: {
         "\\.(gif|ttf|eot|svg|png)$": "<rootDir>/__mocks__/image_mock.tsx",
     },
+    transformIgnorePatterns: ["/node_modules/", "\\.css$"],
 };
