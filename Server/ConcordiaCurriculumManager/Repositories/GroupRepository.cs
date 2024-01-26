@@ -145,6 +145,14 @@ public class GroupRepository : IGroupRepository
 
     public async Task<bool> DeleteGroupAsync(Guid id)
     {
+        var isGroupInApprovalStage = await _dbContext.ApprovalStages
+            .AnyAsync(a => a.Group != null && a.Group.Id == id);
+
+        if (isGroupInApprovalStage)
+        {
+            return false;
+        }
+
         var group = await _dbContext.Groups.FindAsync(id);
         if (group == null)
         {
@@ -152,6 +160,7 @@ public class GroupRepository : IGroupRepository
         }
 
         _dbContext.Groups.Remove(group);
-        return await _dbContext.SaveChangesAsync() > 0;
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
     }
 }

@@ -401,8 +401,10 @@ export default function DossierReview() {
             <div style={{ marginLeft: marginLeft }}>
                 <CardBody key={group.groupId}>
                     <Box bg={colorDepth} p={2}>
-                        <Text>
-                            <b>{group.group.name}</b>{" "}
+                        <Text fontWeight="bold">
+                            {message.author.firstName} {message.author.lastName}
+                            <br />
+                            {group.group.name}
                         </Text>
                         <Text>
                             {message.createdDate.toString().substring(0, 10)}{" "}
@@ -410,7 +412,7 @@ export default function DossierReview() {
                             {new Date(message.createdDate).getMinutes().toString()}:
                             {new Date(message.createdDate).getSeconds().toString()}
                         </Text>
-                        <Text>{message.message}</Text>
+                        <Text mt={2}>{message.message}</Text>
                         {!user.groups?.includes(group.groupId) ||
                         !user.groups?.includes(currentGroup.groupId) ? null : (
                             <Button onClick={handleToggleReply} marginTop={2}>

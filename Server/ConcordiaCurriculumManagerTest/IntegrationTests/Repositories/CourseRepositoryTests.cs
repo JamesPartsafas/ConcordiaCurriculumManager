@@ -11,24 +11,19 @@ public class CourseRepositoryTests
     private static CCMDbContext dbContext = null!;
     private ICourseRepository courseRepository = null!;
 
-    [ClassInitialize]
-    public static void ClassInitialize(TestContext _)
+    [TestInitialize]
+    public void TestInitialize()
     {
         var options = new DbContextOptionsBuilder<CCMDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
         dbContext = new CCMDbContext(options);
+        courseRepository = new CourseRepository(dbContext);
     }
 
     [ClassCleanup]
     public static void ClassCleanup() => dbContext.Dispose();
-
-    [TestInitialize]
-    public void TestInitialize()
-    {
-        courseRepository = new CourseRepository(dbContext);
-    }
 
     [TestMethod]
     public async Task GetUniqueCourseSubjects_ReturnsCourses()
@@ -50,8 +45,8 @@ public class CourseRepositoryTests
             CourseState = CourseStateEnum.NewCourseProposal,
             Version = 1,
             Published = true,
-            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?> 
-                { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } }, 
+            CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
                 id
             )
         };
@@ -416,7 +411,7 @@ public class CourseRepositoryTests
 
         var result = await courseRepository.GetCoursesBySubjectAsync(subjectCode);
 
-        Assert.AreEqual(11, result.Count());
+        Assert.AreEqual(1, result.Count());
         Assert.IsTrue(result.All(c => c.Subject == subjectCode));
     }
 }

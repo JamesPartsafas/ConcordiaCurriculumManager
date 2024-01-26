@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ConcordiaCurriculumManager.Settings;
 using Microsoft.Extensions.Options;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 
 namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories;
 
@@ -360,5 +361,28 @@ public class GroupRepositoryTests
         var result = await groupRepository.DeleteGroupAsync(group1.Id);
 
         Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public async Task DeleteGroupAsync_GroupInApprovalStage_ReturnsFalse()
+    {
+        var groupInApprovalStage = new Group
+        {
+            Id = Guid.NewGuid(),
+            Name = "GroupInApprovalStage",
+            ApprovalStages = new List<ApprovalStage>
+        {
+            TestData.GetSampleApprovalStage()
+        }
+        };
+
+        dbContext.Groups.Add(groupInApprovalStage);
+        await dbContext.SaveChangesAsync();
+
+        var result = await groupRepository.DeleteGroupAsync(groupInApprovalStage.Id);
+
+        Assert.IsFalse(result, "Group in approval stage should not be deleted.");
+        var groupStillExists = await dbContext.Groups.AnyAsync(g => g.Id == groupInApprovalStage.Id);
+        Assert.IsTrue(groupStillExists, "Group should still exist in the database.");
     }
 }
