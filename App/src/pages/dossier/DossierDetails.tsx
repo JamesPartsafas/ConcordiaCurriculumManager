@@ -334,7 +334,7 @@ export default function DossierDetails() {
                     <Heading textAlign={"center"} color={"brandRed"}>
                         {dossierDetails?.title}
                     </Heading>
-                     Id: <Kbd>{dossierDetails?.id}</Kbd>
+                    Id: <Kbd>{dossierDetails?.id}</Kbd>
                     <Box p={"8px 16px"} mb={3} mt={2} width={"100%"} backgroundColor={"gray.100"} borderRadius={"lg"}>
                         {dossierDetails?.description}
                     </Box>
