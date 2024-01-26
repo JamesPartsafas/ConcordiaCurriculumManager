@@ -3,8 +3,6 @@ using ConcordiaCurriculumManager.Controllers;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Filters.Exceptions;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
-using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using Microsoft.AspNetCore.Mvc;

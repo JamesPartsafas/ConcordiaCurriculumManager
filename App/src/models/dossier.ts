@@ -1,5 +1,6 @@
 import { GroupDTO } from "../services/group";
 import { CourseCreationRequest, CourseDeletionRequest, CourseModificationRequest } from "./course";
+import { UserDTO } from "./user";
 
 export interface DossierDTO {
     id: string;
@@ -55,6 +56,7 @@ export interface DossierDiscussion {
 
 export interface DossierDiscussionMessage {
     id: string;
+    author: UserDTO;
     message: string;
     groupId: string;
     parentDiscussionMessageId: string;

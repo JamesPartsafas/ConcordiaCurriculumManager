@@ -7,6 +7,7 @@ using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
+using ConcordiaCurriculumManager.DTO;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 public static class TestData
@@ -22,6 +23,18 @@ public static class TestData
             LastName = "Smith",
             Email = "jsmith@ccm.com",
             Password = "Password123!"
+        };
+    }
+
+    public static UserDTO GetSampleUserDTO()
+    {
+        return new UserDTO
+        {
+            Id = new Guid(),
+            FirstName = "Joe",
+            LastName = "Smith",
+            Email = "jsmith@ccm.com",
+            Roles = new List<Role>()
         };
     }
 
@@ -517,6 +530,7 @@ public static class TestData
         return new DossierDiscussionMessageDTO
         {
             Id = Guid.NewGuid(),
+            Author = GetSampleUserDTO(),
             Message = "This is a test message",
             GroupId = Guid.NewGuid(),
             CreatedDate = DateTime.Now,
