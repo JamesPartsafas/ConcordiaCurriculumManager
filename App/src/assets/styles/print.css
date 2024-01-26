@@ -1,0 +1,8 @@
+@media print {
+    .printable-content {
+        display: block !important;
+    }
+    @page {
+        margin: 20mm; /* Adjust the margin values as needed */
+    }
+}
