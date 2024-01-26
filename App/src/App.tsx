@@ -177,6 +177,7 @@ export function App() {
                         element={isLoggedIn == true ? <NoData /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
+                    <Route path={"report"} element={<DossierReport />} />
                     {/* whenever none of the other routes match we show the not found page */}
                     <Route path={BaseRoutes.NotFound} element={<NotFound />} />
                 </Routes>

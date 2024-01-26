@@ -59,7 +59,7 @@ const CourseDifferenceViewer = ({
     return (
         <>
             {oldCourse && newCourse && (
-                <HStack align="stretch" spacing={4} border={"solide"} borderColor={"gray.200"} borderWidth={1} p={2}>
+                <HStack align="stretch" spacing={4}>
                     <Box w="100%">
                         <CoursePreviewWithChange
                             courseCareer={oldCourseCareer} // Update these props as needed

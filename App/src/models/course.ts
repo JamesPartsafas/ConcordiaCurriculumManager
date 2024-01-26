@@ -76,6 +76,7 @@ export interface CourseRequest {
     rationale: string;
     resourceImplication: string;
     comment: string;
+    conflict: string;
     createdDate: Date;
     modifiedDate: Date;
 }
