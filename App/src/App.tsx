@@ -178,7 +178,10 @@ export function App() {
                         element={isLoggedIn == true ? <NoData /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route path={BaseRoutes.ComponentsList} element={<ComponentsList />} />
-                    <Route path={"report"} element={isLoggedIn ? <DossierReport /> : <Navigate to={BaseRoutes.Login}/>} />
+                    <Route
+                        path={"report"}
+                        element={isLoggedIn ? <DossierReport /> : <Navigate to={BaseRoutes.Login} />}
+                    />
 
                     <Route
                         path={BaseRoutes.CourseGrouping}
