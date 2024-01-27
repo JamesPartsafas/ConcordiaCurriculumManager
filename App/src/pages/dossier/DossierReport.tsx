@@ -93,7 +93,7 @@ export default function DossierReport() {
                                 <b>Approval Stages: </b>
                             </Text>
                             <Text alignSelf={"center"}>
-                                {dossierReport?.state === DossierStateEnum.Created && "(Not Sumbitted)"}
+                                {dossierReport?.state === DossierStateEnum.Created && "(Not Submitted)"}
                             </Text>
                         </Box>
                         <OrderedList>
@@ -199,7 +199,7 @@ export default function DossierReport() {
                                     </Text>
 
                                     <Text fontSize="md" marginBottom="3">
-                                        <b> Ressource Implications:</b> <br />
+                                        <b> Resource Implication:</b> <br />
                                         {courseCreationRequest.newCourse.resourceImplication ?? "N/A"}
                                     </Text>
 
@@ -330,45 +330,62 @@ export default function DossierReport() {
                             </ListItem>
                         ))}
                     </OrderedList>
+
                     <Heading fontSize="4xl" mb={4} mt={4}>
                         Course Modification Requests:
                     </Heading>
-                    {dossierReport?.courseModificationRequests?.map((courseModificationRequest, index) => (
-                        <>
-                            <Heading size={"md"} mb={2}>
-                                {index + 1}. {courseModificationRequest.course.subject}{" "}
-                                {courseModificationRequest.course.catalog} {courseModificationRequest.course.title}
-                            </Heading>
-                            <Text fontSize="md" marginBottom="3">
-                                <b> Ressource Implications: </b>
-                                {courseModificationRequest.resourceImplication == ""
-                                    ? "N/A"
-                                    : courseModificationRequest.resourceImplication}
-                            </Text>
 
-                            <Text fontSize="md" marginBottom="3">
-                                <b>Comments: </b>
-                                {courseModificationRequest.comment == "" ? "N/A" : courseModificationRequest.comment}
-                            </Text>
+                    <OrderedList ml={12} mt={2}>
+                        {dossierReport?.courseModificationRequests?.length === 0 && (
+                            <Box backgroundColor={"brandBlue600"} p={5} borderRadius={"xl"}>
+                                <Text fontSize="md">No course modification requests.</Text>
+                            </Box>
+                        )}
 
-                            <Text fontSize="md" marginBottom="3">
-                                <b>Conflicts: </b>
-                                {courseModificationRequest.conflict == "" ? "N/A" : courseModificationRequest.comment}
-                            </Text>
-                            <Text fontSize="md" marginBottom="3">
-                                <b>Rationale: </b>
-                                {courseModificationRequest.rationale == ""
-                                    ? "N/A"
-                                    : courseModificationRequest.rationale}
-                            </Text>
-                            <CourseDifferenceViewer
-                                oldCourse={dossierReport?.oldCourses[index]}
-                                newCourse={courseModificationRequest.course}
-                                allCourseSettings={allCourseSettings}
-                            ></CourseDifferenceViewer>
-                            <Divider />
-                        </>
-                    ))}
+                        {dossierReport?.courseModificationRequests?.map((courseModificationRequest, index) => (
+                            <ListItem key={index} backgroundColor={"brandBlue600"} p={5} borderRadius={"xl"} mb={2}>
+                                <>
+                                    <Heading size={"md"} mb={2}>
+                                        {courseModificationRequest.course.subject}{" "}
+                                        {courseModificationRequest.course.catalog}{" "}
+                                        {courseModificationRequest.course.title}
+                                    </Heading>
+                                    <Text fontSize="md" marginBottom="3">
+                                        <b> Ressource Implications: </b>
+                                        {courseModificationRequest.resourceImplication == ""
+                                            ? "N/A"
+                                            : courseModificationRequest.resourceImplication}
+                                    </Text>
+
+                                    <Text fontSize="md" marginBottom="3">
+                                        <b>Comments: </b>
+                                        {courseModificationRequest.comment == ""
+                                            ? "N/A"
+                                            : courseModificationRequest.comment}
+                                    </Text>
+
+                                    <Text fontSize="md" marginBottom="3">
+                                        <b>Conflicts: </b>
+                                        {courseModificationRequest.conflict == ""
+                                            ? "N/A"
+                                            : courseModificationRequest.comment}
+                                    </Text>
+                                    <Text fontSize="md" marginBottom="3">
+                                        <b>Rationale: </b>
+                                        {courseModificationRequest.rationale == ""
+                                            ? "N/A"
+                                            : courseModificationRequest.rationale}
+                                    </Text>
+                                    <CourseDifferenceViewer
+                                        oldCourse={dossierReport?.oldCourses[index]}
+                                        newCourse={courseModificationRequest.course}
+                                        allCourseSettings={allCourseSettings}
+                                    ></CourseDifferenceViewer>
+                                    <Divider />
+                                </>
+                            </ListItem>
+                        ))}
+                    </OrderedList>
                 </Container>
             </div>
             <Button style="primary" variant="outline" height="40px" width="fit-content" onClick={handlePrint} m={14}>
