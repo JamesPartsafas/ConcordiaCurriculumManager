@@ -43,18 +43,18 @@ export default function DossierReport() {
         <div>
             <Container maxW={"90%"} mt={5} mb={2} className="printable-content">
                 <Box mb={5}>
-                <Button
-                    style="primary"
-                    variant="outline"
-                    height="40px"
-                    width="fit-content"
-                    onClick={() => navigate(BaseRoutes.Dossiers)}
-                    className="non-printable-content"
-                >
-                    My Dossiers
-                </Button>
-                
-                <Button
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        height="40px"
+                        width="fit-content"
+                        onClick={() => navigate(BaseRoutes.Dossiers)}
+                        className="non-printable-content"
+                    >
+                        My Dossiers
+                    </Button>
+
+                    <Button
                         style="primary"
                         variant="outline"
                         width="fit-content"
@@ -95,7 +95,6 @@ export default function DossierReport() {
                     >
                         Dossier Review
                     </Button>
-
                 </Box>
 
                 <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginBottom="1">
@@ -430,7 +429,15 @@ export default function DossierReport() {
                 </OrderedList>
             </Container>
 
-            <Button style="primary" variant="outline" height="40px" width="fit-content" onClick={handlePrint} m={14} className="non-printable-content">    
+            <Button
+                style="primary"
+                variant="outline"
+                height="40px"
+                width="fit-content"
+                onClick={handlePrint}
+                m={14}
+                className="non-printable-content"
+            >
                 Print Dossier Report
             </Button>
         </div>

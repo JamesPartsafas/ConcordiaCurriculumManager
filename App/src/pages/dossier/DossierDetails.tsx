@@ -332,7 +332,7 @@ export default function DossierDetails() {
                         Dossier Review
                     </Button>
                 )}
-                <div style={{ margin: "auto"}}>
+                <div style={{ margin: "auto" }}>
                     <Heading textAlign={"center"} color={"brandRed"}>
                         {dossierDetails?.title}
                     </Heading>
