@@ -2,7 +2,7 @@ import { Badge, Box, Container, Flex, Heading, ListItem, OrderedList, Spacer, Te
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DossierReportDTO, DossierReportResponse, DossierStateEnum } from "../../models/dossier";
 import { getDossierReport } from "../../services/dossier";
 import { AllCourseSettings, componentMappings } from "../../models/course";
@@ -10,12 +10,15 @@ import { getAllCourseSettings } from "../../services/course";
 import CourseDifferenceViewer from "../../components/VersionDifference";
 import { Divider } from "@chakra-ui/react";
 import "../../assets/styles/print.css";
+import { UserContext } from "../../App";
+import { UserRoles } from "../../models/user";
 
 export default function DossierReport() {
     const navigate = useNavigate();
     const { dossierId } = useParams();
     const [dossierReport, setDossierReport] = useState<DossierReportDTO | null>(null);
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
+    const user = useContext(UserContext);
 
     useEffect(() => {
         requestDossierReport(dossierId);
@@ -39,16 +42,61 @@ export default function DossierReport() {
     return (
         <div>
             <Container maxW={"90%"} mt={5} mb={2} className="printable-content">
+                <Box mb={5}>
                 <Button
                     style="primary"
                     variant="outline"
                     height="40px"
                     width="fit-content"
-                    onClick={() => navigate(BaseRoutes.Home)}
+                    onClick={() => navigate(BaseRoutes.Dossiers)}
                     className="non-printable-content"
                 >
-                    Return to Home
+                    My Dossiers
                 </Button>
+                
+                <Button
+                        style="primary"
+                        variant="outline"
+                        width="fit-content"
+                        height="40px"
+                        ml={2}
+                        isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                        onClick={() => {
+                            navigate(BaseRoutes.DossiersToReview);
+                        }}
+                    >
+                        Dossiers To Review
+                    </Button>
+
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        width="fit-content"
+                        height="40px"
+                        ml={2}
+                        isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                        onClick={() => {
+                            navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
+                        }}
+                    >
+                        Dossiers Details
+                    </Button>
+
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        width="fit-content"
+                        height="40px"
+                        ml={2}
+                        isDisabled={dossierReport?.state !== DossierStateEnum.InReview}
+                        onClick={() => {
+                            navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId));
+                        }}
+                    >
+                        Dossier Review
+                    </Button>
+
+                </Box>
 
                 <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginBottom="1">
                     {dossierReport?.title}
