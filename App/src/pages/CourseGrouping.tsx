@@ -1,19 +1,7 @@
 import { useEffect } from "react";
 
-
 export default function CourseGrouping() {
+    useEffect(() => {}, []);
 
-
-
-
-    useEffect(() => {
-  
-    }, []);
-
-
-    return (
-        <>
-           
-        </>
-    );
+    return <></>;
 }
