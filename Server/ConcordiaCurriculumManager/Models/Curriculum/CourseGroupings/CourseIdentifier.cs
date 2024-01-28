@@ -1,4 +1,4 @@
-﻿namespace ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
+﻿namespace ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 
 public class CourseIdentifier : BaseModel
 {

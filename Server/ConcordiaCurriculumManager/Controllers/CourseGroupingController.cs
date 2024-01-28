@@ -2,7 +2,7 @@
 using ConcordiaCurriculumManager.DTO;
 using ConcordiaCurriculumManager.DTO.CourseGrouping;
 using ConcordiaCurriculumManager.Filters.Exceptions;
-using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

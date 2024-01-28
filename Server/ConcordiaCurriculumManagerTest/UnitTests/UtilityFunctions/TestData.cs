@@ -6,7 +6,7 @@ using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
-using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.DTO;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
