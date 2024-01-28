@@ -419,7 +419,7 @@ public class CourseRepositoryTests
     [TestMethod]
     public async Task UpdateCourse_ReturnsTrue()
     {
-        var course = TestData.GetSampleCourse();
+        var course = TestData.GetSampleAcceptedCourse();
         course.MarkAsPublished();
         var result = await courseRepository.UpdateCourse(course);
 

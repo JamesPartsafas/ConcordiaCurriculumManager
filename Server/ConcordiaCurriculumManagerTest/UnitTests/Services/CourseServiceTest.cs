@@ -753,7 +753,7 @@ public class CourseServiceTest
     [TestMethod]
     public async Task PublishCourse_ValidInput_ReturnsPublishedCourse()
     {
-        var course = TestData.GetSampleCourse();
+        var course = TestData.GetSampleAcceptedCourse();
 
         courseRepository.Setup(repo => repo.GetCourseBySubjectAndCatalog(course.Subject, course.Catalog)).ReturnsAsync(course);
         courseRepository.Setup(repo => repo.UpdateCourse(course)).ReturnsAsync(true);

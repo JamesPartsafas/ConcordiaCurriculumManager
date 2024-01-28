@@ -536,7 +536,7 @@ public class CourseControllerTest
     [TestMethod]
     public async Task PublishCourse_ValidCall_ReturnsPublishedCourse()
     {
-        var course = TestData.GetSampleCourse();
+        var course = TestData.GetSampleAcceptedCourse();
         _courseService.Setup(x => x.PublishCourse(course.Subject, course.Catalog)).ReturnsAsync(course);
 
         var actionResult = await _courseController.PublishCourse(course.Subject, course.Catalog);
