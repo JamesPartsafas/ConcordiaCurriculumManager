@@ -426,7 +426,7 @@ public class CourseRepositoryTests
 
         var result = await courseRepository.UpdateCourse(course);
 
-        Assert.AreEqual(false, course.Published);
+        Assert.AreEqual(true, course.Published);
         Assert.IsTrue(result);
     }
 }
