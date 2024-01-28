@@ -2,6 +2,7 @@
 using ConcordiaCurriculumManager.Repositories;
 using Microsoft.EntityFrameworkCore;
 using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 
 namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories;
 
@@ -413,5 +414,16 @@ public class CourseRepositoryTests
 
         Assert.AreEqual(1, result.Count());
         Assert.IsTrue(result.All(c => c.Subject == subjectCode));
+    }
+
+    [TestMethod]
+    public async Task UpdateCourse_ReturnsTrue()
+    {
+        var course = TestData.GetSampleCourse();
+        course.MarkAsPublished();
+        var result = await courseRepository.UpdateCourse(course);
+
+        Assert.AreEqual(false, course.Published);
+        Assert.IsTrue(result);
     }
 }
