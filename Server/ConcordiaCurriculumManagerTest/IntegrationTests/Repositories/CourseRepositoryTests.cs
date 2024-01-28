@@ -3,6 +3,7 @@ using ConcordiaCurriculumManager.Repositories;
 using Microsoft.EntityFrameworkCore;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 
 namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories;
 
@@ -421,6 +422,8 @@ public class CourseRepositoryTests
     {
         var course = TestData.GetSampleAcceptedCourse();
         course.MarkAsPublished();
+        await courseRepository.SaveCourse(course);
+
         var result = await courseRepository.UpdateCourse(course);
 
         Assert.AreEqual(false, course.Published);

@@ -118,7 +118,7 @@ public class CourseTest
     [TestMethod]
     public void MarkAsPublished_GivenValidCourse_CorrectlyMarks()
     {
-        var course = TestData.GetSampleCourse();
+        var course = TestData.GetSampleAcceptedCourse();
 
         course.MarkAsPublished();
 
