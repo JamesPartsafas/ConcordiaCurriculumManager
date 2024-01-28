@@ -14,6 +14,8 @@ using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using Microsoft.AspNetCore.Http;
+using Org.BouncyCastle.Utilities;
+using ConcordiaCurriculumManager.Models.Users;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 
@@ -530,4 +532,32 @@ public class CourseControllerTest
         Assert.IsInstanceOfType(okResult.Value, typeof(IEnumerable<CourseDataDTO>));
         var resultValue = okResult.Value as IEnumerable<CourseDataDTO>;
     }
+
+    [TestMethod]
+    public async Task PublishCourse_ValidCall_ReturnsPublishedCourse()
+    {
+        var course = TestData.GetSampleCourse();
+        _courseService.Setup(x => x.PublishCourse(course.Subject, course.Catalog)).ReturnsAsync(course);
+
+        var actionResult = await _courseController.PublishCourse(course.Subject, course.Catalog);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        _mapper.Verify(mock => mock.Map<CourseDataDTO>(course), Times.Once());
+        _courseService.Verify(service => service.PublishCourse(course.Subject, course.Catalog), Times.Once);
+    }
+
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task PublishCourse_InvalidCall_ThrowsNotFoundException()
+    {
+        _courseService.Setup(service => service.PublishCourse(It.IsAny<string>(), It.IsAny<string>())).Throws(new NotFoundException());
+
+        var actionResult = await _courseController.PublishCourse(It.IsAny<string>(), It.IsAny<string>());
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+    }
+
 }
