@@ -116,6 +116,16 @@ public class CourseTest
     }
 
     [TestMethod]
+    public void MarkAsPublished_GivenValidCourse_CorrectlyMarks()
+    {
+        var course = TestData.GetSampleCourse();
+
+        course.MarkAsPublished();
+
+        Assert.AreEqual(true, course.Published);
+    }
+
+    [TestMethod]
     public void CloneCourse_ReturnsDeepCopyOfACourse()
     {
         var originalCourse = TestData.GetSampleCourse();
