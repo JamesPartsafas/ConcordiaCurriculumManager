@@ -170,6 +170,11 @@ public class Course : BaseModel
         VerifyCourseIsValidOrThrow();
     }
 
+    public void MarkAsUnpublished()
+    { 
+        Published = false;
+    }
+
     private void MarkAsFinalized(int version, CourseStateEnum state)
     {
         Version = version;

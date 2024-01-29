@@ -390,12 +390,15 @@ public class CourseService : ICourseService
 
     public async Task<Course> PublishCourse(string subject, string catalog)
     {
-        var course = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog) ?? throw new NotFoundException($"The course {subject}" + $"{catalog} was not found.");
-        
-        course.MarkAsPublished();
+        var newCourse = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog) ?? throw new NotFoundException($"The course {subject}" + $"{catalog} was not found.");
+        var oldCourse = await _courseRepository.GetPublishedVersion(subject, catalog) ?? throw new NotFoundException($"The course {subject}" + $"{catalog} was not found.");
 
-        await _courseRepository.UpdateCourse(course);
-        
-        return course;
+        newCourse.MarkAsPublished();
+        oldCourse.MarkAsUnpublished();
+
+        await _courseRepository.UpdateCourse(newCourse);
+        await _courseRepository.UpdateCourse(oldCourse);
+
+        return newCourse;
     }
 }
