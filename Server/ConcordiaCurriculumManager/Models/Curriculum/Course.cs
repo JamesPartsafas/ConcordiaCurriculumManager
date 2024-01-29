@@ -163,6 +163,18 @@ public class Course : BaseModel
 
     public void MarkAsDeleted(int version) => MarkAsFinalized(version, CourseStateEnum.Deleted);
 
+    public void MarkAsPublished() 
+    { 
+        Published = true;
+
+        VerifyCourseIsValidOrThrow();
+    }
+
+    public void MarkAsUnpublished()
+    { 
+        Published = false;
+    }
+
     private void MarkAsFinalized(int version, CourseStateEnum state)
     {
         Version = version;

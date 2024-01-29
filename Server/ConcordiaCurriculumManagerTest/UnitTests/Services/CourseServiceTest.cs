@@ -749,4 +749,33 @@ public class CourseServiceTest
         courseRepository.Verify(repo => repo.GetCoursesBySubjectAsync(subjectCode), Times.Once);
         Assert.AreEqual(courses.Count, result.Count());
     }
+
+    [TestMethod]
+    public async Task PublishCourse_ValidInput_ReturnsPublishedCourse()
+    {
+        var newCourse = TestData.GetSampleAcceptedCourse();
+        var oldCourse = TestData.GetSamplePublisheddCourse();
+
+        courseRepository.Setup(repo => repo.GetCourseBySubjectAndCatalog(newCourse.Subject, newCourse.Catalog)).ReturnsAsync(newCourse);
+        courseRepository.Setup(repo => repo.GetPublishedVersion(oldCourse.Subject, oldCourse.Catalog)).ReturnsAsync(oldCourse);
+        courseRepository.Setup(repo => repo.UpdateCourse(newCourse)).ReturnsAsync(true);
+        courseRepository.Setup(repo => repo.UpdateCourse(oldCourse)).ReturnsAsync(true);
+
+        var result = await courseService.PublishCourse(newCourse.Subject, newCourse.Catalog);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(true, result.Published);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException), "A NotFoundException should be thrown when the course does not exist.")]
+    public async Task PublishCourse_InvalidInput_ThrowsNotFoundException()
+    {
+        var course = TestData.GetSampleCourse();
+        courseRepository.Setup(repo => repo.GetCourseBySubjectAndCatalog(course.Subject, course.Catalog)).ReturnsAsync((Course?)null);
+
+        var result = await courseService.PublishCourse(course.Subject, course.Catalog);
+
+        Assert.Fail("Expected a NotFoundException to be thrown.");
+    }
 }
