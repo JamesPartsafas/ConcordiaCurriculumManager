@@ -21,6 +21,7 @@ public class CourseGroupingServiceTest
     private Mock<ILogger<CourseGroupingService>> logger = null!;
     private Mock<ICourseRepository> courseRepository = null!;
     private Mock<ICourseGroupingRepository> courseGroupingRepository = null!;
+    private Mock<IDossierService> dossierService = null!;
 
     private CourseGroupingService courseGroupingService = null!;
 
@@ -30,11 +31,13 @@ public class CourseGroupingServiceTest
         logger = new Mock<ILogger<CourseGroupingService>>();
         courseRepository = new Mock<ICourseRepository>();
         courseGroupingRepository = new Mock<ICourseGroupingRepository>();
+        dossierService = new Mock<IDossierService>();
 
         courseGroupingService = new CourseGroupingService(
             logger.Object,
             courseRepository.Object,
-            courseGroupingRepository.Object
+            courseGroupingRepository.Object,
+            dossierService.Object
         );
     }
 
