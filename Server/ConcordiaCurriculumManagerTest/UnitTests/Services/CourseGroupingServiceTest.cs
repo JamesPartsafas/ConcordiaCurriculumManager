@@ -1,6 +1,8 @@
 ﻿using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Middleware.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
@@ -118,5 +120,68 @@ public class CourseGroupingServiceTest
     public async Task GetCourseGroupingLikeName_WithEmptyName_ThrowsInvalidInputException()
     {
         var output = await courseGroupingService.GetCourseGroupingsLikeName(" ");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task InitiateCourseGroupingModification_WithNonexistentCourse_Throws()
+    {
+        var dto = TestData.GetSampleCourseGroupingModificationRequestDTO();
+
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingByCommonIdentifier(dto.CourseGrouping.CommonIdentifier)).ReturnsAsync((CourseGrouping)null!);
+
+        await courseGroupingService.InitiateCourseGroupingModification(dto);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ServiceUnavailableException))]
+    public async Task InitiateCourseGroupingModification_FailsToSave_Throws()
+    {
+        var dto = TestData.GetSampleCourseGroupingModificationRequestDTO();
+
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingByCommonIdentifier(dto.CourseGrouping.CommonIdentifier))
+            .ReturnsAsync(TestData.GetSampleCourseGrouping());
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(TestData.GetSampleDossier());
+        courseGroupingRepository.Setup(cgr => cgr.SaveCourseGroupingRequest(It.IsAny<CourseGroupingRequest>())).ReturnsAsync(false);
+
+        await courseGroupingService.InitiateCourseGroupingModification(dto);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task InitiateCourseGroupingModification_WithDuplicateRequest_Throws()
+    {
+        var dto = TestData.GetSampleCourseGroupingModificationRequestDTO();
+        var dossier = TestData.GetSampleDossier();
+        var request = TestData.GetSampleCourseGroupingRequest();
+        request.CourseGrouping!.CommonIdentifier = dto.CourseGrouping.CommonIdentifier;
+
+        dossier.CourseGroupingRequests.Add(request);
+
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingByCommonIdentifier(dto.CourseGrouping.CommonIdentifier))
+            .ReturnsAsync(TestData.GetSampleCourseGrouping());
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(dossier);
+
+        await courseGroupingService.InitiateCourseGroupingModification(dto);
+    }
+
+    [TestMethod]
+    public async Task InitiateCourseGroupingModification_WithValidData_Succeeds()
+    {
+        var dto = TestData.GetSampleCourseGroupingModificationRequestDTO();
+        var dossier = TestData.GetSampleDossier();
+
+        var requestsInDossier = dossier.CourseGroupingRequests.Count();
+
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingByCommonIdentifier(dto.CourseGrouping.CommonIdentifier))
+            .ReturnsAsync(TestData.GetSampleCourseGrouping());
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(dossier);
+        courseGroupingRepository.Setup(cgr => cgr.SaveCourseGroupingRequest(It.IsAny<CourseGroupingRequest>())).ReturnsAsync(true);
+
+        var request = await courseGroupingService.InitiateCourseGroupingModification(dto);
+
+        Assert.AreEqual(requestsInDossier + 1, dossier.CourseGroupingRequests.Count());
+        Assert.AreEqual(RequestType.ModificationRequest, request.RequestType);
+        Assert.AreEqual(CourseGroupingStateEnum.CourseGroupingChangeProposal, request.CourseGrouping!.State);
     }
 }
