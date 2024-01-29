@@ -56,7 +56,7 @@ public class DossierTest
     [TestMethod]
     public void RejectDossier_ThatIsInReview_Rejects()
     {
-        var dossier = TestData.GetSampleDossier();
+        var dossier = TestData.GetSampleDossierInInitialStage();
         dossier.State = DossierStateEnum.InReview;
 
         dossier.MarkAsRejected();
@@ -70,7 +70,7 @@ public class DossierTest
     [DataRow(DossierStateEnum.Approved)]
     public void RejectDossier_ThatIsNotInReview_Throws(DossierStateEnum state)
     {
-        var dossier = TestData.GetSampleDossier();
+        var dossier = TestData.GetSampleDossierInInitialStage();
 
         dossier.State = state;
 

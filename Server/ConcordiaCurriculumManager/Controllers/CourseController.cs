@@ -223,4 +223,38 @@ public class CourseController : Controller
         _logger.LogInformation(string.Join(",", courseDeletionRequestDTOs));
         return Ok(courseDeletionRequestDTOs);
     }
+
+    [HttpGet("{id}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course data retrieved", typeof(CourseDataDTO))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Course not found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult<CourseDataDTO>> GetCourseById([FromRoute, Required] Guid id)
+    {
+        var course = await _courseService.GetCourseByIdAsync(id);
+        if (course == null)
+        {
+            _logger.LogInformation($"Course with ID: {id} not found.");
+            return NotFound();
+        }
+
+        var courseDetailsDto = _mapper.Map<CourseDataDTO>(course);
+        return Ok(courseDetailsDto);
+    }
+
+    [HttpGet("BySubject/{subjectCode}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Courses for the specified subject retrieved", typeof(IEnumerable<CourseDataDTO>))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Subject not found")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult<IEnumerable<CourseDataDTO>>> GetCoursesBySubject(string subjectCode)
+    {
+        var courses = await _courseService.GetCoursesBySubjectAsync(subjectCode);
+
+        if (courses == null || !courses.Any())
+        {
+            return NotFound($"No courses found for subject: {subjectCode}");
+        }
+
+        var courseDtos = _mapper.Map<IEnumerable<CourseDataDTO>>(courses);
+        return Ok(courseDtos);
+    }
 }

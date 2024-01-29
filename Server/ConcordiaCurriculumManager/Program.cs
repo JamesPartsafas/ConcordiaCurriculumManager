@@ -87,9 +87,7 @@ public class Program
             .Enrich.FromLogContext();
         });
 
-
         var senderEmailSettings = builder.Configuration.GetSection(SenderEmailSettings.SectionName).Get<SenderEmailSettings>();
-
         if (senderEmailSettings is null || string.IsNullOrWhiteSpace(senderEmailSettings.SenderSMTPHost) || string.IsNullOrWhiteSpace(senderEmailSettings.SenderEmail) || string.IsNullOrWhiteSpace(senderEmailSettings.SenderPassword) || senderEmailSettings.SenderSMTPPort <= 0)
         {
             throw new ArgumentException("Invalid Sender Email Settings: SenderSMTPHost, SenderEmail, and SenderPassword are mandatory");
@@ -206,5 +204,6 @@ public class Program
         services.AddScoped<ICourseGroupingRepository, CourseGroupingRepository>();
         services.AddScoped<IDossierRepository, DossierRepository>();
         services.AddScoped<IDossierReviewRepository, DossierReviewRepository>();
+        services.AddScoped<ICourseIdentifiersRepository, CourseIdentifiersRepository>();
     }
 }

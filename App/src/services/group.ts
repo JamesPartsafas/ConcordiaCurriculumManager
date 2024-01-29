@@ -50,3 +50,11 @@ export function AddGroupMaster(gid: string, uid: string): Promise<void> {
 export function RemoveGroupMaster(gid: string, uid: string): Promise<void> {
     return axios.delete("/Group/" + gid + "/masters/" + uid);
 }
+
+export function UpdateGroup(id: string, dto: GroupCreateDTO): Promise<void> {
+    return axios.put(`/Group/${id}`, dto);
+}
+
+export function DeleteGroup(id: string): Promise<void> {
+    return axios.delete(`/Group/${id}`);
+}

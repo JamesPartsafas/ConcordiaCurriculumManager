@@ -34,6 +34,7 @@ public interface IDossierRepository
     public Task<bool> CheckIfCourseRequestExists(Guid dossierId, string subject, string catalog);
     public Task<IList<Course>> GetChangesAcrossAllDossiers();
     public Task<User> GetDossierInitiator(Guid dossierId);
+    public Task<IList<Dossier>> GetAllNonApprovedDossiers();
 }
 
 public class DossierRepository : IDossierRepository
@@ -228,7 +229,9 @@ public class DossierRepository : IDossierRepository
         return await _dbContext.Dossiers
             .Include(d => d.ApprovalStages)
             .ThenInclude(a => a.Group)
-            .Where(d => d.ApprovalStages.Where(a => a.IsCurrentStage).First().Group!.Members.Any(m => m.Id.Equals(userId)))
+            .Where(d => d.ApprovalStages.Where(a => a.IsCurrentStage).First()
+                .Group!.Members.Any(m => m.Id.Equals(userId))
+                && d.State == DossierStateEnum.InReview)
             .ToListAsync();
     }
 
@@ -283,5 +286,15 @@ public class DossierRepository : IDossierRepository
         }
 
         return dossier.Initiator;
+    }
+
+    public async Task<IList<Dossier>> GetAllNonApprovedDossiers()
+    {
+        return await _dbContext.Dossiers
+            .Where(d => d.State == DossierStateEnum.Created || d.State == DossierStateEnum.InReview)
+            .Include(d => d.CourseCreationRequests).ThenInclude(ccr => ccr.NewCourse)
+            .Include(d => d.CourseModificationRequests).ThenInclude(cmr => cmr.Course)
+            .Include(d => d.CourseDeletionRequests).ThenInclude(cdr => cdr.Course)
+            .ToListAsync();
     }
 }

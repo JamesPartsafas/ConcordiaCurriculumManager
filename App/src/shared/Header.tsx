@@ -276,4 +276,8 @@ const NAV_ITEMS: Array<NavItem> = [
         label: "Groups",
         href: "#",
     },
+    {
+        label: "Course info",
+        href: "/CourseBrowser",
+    },
 ];

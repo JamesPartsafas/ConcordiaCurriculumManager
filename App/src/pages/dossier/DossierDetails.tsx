@@ -48,6 +48,7 @@ import EditCourseModal from "./EditCourseModal";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import EditApprovalStagesModal from "./EditApprovalStagesModal";
 import { UserContext } from "../../App";
+import { UserRoles } from "../../models/user";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
@@ -287,19 +288,59 @@ export default function DossierDetails() {
                 <Button
                     style="primary"
                     variant="outline"
+                    width="fit-content"
                     height="40px"
-                    width="100px"
+                    ml="2"
+                    isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                    onClick={() => {
+                        navigate(BaseRoutes.DossiersToReview);
+                    }}
+                >
+                    Dossiers To Review
+                </Button>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    ml="2"
                     onClick={() => navigate(BaseRoutes.Dossiers)}
                 >
-                    Back
+                    My Dossiers
                 </Button>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    ml="2"
+                    onClick={() => navigate(BaseRoutes.DossierReport.replace(":dossierId", dossierId))}
+                >
+                    Dossier Report
+                </Button>
+                {dossierStateToString(dossierDetails) != "Created" && (
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        height="40px"
+                        width="fit-content"
+                        ml="2"
+                        onClick={() => navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId))}
+                    >
+                        Dossier Review
+                    </Button>
+                )}
                 <div style={{ margin: "auto", width: "fit-content" }}>
-                    <Heading color={"brandRed"}>{dossierDetails?.title}</Heading>
-                    <Kbd>{dossierDetails?.id}</Kbd>
-                    <Text>{dossierDetails?.description}</Text>
+                    <Heading textAlign={"center"} color={"brandRed"}>
+                        {dossierDetails?.title}
+                    </Heading>
+                    Id: <Kbd>{dossierDetails?.id}</Kbd>
+                    <Box p={"8px 16px"} mb={3} mt={2} width={"100%"} backgroundColor={"gray.100"} borderRadius={"lg"}>
+                        {dossierDetails?.description}
+                    </Box>
                     <Text>state: {dossierStateToString(dossierDetails)}</Text>
-                    <Text>created: {dossierDetails?.createdDate?.toString()}</Text>
-                    <Text>updated: {dossierDetails?.modifiedDate?.toString()}</Text>
+                    <Text>created: {new Date(dossierDetails?.createdDate)?.toLocaleString()}</Text>
+                    <Text>updated: {new Date(dossierDetails?.modifiedDate)?.toLocaleString()}</Text>
                 </div>
                 <Box backgroundColor={"brandRed"} m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
                     <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
@@ -660,7 +701,6 @@ export default function DossierDetails() {
                         Add Deletion Request
                     </Button>
                 </Box>
-
                 <Box
                     mt={2}
                     p={2}
@@ -697,7 +737,6 @@ export default function DossierDetails() {
                         Edit
                     </Button>
                 </Box>
-
                 {showApprovalStagesModal && (
                     <EditApprovalStagesModal
                         open={showApprovalStagesModal}

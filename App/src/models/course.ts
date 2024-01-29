@@ -41,13 +41,13 @@ export interface Course {
     resourceImplication: string;
     courseID?: number;
     comment: string;
+    version: number;
 }
 
 export interface newCourse extends Course {
     id: string;
     createdDate: Date;
     modifiedDate: Date;
-    version: number;
     published: boolean;
     courseState: number;
 }
@@ -56,7 +56,6 @@ export interface ModifiedCourse extends Course {
     id: string;
     createdDate: Date;
     modifiedDate: Date;
-    version: number;
     published: boolean;
     courseState: number;
 }
@@ -65,7 +64,6 @@ export interface DeletedCourse extends Course {
     id: string;
     createdDate: Date;
     modifiedDate: Date;
-    version: number;
     published: boolean;
     courseState: number;
 }
@@ -76,6 +74,7 @@ export interface CourseRequest {
     rationale: string;
     resourceImplication: string;
     comment: string;
+    conflict: string;
     createdDate: Date;
     modifiedDate: Date;
 }

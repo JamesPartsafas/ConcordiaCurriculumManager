@@ -19,6 +19,7 @@ public class CourseServiceTest
     private CourseService courseService = null!;
     private Mock<IDossierRepository> dossierRepository = null!;
     private Mock<ICourseGroupingRepository> courseGroupingRepository = null!;
+    private Mock<ICourseIdentifiersRepository> courseIdentifierRepository = null!;
 
     [TestInitialize]
     public void TestInitialize()
@@ -28,8 +29,9 @@ public class CourseServiceTest
         dossierService = new Mock<IDossierService>();
         dossierRepository = new Mock<IDossierRepository>();
         courseGroupingRepository = new Mock<ICourseGroupingRepository>();
+        courseIdentifierRepository = new Mock<ICourseIdentifiersRepository>();
 
-        courseService = new CourseService(logger.Object, courseRepository.Object, dossierService.Object, dossierRepository.Object, courseGroupingRepository.Object);
+        courseService = new CourseService(logger.Object, courseRepository.Object, dossierService.Object, dossierRepository.Object, courseGroupingRepository.Object, courseIdentifierRepository.Object);
     }
 
     [TestMethod]
@@ -682,5 +684,69 @@ public class CourseServiceTest
         var courseData = await courseService.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog);
 
         Assert.IsNotNull(courseData);
+    }
+
+    [TestMethod]
+    public async Task GetCourseByIdAsync_ValidId_ReturnsCourse()
+    {
+        var expectedCourse = TestData.GetSampleCourse();
+        var courseId = expectedCourse.Id;
+
+        courseRepository.Setup(repo => repo.GetCourseByIdAsync(courseId)).ReturnsAsync(expectedCourse);
+
+        var result = await courseService.GetCourseByIdAsync(courseId);
+
+        Assert.IsNotNull(result, "The course should not be null.");
+        Assert.AreEqual(expectedCourse, result, "The retrieved course does not match the expected course.");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException), "A NotFoundException should be thrown when the course does not exist.")]
+    public async Task GetCourseByIdAsync_InvalidId_ThrowsNotFoundException()
+    {
+        var nonExistentCourseId = Guid.NewGuid();
+        courseRepository.Setup(repo => repo.GetCourseByIdAsync(nonExistentCourseId)).ReturnsAsync((Course?)null);
+
+        var result = await courseService.GetCourseByIdAsync(nonExistentCourseId);
+
+        Assert.Fail("Expected a NotFoundException to be thrown.");
+    }
+
+    [TestMethod]
+    public async Task GetCoursesBySubjectAsync_ReturnsCoursesForSubject()
+    {
+        var subjectCode = "SOEN";
+        var id = Guid.NewGuid();
+        var courses = new List<Course>
+        {
+            new Course {
+                Id = Guid.NewGuid(),
+                CourseID = 1000,
+                Subject = "SOEN",
+                Catalog = "490",
+                Title = "Capstone",
+                Description = "Curriculum manager building simulator",
+                CreditValue = "6",
+                PreReqs = "SOEN 390",
+                CourseNotes = "Lots of fun",
+                Career = CourseCareerEnum.UGRD,
+                EquivalentCourses = "",
+                CourseState = CourseStateEnum.NewCourseProposal,
+                Version = 1,
+                Published = true,
+                CourseCourseComponents = CourseCourseComponent.GetComponentCodeMapping(new Dictionary<ComponentCodeEnum, int?>
+                    { { ComponentCodeEnum.LEC, 3 }, { ComponentCodeEnum.WKS, 5 } },
+                    id
+                )
+            }
+        };
+
+        courseRepository.Setup(repo => repo.GetCoursesBySubjectAsync(subjectCode))
+            .ReturnsAsync(courses);
+
+        var result = await courseService.GetCoursesBySubjectAsync(subjectCode);
+
+        courseRepository.Verify(repo => repo.GetCoursesBySubjectAsync(subjectCode), Times.Once);
+        Assert.AreEqual(courses.Count, result.Count());
     }
 }

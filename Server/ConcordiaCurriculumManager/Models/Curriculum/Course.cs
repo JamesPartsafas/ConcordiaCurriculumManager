@@ -1,6 +1,7 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using NpgsqlTypes;
+using System.Diagnostics.Contracts;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum;
 
@@ -129,6 +130,30 @@ public class Course : BaseModel
             CourseState = CourseStateEnum.CourseDeletionProposal,
             Version = null,
             Published = false,
+            CourseCourseComponents = CourseCourseComponent.CloneForDeletionRequest(course.CourseCourseComponents, newId),
+            SupportingFiles = course.SupportingFiles,
+        };
+    }
+
+    public static Course CloneCourse(Course course)
+    {
+        var newId = Guid.NewGuid();
+        return new Course
+        {
+            Id = newId,
+            CourseID = course.CourseID,
+            Subject = course.Subject,
+            Catalog = course.Catalog,
+            Title = course.Title,
+            Description = course.Description,
+            CreditValue = course.CreditValue,
+            PreReqs = course.PreReqs,
+            Career = course.Career,
+            EquivalentCourses = course.EquivalentCourses,
+            CourseNotes = course.CourseNotes,
+            CourseState = course.CourseState,
+            Version = course.Version,
+            Published = course.Published,
             CourseCourseComponents = CourseCourseComponent.CloneForDeletionRequest(course.CourseCourseComponents, newId),
             SupportingFiles = course.SupportingFiles,
         };

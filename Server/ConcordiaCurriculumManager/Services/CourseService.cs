@@ -2,10 +2,12 @@
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using Microsoft.AspNetCore.Mvc.Formatters.Xml;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Data;
 
@@ -28,6 +30,8 @@ public interface ICourseService
     public Task DeleteCourseDeletionRequest(Guid courseRequestId);
     public Task<Course> GetCourseDataWithSupportingFilesOrThrowOnDeleted(string subject, string catalog);
     public Task<ICollection<CourseVersion>> GetCourseVersions(Dossier dossier);
+    public Task<Course> GetCourseByIdAsync(Guid id);
+    public Task<IEnumerable<Course>> GetCoursesBySubjectAsync(string subjectCode);
 }
 
 public class CourseService : ICourseService
@@ -37,19 +41,22 @@ public class CourseService : ICourseService
     private readonly IDossierService _dossierService;
     private readonly IDossierRepository _dossierRepository;
     private readonly ICourseGroupingRepository _courseGroupingRepository;
+    private readonly ICourseIdentifiersRepository _courseIdentifiersRepository;
 
     public CourseService(
         ILogger<CourseService> logger,
         ICourseRepository courseRepository,
         IDossierService dossierService,
         IDossierRepository dossierRepository,
-        ICourseGroupingRepository courseGroupingRepository)
+        ICourseGroupingRepository courseGroupingRepository,
+        ICourseIdentifiersRepository courseIdentifierRepository)
     {
         _logger = logger;
         _courseRepository = courseRepository;
         _dossierService = dossierService;
         _dossierRepository = dossierRepository;
         _courseGroupingRepository = courseGroupingRepository;
+        _courseIdentifiersRepository = courseIdentifierRepository;
     }
 
     public IEnumerable<CourseCareerDTO> GetAllCourseCareers()
@@ -82,7 +89,7 @@ public class CourseService : ICourseService
 
     public async Task<Course> GetCourseDataOrThrowOnDeleted(string subject, string catalog)
     {
-        var course = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog) 
+        var course = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog)
             ?? throw new InvalidInputException($"The course {subject}-{catalog} does not exist.");
 
         if (course.CourseState == CourseStateEnum.Deleted)
@@ -123,13 +130,28 @@ public class CourseService : ICourseService
 
         Dossier dossier = await _dossierService.GetDossierForUserOrThrow(initiation.DossierId, userId);
 
-        int concordiaCourseId = courseFromDb != null ? courseFromDb.CourseID : (await _courseRepository.GetMaxCourseId()) + 1;
+        var courseInProposal = await _courseRepository.GetCourseInProposalBySubjectAndCatalog(initiation.Subject, initiation.Catalog);
+
+        int concordiaCourseId;
+        if (courseFromDb != null) concordiaCourseId = courseFromDb.CourseID;
+        else if (courseInProposal != null) concordiaCourseId = courseInProposal.CourseID;
+        else concordiaCourseId = (await _courseRepository.GetMaxCourseId()) + 1;
 
         var course = Course.CreateCourseFromDTOData(initiation, concordiaCourseId, null);
 
+        if (courseInProposal is null && courseFromDb is null)
+        {
+            var courseIdentifier = new CourseIdentifier
+            {
+                Id = Guid.NewGuid(),
+                ConcordiaCourseId = course.CourseID
+            };
+            await _courseIdentifiersRepository.SaveCourseIdentifier(courseIdentifier);
+        }
+
         await SaveCourseForUserOrThrow(course, userId);
 
-        var courseCreationRequest = new CourseCreationRequest 
+        var courseCreationRequest = new CourseCreationRequest
         {
             Id = Guid.NewGuid(),
             NewCourseId = course.Id,
@@ -214,7 +236,7 @@ public class CourseService : ICourseService
     }
 
     public async Task<CourseCreationRequest?> EditCourseCreationRequest(EditCourseCreationRequestDTO edit)
-    { 
+    {
         var courseCreationRequest = await _dossierService.GetCourseCreationRequest(edit.Id);
 
         courseCreationRequest.EditRequestData(edit);
@@ -262,7 +284,7 @@ public class CourseService : ICourseService
         {
             throw new Exception($"Error deleting ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
         }
-        
+
         _logger.LogInformation($"Deleted ${typeof(CourseCreationRequest)} ${courseCreationRequest.Id}");
     }
 
@@ -347,5 +369,21 @@ public class CourseService : ICourseService
             throw new BadRequestException(
                 $"A deletion request cannot be made for {course.Subject} {course.Catalog} as it is part of the {grouping.Name} course grouping"
             );
+    }
+
+    public async Task<Course> GetCourseByIdAsync(Guid id)
+    {
+        var course = await _courseRepository.GetCourseByIdAsync(id);
+        if (course == null)
+        {
+            throw new NotFoundException($"Course with ID: {id} was not found.");
+        }
+
+        return course;
+    }
+
+    public async Task<IEnumerable<Course>> GetCoursesBySubjectAsync(string subjectCode)
+    {
+        return await _courseRepository.GetCoursesBySubjectAsync(subjectCode);
     }
 }
