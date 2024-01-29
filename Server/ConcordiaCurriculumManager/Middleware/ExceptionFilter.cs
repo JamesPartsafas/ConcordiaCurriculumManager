@@ -1,4 +1,5 @@
 using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Middleware.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Serilog;
@@ -38,6 +39,11 @@ public class ExceptionHandlerFilter : IExceptionFilter
         {
             _logger.LogInformation(unhandledException, $"A BadRequest exception was handled: {unhandledException.Message}");
             contextResult.StatusCode = Convert.ToInt32(HttpStatusCode.BadRequest);
+        }
+        else if (unhandledExceptionType == typeof(ServiceUnavailableException))
+        {
+            _logger.LogInformation(unhandledException, $"A ServiceUnavailable exception was handled: {unhandledException.Message}");
+            contextResult.StatusCode = Convert.ToInt32(HttpStatusCode.ServiceUnavailable);
         }
         else
         {

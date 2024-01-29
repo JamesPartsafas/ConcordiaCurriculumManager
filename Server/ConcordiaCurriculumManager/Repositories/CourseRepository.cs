@@ -1,6 +1,5 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum;
-using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
