@@ -18,7 +18,6 @@ export default function CourseGrouping() {
         GetCourseGrouping(CourseGroupingId)
             .then(
                 (response) => {
-                    console.log(response.data);
                     setCourseGrouping(response.data);
                 },
                 (rej) => {
@@ -65,12 +64,34 @@ export default function CourseGrouping() {
                 ))}
 
                 {courseGrouping?.subGroupings.map((subGrouping, index) => (
-                    <Box ml={2} mb={5}>
-                        <Heading color={"brandRed"} mb={3} key={index}>
+                    <Box ml={2} mb={5} key={index}>
+                        <Heading color={"brandRed"} mb={3}>
                             {subGrouping.name} ({parseFloat(subGrouping.requiredCredits)} credits)
                         </Heading>
 
                         <Text>{subGrouping?.description}</Text>
+
+                        {/* level 2 */}
+                        {subGrouping?.subGroupings.map((subGrouping, index) => (
+                            <Box ml={5} mt={5} mb={5} key={index}>
+                                <Heading size={"md"} mb={3}>
+                                    {subGrouping.name}
+                                </Heading>
+
+                                <Text>{subGrouping?.description}</Text>
+
+                                <UnorderedList ml={12} mt={2}>
+                                    {subGrouping.courses.map((course, index) => (
+                                        <ListItem key={index}>
+                                            <Text mb={2}>
+                                                {course.subject + " " + course.catalog + " " + course.title} (
+                                                {parseFloat(course.creditValue)})
+                                            </Text>
+                                        </ListItem>
+                                    ))}
+                                </UnorderedList>
+                            </Box>
+                        ))}
 
                         <UnorderedList ml={12}>
                             {subGrouping.courses.map((course, index) => (
