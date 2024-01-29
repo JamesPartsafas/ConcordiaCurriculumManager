@@ -84,6 +84,14 @@ public static class TestData
         return course;
     }
 
+    public static Course GetSamplePublisheddCourse()
+    {
+        var course = GetSampleAcceptedCourse(); ;
+        course.Published = true;
+
+        return course;
+    }
+
     // REQUEST DATA
 
     public static CourseCreationInitiationDTO GetSampleCourseCreationInitiationDTO(Dossier dossier)

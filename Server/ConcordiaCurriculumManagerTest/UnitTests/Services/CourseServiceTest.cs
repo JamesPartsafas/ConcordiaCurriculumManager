@@ -753,12 +753,15 @@ public class CourseServiceTest
     [TestMethod]
     public async Task PublishCourse_ValidInput_ReturnsPublishedCourse()
     {
-        var course = TestData.GetSampleAcceptedCourse();
+        var newCourse = TestData.GetSampleAcceptedCourse();
+        var oldCourse = TestData.GetSamplePublisheddCourse();
 
-        courseRepository.Setup(repo => repo.GetCourseBySubjectAndCatalog(course.Subject, course.Catalog)).ReturnsAsync(course);
-        courseRepository.Setup(repo => repo.UpdateCourse(course)).ReturnsAsync(true);
+        courseRepository.Setup(repo => repo.GetCourseBySubjectAndCatalog(newCourse.Subject, newCourse.Catalog)).ReturnsAsync(newCourse);
+        courseRepository.Setup(repo => repo.GetPublishedVersion(oldCourse.Subject, oldCourse.Catalog)).ReturnsAsync(oldCourse);
+        courseRepository.Setup(repo => repo.UpdateCourse(newCourse)).ReturnsAsync(true);
+        courseRepository.Setup(repo => repo.UpdateCourse(oldCourse)).ReturnsAsync(true);
 
-        var result = await courseService.PublishCourse(course.Subject, course.Catalog);
+        var result = await courseService.PublishCourse(newCourse.Subject, newCourse.Catalog);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(true, result.Published);
