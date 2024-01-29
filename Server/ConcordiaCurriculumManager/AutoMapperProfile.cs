@@ -4,6 +4,7 @@ using ConcordiaCurriculumManager.DTO.CourseGrouping;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingRequests;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
@@ -53,6 +54,8 @@ public class AutoMapper : Profile
             .ForMember(dest => dest.ApprovalStages, opt => opt.MapFrom(d => d.Dossier.ApprovalStages));
         CreateMap<CourseGroupingReference, CourseGroupingReferenceDTO>();
         CreateMap<CourseGrouping, CourseGroupingDTO>();
+        CreateMap<CourseIdentifier, CourseIdentifierDTO>();
+        CreateMap<CourseGroupingRequest, CourseGroupingRequestDTO>();
         CreateMap<CourseChanges, CourseChangesDTO>();
     }
 }
