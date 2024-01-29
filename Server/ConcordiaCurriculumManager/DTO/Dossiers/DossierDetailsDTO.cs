@@ -1,4 +1,5 @@
-﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
+﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingRequests;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 
@@ -21,6 +22,8 @@ public class DossierDetailsDTO
     public List<CourseModificationRequestCourseDetailsDTO> CourseModificationRequests { get; set; } = new List<CourseModificationRequestCourseDetailsDTO>();
 
     public List<CourseDeletionRequestCourseDetailsDTO> CourseDeletionRequests { get; set; } = new List<CourseDeletionRequestCourseDetailsDTO>();
+
+    public List<CourseGroupingRequestDTO> CourseGroupingRequests { get; set; } = new List<CourseGroupingRequestDTO>();
 
     public List<ApprovalStageDTO> ApprovalStages { get; set; } = new List<ApprovalStageDTO>();
 

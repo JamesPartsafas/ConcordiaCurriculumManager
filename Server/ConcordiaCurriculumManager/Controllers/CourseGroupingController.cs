@@ -1,13 +1,19 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO;
 using ConcordiaCurriculumManager.DTO.CourseGrouping;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingRequests;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManager.Filters.Exceptions;
-using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
+using ConcordiaCurriculumManager.Models.Users;
+using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
 
 namespace ConcordiaCurriculumManager.Controllers;
 
@@ -59,5 +65,18 @@ public class CourseGroupingController : Controller
         var courseGroupingDTOs = _mapper.Map<ICollection<CourseGroupingDTO>>(courseGroupings);
 
         return Ok(courseGroupingDTOs);
+    }
+
+    [HttpPost(nameof(InitiateCourseGroupingModification) + "/{dossierId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Course grouping modification created successfully", typeof(CourseGroupingRequestDTO))]
+    public async Task<ActionResult> InitiateCourseGroupingModification([FromBody, Required] CourseGroupingModificationRequestDTO dto)
+    {
+        var grouping = await _courseGroupingService.InitiateCourseGroupingModification(dto);
+        var groupingDTO = _mapper.Map<CourseGroupingRequestDTO>(grouping);
+
+        return Created($"/{nameof(InitiateCourseGroupingModification)}", groupingDTO);
     }
 }

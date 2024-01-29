@@ -1,5 +1,5 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum;
-using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
@@ -34,6 +34,8 @@ public class CCMDbContext : DbContext
     public DbSet<CourseModificationRequest> CourseModificationRequests { get; set; }
 
     public DbSet<CourseDeletionRequest> CourseDeletionRequests { get; set; }
+
+    public DbSet<CourseGroupingRequest> CourseGroupingRequest { get; set; }
 
     public DbSet<Dossier> Dossiers { get; set; }
 
@@ -115,6 +117,11 @@ public class CCMDbContext : DbContext
             .WithOne(request => request.Course)
             .HasForeignKey<CourseDeletionRequest>(dossier => dossier.CourseId);
 
+        modelBuilder.Entity<CourseGrouping>()
+            .HasOne(grouping => grouping.CourseGroupingRequest)
+            .WithOne(request => request.CourseGrouping)
+            .HasForeignKey<CourseGroupingRequest>(request => request.CourseGroupingId);
+
         modelBuilder.Entity<User>()
           .HasMany(user => user.Dossiers)
           .WithOne(dossier => dossier.Initiator)
@@ -132,6 +139,11 @@ public class CCMDbContext : DbContext
 
         modelBuilder.Entity<Dossier>()
             .HasMany(dossier => dossier.CourseDeletionRequests)
+            .WithOne(request => request.Dossier)
+            .HasForeignKey(request => request.DossierId);
+
+        modelBuilder.Entity<Dossier>()
+            .HasMany(dossier => dossier.CourseGroupingRequests)
             .WithOne(request => request.Dossier)
             .HasForeignKey(request => request.DossierId);
     }

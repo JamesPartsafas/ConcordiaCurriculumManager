@@ -1,4 +1,6 @@
-﻿using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
+﻿using ConcordiaCurriculumManager.DTO.CourseGrouping;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingRequests;
+using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
@@ -24,6 +26,8 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
         public List<CourseModificationRequest> CourseModificationRequests { get; set; } = new List<CourseModificationRequest>();
 
         public List<CourseDeletionRequest> CourseDeletionRequests { get; set; } = new List<CourseDeletionRequest>();
+
+        public IList<CourseGroupingRequest> CourseGroupingRequests { get; set; } = new List<CourseGroupingRequest>();
 
         public IList<ApprovalStage> ApprovalStages { get; set; } = new List<ApprovalStage>();
 
@@ -142,6 +146,22 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
         {
             if (ApprovalStages.Count == 0)
                 throw new BadRequestException($"The approval stages have not been loaded for the dossier {Id}");
+        }
+
+        public CourseGroupingRequest CreateCourseGroupingModificationRequest(CourseGroupingModificationRequestDTO dto)
+        {
+            VerifyDossierDoesNotContainDuplicateGroupingRequests(dto.CourseGrouping);
+
+            var grouping = CourseGroupingRequest.CreateCourseGroupingModificationRequestFromDTO(dto);
+            CourseGroupingRequests.Add(grouping);
+
+            return grouping;
+        }
+
+        private void VerifyDossierDoesNotContainDuplicateGroupingRequests(CourseGroupingModificationInputDTO dto)
+        {
+            if (CourseGroupingRequests.Any(request => request.CourseGrouping!.CommonIdentifier.Equals(dto.CommonIdentifier)))
+                throw new BadRequestException("The dossier already contains a request for this course grouping");
         }
     }
 

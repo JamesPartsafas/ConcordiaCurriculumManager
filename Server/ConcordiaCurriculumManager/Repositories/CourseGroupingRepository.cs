@@ -1,5 +1,6 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum;
-using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,7 @@ namespace ConcordiaCurriculumManager.Repositories;
 
 public interface ICourseGroupingRepository
 {
+    public Task<bool> SaveCourseGroupingRequest(CourseGroupingRequest courseGroupingRequest);
     public Task<CourseGrouping?> GetCourseGroupingById(Guid groupingId);
     public Task<CourseGrouping?> GetCourseGroupingByCommonIdentifier(Guid commonId);
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchool(SchoolEnum school);
@@ -21,6 +23,13 @@ public class CourseGroupingRepository : ICourseGroupingRepository
     public CourseGroupingRepository(CCMDbContext dbContext)
     {
         _dbContext = dbContext;
+    }
+
+    public async Task<bool> SaveCourseGroupingRequest(CourseGroupingRequest courseGroupingRequest)
+    {
+        await _dbContext.CourseGroupingRequest.AddAsync(courseGroupingRequest);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
     }
 
     public async Task<CourseGrouping?> GetCourseGroupingById(Guid groupingId) => await _dbContext.CourseGroupings
