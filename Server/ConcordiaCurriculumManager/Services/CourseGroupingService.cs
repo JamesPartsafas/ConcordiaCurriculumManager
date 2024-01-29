@@ -6,6 +6,7 @@ using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Repositories;
+using System.Linq;
 
 namespace ConcordiaCurriculumManager.Services;
 
@@ -16,6 +17,7 @@ public interface ICourseGroupingService
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchoolNonRecursive(SchoolEnum school);
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name);
     public Task<CourseGroupingRequest> InitiateCourseGroupingModification(CourseGroupingModificationRequestDTO dto);
+    public Task DeleteCourseGroupingRequest(Guid dossierId, Guid requestId);
 }
 
 public class CourseGroupingService : ICourseGroupingService
@@ -114,5 +116,22 @@ public class CourseGroupingService : ICourseGroupingService
         var grouping = await _courseGroupingRepository.GetCourseGroupingByCommonIdentifier(dto.CommonIdentifier);
         if (grouping is null)
             throw new BadRequestException($"The course grouping with the identifier {dto.CommonIdentifier} does not exist");
+    }
+
+    public async Task DeleteCourseGroupingRequest(Guid dossierId, Guid requestId)
+    {
+        var dossier = await _dossierService.GetDossierDetailsByIdOrThrow(dossierId);
+
+        var request = dossier.GetGroupingRequestForDeletion(requestId);
+
+        var requestDeleted = await _courseGroupingRepository.DeleteCourseGroupingRequest(request);
+
+        if (requestDeleted)
+            _logger.LogInformation($"The course grouping request in dossier {dossier.Id} with Id {requestId} was deleted");
+        else
+        {
+            _logger.LogError($"Course grouping {requestId} for dossier {dossier.Id} failed to be deleted");
+            throw new ServiceUnavailableException("The course grouping could not be deleted");
+        }
     }
 }
