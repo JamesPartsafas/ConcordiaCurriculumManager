@@ -3,16 +3,10 @@ using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 
 namespace ConcordiaCurriculumManager.DTO.CourseGrouping;
 
-public class CourseGroupingDTO
+public class CourseGroupingDTO : AbstractCourseGroupingDTO
 {
     public Guid Id { get; set; }
     public required Guid CommonIdentifier { get; set; }
-    public required string Name { get; set; }
-    public required string RequiredCredits { get; set; }
-    public required bool IsTopLevel { get; set; }
-    public required SchoolEnum School { get; set; }
-    public string? Description { get; set; }
-    public string? Notes { get; set; }
     public required CourseGroupingStateEnum State { get; set; }
     public int? Version { get; set; }
     public required bool Published { get; set; }
