@@ -39,6 +39,7 @@ public class AutoMapper : Profile
         CreateMap<CourseCreationRequest, CourseCreationRequestCourseDetailsDTO>().ReverseMap();
         CreateMap<CourseModificationRequest, CourseModificationRequestCourseDetailsDTO>().ReverseMap();
         CreateMap<ApprovalStage, ApprovalStageDTO>();
+        CreateMap<ApprovalHistory, ApprovalHistoryDTO>();
         CreateMap<DossierDiscussion, DossierDiscussionDTO>().ReverseMap();
         CreateMap<CreateDossierDiscussionMessageDTO, DiscussionMessage>();
         CreateMap<DiscussionMessage, DossierDiscussionMessageDTO>();
