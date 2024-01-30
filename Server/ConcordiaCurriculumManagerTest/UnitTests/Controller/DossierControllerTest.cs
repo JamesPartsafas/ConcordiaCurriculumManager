@@ -3,6 +3,7 @@ using ConcordiaCurriculumManager.Controllers;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using Microsoft.AspNetCore.Mvc;
@@ -165,6 +166,30 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services
 
             Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
             mapper.Verify(mock => mock.Map<CourseChangesDTO>(courseChanges), Times.Once());
+        }
+
+        [TestMethod]
+        public async Task SearchDossiers_ValidCall_Returns200()
+        {
+            var dossier = TestData.GetSampleDossierInInitialStage();
+            var dossiers = new List<Dossier> { dossier };
+            dossierService.Setup(d => d.SearchDossiers(dossier.Title, dossier.State, dossier.Id)).ReturnsAsync(dossiers);
+
+            var actionResult = await dossierController.SearchDossiers(dossier.Title, dossier.State, dossier.Id);
+            var objectResult = (ObjectResult)actionResult;
+
+            Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+            mapper.Verify(mock => mock.Map<List<DossierDTO>>(dossiers), Times.Once());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidInputException))]
+        public async Task SearchDossiers_InvalidCall_ReturnsInvalidException()
+        {
+            var dossier = TestData.GetSampleDossier();
+            dossierService.Setup(d => d.SearchDossiers(It.IsAny<string>(), It.IsAny<DossierStateEnum>(), It.IsAny<Guid>())).Throws(new InvalidInputException());
+
+            await dossierController.SearchDossiers(dossier.Title, dossier.State, dossier.Id);
         }
     }
 }
