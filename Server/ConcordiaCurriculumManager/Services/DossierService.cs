@@ -29,6 +29,7 @@ public interface IDossierService
     public Task<DossierReport> GetDossierReportByDossierId(Guid dossierId);
     public Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId);
     public Task<CourseChanges> GetChangesAcrossAllDossiers();
+    public Task<IList<Dossier>> SearchDossiers(string? title, DossierStateEnum? state, Guid? groupId);
 }
 
 public class DossierService : IDossierService
@@ -253,5 +254,14 @@ public class DossierService : IDossierService
             CourseDeletionRequests = courseDeletionRequests,
             OldCourses = oldCourses
         };
+    }
+
+    public async Task<IList<Dossier>> SearchDossiers(string? title, DossierStateEnum? state, Guid? groupId)
+    {
+        if (state != null && !state.Equals(DossierStateEnum.InReview) && groupId is not null)
+        {
+            throw new InvalidInputException("A dossier cannot be in an approval stage if its state is not under review.");
+        }
+        return await _dossierRepository.SearchDossiers(title, state, groupId);
     }
 }
