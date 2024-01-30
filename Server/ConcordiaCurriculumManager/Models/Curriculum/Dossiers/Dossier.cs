@@ -163,6 +163,16 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
             if (CourseGroupingRequests.Any(request => request.CourseGrouping!.CommonIdentifier.Equals(dto.CommonIdentifier)))
                 throw new BadRequestException("The dossier already contains a request for this course grouping");
         }
+
+        public CourseGroupingRequest GetGroupingRequestForDeletion(Guid requestId)
+        {
+            var request = CourseGroupingRequests.Where(request => request.Id.Equals(requestId)).FirstOrDefault();
+
+            if (request is null)
+                throw new BadRequestException($"The course grouping request with Id {requestId} does not exist");
+
+            return request;
+        }
     }
 
     public enum DossierStateEnum

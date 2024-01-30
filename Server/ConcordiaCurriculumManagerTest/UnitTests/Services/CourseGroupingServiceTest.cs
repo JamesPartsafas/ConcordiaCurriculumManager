@@ -184,4 +184,45 @@ public class CourseGroupingServiceTest
         Assert.AreEqual(RequestType.ModificationRequest, request.RequestType);
         Assert.AreEqual(CourseGroupingStateEnum.CourseGroupingChangeProposal, request.CourseGrouping!.State);
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task DeleteCourseGroupingRequest_RequestDoesNotExist_Throws()
+    {
+        var dossier = TestData.GetSampleDossier();
+        dossier.CourseGroupingRequests = new List<CourseGroupingRequest>();
+
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(It.IsAny<Guid>())).ReturnsAsync(dossier);
+
+        await courseGroupingService.DeleteCourseGroupingRequest(Guid.NewGuid(), Guid.NewGuid());
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ServiceUnavailableException))]
+    public async Task DeleteCourseGroupingRequest_FailsToDelete_Throws()
+    {
+        var dossier = TestData.GetSampleDossier();
+        var request = TestData.GetSampleCourseGroupingRequest();
+        dossier.CourseGroupingRequests.Add(request);
+
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
+        courseGroupingRepository.Setup(cgr => cgr.DeleteCourseGroupingRequest(request)).ReturnsAsync(false);
+
+        await courseGroupingService.DeleteCourseGroupingRequest(dossier.Id, request.Id);
+    }
+
+    [TestMethod]
+    public async Task DeleteCourseGroupingRequest_WithRequest_Succeeds()
+    {
+        var dossier = TestData.GetSampleDossier();
+        var request = TestData.GetSampleCourseGroupingRequest();
+        dossier.CourseGroupingRequests.Add(request);
+
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
+        courseGroupingRepository.Setup(cgr => cgr.DeleteCourseGroupingRequest(request)).ReturnsAsync(true);
+
+        await courseGroupingService.DeleteCourseGroupingRequest(dossier.Id, request.Id);
+
+        courseGroupingRepository.Verify(mock => mock.DeleteCourseGroupingRequest(request), Times.Once());
+    }
 }

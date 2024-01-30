@@ -79,4 +79,16 @@ public class CourseGroupingController : Controller
 
         return Created($"/{nameof(InitiateCourseGroupingModification)}", groupingDTO);
     }
+
+    [HttpDelete(nameof(DeleteCourseGroupingRequest) + "/{dossierId}" + "/{requestId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Course grouping request deleted successfully")]
+    public async Task<ActionResult> DeleteCourseGroupingRequest([FromRoute, Required] Guid dossierId, [FromRoute, Required] Guid requestId)
+    {
+        await _courseGroupingService.DeleteCourseGroupingRequest(dossierId, requestId);
+
+        return NoContent();
+    }
 }

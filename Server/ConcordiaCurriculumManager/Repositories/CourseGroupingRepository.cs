@@ -9,6 +9,7 @@ namespace ConcordiaCurriculumManager.Repositories;
 public interface ICourseGroupingRepository
 {
     public Task<bool> SaveCourseGroupingRequest(CourseGroupingRequest courseGroupingRequest);
+    public Task<bool> DeleteCourseGroupingRequest(CourseGroupingRequest courseGroupingRequest);
     public Task<CourseGrouping?> GetCourseGroupingById(Guid groupingId);
     public Task<CourseGrouping?> GetCourseGroupingByCommonIdentifier(Guid commonId);
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchool(SchoolEnum school);
@@ -28,6 +29,14 @@ public class CourseGroupingRepository : ICourseGroupingRepository
     public async Task<bool> SaveCourseGroupingRequest(CourseGroupingRequest courseGroupingRequest)
     {
         await _dbContext.CourseGroupingRequest.AddAsync(courseGroupingRequest);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteCourseGroupingRequest(CourseGroupingRequest courseGroupingRequest)
+    {
+        _dbContext.CourseGroupings.Remove(courseGroupingRequest.CourseGrouping!);
+        _dbContext.CourseGroupingRequest.Remove(courseGroupingRequest);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
