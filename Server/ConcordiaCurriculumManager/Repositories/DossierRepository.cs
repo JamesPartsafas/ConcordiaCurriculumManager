@@ -35,6 +35,7 @@ public interface IDossierRepository
     public Task<IList<Course>> GetChangesAcrossAllDossiers();
     public Task<User> GetDossierInitiator(Guid dossierId);
     public Task<IList<Dossier>> GetAllNonApprovedDossiers();
+    public Task<IList<Dossier>> SearchDossiers(string? title, DossierStateEnum? state, Guid? groupId);
 }
 
 public class DossierRepository : IDossierRepository
@@ -302,5 +303,26 @@ public class DossierRepository : IDossierRepository
             .Include(d => d.CourseModificationRequests).ThenInclude(cmr => cmr.Course)
             .Include(d => d.CourseDeletionRequests).ThenInclude(cdr => cdr.Course)
             .ToListAsync();
+    }
+
+    public async Task<IList<Dossier>> SearchDossiers(string? title, DossierStateEnum? state, Guid? groupId) 
+    {
+        var query = _dbContext.Dossiers.OrderByDescending(d => d.ModifiedDate).Where(d => true);
+
+        if (title != null)
+        {
+            query = query.Where(d => d.Title.ToLower().Contains(title.Trim().ToLower()));
+        }
+        if (state != null)
+        {
+            query = query.Where(d => d.State.Equals(state));
+        }
+        if (groupId != null)
+        {
+            query = query.Include(d => d.ApprovalStages)
+            .Where(d => d.ApprovalStages.Where(stage => stage.IsCurrentStage).First().GroupId.Equals(groupId));
+        }
+
+        return await query.ToListAsync();
     }
 }

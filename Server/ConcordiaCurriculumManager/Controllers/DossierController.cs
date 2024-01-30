@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using ConcordiaCurriculumManager.DTO;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
+using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
@@ -121,5 +124,16 @@ public class DossierController : Controller
         var changes = await _dossierService.GetChangesAcrossAllDossiers();
         var changesDTO = _mapper.Map<CourseChangesDTO>(changes);
         return Ok(changesDTO);
+    }
+
+    [HttpGet(nameof(SearchDossiers))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Dossiers have been retrived")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> SearchDossiers([FromQuery] string? title, [FromQuery] DossierStateEnum? state, [FromQuery] Guid? groupId)
+    {
+        var dossiers = await _dossierService.SearchDossiers(title, state, groupId);
+        var dossiersDTOs = _mapper.Map<List<DossierDTO>>(dossiers);
+        return Ok(dossiersDTOs);
     }
 }
