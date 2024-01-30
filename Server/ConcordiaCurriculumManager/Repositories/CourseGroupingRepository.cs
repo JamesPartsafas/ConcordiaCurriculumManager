@@ -10,6 +10,7 @@ public interface ICourseGroupingRepository
 {
     public Task<bool> SaveCourseGroupingRequest(CourseGroupingRequest courseGroupingRequest);
     public Task<bool> DeleteCourseGroupingRequest(CourseGroupingRequest courseGroupingRequest);
+    public Task<CourseGroupingRequest?> GetCourseGroupingRequestById(Guid requestId);
     public Task<CourseGrouping?> GetCourseGroupingById(Guid groupingId);
     public Task<CourseGrouping?> GetCourseGroupingByCommonIdentifier(Guid commonId);
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchool(SchoolEnum school);
@@ -40,6 +41,11 @@ public class CourseGroupingRepository : ICourseGroupingRepository
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
+
+    public async Task<CourseGroupingRequest?> GetCourseGroupingRequestById(Guid requestId) => await _dbContext.CourseGroupingRequest
+        .Where(x => x.Id.Equals(requestId))
+        .Include(r => r.CourseGrouping)
+        .FirstOrDefaultAsync();
 
     public async Task<CourseGrouping?> GetCourseGroupingById(Guid groupingId) => await _dbContext.CourseGroupings
         .Where(cg => cg.Id.Equals(groupingId))
