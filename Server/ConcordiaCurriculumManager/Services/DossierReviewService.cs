@@ -3,6 +3,7 @@ using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Security;
 using System.Runtime.ConstrainedExecution;
@@ -12,9 +13,9 @@ namespace ConcordiaCurriculumManager.Services;
 public interface IDossierReviewService
 {
     public Task SubmitDossierForReview(DossierSubmissionDTO dto);
-    public Task RejectDossier(Guid dossierId);
-    public Task ReturnDossier(Guid dossierId);
-    public Task ForwardDossier(Guid dossierId);
+    public Task RejectDossier(Guid dossierId, User user);
+    public Task ReturnDossier(Guid dossierId, User user);
+    public Task ForwardDossier(Guid dossierId, User user);
     public Task<Dossier> GetDossierWithApprovalStagesOrThrow(Guid dossierId);
     public Task<Dossier> GetDossierWithApprovalStagesAndRequestsOrThrow(Guid dossierId);
     public Task<Dossier> GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(Guid dossierId);
@@ -72,11 +73,11 @@ public class DossierReviewService : IDossierReviewService
             _logger.LogError($"Encountered error attempting to submit dossier {dossier.Id} for review");
     }
 
-    public async Task RejectDossier(Guid dossierId)
+    public async Task RejectDossier(Guid dossierId, User user)
     {
         Dossier dossier = await GetDossierWithApprovalStagesOrThrow(dossierId);
 
-        dossier.MarkAsRejected();
+        dossier.MarkAsRejected(user);
 
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
         if (isDossierSaved)
@@ -85,11 +86,11 @@ public class DossierReviewService : IDossierReviewService
             _logger.LogError($"Encountered error attempting to reject dossier {dossier.Id} from the review process");
     }
 
-    public async Task ReturnDossier(Guid dossierId)
+    public async Task ReturnDossier(Guid dossierId, User user)
     {
         Dossier dossier = await GetDossierWithApprovalStagesOrThrow(dossierId);
 
-        dossier.MarkAsReturned();
+        dossier.MarkAsReturned(user);
 
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
         if (isDossierSaved)
@@ -98,19 +99,19 @@ public class DossierReviewService : IDossierReviewService
             _logger.LogError($"Encountered error attempting to return dossier {dossier.Id} to the previous group in the review process");
     }
 
-    public async Task ForwardDossier(Guid dossierId)
+    public async Task ForwardDossier(Guid dossierId, User user)
     {
         Dossier dossier = await GetDossierWithApprovalStagesAndRequestsOrThrow(dossierId);
 
         if (dossier.IsInFinalStageOfReviewPipeline())
-            await AcceptDossierChanges(dossier);
+            await AcceptDossierChanges(dossier, user);
         else
-            await ForwardDossierToNextGroup(dossier);
+            await ForwardDossierToNextGroup(dossier, user);
     }
 
-    private async Task ForwardDossierToNextGroup(Dossier dossier)
+    private async Task ForwardDossierToNextGroup(Dossier dossier, User user)
     {
-        dossier.MarkAsForwarded();
+        dossier.MarkAsForwarded(user);
 
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
         if (isDossierSaved)
@@ -119,11 +120,11 @@ public class DossierReviewService : IDossierReviewService
             _logger.LogError($"Encountered error attempting to forward dossier {dossier.Id} to the next group in the review process");
     }
 
-    private async Task AcceptDossierChanges(Dossier dossier)
+    private async Task AcceptDossierChanges(Dossier dossier, User user)
     {
         var courseVersions = await _courseService.GetCourseVersions(dossier);
 
-        dossier.MarkAsAccepted(courseVersions);
+        dossier.MarkAsAccepted(courseVersions, user);
 
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
         var emailAddress = dossier.Initiator?.Email;
