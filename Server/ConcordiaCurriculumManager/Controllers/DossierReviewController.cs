@@ -51,7 +51,7 @@ public class DossierReviewController : Controller
     [SwaggerResponse(StatusCodes.Status200OK, "Dossier successfully rejected")]
     public async Task<ActionResult> RejectDossier([FromRoute, Required] Guid dossierId)
     {
-        User user = _userAuthenticationService.GetCurrentUser().Result;
+        User user = await _userAuthenticationService.GetCurrentUser();
         await _dossierReviewService.RejectDossier(dossierId, user);
 
         return NoContent();
@@ -64,7 +64,7 @@ public class DossierReviewController : Controller
     [SwaggerResponse(StatusCodes.Status200OK, "Dossier successfully returned")]
     public async Task<ActionResult> ReturnDossier([FromRoute, Required] Guid dossierId)
     {
-        User user = _userAuthenticationService.GetCurrentUser().Result;
+        User user = await _userAuthenticationService.GetCurrentUser();
         await _dossierReviewService.ReturnDossier(dossierId, user);
 
         return NoContent();
@@ -77,7 +77,7 @@ public class DossierReviewController : Controller
     [SwaggerResponse(StatusCodes.Status200OK, "Dossier successfully forwarded")]
     public async Task<ActionResult> ForwardDossier([FromRoute, Required] Guid dossierId)
     {
-        User user = _userAuthenticationService.GetCurrentUser().Result;
+        User user = await _userAuthenticationService.GetCurrentUser();
         await _dossierReviewService.ForwardDossier(dossierId, user);
 
         return NoContent();
