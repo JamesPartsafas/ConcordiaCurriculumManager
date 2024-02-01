@@ -67,6 +67,19 @@ public class CourseGroupingController : Controller
         return Ok(courseGroupingDTOs);
     }
 
+    [HttpPost(nameof(InitiateCourseGroupingCreation) + "/{dossierId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Course grouping creation created successfully", typeof(CourseGroupingRequestDTO))]
+    public async Task<ActionResult> InitiateCourseGroupingCreation([FromBody, Required] CourseGroupingCreationRequestDTO dto)
+    {
+        var grouping = await _courseGroupingService.InitiateCourseGroupingCreation(dto);
+        var groupingDTO = _mapper.Map<CourseGroupingRequestDTO>(grouping);
+
+        return Created($"/{nameof(InitiateCourseGroupingCreation)}", groupingDTO);
+    }
+
     [HttpPost(nameof(InitiateCourseGroupingModification) + "/{dossierId}")]
     [Authorize(Policies.IsOwnerOfDossier)]
     [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
