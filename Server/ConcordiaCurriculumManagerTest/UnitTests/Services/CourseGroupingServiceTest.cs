@@ -123,6 +123,36 @@ public class CourseGroupingServiceTest
     }
 
     [TestMethod]
+    [ExpectedException(typeof(ServiceUnavailableException))]
+    public async Task InitiateCourseGroupingCreation_FailsToSave_Throws()
+    {
+        var dto = TestData.GetSampleCourseGroupingCreationRequestDTO();
+;
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(TestData.GetSampleDossier());
+        courseGroupingRepository.Setup(cgr => cgr.SaveCourseGroupingRequest(It.IsAny<CourseGroupingRequest>())).ReturnsAsync(false);
+
+        await courseGroupingService.InitiateCourseGroupingCreation(dto);
+    }
+
+    [TestMethod]
+    public async Task InitiateCourseGroupingCreation_WithValidData_Succeeds()
+    {
+        var dto = TestData.GetSampleCourseGroupingCreationRequestDTO();
+        var dossier = TestData.GetSampleDossier();
+
+        var requestsInDossier = dossier.CourseGroupingRequests.Count();
+
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(dossier);
+        courseGroupingRepository.Setup(cgr => cgr.SaveCourseGroupingRequest(It.IsAny<CourseGroupingRequest>())).ReturnsAsync(true);
+
+        var request = await courseGroupingService.InitiateCourseGroupingCreation(dto);
+
+        Assert.AreEqual(requestsInDossier + 1, dossier.CourseGroupingRequests.Count());
+        Assert.AreEqual(RequestType.CreationRequest, request.RequestType);
+        Assert.AreEqual(CourseGroupingStateEnum.NewCourseGroupingProposal, request.CourseGrouping!.State);
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(BadRequestException))]
     public async Task InitiateCourseGroupingModification_WithNonexistentCourse_Throws()
     {
