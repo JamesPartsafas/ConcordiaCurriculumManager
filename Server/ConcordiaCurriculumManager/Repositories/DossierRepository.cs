@@ -93,6 +93,8 @@ public class DossierRepository : IDossierRepository
         .ThenInclude(a => a.Group == null ? null : a.Group.Members)
         .Include(d => d.ApprovalStages)
         .ThenInclude(a => a.Group == null ? null : a.Group.GroupMasters)
+        .Include(d => d.ApprovalHistories)
+        .ThenInclude(a => a.Group)
         .Include(dossier => dossier.Discussion)
         .ThenInclude(discussion => discussion.Messages)
         .FirstOrDefaultAsync();

@@ -166,6 +166,11 @@ public class CCMDbContext : DbContext
             .WithOne(stage => stage.Dossier)
             .HasForeignKey(stage => stage.DossierId);
 
+        modelBuilder.Entity<Dossier>()
+            .HasMany(dossier => dossier.ApprovalHistories)
+            .WithOne(stage => stage.Dossier)
+            .HasForeignKey(stage => stage.DossierId);
+
         modelBuilder.Entity<Group>()
             .HasMany(group => group.ApprovalStages)
             .WithOne(stage => stage.Group)

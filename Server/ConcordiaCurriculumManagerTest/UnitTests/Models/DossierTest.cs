@@ -1,6 +1,7 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using System;
 using System.Collections.Generic;
@@ -57,9 +58,11 @@ public class DossierTest
     public void RejectDossier_ThatIsInReview_Rejects()
     {
         var dossier = TestData.GetSampleDossierInInitialStage();
+        var user = TestData.GetSampleUser();
+
         dossier.State = DossierStateEnum.InReview;
 
-        dossier.MarkAsRejected();
+        dossier.MarkAsRejected(user);
 
         Assert.AreEqual(DossierStateEnum.Rejected, dossier.State);
     }
@@ -71,18 +74,20 @@ public class DossierTest
     public void RejectDossier_ThatIsNotInReview_Throws(DossierStateEnum state)
     {
         var dossier = TestData.GetSampleDossierInInitialStage();
+        var user = TestData.GetSampleUser();
 
         dossier.State = state;
 
-        Assert.ThrowsException<BadRequestException>(() => dossier.MarkAsRejected());
+        Assert.ThrowsException<BadRequestException>(() => dossier.MarkAsRejected(user));
     }
 
     [TestMethod]
     public void ForwardDossier_ThatIsInReview_Forwards()
     {
         var dossier = TestData.GetSampleDossierInInitialStage();
+        var user = TestData.GetSampleUser();
 
-        dossier.MarkAsForwarded();
+        dossier.MarkAsForwarded(user);
 
         var initialStage = dossier.ApprovalStages.Where(stage => stage.StageIndex == 0).First();
         var finalStage = dossier.ApprovalStages.Where(stage => stage.StageIndex == 1).First();
@@ -96,16 +101,18 @@ public class DossierTest
     public void ForwardDossier_ThatIsInFinalReviewStage_Throws()
     {
         var dossier = TestData.GetSampleDossierInFinalStage();
+        var user = TestData.GetSampleUser();
 
-        dossier.MarkAsForwarded();
+        dossier.MarkAsForwarded(user);
     }
 
     [TestMethod]
     public void AcceptDossier_ThatIsInFinalStage_MarksCompleted()
     {
         var dossier = TestData.GetSampleDossierInFinalStage();
+        var user = TestData.GetSampleUser();
 
-        dossier.MarkAsAccepted(TestData.GetSampleCourseVersionCollection());
+        dossier.MarkAsAccepted(TestData.GetSampleCourseVersionCollection(), user);
 
         var finalStage = dossier.ApprovalStages.Where(stage => stage.StageIndex == 1).First();
 
@@ -118,18 +125,21 @@ public class DossierTest
     public void AcceptDossier_ThatIsInInitialStage_Throws()
     {
         var dossier = TestData.GetSampleDossierInInitialStage();
+        var user = TestData.GetSampleUser();
 
-        dossier.MarkAsAccepted(TestData.GetSampleCourseVersionCollection());
+
+        dossier.MarkAsAccepted(TestData.GetSampleCourseVersionCollection(), user);
     }
 
     [TestMethod]
     public void ReturnDossier_ThatIsInNonInitialStage_MarksReturned()
     {
         var dossier = TestData.GetSampleDossierInFinalStage();
+        var user = TestData.GetSampleUser();
 
         var currentStage = dossier.ApprovalStages.Where(stage => stage.IsCurrentStage).First();
 
-        dossier.MarkAsReturned();
+        dossier.MarkAsReturned(user);
 
         var previousStage = dossier.ApprovalStages.Where(stage => stage.IsCurrentStage).First();
 
@@ -143,7 +153,8 @@ public class DossierTest
     public void ReturnDossier_ThatIsInInitialStage_Throws()
     {
         var dossier = TestData.GetSampleDossierInInitialStage();
+        var user = TestData.GetSampleUser();
 
-        dossier.MarkAsReturned();
+        dossier.MarkAsReturned(user);
     }
 }

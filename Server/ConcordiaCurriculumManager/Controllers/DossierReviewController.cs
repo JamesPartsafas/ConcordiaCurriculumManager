@@ -3,6 +3,7 @@ using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -19,11 +20,13 @@ public class DossierReviewController : Controller
 {
     private readonly IMapper _mapper;
     private readonly IDossierReviewService _dossierReviewService;
+    private readonly IUserAuthenticationService _userAuthenticationService;
 
-    public DossierReviewController(IDossierReviewService dossierReviewService, IMapper mapper)
+    public DossierReviewController(IDossierReviewService dossierReviewService, IMapper mapper, IUserAuthenticationService userAuthenticationService)
     {
         _dossierReviewService = dossierReviewService;
         _mapper = mapper;
+        _userAuthenticationService = userAuthenticationService;
     }
 
     [HttpPost(nameof(SubmitDossierForReview) + "/{dossierId}")]
@@ -48,7 +51,8 @@ public class DossierReviewController : Controller
     [SwaggerResponse(StatusCodes.Status200OK, "Dossier successfully rejected")]
     public async Task<ActionResult> RejectDossier([FromRoute, Required] Guid dossierId)
     {
-        await _dossierReviewService.RejectDossier(dossierId);
+        User user = await _userAuthenticationService.GetCurrentUser();
+        await _dossierReviewService.RejectDossier(dossierId, user);
 
         return NoContent();
     }
@@ -60,7 +64,8 @@ public class DossierReviewController : Controller
     [SwaggerResponse(StatusCodes.Status200OK, "Dossier successfully returned")]
     public async Task<ActionResult> ReturnDossier([FromRoute, Required] Guid dossierId)
     {
-        await _dossierReviewService.ReturnDossier(dossierId);
+        User user = await _userAuthenticationService.GetCurrentUser();
+        await _dossierReviewService.ReturnDossier(dossierId, user);
 
         return NoContent();
     }
@@ -72,7 +77,8 @@ public class DossierReviewController : Controller
     [SwaggerResponse(StatusCodes.Status200OK, "Dossier successfully forwarded")]
     public async Task<ActionResult> ForwardDossier([FromRoute, Required] Guid dossierId)
     {
-        await _dossierReviewService.ForwardDossier(dossierId);
+        User user = await _userAuthenticationService.GetCurrentUser();
+        await _dossierReviewService.ForwardDossier(dossierId, user);
 
         return NoContent();
     }

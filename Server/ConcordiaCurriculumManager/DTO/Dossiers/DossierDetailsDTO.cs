@@ -27,6 +27,8 @@ public class DossierDetailsDTO
 
     public List<ApprovalStageDTO> ApprovalStages { get; set; } = new List<ApprovalStageDTO>();
 
+    public List<ApprovalHistoryDTO> ApprovalHistories { get; set; } = new List<ApprovalHistoryDTO>();
+
     public required DossierDiscussionDTO Discussion { get; set; }
 
     public required DateTime CreatedDate { get; set; }

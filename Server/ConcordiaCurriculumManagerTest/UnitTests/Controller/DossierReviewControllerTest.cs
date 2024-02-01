@@ -14,6 +14,7 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 public class DossierReviewControllerTest
 {
     private Mock<IDossierReviewService> dossierReviewService = null!;
+    private Mock<IUserAuthenticationService> userAuthenticationService = null!;
     private Mock<IMapper> mapper = null!;
     private DossierReviewController dossierReviewController = null!;
 
@@ -21,42 +22,53 @@ public class DossierReviewControllerTest
     public void TestInitialize()
     {
         dossierReviewService = new Mock<IDossierReviewService>();
+        userAuthenticationService = new Mock<IUserAuthenticationService>();
+
         mapper = new Mock<IMapper>();
 
-        dossierReviewController = new DossierReviewController(dossierReviewService.Object, mapper.Object);
+        dossierReviewController = new DossierReviewController(dossierReviewService.Object, mapper.Object, userAuthenticationService.Object);
     }
 
     [TestMethod]
     public async Task RejectDossier_ValidCall_ReturnsOk()
     {
-        dossierReviewService.Setup(drs => drs.RejectDossier(It.IsAny<Guid>())).Returns(Task.CompletedTask);
+        var user = TestData.GetSampleUser();
+
+        userAuthenticationService.Setup(uas => uas.GetCurrentUser().Result).Returns(user);
+        dossierReviewService.Setup(drs => drs.RejectDossier(It.IsAny<Guid>(), user)).Returns(Task.CompletedTask);
         var dossierId = Guid.NewGuid();
 
         var actionResult = await dossierReviewController.RejectDossier(dossierId);
 
-        dossierReviewService.Verify(mock => mock.RejectDossier(dossierId), Times.Once());
+        dossierReviewService.Verify(mock => mock.RejectDossier(dossierId, user), Times.Once());
     }
 
     [TestMethod]
     public async Task ReturnDossier_ValidCall_ReturnsOk()
     {
-        dossierReviewService.Setup(drs => drs.ReturnDossier(It.IsAny<Guid>())).Returns(Task.CompletedTask);
+        var user = TestData.GetSampleUser();
+
+        userAuthenticationService.Setup(uas => uas.GetCurrentUser().Result).Returns(user);
+        dossierReviewService.Setup(drs => drs.ReturnDossier(It.IsAny<Guid>(), user)).Returns(Task.CompletedTask);
         var dossierId = Guid.NewGuid();
 
         var actionResult = await dossierReviewController.ReturnDossier(dossierId);
 
-        dossierReviewService.Verify(mock => mock.ReturnDossier(dossierId), Times.Once());
+        dossierReviewService.Verify(mock => mock.ReturnDossier(dossierId, user), Times.Once());
     }
 
     [TestMethod]
     public async Task ForwardDossier_ValidCall_ReturnsOk()
     {
-        dossierReviewService.Setup(drs => drs.ForwardDossier(It.IsAny<Guid>())).Returns(Task.CompletedTask);
+        var user = TestData.GetSampleUser();
+
+        userAuthenticationService.Setup(uas => uas.GetCurrentUser().Result).Returns(user);
+        dossierReviewService.Setup(drs => drs.ForwardDossier(It.IsAny<Guid>(), user)).Returns(Task.CompletedTask);
         var dossierId = Guid.NewGuid();
 
         var actionResult = await dossierReviewController.ForwardDossier(dossierId);
 
-        dossierReviewService.Verify(mock => mock.ForwardDossier(dossierId), Times.Once());
+        dossierReviewService.Verify(mock => mock.ForwardDossier(dossierId, user), Times.Once());
     }
 
     [TestMethod]
