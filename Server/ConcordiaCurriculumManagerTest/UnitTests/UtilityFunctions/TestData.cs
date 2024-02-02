@@ -663,7 +663,57 @@ public static class TestData
     }
 
     // COURSE GROUPING REQUESTS
-
+    public static CourseGroupingCreationRequestDTO GetSampleCourseGroupingCreationRequestDTO()
+    {
+        return new CourseGroupingCreationRequestDTO
+        {
+            DossierId = Guid.NewGuid(),
+            Rationale = "Important",
+            ResourceImplication = "none",
+            Comment = "No comment",
+            CourseGrouping = new CourseGroupingInputDTO
+            {
+                Name = "Sample request",
+                RequiredCredits = "120.5",
+                IsTopLevel = false,
+                School = SchoolEnum.GinaCody,
+                Description = "Some description",
+                Notes = "My notes",
+                SubGroupingReferences = new List<CourseGroupingReferenceInputDTO>
+                {
+                    {
+                        new CourseGroupingReferenceInputDTO
+                        {
+                            ChildGroupCommonIdentifier = Guid.NewGuid(),
+                            GroupingType = GroupingTypeEnum.SubGrouping
+                        }
+                    },
+                    {
+                        new CourseGroupingReferenceInputDTO
+                        {
+                            ChildGroupCommonIdentifier = Guid.NewGuid(),
+                            GroupingType = GroupingTypeEnum.OptionalGrouping
+                        }
+                    }
+                },
+                CourseIdentifiers = new List<CourseIdentifierDTO>
+                {
+                    {
+                        new CourseIdentifierDTO
+                        {
+                            ConcordiaCourseId = 5
+                        }
+                    },
+                    {
+                        new CourseIdentifierDTO
+                        {
+                            ConcordiaCourseId = 6
+                        }
+                    }
+                }
+            }
+        };
+    }
     public static CourseGroupingModificationRequestDTO GetSampleCourseGroupingModificationRequestDTO()
     {
         return new CourseGroupingModificationRequestDTO

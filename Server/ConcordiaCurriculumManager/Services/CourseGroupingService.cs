@@ -16,6 +16,7 @@ public interface ICourseGroupingService
     public Task<CourseGrouping> GetCourseGroupingByCommonIdentifier(Guid commonId);
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchoolNonRecursive(SchoolEnum school);
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name);
+    public Task<CourseGroupingRequest> InitiateCourseGroupingCreation(CourseGroupingCreationRequestDTO dto);
     public Task<CourseGroupingRequest> InitiateCourseGroupingModification(CourseGroupingModificationRequestDTO dto);
     public Task<CourseGroupingRequest> EditCourseGroupingModification(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
     public Task DeleteCourseGroupingRequest(Guid dossierId, Guid requestId);
@@ -89,6 +90,26 @@ public class CourseGroupingService : ICourseGroupingService
         IList<int> courseIds = identifiers.Select(id => id.ConcordiaCourseId).ToList();
 
         return await _courseRepository.GetCoursesByConcordiaCourseIds(courseIds);
+    }
+
+
+    public async Task<CourseGroupingRequest> InitiateCourseGroupingCreation(CourseGroupingCreationRequestDTO dto)
+    {
+        var dossier = await _dossierService.GetDossierDetailsByIdOrThrow(dto.DossierId);
+
+        var grouping = dossier.CreateCourseGroupingCreationRequest(dto);
+
+        var groupingSaved = await _courseGroupingRepository.SaveCourseGroupingRequest(grouping);
+
+        if (groupingSaved)
+            _logger.LogInformation($"New course grouping creation created for dossier {dossier.Id} with Id {grouping.Id}");
+        else
+        {
+            _logger.LogError($"New course grouping creation for dossier {dossier.Id} failed to save");
+            throw new ServiceUnavailableException("The course grouping creation could not be saved");
+        }
+
+        return grouping;
     }
 
     public async Task<CourseGroupingRequest> InitiateCourseGroupingModification(CourseGroupingModificationRequestDTO dto)

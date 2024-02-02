@@ -1,5 +1,6 @@
 ﻿using ConcordiaCurriculumManager.DTO.CourseGrouping;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingRequests;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
@@ -192,6 +193,14 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
         {
             if (ApprovalStages.Count == 0)
                 throw new BadRequestException($"The approval stages have not been loaded for the dossier {Id}");
+        }
+
+        public CourseGroupingRequest CreateCourseGroupingCreationRequest(CourseGroupingCreationRequestDTO dto)
+        {
+            var grouping = CourseGroupingRequest.CreateCourseGroupingCreationRequestFromDTO(dto);
+            CourseGroupingRequests.Add(grouping);
+
+            return grouping;
         }
 
         public CourseGroupingRequest CreateCourseGroupingModificationRequest(CourseGroupingModificationRequestDTO dto)
