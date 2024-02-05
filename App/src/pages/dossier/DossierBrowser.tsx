@@ -2,7 +2,7 @@ import { Box, Flex, FormControl, FormLabel, Input, Select, useDisclosure, Text }
 import Button from "../../components/Button";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { searchDossiersByGuid, searchDossiersByState, searchDossiersByTitle } from "../../services/dossier";
+import { searchDossiers } from "../../services/dossier";
 import { DossierDTO, DossierStateEnum, GetMyDossiersResponse } from "../../models/dossier";
 import DossierTable from "../../components/DossierTable";
 import { BaseRoutes } from "../../constants";
@@ -21,18 +21,6 @@ export default function DossierBrowser() {
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
     const [changer, setChanger] = useState<DossierStateEnum>(DossierStateEnum.Created);
-
-    function searchDossiersFromTitle(input: string) {
-        console.log("Searching for " + input);
-        searchDossiersByTitle(input)
-            .then((res: GetMyDossiersResponse) => {
-                console.log(JSON.stringify(res.data));
-                setMySearchedDossiers(res.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
 
     useEffect(() => {
         if (selectedState == "Created") {
@@ -59,21 +47,11 @@ export default function DossierBrowser() {
             });
     }, []);
 
-    function searchDossiersFromState() {
+    function searchingDossiers(title: string, guid: string) {
+        console.log("Searching for " + title);
         console.log("Searching for State " + changer);
-        searchDossiersByState(changer)
-            .then((res: GetMyDossiersResponse) => {
-                console.log(JSON.stringify(res.data));
-                setMySearchedDossiers(res.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-
-    function searchDossiersFromGroup(guid: string) {
         console.log("Searching for Group with id " + guid);
-        searchDossiersByGuid(guid)
+        searchDossiers(title, changer, guid)
             .then((res: GetMyDossiersResponse) => {
                 console.log(JSON.stringify(res.data));
                 setMySearchedDossiers(res.data);
@@ -105,20 +83,6 @@ export default function DossierBrowser() {
                     <FormControl>
                         <FormLabel htmlFor="search-text">Search By Title:</FormLabel>
                         <Input id="searcher" type="text" value={searchInput} onChange={handleChange} />
-                        <Button
-                            mt={4}
-                            mb={2}
-                            style="secondary"
-                            variant="outline"
-                            width="22%"
-                            height="40px"
-                            onClick={() => {
-                                searchDossiersFromTitle(searchInput);
-                                console.log(JSON.stringify(selectedDossier));
-                            }}
-                        >
-                            Search for Title
-                        </Button>
                         <FormLabel htmlFor="search-state">Search By State:</FormLabel>
                         <Select
                             ref={selectedStateRef}
@@ -150,20 +114,6 @@ export default function DossierBrowser() {
                                 Approved
                             </option>
                         </Select>
-                        <Button
-                            mt={4}
-                            mb={2}
-                            style="secondary"
-                            variant="outline"
-                            width="22%"
-                            height="40px"
-                            onClick={() => {
-                                searchDossiersFromState();
-                                console.log(JSON.stringify(selectedDossier));
-                            }}
-                        >
-                            Search for State
-                        </Button>
                         <FormLabel htmlFor="search-state">Search By Group:</FormLabel>
                         <Select
                             ref={selectedGroupRef}
@@ -184,11 +134,11 @@ export default function DossierBrowser() {
                             width="22%"
                             height="40px"
                             onClick={() => {
-                                searchDossiersFromGroup(selectedGroup);
+                                searchingDossiers(searchInput, selectedGroup);
                                 console.log(JSON.stringify(selectedDossier));
                             }}
                         >
-                            Search for Group
+                            Search
                         </Button>
                     </FormControl>
                     <div style={{ margin: "5px" }}>
