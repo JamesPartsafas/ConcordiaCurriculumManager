@@ -1,9 +1,9 @@
-import { Box, Flex, FormControl, FormLabel, Input, Select, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, FormControl, FormLabel, Input, Select, useDisclosure, Text } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { searchDossiersByGuid, searchDossiersByState, searchDossiersByTitle } from "../../services/dossier";
-import { DossierDTO, DossierStateEnum, GetMyDossiersResponse, dossierStateToString } from "../../models/dossier";
+import { DossierDTO, DossierStateEnum, GetMyDossiersResponse } from "../../models/dossier";
 import DossierTable from "../../components/DossierTable";
 import { BaseRoutes } from "../../constants";
 import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../../services/group";
@@ -13,14 +13,12 @@ export default function DossierBrowser() {
     const [mySearchedDossiers, setMySearchedDossiers] = useState<DossierDTO[]>([]);
     const navigate = useNavigate();
     const handleChange = (event) => setSearchInput(event.target.value);
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { onOpen } = useDisclosure();
     const selectedStateRef = useRef<HTMLSelectElement>(null);
     const selectedGroupRef = useRef<HTMLSelectElement>(null);
     const [selectedState, setSelectedState] = useState<string>("Created");
     const [selectedGroup, setSelectedGroup] = useState<string>();
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
-    const [dossierModalAction, setDossierModalTitle] = useState<"add" | "edit">();
-    const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
     const [changer, setChanger] = useState<DossierStateEnum>(DossierStateEnum.Created);
 
@@ -97,14 +95,13 @@ export default function DossierBrowser() {
         navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId));
     }
 
-    function displayDossierModal() {
-        setShowDossierModal(true);
-    }
-
     return (
         <div>
             <Box maxW="5xl" m="auto">
                 <Flex flexDirection="column">
+                    <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
+                        Dossier Browser
+                    </Text>
                     <FormControl>
                         <FormLabel htmlFor="search-text">Search By Title:</FormLabel>
                         <Input id="searcher" type="text" value={searchInput} onChange={handleChange} />
@@ -115,7 +112,10 @@ export default function DossierBrowser() {
                             variant="outline"
                             width="22%"
                             height="40px"
-                            onClick={() => searchDossiersFromTitle(searchInput)}
+                            onClick={() => {
+                                searchDossiersFromTitle(searchInput);
+                                console.log(JSON.stringify(selectedDossier));
+                            }}
                         >
                             Search for Title
                         </Button>
@@ -157,7 +157,10 @@ export default function DossierBrowser() {
                             variant="outline"
                             width="22%"
                             height="40px"
-                            onClick={() => searchDossiersFromState()}
+                            onClick={() => {
+                                searchDossiersFromState();
+                                console.log(JSON.stringify(selectedDossier));
+                            }}
                         >
                             Search for State
                         </Button>
@@ -180,19 +183,20 @@ export default function DossierBrowser() {
                             variant="outline"
                             width="22%"
                             height="40px"
-                            onClick={() => searchDossiersFromGroup(selectedGroup)}
+                            onClick={() => {
+                                searchDossiersFromGroup(selectedGroup);
+                                console.log(JSON.stringify(selectedDossier));
+                            }}
                         >
-                            Search for State
+                            Search for Group
                         </Button>
                     </FormControl>
                     <div style={{ margin: "5px" }}>
                         <DossierTable
                             myDossiers={mySearchedDossiers}
                             onOpen={onOpen}
-                            setDossierModalTitle={setDossierModalTitle}
-                            setSelectedDossier={setSelectedDossier}
-                            displayDossierModal={displayDossierModal}
                             handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                            setSelectedDossier={setSelectedDossier}
                             handleNavigateToDossierReport={handleNavigateToDossierReport}
                             handleNavigateToDossierReview={handleNavigateToDossierReview}
                             useIcons={false}
@@ -200,6 +204,15 @@ export default function DossierBrowser() {
                         />
                     </div>
                 </Flex>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    onClick={() => navigate(BaseRoutes.Home)}
+                >
+                    Return to Home
+                </Button>
             </Box>
         </div>
     );
