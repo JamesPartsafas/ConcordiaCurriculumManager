@@ -81,8 +81,8 @@ const CourseDiffViewer = ({
                                         {oldCourse.subject} {oldCourse.catalog}{" "}
                                         <OldStringDiff
                                             oldTextArray={detectChanges(oldCourse.title, newCourse.title).oldTextArray}
-                                        />
-                                        <Text as="span">
+                                        />{" "}
+                                        <Text as="span" display="inline-block">
                                             {" ("}
                                             <OldStringDiff
                                                 oldTextArray={
@@ -120,8 +120,8 @@ const CourseDiffViewer = ({
                                         {newCourse.subject} {newCourse.catalog}{" "}
                                         <NewStringDiff
                                             newTextArray={detectChanges(oldCourse.title, newCourse.title).newTextArray}
-                                        />
-                                        <Text>
+                                        />{" "}
+                                        <Text as="span" display="inline-block">
                                             {" ("}
                                             <NewStringDiff
                                                 newTextArray={
