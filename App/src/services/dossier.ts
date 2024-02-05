@@ -45,5 +45,5 @@ export function getDossierReport(id: string): Promise<DossierReportResponse> {
 }
 
 export function searchDossiers(title: string, state: DossierStateEnum, guid: string): Promise<GetMyDossiersResponse> {
-    return axios.get("/Dossier/SearchDossiers?title=" + title + "?state=" + state + "?groupId=" + guid);
+    return axios.get("/Dossier/SearchDossiers?title=" + title + "&state=" + state + "&groupId=" + guid);
 }
