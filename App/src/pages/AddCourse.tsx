@@ -448,7 +448,7 @@ export default function AddCourse() {
         setEquivalentCourses(courseDetails?.equivalentCourses);
         setCourseNotes(courseDetails?.courseNotes);
         setRational(courseDetails?.rationale);
-        setComment(courseDetails?.comment)
+        setComment(courseDetails?.comment);
         setResourceImplication(courseDetails?.resourceImplication);
         setCouresCareer(getCourseCarreer(courseDetails?.career));
         // find course components in allCourseSettings that match component codes of coursdDetails
