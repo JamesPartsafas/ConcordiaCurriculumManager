@@ -6,6 +6,7 @@ export default class CourseReference implements DataType {
   Id: string;
   CourseReferencingId: string;
   CourseReferencedId: string;
+  State: number;
   CreatedDate: Date;
   ModifiedDate: Date;
 
@@ -14,12 +15,13 @@ export default class CourseReference implements DataType {
     this.Id = obj.Id;
     this.CourseReferencingId = obj.CourseReferencingId;
     this.CourseReferencedId = obj.CourseReferencedId;
+    this.State = obj.State;
     this.CreatedDate = obj.CreatedDate;
     this.ModifiedDate = obj.ModifiedDate;
   }
 
   CreateQuery(task: globalPgq.ITask<{}>): Promise<null>[] {
-    return [task.none('INSERT INTO "CourseReferences" ("Id", "CourseReferencingId", "CourseReferencedId", "CreatedDate", "ModifiedDate") VALUES($1, $2, $3, $4, $5) ON CONFLICT ("Id") DO NOTHING', [this.Id, this.CourseReferencingId, this.CourseReferencedId, this.CreatedDate.toISOString(), this.ModifiedDate.toISOString()])];
+    return [task.none('INSERT INTO "CourseReferences" ("Id", "CourseReferencingId", "CourseReferencedId", "State", "CreatedDate", "ModifiedDate") VALUES($1, $2, $3, $4, $5, $6) ON CONFLICT ("Id") DO NOTHING', [this.Id, this.CourseReferencingId, this.CourseReferencedId, this.State, this.CreatedDate.toISOString(), this.ModifiedDate.toISOString()])];
   }
 
   private validateParameter(obj: any) {
@@ -31,6 +33,8 @@ export default class CourseReference implements DataType {
       throw new Error(`CourseReferencingId must be a non-empty string. Passed value is of type ${typeof obj.CourseReferencingId}`);
     if (typeof obj.CourseReferencedId !== 'string' || obj.CourseReferencedId.trim() === '')
       throw new Error(`CourseReferencedId must be a non-empty string. Passed value is of type ${typeof obj.CourseReferencedId}`);
+    if (typeof obj.State !== 'number' || isNaN(obj.State))
+      throw new Error(`State must be a number. Passed value is of type ${typeof obj.State}`);
     if (!(obj.CreatedDate instanceof Date))
       throw new Error(`CreatedDate must be a date. Passed value is of type ${typeof obj.CreatedDate}`);
     if (!(obj.ModifiedDate instanceof Date))
