@@ -1,7 +1,7 @@
 import { Select, Text } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { SchoolEnum } from "../models/courseGrouping";
-export default function groupingBySchool() {
+export default function GroupingBySchool() {
     const selectedSchoolRef = useRef<HTMLSelectElement>(null);
     const [selectedSchool, setSelectedSchool] = useState<string>("GinaCody");
     const [changer, setChanger] = useState<SchoolEnum>(SchoolEnum.GinaCody);
