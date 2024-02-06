@@ -120,8 +120,11 @@ export default function DossierBrowser() {
                             value={selectedGroup}
                             onChange={(e) => setSelectedGroup(e.target.value)}
                         >
+                            <option key={0} value={""}>
+                                Any/None
+                            </option>
                             {myGroups.map((group, index) => (
-                                <option key={index} value={group.id}>
+                                <option key={index + 1} value={group.id}>
                                     {group.name}
                                 </option>
                             ))}
