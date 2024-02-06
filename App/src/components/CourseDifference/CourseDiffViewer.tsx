@@ -7,8 +7,8 @@ import { diffWordsWithSpace } from "diff";
 import { getCourseCareerNameByCode, getCourseComponentsObject } from "../../utils/courseGetters";
 
 const detectChanges = (oldText, newText) => {
-    if (oldText === "") oldText = "None";
-    if (newText === "") newText = "None";
+    if (!oldText || oldText === "") oldText = "None";
+    if (!newText || newText === "") newText = "None";
     const diffResult = diffWordsWithSpace(oldText, newText);
     const oldTextArray = [];
     const newTextArray = [];

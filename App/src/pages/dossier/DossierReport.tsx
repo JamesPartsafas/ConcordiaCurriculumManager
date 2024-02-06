@@ -417,11 +417,11 @@ export default function DossierReport() {
                                         ? "N/A"
                                         : courseModificationRequest.rationale}
                                 </Text>
-                                <CourseDifferenceViewer
+                                <CourseDiffViewer
                                     oldCourse={dossierReport?.oldCourses[index]}
                                     newCourse={courseModificationRequest.course}
                                     allCourseSettings={allCourseSettings}
-                                ></CourseDifferenceViewer>
+                                ></CourseDiffViewer>
                                 <Divider />
                             </>
                         </ListItem>
