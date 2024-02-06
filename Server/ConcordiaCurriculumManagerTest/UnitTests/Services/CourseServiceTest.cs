@@ -277,8 +277,8 @@ public class CourseServiceTest
 
         Assert.IsNotNull(courseModificationRequest);
 
-        StringAssert.Contains(courseModificationRequest.Conflict, $"{course1.Subject}-{course1.Catalog}");
-        StringAssert.Contains(courseModificationRequest.Conflict, $"{course2.Subject}-{course2.Catalog}");
+        StringAssert.Contains(courseModificationRequest.Conflict, $"{course1.Subject} {course1.Catalog}");
+        StringAssert.Contains(courseModificationRequest.Conflict, $"{course2.Subject} {course2.Catalog}");
     }
 
     [TestMethod]
@@ -480,8 +480,8 @@ public class CourseServiceTest
 
         Assert.IsNotNull(courseDeletionRequest);
 
-        StringAssert.Contains(courseDeletionRequest.Conflict, $"{course1.Subject}-{course1.Catalog}");
-        StringAssert.Contains(courseDeletionRequest.Conflict, $"{course2.Subject}-{course2.Catalog}");
+        StringAssert.Contains(courseDeletionRequest.Conflict, $"{course1.Subject} {course1.Catalog}");
+        StringAssert.Contains(courseDeletionRequest.Conflict, $"{course2.Subject} {course2.Catalog}");
     }
 
     [TestMethod]
@@ -798,7 +798,7 @@ public class CourseServiceTest
         var oldCourse = TestData.GetSamplePublisheddCourse();
 
         newCourse.CourseState = CourseStateEnum.Accepted;
-        newCourse.Description = "Design of classes. Inheritance. Polymorphism. Static and dynamic binding. Abstract classes. Exception handling. File I/O. Recursion. Interfaces and inner classes. Graphical user interfaces. Generics. Collections and iterators. Lectures: three hours per week. Tutorial: two hours per week. Laboratory:one hour per week.Prerequisite: COMP 248; MATH 203 or Cegep Mathematics 103 or NYA; MATH 205 or Cegep Mathematics 203 or NYB previously or concurrently.";
+        newCourse.Description = "Design of classes. Inheritance. Polymorphism. Static and dynamic binding. Abstract classes. Exception handling. File I/O. Recursion. Interfaces and inner classes. Graphical user interfaces. Generics. Collections and iterators. Lectures: three hours per week. Tutorial: two hours per week. Laboratory:one hour per week.Prerequisite: COMP 248; MATH 203 or Cegep Mathematics 103 or NYA; MATH 205 or Cegep Mathematics 203 or NYB previously or concurrently.";
         courseRepository.Setup(repo => repo.GetCourseBySubjectAndCatalog(newCourse.Subject, newCourse.Catalog)).ReturnsAsync(newCourse);
         courseRepository.Setup(repo => repo.GetPublishedVersion(oldCourse.Subject, oldCourse.Catalog)).ReturnsAsync(oldCourse);
         courseRepository.Setup(repo => repo.UpdateCourse(newCourse)).ReturnsAsync(true);
