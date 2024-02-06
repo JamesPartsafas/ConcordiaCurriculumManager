@@ -41,7 +41,7 @@ export interface Course {
     resourceImplication: string;
     courseID?: number;
     comment: string;
-    version: number;
+    version?: number;
 }
 
 export interface newCourse extends Course {

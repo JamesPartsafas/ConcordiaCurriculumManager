@@ -40,12 +40,12 @@ import {
     EditCourseModificationRequestDTO,
     componentMappings,
 } from "../models/course";
-import CourseDifferenceViewer from "../components/VersionDifference";
 import AutocompleteInput from "../components/Select";
 import { showToast } from "./../utils/toastUtils"; // Import the utility function
 import Button from "../components/Button";
 import { BaseRoutes } from "../constants";
 import CoursePreview from "../components/CoursePreview";
+import CourseDiffViewer from "../components/CourseDifference/CourseDiffViewer";
 
 export default function AddCourse() {
     const toast = useToast();
@@ -506,11 +506,13 @@ export default function AddCourse() {
                     </Button>
                     <form>
                         {oldCourse && newCourse && isEditPage && (
-                            <CourseDifferenceViewer
-                                oldCourse={oldCourse}
-                                newCourse={newCourse}
-                                allCourseSettings={allCourseSettings}
-                            ></CourseDifferenceViewer>
+                            <>
+                                <CourseDiffViewer
+                                    oldCourse={oldCourse}
+                                    newCourse={newCourse}
+                                    allCourseSettings={allCourseSettings}
+                                ></CourseDiffViewer>
+                            </>
                         )}
                         <Flex>
                             <Stack w="35%" p={8}>
