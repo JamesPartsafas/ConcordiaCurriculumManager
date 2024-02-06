@@ -1,13 +1,29 @@
-import { Box, Flex, Select, TableContainer, Table, Text, Thead, Tr, Th, Tbody, Td } from "@chakra-ui/react";
+import {
+    Box,
+    Flex,
+    Select,
+    TableContainer,
+    Table,
+    Text,
+    Thead,
+    Tr,
+    Th,
+    Tbody,
+    Td,
+    Tooltip,
+    IconButton,
+} from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { CourseGroupingDTO, MultiCourseGroupingDTO, SchoolEnum } from "../models/courseGrouping";
 import Button from "../components/Button";
 import { GetCourseGroupingBySchool } from "../services/courseGrouping";
+import { InfoIcon } from "@chakra-ui/icons";
 export default function GroupingBySchool() {
     const selectedSchoolRef = useRef<HTMLSelectElement>(null);
     const [selectedSchool, setSelectedSchool] = useState<string>("GinaCody");
     const [changer, setChanger] = useState<SchoolEnum>(SchoolEnum.GinaCody);
     const [courseGroupings, setCourseGroupings] = useState<CourseGroupingDTO[]>([]);
+    const [selectedGrouping, setSelectedGrouping] = useState<CourseGroupingDTO | null>(null);
 
     useEffect(() => {
         if (selectedSchool == "GinaCody") {
@@ -28,13 +44,15 @@ export default function GroupingBySchool() {
         console.log(input);
         GetCourseGroupingBySchool(input)
             .then((res: MultiCourseGroupingDTO) => {
-                console.log(JSON.stringify(res.data));
                 setCourseGroupings(res.data);
-                console.log(JSON.stringify(courseGroupings));
             })
             .catch((err) => {
                 console.log(err);
             });
+    }
+
+    function handleNavigateToCurriculumDetails(input: string) {
+        //To Send to details page once it's implemented
     }
     return (
         <div>
@@ -99,22 +117,36 @@ export default function GroupingBySchool() {
                                     <Th minW={"120px"} maxW={"120px"}>
                                         State
                                     </Th>
-                                    <Th width={"25%"}></Th>
+                                    <Th width={"25%"}>See Details</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>
-                                {courseGroupings.slice(0, courseGroupings.length).map((groupings) => (
-                                    <Tr key={groupings.id} display={"flex"}>
+                                {courseGroupings.slice(0, courseGroupings.length).map((grouping) => (
+                                    <Tr key={grouping.id} display={"flex"}>
                                         <Td minW={"250px"} maxW={"250px"}>
-                                            {groupings.name}
+                                            {grouping.name}
                                         </Td>
-                                        <Td minW={"450px"} maxW={"450px"}>
+                                        <Td minW={"455px"} maxW={"455px"}>
                                             <Text overflow="hidden" textOverflow="ellipsis" maxW={"500px"}>
-                                                {groupings.requiredCredits}
+                                                {grouping.requiredCredits}
                                             </Text>
                                         </Td>
-                                        <Td minW={"120px"} maxW={"120px"}>
-                                            {groupings.school}
+                                        <Td minW={"130px"} maxW={"130px"}>
+                                            {grouping.school}
+                                        </Td>
+
+                                        <Td width={"25%"}>
+                                            <Tooltip label="Curriculum Details">
+                                                <IconButton
+                                                    ml={2}
+                                                    aria-label="Details"
+                                                    icon={<InfoIcon />}
+                                                    onClick={() => {
+                                                        setSelectedGrouping(grouping);
+                                                        handleNavigateToCurriculumDetails(grouping.id);
+                                                    }}
+                                                />
+                                            </Tooltip>
                                         </Td>
                                     </Tr>
                                 ))}
