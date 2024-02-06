@@ -33,6 +33,7 @@ import DossierReview from "./pages/dossier/DossierReview";
 import DossierReport from "./pages/dossier/DossierReport";
 import NoData from "./pages/NoData";
 import CourseGrouping from "./pages/CourseGrouping";
+import GroupingBySchool from "./pages/CourseGroupingBySchool";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -172,6 +173,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.CourseDetails}
                         element={isLoggedIn == true ? <CourseDetails /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.GroupingBySchool}
+                        element={isLoggedIn == true ? <GroupingBySchool /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
                         path={BaseRoutes.NoData}

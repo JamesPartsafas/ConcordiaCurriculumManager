@@ -22,6 +22,7 @@ export enum BaseRoutes {
     RemoveGroupMaster = "/removegroupmaster",
     DossiersToReview = "/dossierstoreview",
     CourseDetails = "/CourseDetails",
+    GroupingBySchool = "/GetCourseBySchool",
     NoData = "/NoData",
     CourseGrouping = "/CourseGrouping/:groupId",
 }
