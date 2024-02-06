@@ -23,7 +23,6 @@ export default function GroupingBySchool() {
     const [selectedSchool, setSelectedSchool] = useState<string>("GinaCody");
     const [changer, setChanger] = useState<SchoolEnum>(SchoolEnum.GinaCody);
     const [courseGroupings, setCourseGroupings] = useState<CourseGroupingDTO[]>([]);
-    const [selectedGrouping, setSelectedGrouping] = useState<CourseGroupingDTO | null>(null);
 
     useEffect(() => {
         if (selectedSchool == "GinaCody") {
@@ -53,6 +52,7 @@ export default function GroupingBySchool() {
 
     function handleNavigateToCurriculumDetails(input: string) {
         //To Send to details page once it's implemented
+        console.log(input);
     }
     return (
         <div>
@@ -142,7 +142,6 @@ export default function GroupingBySchool() {
                                                     aria-label="Details"
                                                     icon={<InfoIcon />}
                                                     onClick={() => {
-                                                        setSelectedGrouping(grouping);
                                                         handleNavigateToCurriculumDetails(grouping.id);
                                                     }}
                                                 />

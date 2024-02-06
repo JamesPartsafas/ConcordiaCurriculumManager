@@ -19,5 +19,5 @@ export function GetCourseGrouping(courseGroupingId: string): Promise<GetCourseGr
 }
 
 export function GetCourseGroupingBySchool(school: SchoolEnum): Promise<GetMultiCourseGroupingResponse> {
-    return axios.get("/CourseGrouping/GetCourseGroupingsBySchool/" + school)
+    return axios.get("/CourseGrouping/GetCourseGroupingsBySchool/" + school);
 }
