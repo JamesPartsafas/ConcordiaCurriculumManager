@@ -10,4 +10,11 @@ public class CourseReference : BaseModel
 
     public required Course CourseReferenced { get; set; }
 
+    public required CourseReferenceEnum State { get; set; }
+}
+
+public enum CourseReferenceEnum
+{
+    UpToDate,
+    OutOfDate,
 }
