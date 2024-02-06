@@ -53,9 +53,6 @@ function GroupTable({
                         Group Name
                     </Th>
                     <Th whiteSpace="nowrap" textAlign={"center"}>
-                        Applications to Approve
-                    </Th>
-                    <Th whiteSpace="nowrap" textAlign={"center"}>
                         Number of Members
                     </Th>
                     <Th whiteSpace="nowrap" textAlign={"center"}>
@@ -83,9 +80,6 @@ function GroupTable({
                     <Tr key={group.id}>
                         <Td whiteSpace="nowrap" padding="17px" textAlign="center">
                             {group.name}
-                        </Td>
-                        <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                            {0}
                         </Td>
                         <Td whiteSpace="nowrap" padding="16px" textAlign="center">
                             {group.members?.length ?? 0}
