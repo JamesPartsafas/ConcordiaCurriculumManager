@@ -4,11 +4,12 @@ using ConcordiaCurriculumManager.DTO.CourseGrouping;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingRequests;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum;
-using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
@@ -38,6 +39,7 @@ public class AutoMapper : Profile
         CreateMap<CourseCreationRequest, CourseCreationRequestCourseDetailsDTO>().ReverseMap();
         CreateMap<CourseModificationRequest, CourseModificationRequestCourseDetailsDTO>().ReverseMap();
         CreateMap<ApprovalStage, ApprovalStageDTO>();
+        CreateMap<ApprovalHistory, ApprovalHistoryDTO>();
         CreateMap<DossierDiscussion, DossierDiscussionDTO>().ReverseMap();
         CreateMap<CreateDossierDiscussionMessageDTO, DiscussionMessage>();
         CreateMap<DiscussionMessage, DossierDiscussionMessageDTO>();
@@ -53,6 +55,8 @@ public class AutoMapper : Profile
             .ForMember(dest => dest.ApprovalStages, opt => opt.MapFrom(d => d.Dossier.ApprovalStages));
         CreateMap<CourseGroupingReference, CourseGroupingReferenceDTO>();
         CreateMap<CourseGrouping, CourseGroupingDTO>();
+        CreateMap<CourseIdentifier, CourseIdentifierDTO>();
+        CreateMap<CourseGroupingRequest, CourseGroupingRequestDTO>();
         CreateMap<CourseChanges, CourseChangesDTO>();
     }
 }

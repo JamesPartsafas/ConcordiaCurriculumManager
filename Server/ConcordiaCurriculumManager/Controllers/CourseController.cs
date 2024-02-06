@@ -257,4 +257,17 @@ public class CourseController : Controller
         var courseDtos = _mapper.Map<IEnumerable<CourseDataDTO>>(courses);
         return Ok(courseDtos);
     }
+
+    [HttpPut(nameof(PublishCourse) + "/{subject}" + "/{catalog}")]
+    [Authorize(Policies.IsGroupMasterOrAdmin)]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is unauthorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course has been published successfully", typeof(CourseDataDTO))]
+    public async Task<ActionResult> PublishCourse([FromRoute, Required] string subject, string catalog)
+    {
+        var editedCourse = await _courseService.PublishCourse(subject, catalog);
+        var editedCourseDTO = _mapper.Map<CourseDataDTO>(editedCourse);
+
+        return Ok(editedCourseDTO);
+    }
 }

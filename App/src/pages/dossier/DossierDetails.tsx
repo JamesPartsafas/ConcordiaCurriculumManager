@@ -236,6 +236,7 @@ export default function DossierDetails() {
     function editCourseCreationRequest(creationRequest: CourseCreationRequest) {
         getCourseCreationRequest(creationRequest.id).then((res: CourseCreationRequestDTOResponse) => {
             const creationRequestToEdit = {
+                ...res.data,
                 ...res.data.newCourse,
                 id: res.data.id,
             };
@@ -253,6 +254,7 @@ export default function DossierDetails() {
     function editCourseModificationRequest(modificationRequest: CourseModificationRequest) {
         getCourseModificationRequest(modificationRequest.id).then((res: CourseModificationRequestDTOResponse) => {
             const modificationRequestToEdit = {
+                ...res.data,
                 ...res.data.course,
                 id: res.data.id,
             };

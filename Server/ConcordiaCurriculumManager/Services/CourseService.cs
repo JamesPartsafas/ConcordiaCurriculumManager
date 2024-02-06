@@ -2,7 +2,7 @@
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
-using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
@@ -32,6 +32,7 @@ public interface ICourseService
     public Task<ICollection<CourseVersion>> GetCourseVersions(Dossier dossier);
     public Task<Course> GetCourseByIdAsync(Guid id);
     public Task<IEnumerable<Course>> GetCoursesBySubjectAsync(string subjectCode);
+    public Task<Course> PublishCourse(string subject, string catalog);
 }
 
 public class CourseService : ICourseService
@@ -385,5 +386,19 @@ public class CourseService : ICourseService
     public async Task<IEnumerable<Course>> GetCoursesBySubjectAsync(string subjectCode)
     {
         return await _courseRepository.GetCoursesBySubjectAsync(subjectCode);
+    }
+
+    public async Task<Course> PublishCourse(string subject, string catalog)
+    {
+        var newCourse = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog) ?? throw new NotFoundException($"The course {subject}" + $"{catalog} was not found.");
+        var oldCourse = await _courseRepository.GetPublishedVersion(subject, catalog) ?? throw new NotFoundException($"The course {subject}" + $"{catalog} was not found.");
+
+        newCourse.MarkAsPublished();
+        oldCourse.MarkAsUnpublished();
+
+        await _courseRepository.UpdateCourse(newCourse);
+        await _courseRepository.UpdateCourse(oldCourse);
+
+        return newCourse;
     }
 }

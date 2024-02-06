@@ -35,6 +35,7 @@ public class DossierReviewRepository : IDossierReviewRepository
         return await _dbContext.Dossiers
             .Where(dossier => dossier.Id.Equals(dossierId))
             .Include(dossier => dossier.ApprovalStages)
+            .Include(dossier => dossier.ApprovalHistories)
             .FirstOrDefaultAsync();
     }
 
@@ -44,6 +45,7 @@ public class DossierReviewRepository : IDossierReviewRepository
             .Where(dossier => dossier.Id.Equals(dossierId))
             .Include(dossier => dossier.Initiator)
             .Include(dossier => dossier.ApprovalStages)
+            .Include(dossier => dossier.ApprovalHistories)
             .Include(dossier => dossier.CourseCreationRequests)
             .ThenInclude(creationRequests => creationRequests.NewCourse)
             .Include(dossier => dossier.CourseModificationRequests)
@@ -58,6 +60,7 @@ public class DossierReviewRepository : IDossierReviewRepository
         return await _dbContext.Dossiers
             .Where(dossier => dossier.Id.Equals(dossierId))
             .Include(dossier => dossier.ApprovalStages)
+            .Include(dossier => dossier.ApprovalHistories)
             .Include(dossier => dossier.CourseCreationRequests)
             .ThenInclude(creationRequests => creationRequests.NewCourse)
             .Include(dossier => dossier.CourseModificationRequests)

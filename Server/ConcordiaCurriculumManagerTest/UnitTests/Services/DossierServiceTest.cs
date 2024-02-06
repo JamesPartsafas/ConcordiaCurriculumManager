@@ -8,6 +8,7 @@ using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Collections.Generic;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
 
@@ -150,7 +151,7 @@ public class DossierServiceTest
             Title = "test title modified",
             Description = "test description modified"
         };
-       
+
 
         dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
         dossierRepository.Setup(d => d.UpdateDossier(It.IsAny<Dossier>())).ReturnsAsync(true);
@@ -370,12 +371,31 @@ public class DossierServiceTest
 
     [TestMethod]
     public async Task GetChangesAcrossAllDossiers_ValidCall_ReturnsCourseChanges()
-    {   
-        dossierRepository.Setup(d => d.GetChangesAcrossAllDossiers()).ReturnsAsync(new List<Course> { TestData.GetSampleAcceptedCourse()});
+    {
+        dossierRepository.Setup(d => d.GetChangesAcrossAllDossiers()).ReturnsAsync(new List<Course> { TestData.GetSampleAcceptedCourse() });
 
         var courseChanges = await dossierService.GetChangesAcrossAllDossiers();
 
         Assert.IsNotNull(courseChanges);
+    }
+
+    [TestMethod]
+    public async Task SearchDossiers_ValidCall_ReturnsDossiers()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+        dossierRepository.Setup(d => d.SearchDossiers(dossier.Title, dossier.State, dossier.Id)).ReturnsAsync(new List<Dossier> { dossier });
+
+        await dossierService.SearchDossiers(dossier.Title, dossier.State, dossier.Id);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(InvalidInputException))]
+    public async Task SearchDossiers_InvalidCall_ThrowsInvalidInputException()
+    {
+        var dossier = TestData.GetSampleDossier();
+        dossierRepository.Setup(d => d.SearchDossiers(dossier.Title, dossier.State, dossier.Id)).ReturnsAsync(new List<Dossier>());
+
+        await dossierService.SearchDossiers(dossier.Title, dossier.State, dossier.Id);
     }
 }
 

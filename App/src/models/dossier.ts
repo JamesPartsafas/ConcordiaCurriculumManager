@@ -22,6 +22,7 @@ export interface DossierDetailsDTO {
     courseModificationRequests: CourseModificationRequest[];
     courseDeletionRequests: CourseDeletionRequest[];
     approvalStages: ApprovalStage[];
+    approvalHistories: ApprovalHistoryDTO[];
     discussion: DossierDiscussion;
 }
 
@@ -35,6 +36,15 @@ export interface ApprovalStage {
     stageIndex: number;
     isCurrentStage: boolean;
     isFinalStage: boolean;
+}
+
+export interface ApprovalHistoryDTO {
+    action: number;
+    createdDate: Date;
+    group: GroupDTO;
+    groupId: string;
+    orderIndex: number;
+    user: UserDTO;
 }
 
 export interface DossierDTOResponse {

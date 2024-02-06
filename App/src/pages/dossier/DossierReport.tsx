@@ -7,7 +7,7 @@ import { DossierReportDTO, DossierReportResponse, DossierStateEnum } from "../..
 import { getDossierReport } from "../../services/dossier";
 import { AllCourseSettings, componentMappings } from "../../models/course";
 import { getAllCourseSettings } from "../../services/course";
-import CourseDifferenceViewer from "../../components/VersionDifference";
+import CourseDiffViewer from "../../components/CourseDifference/CourseDiffViewer";
 import { Divider } from "@chakra-ui/react";
 import "../../assets/styles/print.css";
 import { UserContext } from "../../App";

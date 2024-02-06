@@ -1,4 +1,4 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
+﻿using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 
 namespace ConcordiaCurriculumManager.DTO.CourseGrouping;
 

@@ -1,5 +1,5 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum;
-using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +21,7 @@ public interface ICourseRepository
     public Task<Course?> GetCourseInProposalBySubjectAndCatalog(string subject, string catalog);
     public Task<Course?> GetCourseByIdAsync(Guid id);
     public Task<List<Course>> GetCoursesBySubjectAsync(string subjectCode);
+    public Task<bool> UpdateCourse(Course course);
 }
 
 public class CourseRepository : ICourseRepository
@@ -148,5 +149,12 @@ public class CourseRepository : ICourseRepository
             .Include(c => c.CourseCourseComponents)
             .Include(c => c.SupportingFiles)
             .ToListAsync();
+    }
+
+    public async Task<bool> UpdateCourse(Course course)
+    {
+        _dbContext.Courses.Update(course);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
     }
 }

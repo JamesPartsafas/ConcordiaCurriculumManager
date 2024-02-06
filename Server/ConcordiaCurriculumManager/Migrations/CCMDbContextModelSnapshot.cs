@@ -143,7 +143,7 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.ToTable("CourseCourseComponents");
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", b =>
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseGrouping", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -197,7 +197,7 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.ToTable("CourseGroupings");
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGroupingReference", b =>
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseGroupingReference", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -225,7 +225,7 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.ToTable("CourseGroupingReferences");
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseIdentifier", b =>
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseIdentifier", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -356,6 +356,51 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.ToTable("CourseDeletionRequests");
                 });
 
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.CourseGroupingRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Conflict")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CourseGroupingId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DossierId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Rationale")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("RequestType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ResourceImplication")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseGroupingId")
+                        .IsUnique();
+
+                    b.HasIndex("DossierId");
+
+                    b.ToTable("CourseGroupingRequest");
+                });
+
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.CourseModificationRequest", b =>
                 {
                     b.Property<Guid>("Id")
@@ -429,6 +474,44 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasIndex("InitiatorId");
 
                     b.ToTable("Dossiers");
+                });
+
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview.ApprovalHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Action")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DossierId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("OrderIndex")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DossierId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ApprovalHistory");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview.ApprovalStage", b =>
@@ -700,7 +783,7 @@ namespace ConcordiaCurriculumManager.Migrations
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Course", b =>
                 {
-                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", null)
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseGrouping", null)
                         .WithMany("Courses")
                         .HasForeignKey("CourseGroupingId");
                 });
@@ -725,16 +808,16 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Navigation("CourseComponent");
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", b =>
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseGrouping", b =>
                 {
-                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", null)
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseGrouping", null)
                         .WithMany("SubGroupings")
                         .HasForeignKey("CourseGroupingId");
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGroupingReference", b =>
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseGroupingReference", b =>
                 {
-                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", null)
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseGrouping", null)
                         .WithMany("SubGroupingReferences")
                         .HasForeignKey("ParentGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -798,6 +881,25 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Navigation("Dossier");
                 });
 
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.CourseGroupingRequest", b =>
+                {
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseGrouping", "CourseGrouping")
+                        .WithOne("CourseGroupingRequest")
+                        .HasForeignKey("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.CourseGroupingRequest", "CourseGroupingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.Dossier", "Dossier")
+                        .WithMany("CourseGroupingRequests")
+                        .HasForeignKey("DossierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CourseGrouping");
+
+                    b.Navigation("Dossier");
+                });
+
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.CourseModificationRequest", b =>
                 {
                     b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Course", "Course")
@@ -826,6 +928,33 @@ namespace ConcordiaCurriculumManager.Migrations
                         .IsRequired();
 
                     b.Navigation("Initiator");
+                });
+
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview.ApprovalHistory", b =>
+                {
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.Dossier", "Dossier")
+                        .WithMany("ApprovalHistories")
+                        .HasForeignKey("DossierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ConcordiaCurriculumManager.Models.Users.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ConcordiaCurriculumManager.Models.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dossier");
+
+                    b.Navigation("Group");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview.ApprovalStage", b =>
@@ -904,13 +1033,13 @@ namespace ConcordiaCurriculumManager.Migrations
 
             modelBuilder.Entity("CourseGroupingCourseIdentifier", b =>
                 {
-                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", null)
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseGrouping", null)
                         .WithMany()
                         .HasForeignKey("CourseGroupingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseIdentifier", null)
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseIdentifier", null)
                         .WithMany()
                         .HasForeignKey("CourseIdentifiersId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -984,8 +1113,10 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Navigation("CourseCourseComponents");
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping.CourseGrouping", b =>
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseGrouping", b =>
                 {
+                    b.Navigation("CourseGroupingRequest");
+
                     b.Navigation("Courses");
 
                     b.Navigation("SubGroupingReferences");
@@ -995,11 +1126,15 @@ namespace ConcordiaCurriculumManager.Migrations
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.Dossier", b =>
                 {
+                    b.Navigation("ApprovalHistories");
+
                     b.Navigation("ApprovalStages");
 
                     b.Navigation("CourseCreationRequests");
 
                     b.Navigation("CourseDeletionRequests");
+
+                    b.Navigation("CourseGroupingRequests");
 
                     b.Navigation("CourseModificationRequests");
 

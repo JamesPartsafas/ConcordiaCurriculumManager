@@ -6,8 +6,10 @@ using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
-using ConcordiaCurriculumManager.Models.Curriculum.CourseGrouping;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.DTO;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingRequests;
+using ConcordiaCurriculumManager.DTO.CourseGrouping;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 public static class TestData
@@ -78,6 +80,14 @@ public static class TestData
         var course = GetSampleCourse(); ;
         course.Version = 2;
         course.CourseState = CourseStateEnum.Deleted;
+
+        return course;
+    }
+
+    public static Course GetSamplePublisheddCourse()
+    {
+        var course = GetSampleAcceptedCourse(); ;
+        course.Published = true;
 
         return course;
     }
@@ -649,6 +659,125 @@ public static class TestData
         {
             Id = Guid.NewGuid(),
             ConcordiaCourseId = 999999,
+        };
+    }
+
+    // COURSE GROUPING REQUESTS
+    public static CourseGroupingCreationRequestDTO GetSampleCourseGroupingCreationRequestDTO()
+    {
+        return new CourseGroupingCreationRequestDTO
+        {
+            DossierId = Guid.NewGuid(),
+            Rationale = "Important",
+            ResourceImplication = "none",
+            Comment = "No comment",
+            CourseGrouping = new CourseGroupingInputDTO
+            {
+                Name = "Sample request",
+                RequiredCredits = "120.5",
+                IsTopLevel = false,
+                School = SchoolEnum.GinaCody,
+                Description = "Some description",
+                Notes = "My notes",
+                SubGroupingReferences = new List<CourseGroupingReferenceInputDTO>
+                {
+                    {
+                        new CourseGroupingReferenceInputDTO
+                        {
+                            ChildGroupCommonIdentifier = Guid.NewGuid(),
+                            GroupingType = GroupingTypeEnum.SubGrouping
+                        }
+                    },
+                    {
+                        new CourseGroupingReferenceInputDTO
+                        {
+                            ChildGroupCommonIdentifier = Guid.NewGuid(),
+                            GroupingType = GroupingTypeEnum.OptionalGrouping
+                        }
+                    }
+                },
+                CourseIdentifiers = new List<CourseIdentifierDTO>
+                {
+                    {
+                        new CourseIdentifierDTO
+                        {
+                            ConcordiaCourseId = 5
+                        }
+                    },
+                    {
+                        new CourseIdentifierDTO
+                        {
+                            ConcordiaCourseId = 6
+                        }
+                    }
+                }
+            }
+        };
+    }
+    public static CourseGroupingModificationRequestDTO GetSampleCourseGroupingModificationRequestDTO()
+    {
+        return new CourseGroupingModificationRequestDTO
+        {
+            DossierId = Guid.NewGuid(),
+            Rationale = "Important",
+            ResourceImplication = "none",
+            Comment = "No comment",
+            CourseGrouping = new CourseGroupingModificationInputDTO
+            {
+                CommonIdentifier = Guid.NewGuid(),
+                Name = "Sample request",
+                RequiredCredits = "120.5",
+                IsTopLevel = false,
+                School = SchoolEnum.GinaCody,
+                Description = "Some description",
+                Notes = "My notes",
+                SubGroupingReferences = new List<CourseGroupingReferenceInputDTO>
+                {
+                    {
+                        new CourseGroupingReferenceInputDTO
+                        {
+                            ChildGroupCommonIdentifier = Guid.NewGuid(),
+                            GroupingType = GroupingTypeEnum.SubGrouping
+                        }
+                    },
+                    {
+                        new CourseGroupingReferenceInputDTO
+                        {
+                            ChildGroupCommonIdentifier = Guid.NewGuid(),
+                            GroupingType = GroupingTypeEnum.OptionalGrouping
+                        }
+                    }
+                },
+                CourseIdentifiers = new List<CourseIdentifierDTO>
+                {
+                    {
+                        new CourseIdentifierDTO
+                        {
+                            ConcordiaCourseId = 5
+                        }
+                    },
+                    {
+                        new CourseIdentifierDTO
+                        {
+                            ConcordiaCourseId = 6
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    public static CourseGroupingRequest GetSampleCourseGroupingRequest()
+    {
+        return new CourseGroupingRequest
+        {
+            DossierId = Guid.NewGuid(),
+            Rationale = "Important",
+            ResourceImplication = "none",
+            Comment = "No comment",
+            RequestType = RequestType.CreationRequest,
+            CourseGroupingId = Guid.NewGuid(),
+            CourseGrouping = TestData.GetSampleCourseGrouping()
         };
     }
 }

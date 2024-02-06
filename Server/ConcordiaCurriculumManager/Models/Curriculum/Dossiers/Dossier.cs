@@ -1,4 +1,7 @@
-﻿using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
+﻿using ConcordiaCurriculumManager.DTO.CourseGrouping;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingRequests;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
+using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
@@ -25,11 +28,15 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
         public List<CourseDeletionRequest> CourseDeletionRequests { get; set; } = new List<CourseDeletionRequest>();
 
+        public IList<CourseGroupingRequest> CourseGroupingRequests { get; set; } = new List<CourseGroupingRequest>();
+
         public IList<ApprovalStage> ApprovalStages { get; set; } = new List<ApprovalStage>();
+
+        public IList<ApprovalHistory> ApprovalHistories { get; set; } = new List<ApprovalHistory>();
 
         public required DossierDiscussion Discussion { get; set; }
 
-        public void MarkAsRejected()
+        public void MarkAsRejected(User user)
         {
             if (State != DossierStateEnum.InReview)
                 throw new BadRequestException("A dossier that is not currently in review cannot be rejected");
@@ -38,10 +45,21 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
             currentStage.IsCurrentStage = false;
 
+            var currentOrderIndex = (ApprovalHistories.Max(h => (int?)h.OrderIndex)) ?? 0;
+
+            ApprovalHistories.Add(new ApprovalHistory 
+            {
+                DossierId = Id,
+                GroupId = currentStage.GroupId,
+                UserId = user.Id,
+                OrderIndex = currentOrderIndex + 1,
+                Action = ActionEnum.Reject
+            });
+
             State = DossierStateEnum.Rejected;
         }
 
-        public void MarkAsReturned()
+        public void MarkAsReturned(User user)
         {
             if (IsInInitialStageOfReviewPipeline())
                 throw new BadRequestException("The dossier cannot be returned as it is still in the initial stage of its approval pipeline");
@@ -52,9 +70,20 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
             var previousStage = ApprovalStages.Where(stage => stage.StageIndex == currentStage.StageIndex - 1).First();
             previousStage.IsCurrentStage = true;
+
+            var currentOrderIndex = (ApprovalHistories.Max(h => (int?)h.OrderIndex)) ?? 0;
+
+            ApprovalHistories.Add(new ApprovalHistory
+            {
+                DossierId = Id,
+                GroupId = currentStage.GroupId,
+                UserId = user.Id,
+                OrderIndex = currentOrderIndex + 1,
+                Action = ActionEnum.Return
+            });
         }
 
-        public void MarkAsForwarded()
+        public void MarkAsForwarded(User user)
         {
             if (IsInFinalStageOfReviewPipeline())
                 throw new BadRequestException("The dossier cannot be forwarded as it is already in the final stage of its approval pipeline");
@@ -65,9 +94,20 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
             var nextStage = ApprovalStages.Where(stage => stage.StageIndex == currentStage.StageIndex + 1).First();
             nextStage.IsCurrentStage = true;
+
+            var currentOrderIndex = (ApprovalHistories.Max(h => (int?)h.OrderIndex)) ?? 0;
+
+            ApprovalHistories.Add(new ApprovalHistory
+            {
+                DossierId = Id,
+                GroupId = currentStage.GroupId,
+                UserId = user.Id,
+                OrderIndex = currentOrderIndex + 1,
+                Action = ActionEnum.Forward
+            });
         }
 
-        public void MarkAsAccepted(ICollection<CourseVersion> currentVersions)
+        public void MarkAsAccepted(ICollection<CourseVersion> currentVersions, User user)
         {
             if (!IsInFinalStageOfReviewPipeline())
                 throw new BadRequestException("The dossier cannot be accepted as it is not in the final stage of its approval pipeline");
@@ -86,6 +126,17 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
 
             foreach (var deletionRequest in CourseDeletionRequests)
                 deletionRequest.MarkAsDeleted(currentVersions);
+
+            var currentOrderIndex = (ApprovalHistories.Max(h => (int?)h.OrderIndex)) ?? 0;
+
+            ApprovalHistories.Add(new ApprovalHistory
+            {
+                DossierId = Id,
+                GroupId = currentStage.GroupId,
+                UserId = user.Id,
+                OrderIndex = currentOrderIndex + 1,
+                Action = ActionEnum.Accept
+            });
         }
 
         public IList<ApprovalStage> PrepareForPublishing(DossierSubmissionDTO dto)
@@ -142,6 +193,40 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
         {
             if (ApprovalStages.Count == 0)
                 throw new BadRequestException($"The approval stages have not been loaded for the dossier {Id}");
+        }
+
+        public CourseGroupingRequest CreateCourseGroupingCreationRequest(CourseGroupingCreationRequestDTO dto)
+        {
+            var grouping = CourseGroupingRequest.CreateCourseGroupingCreationRequestFromDTO(dto);
+            CourseGroupingRequests.Add(grouping);
+
+            return grouping;
+        }
+
+        public CourseGroupingRequest CreateCourseGroupingModificationRequest(CourseGroupingModificationRequestDTO dto)
+        {
+            VerifyDossierDoesNotContainDuplicateGroupingRequests(dto.CourseGrouping);
+
+            var grouping = CourseGroupingRequest.CreateCourseGroupingModificationRequestFromDTO(dto);
+            CourseGroupingRequests.Add(grouping);
+
+            return grouping;
+        }
+
+        private void VerifyDossierDoesNotContainDuplicateGroupingRequests(CourseGroupingModificationInputDTO dto)
+        {
+            if (CourseGroupingRequests.Any(request => request.CourseGrouping!.CommonIdentifier.Equals(dto.CommonIdentifier)))
+                throw new BadRequestException("The dossier already contains a request for this course grouping");
+        }
+
+        public CourseGroupingRequest GetGroupingRequestForDeletion(Guid requestId)
+        {
+            var request = CourseGroupingRequests.Where(request => request.Id.Equals(requestId)).FirstOrDefault();
+
+            if (request is null)
+                throw new BadRequestException($"The course grouping request with Id {requestId} does not exist");
+
+            return request;
         }
     }
 
