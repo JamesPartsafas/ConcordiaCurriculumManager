@@ -7,6 +7,7 @@ using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
 
@@ -254,6 +255,7 @@ public class CourseServiceTest
                 CourseReferencedId = course.Id,
                 CourseReferencing = course1,
                 CourseReferencingId = course1.Id,
+                State = CourseReferenceEnum.UpToDate
             },
             new()
             {
@@ -261,6 +263,7 @@ public class CourseServiceTest
                 CourseReferencedId = course.Id,
                 CourseReferencing = course2,
                 CourseReferencingId = course2.Id,
+                State = CourseReferenceEnum.UpToDate
             },
         };
 
@@ -455,6 +458,7 @@ public class CourseServiceTest
                 CourseReferencedId = course.Id,
                 CourseReferencing = course1,
                 CourseReferencingId = course1.Id,
+                State = CourseReferenceEnum.UpToDate
             },
             new()
             {
@@ -462,6 +466,7 @@ public class CourseServiceTest
                 CourseReferencedId = course.Id,
                 CourseReferencing = course2,
                 CourseReferencingId = course2.Id,
+                State = CourseReferenceEnum.UpToDate
             },
         };
 
@@ -765,6 +770,52 @@ public class CourseServiceTest
 
         Assert.IsNotNull(result);
         Assert.AreEqual(true, result.Published);
+    }
+
+    [TestMethod]
+    public async Task PublishCourse_NewCourseIsDelete_CallsInvalidateAllReferences()
+    {
+        var newCourse = TestData.GetSampleAcceptedCourse();
+        var oldCourse = TestData.GetSamplePublisheddCourse();
+
+        newCourse.CourseState = CourseStateEnum.Deleted;
+        courseRepository.Setup(repo => repo.GetCourseBySubjectAndCatalog(newCourse.Subject, newCourse.Catalog)).ReturnsAsync(newCourse);
+        courseRepository.Setup(repo => repo.GetPublishedVersion(oldCourse.Subject, oldCourse.Catalog)).ReturnsAsync(oldCourse);
+        courseRepository.Setup(repo => repo.UpdateCourse(newCourse)).ReturnsAsync(true);
+        courseRepository.Setup(repo => repo.UpdateCourse(oldCourse)).ReturnsAsync(true);
+
+        var result = await courseService.PublishCourse(newCourse.Subject, newCourse.Catalog);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(true, result.Published);
+        courseRepository.Verify(m => m.InvalidateAllCourseReferences(oldCourse.Id), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task PublishCourse_NewCourseIsNotDelete_CallsUpdateCourseReferences()
+    {
+        var newCourse = TestData.GetSampleAcceptedCourse();
+        var oldCourse = TestData.GetSamplePublisheddCourse();
+
+        newCourse.CourseState = CourseStateEnum.Accepted;
+        newCourse.Description = "Design of classes. Inheritance. Polymorphism. Static and dynamic binding. Abstract classes. Exception handling. File I/O. Recursion. Interfaces and inner classes. Graphical user interfaces. Generics. Collections and iterators. Lectures: three hours per week. Tutorial: two hours per week. Laboratory:one hour per week.Prerequisite: COMP 248; MATH 203 or Cegep Mathematics 103 or NYA; MATH 205 or Cegep Mathematics 203 or NYB previously or concurrently.";
+        courseRepository.Setup(repo => repo.GetCourseBySubjectAndCatalog(newCourse.Subject, newCourse.Catalog)).ReturnsAsync(newCourse);
+        courseRepository.Setup(repo => repo.GetPublishedVersion(oldCourse.Subject, oldCourse.Catalog)).ReturnsAsync(oldCourse);
+        courseRepository.Setup(repo => repo.UpdateCourse(newCourse)).ReturnsAsync(true);
+        courseRepository.Setup(repo => repo.UpdateCourse(oldCourse)).ReturnsAsync(true);
+
+        var expectedCourseSubjectAndCatalogExtracted = new List<(string, string)>()
+        {
+            ("COMP", "248"),
+            ("MATH", "203"),
+            ("MATH", "205")
+        };
+
+        var result = await courseService.PublishCourse(newCourse.Subject, newCourse.Catalog);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(true, result.Published);
+        courseRepository.Verify(m => m.UpdateCourseReferences(oldCourse, newCourse, It.Is<List<(string, string)>>(l => expectedCourseSubjectAndCatalogExtracted.TrueForAll(c => l.Contains(c)))), Times.Once);
     }
 
     [TestMethod]
