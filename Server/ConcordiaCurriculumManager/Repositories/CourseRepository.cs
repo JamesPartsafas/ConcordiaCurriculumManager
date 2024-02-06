@@ -1,6 +1,5 @@
-﻿using ConcordiaCurriculumManager.Models.Curriculum;
-using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
-using ConcordiaCurriculumManager.Models.Users;
+﻿using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +21,8 @@ public interface ICourseRepository
     public Task<Course?> GetCourseByIdAsync(Guid id);
     public Task<List<Course>> GetCoursesBySubjectAsync(string subjectCode);
     public Task<bool> UpdateCourse(Course course);
+    Task<bool> UpdateCourseReferences(Course oldCourse, Course newCourse, List<(string Subject, string Catalog)> newCourseReferencing);
+    Task<bool> InvalidateAllCourseReferences(Guid id);
 }
 
 public class CourseRepository : ICourseRepository
@@ -156,5 +157,66 @@ public class CourseRepository : ICourseRepository
         _dbContext.Courses.Update(course);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
+    }
+
+    public async Task<bool> UpdateCourseReferences(Course oldCourse, Course newCourse, List<(string Subject, string Catalog)> newCourseReferenced)
+    {
+        using var transaction = _dbContext.Database.BeginTransaction();
+
+        var references = await _dbContext.CourseReferences
+                .Where(c => c.State.Equals(CourseReferenceEnum.UpToDate) && (c.CourseReferencedId.Equals(oldCourse.Id) || c.CourseReferencingId.Equals(oldCourse.Id)))
+                .ToListAsync();
+
+        references.ForEach(reference => reference.State = CourseReferenceEnum.OutOfDate);
+
+        var newReferences = references.Where(reference => reference.CourseReferencedId.Equals(oldCourse.Id)).Select(reference => new CourseReference
+        {
+            CourseReferencedId = newCourse.Id,
+            CourseReferenced = newCourse,
+            CourseReferencingId = reference.CourseReferencingId,
+            CourseReferencing = reference.CourseReferencing,
+            State = CourseReferenceEnum.UpToDate
+        }).ToList();
+
+        foreach ((var subject, var catalog) in newCourseReferenced)
+        {
+            var course = await GetPublishedVersion(subject, catalog);
+
+            if (course is null)
+            {
+                continue;
+            }
+
+            newReferences.Add(new CourseReference
+            {
+                CourseReferencedId = course.Id,
+                CourseReferenced = course,
+                CourseReferencingId = newCourse.Id,
+                CourseReferencing = newCourse,
+                State = CourseReferenceEnum.UpToDate
+            });
+        }
+
+        _dbContext.CourseReferences.UpdateRange(references);
+        await _dbContext.CourseReferences.AddRangeAsync(newReferences);
+        var result = await _dbContext.SaveChangesAsync();
+        await transaction.CommitAsync();
+        return result == (newReferences.Count + references.Count);
+    }
+
+    public async Task<bool> InvalidateAllCourseReferences(Guid id)
+    {
+        using var transaction = _dbContext.Database.BeginTransaction();
+
+        var references = await _dbContext.CourseReferences
+                .Where(c => c.State.Equals(CourseReferenceEnum.UpToDate) && (c.CourseReferencedId.Equals(id) || c.CourseReferencingId.Equals(id)))
+                .ToListAsync();
+
+        references.ForEach(reference => reference.State = CourseReferenceEnum.OutOfDate);
+
+        _dbContext.CourseReferences.UpdateRange(references);
+        var result = await _dbContext.SaveChangesAsync();
+        await transaction.CommitAsync();
+        return result == references.Count;
     }
 }
