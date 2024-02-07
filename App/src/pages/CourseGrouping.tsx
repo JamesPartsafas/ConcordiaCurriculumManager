@@ -46,7 +46,7 @@ export default function CourseGrouping() {
                     <Heading size={"3xl"} color={"white"}>
                         {courseGrouping?.isTopLevel
                             ? " Degree Requirements for " + courseGrouping?.name
-                            : "Degree Requirements" }
+                            : "Degree Requirements"}
                     </Heading>
                 </Box>
             </Box>
@@ -56,12 +56,10 @@ export default function CourseGrouping() {
                     <Heading size={"2xl"} mb={3}>
                         Degree Requirements
                     </Heading>
-                ): (
-                    <Heading size={"2xl"} mb={3}>
-                        {courseGrouping?.name}
-                    </Heading>
-                
+                ) : (
+                    <></>
                 )}
+                
                 <Text>{courseGrouping?.description}</Text>
 
                 <Heading mb={3} mt={10} color={"brandRed"}>
@@ -161,9 +159,7 @@ export default function CourseGrouping() {
                 ))}
                 {courseGrouping?.notes && (
                     <Box mt={12}>
-                        <Heading mb={3}>
-                            Notes
-                        </Heading>
+                        <Heading mb={3}>Notes</Heading>
                         <Text mt={3} mb={3}>
                             {courseGrouping?.notes}
                         </Text>
