@@ -77,7 +77,7 @@ export default function CourseGrouping() {
                     ""
                 ) : (
                     <Text mb={5}>
-                        To fulfill the requirements of the {courseGrouping.name}, students may choose the courses from
+                        To fulfill the requirements of the {courseGrouping?.name}, students may choose the courses from
                         the {courseGrouping?.subGroupings.length} lists below:
                     </Text>
                 )}
