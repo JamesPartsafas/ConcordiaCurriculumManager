@@ -2,7 +2,7 @@ import { Badge, Box, Container, Flex, Heading, ListItem, OrderedList, Spacer, Te
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DossierReportDTO, DossierReportResponse, DossierStateEnum } from "../../models/dossier";
 import { getDossierReport } from "../../services/dossier";
 import { AllCourseSettings, componentMappings } from "../../models/course";
@@ -10,12 +10,15 @@ import { getAllCourseSettings } from "../../services/course";
 import CourseDiffViewer from "../../components/CourseDifference/CourseDiffViewer";
 import { Divider } from "@chakra-ui/react";
 import "../../assets/styles/print.css";
+import { UserContext } from "../../App";
+import { UserRoles } from "../../models/user";
 
 export default function DossierReport() {
     const navigate = useNavigate();
     const { dossierId } = useParams();
     const [dossierReport, setDossierReport] = useState<DossierReportDTO | null>(null);
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
+    const user = useContext(UserContext);
 
     useEffect(() => {
         requestDossierReport(dossierId);
@@ -38,340 +41,403 @@ export default function DossierReport() {
 
     return (
         <div>
-            <div className="printable-content">
-                <Container maxW={"90%"} mt={5} mb={2} className="print-container">
+            <Container maxW={"90%"} mt={5} mb={2} className="printable-content">
+                <Box mb={5}>
                     <Button
                         style="primary"
                         variant="outline"
                         height="40px"
                         width="fit-content"
-                        onClick={() => navigate(BaseRoutes.Home)}
+                        onClick={() => navigate(BaseRoutes.Dossiers)}
+                        className="non-printable-content"
                     >
-                        Return to Home
+                        My Dossiers
                     </Button>
 
-                    <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginBottom="1">
-                        {dossierReport?.title}
-                    </Text>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        width="fit-content"
+                        height="40px"
+                        ml={2}
+                        isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                        onClick={() => {
+                            navigate(BaseRoutes.DossiersToReview);
+                        }}
+                    >
+                        Dossiers To Review
+                    </Button>
 
-                    <Container textAlign={"center"}>
-                        {dossierReport?.state === DossierStateEnum.Approved && (
-                            <Badge colorScheme="green" fontSize="md" variant={"solid"} marginBottom="2">
-                                Approved
-                            </Badge>
-                        )}
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        width="fit-content"
+                        height="40px"
+                        ml={2}
+                        isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                        onClick={() => {
+                            navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
+                        }}
+                    >
+                        Dossiers Details
+                    </Button>
 
-                        {dossierReport?.state === DossierStateEnum.Rejected && (
-                            <Badge colorScheme="red" fontSize="md" variant={"solid"} marginBottom="2">
-                                Rejected
-                            </Badge>
-                        )}
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        width="fit-content"
+                        height="40px"
+                        ml={2}
+                        isDisabled={dossierReport?.state !== DossierStateEnum.InReview}
+                        onClick={() => {
+                            navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId));
+                        }}
+                    >
+                        Dossier Review
+                    </Button>
+                </Box>
 
-                        {dossierReport?.state === DossierStateEnum.InReview && (
-                            <Badge colorScheme="yellow" fontSize="md" variant={"solid"} marginBottom="2">
-                                Under Review
-                            </Badge>
-                        )}
+                <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginBottom="1">
+                    {dossierReport?.title}
+                </Text>
 
-                        {dossierReport?.state === DossierStateEnum.Created && (
-                            <Badge fontSize="md" variant={"solid"} marginBottom="2">
-                                Created
-                            </Badge>
-                        )}
-                    </Container>
+                <Container textAlign={"center"}>
+                    {dossierReport?.state === DossierStateEnum.Approved && (
+                        <Badge colorScheme="green" fontSize="md" variant={"solid"} marginBottom="2">
+                            Approved
+                        </Badge>
+                    )}
 
-                    <Text fontSize="xl" marginBottom="2" style={{ height: "100%" }}>
-                        <b>Description of Dossier:</b>
-                    </Text>
-                    <Box p={"8px 16px"} mb={3} width={"100%"} backgroundColor={"gray.100"} borderRadius={"lg"}>
-                        {dossierReport?.description}
-                    </Box>
+                    {dossierReport?.state === DossierStateEnum.Rejected && (
+                        <Badge colorScheme="red" fontSize="md" variant={"solid"} marginBottom="2">
+                            Rejected
+                        </Badge>
+                    )}
 
-                    <Box mb={8}>
-                        <Box display={"flex"} gap={1}>
-                            <Text fontSize="xl" mb={2}>
-                                <b>Approval Stages: </b>
-                            </Text>
-                            <Text alignSelf={"center"}>
-                                {dossierReport?.state === DossierStateEnum.Created && "(Not Sumbitted)"}
-                            </Text>
-                        </Box>
-                        <OrderedList>
-                            {dossierReport?.approvalStages
-                                .sort((a, b) => (a.stageIndex - b.stageIndex > 0 ? 1 : -1))
-                                .map((stage, index) => (
-                                    <ListItem ml={12} mb={2} key={index}>
-                                        <Box fontSize="md">
-                                            <Text>
-                                                {" "}
-                                                <b>{stage.group.name}</b>{" "}
-                                                {stage.isCurrentStage ? "(Current Stage)" : ""}
-                                            </Text>
-                                        </Box>
-                                    </ListItem>
-                                ))}
-                        </OrderedList>
-                    </Box>
+                    {dossierReport?.state === DossierStateEnum.InReview && (
+                        <Badge colorScheme="yellow" fontSize="md" variant={"solid"} marginBottom="2">
+                            Under Review
+                        </Badge>
+                    )}
 
-                    <Heading fontSize="4xl" mb={4} mt={4}>
-                        Course Creation Requests:
-                    </Heading>
-
-                    <OrderedList ml={12} mt={2} mb={10}>
-                        {dossierReport?.courseCreationRequests?.length === 0 && (
-                            <Box backgroundColor={"brandRed600"} p={5} borderRadius={"xl"}>
-                                <Text fontSize="md">No course creation requests.</Text>
-                            </Box>
-                        )}
-
-                        {dossierReport?.courseCreationRequests?.map((courseCreationRequest, index) => (
-                            <ListItem key={index} backgroundColor={"brandRed600"} p={5} borderRadius={"xl"} mb={2}>
-                                <div>
-                                    <Flex mb={6} gap={12} flexWrap={"wrap"}>
-                                        <Box>
-                                            <Text fontSize="md">
-                                                <b>Course Career:</b>{" "}
-                                                {allCourseSettings?.courseCareers.find(
-                                                    (career) =>
-                                                        career.careerCode === courseCreationRequest.newCourse.career
-                                                ).careerName ?? "N/A"}
-                                            </Text>
-
-                                            <Text fontSize="md">
-                                                <b>Course Subject:</b>{" "}
-                                                {courseCreationRequest.newCourse.subject ?? "N/A"}
-                                            </Text>
-
-                                            <Text fontSize="md">
-                                                <b>Course Name:</b> {courseCreationRequest.newCourse.title ?? "N/A"}
-                                            </Text>
-
-                                            <Text fontSize="md" marginBottom="1">
-                                                <b>Course Code:</b> {courseCreationRequest.newCourse.catalog ?? "N/A"}
-                                            </Text>
-
-                                            <Text fontSize="md">
-                                                <b>Credits:</b> {courseCreationRequest.newCourse.creditValue ?? "N/A"}
-                                            </Text>
-                                        </Box>
-                                        <Spacer />
-                                        <Spacer />
-                                        <Box>
-                                            <Text fontSize="md" marginBottom="1">
-                                                <b>Component(s):</b>{" "}
-                                                {allCourseSettings?.courseComponents
-                                                    .filter((component) =>
-                                                        Object.keys(
-                                                            courseCreationRequest?.newCourse.componentCodes || {}
-                                                        ).includes(componentMappings[component.componentName])
-                                                    )
-                                                    .map((filteredComponent) => {
-                                                        const code = componentMappings[filteredComponent.componentName];
-                                                        const hours =
-                                                            courseCreationRequest.newCourse.componentCodes[code];
-                                                        return `${filteredComponent.componentName} ${hours} hour(s) per week`;
-                                                    })
-                                                    .join(", ")}
-                                            </Text>
-
-                                            <Text fontSize="md" marginBottom="1">
-                                                <b>Equivalent Courses:</b>{" "}
-                                                {courseCreationRequest.newCourse.equivalentCourses ?? "N/A"}
-                                            </Text>
-
-                                            <Text fontSize="md" marginBottom="3">
-                                                <b>Prerequisites or Corequisites:</b>{" "}
-                                                {courseCreationRequest.newCourse.preReqs == ""
-                                                    ? "N/A"
-                                                    : courseCreationRequest.newCourse.preReqs}
-                                            </Text>
-                                        </Box>
-                                    </Flex>
-
-                                    <Text fontSize="md" marginBottom="3">
-                                        <b>Course Description:</b> <br />{" "}
-                                        {courseCreationRequest.newCourse.description ?? "N/A"}
-                                    </Text>
-
-                                    <Text fontSize="md" marginBottom="3">
-                                        <b>Rationale:</b> <br />
-                                        {courseCreationRequest.newCourse.rationale ?? "N/A"}
-                                    </Text>
-
-                                    <Text fontSize="md" marginBottom="3">
-                                        <b> Ressource Implications:</b> <br />
-                                        {courseCreationRequest.newCourse.resourceImplication ?? "N/A"}
-                                    </Text>
-
-                                    <Text fontSize="md" marginBottom="3">
-                                        <b>Comments:</b> <br />
-                                        {courseCreationRequest.comment == "" ? "N/A" : courseCreationRequest.comment}
-                                    </Text>
-
-                                    <Text fontSize="md" marginBottom="3">
-                                        <b>Conflicts:</b> <br />
-                                        {courseCreationRequest.conflict == "" ? "N/A" : courseCreationRequest.comment}
-                                    </Text>
-
-                                    <Text fontSize="md" marginBottom="3">
-                                        <b>Notes:</b> <br />
-                                        {courseCreationRequest.newCourse.courseNotes == ""
-                                            ? "N/A"
-                                            : courseCreationRequest.newCourse.courseNotes}
-                                    </Text>
-                                </div>
-                            </ListItem>
-                        ))}
-                    </OrderedList>
-
-                    <Heading size="xl">Course Deletion Requests:</Heading>
-
-                    <OrderedList ml={12} mt={2}>
-                        {dossierReport?.courseDeletionRequests?.length === 0 && (
-                            <Box backgroundColor={"brandGray200"} p={5} borderRadius={"xl"}>
-                                <Text fontSize="md">No course deletion requests.</Text>
-                            </Box>
-                        )}
-
-                        {dossierReport?.courseDeletionRequests.map((courseCreationRequest, index) => (
-                            <ListItem key={index} backgroundColor={"brandGray200"} p={5} borderRadius={"xl"} mb={2}>
-                                <div>
-                                    <Flex mb={6} gap={12} flexWrap={"wrap"}>
-                                        <Box>
-                                            <Text fontSize="md">
-                                                <b>Course Career:</b>{" "}
-                                                {allCourseSettings?.courseCareers.find(
-                                                    (career) =>
-                                                        career.careerCode === courseCreationRequest.course.career
-                                                ).careerName ?? "N/A"}
-                                            </Text>
-
-                                            <Text fontSize="md">
-                                                <b>Course Subject:</b> {courseCreationRequest.course.subject ?? "N/A"}
-                                            </Text>
-
-                                            <Text fontSize="md">
-                                                <b>Course Name:</b> {courseCreationRequest.course.title ?? "N/A"}
-                                            </Text>
-
-                                            <Text fontSize="md" marginBottom="1">
-                                                <b>Course Code:</b> {courseCreationRequest.course.catalog ?? "N/A"}
-                                            </Text>
-
-                                            <Text fontSize="md">
-                                                <b>Credits:</b> {courseCreationRequest.course.creditValue ?? "N/A"}
-                                            </Text>
-                                        </Box>
-                                        <Spacer />
-                                        <Spacer />
-                                        <Box>
-                                            <Text fontSize="md" marginBottom="1">
-                                                <b>Component(s):</b>{" "}
-                                                {allCourseSettings?.courseComponents
-                                                    .filter((component) =>
-                                                        Object.keys(
-                                                            courseCreationRequest?.course.componentCodes || {}
-                                                        ).includes(componentMappings[component.componentName])
-                                                    )
-                                                    .map((filteredComponent) => {
-                                                        const code = componentMappings[filteredComponent.componentName];
-                                                        const hours = courseCreationRequest.course.componentCodes[code];
-                                                        return `${filteredComponent.componentName} ${hours} hour(s) per week`;
-                                                    })
-                                                    .join(", ")}
-                                            </Text>
-
-                                            <Text fontSize="md" marginBottom="1">
-                                                <b>Equivalent Courses:</b>{" "}
-                                                {courseCreationRequest.course.equivalentCourses ?? "N/A"}
-                                            </Text>
-
-                                            <Text fontSize="md" marginBottom="3">
-                                                <b>Prerequisites or Corequisites:</b>{" "}
-                                                {courseCreationRequest.course.preReqs == ""
-                                                    ? "N/A"
-                                                    : courseCreationRequest.course.preReqs}
-                                            </Text>
-                                        </Box>
-                                    </Flex>
-
-                                    <Text fontSize="md" marginBottom="3">
-                                        <b>Course Description:</b> <br />{" "}
-                                        {courseCreationRequest.course.description ?? "N/A"}
-                                    </Text>
-
-                                    <Text fontSize="md" marginBottom="3">
-                                        <b>Rationale:</b> <br />
-                                        {courseCreationRequest.course.rationale ?? "N/A"}
-                                    </Text>
-
-                                    <Text fontSize="md" marginBottom="3">
-                                        <b> Ressource Implications:</b> <br />
-                                        {courseCreationRequest.course.resourceImplication ?? "N/A"}
-                                    </Text>
-
-                                    <Text fontSize="md" marginBottom="3">
-                                        <b>Comments:</b> <br />
-                                        {courseCreationRequest.comment == "" ? "N/A" : courseCreationRequest.comment}
-                                    </Text>
-
-                                    <Text fontSize="md" marginBottom="3">
-                                        <b>Conflicts:</b> <br />
-                                        {courseCreationRequest.conflict == "" ? "N/A" : courseCreationRequest.comment}
-                                    </Text>
-
-                                    <Text fontSize="md" marginBottom="3">
-                                        <b>Notes:</b> <br />
-                                        {courseCreationRequest.course.courseNotes == ""
-                                            ? "N/A"
-                                            : courseCreationRequest.course.courseNotes}
-                                    </Text>
-                                </div>
-                            </ListItem>
-                        ))}
-                    </OrderedList>
-                    <Heading fontSize="4xl" mb={4} mt={4}>
-                        Course Modification Requests:
-                    </Heading>
-                    {dossierReport?.courseModificationRequests?.map((courseModificationRequest, index) => (
-                        <>
-                            <Heading size={"md"} mb={2}>
-                                {index + 1}. {courseModificationRequest.course.subject}{" "}
-                                {courseModificationRequest.course.catalog} {courseModificationRequest.course.title}
-                            </Heading>
-                            <Text fontSize="md" marginBottom="3">
-                                <b> Ressource Implications: </b>
-                                {courseModificationRequest.resourceImplication == ""
-                                    ? "N/A"
-                                    : courseModificationRequest.resourceImplication}
-                            </Text>
-
-                            <Text fontSize="md" marginBottom="3">
-                                <b>Comments: </b>
-                                {courseModificationRequest.comment == "" ? "N/A" : courseModificationRequest.comment}
-                            </Text>
-
-                            <Text fontSize="md" marginBottom="3">
-                                <b>Conflicts: </b>
-                                {courseModificationRequest.conflict == "" ? "N/A" : courseModificationRequest.comment}
-                            </Text>
-                            <Text fontSize="md" marginBottom="3">
-                                <b>Rationale: </b>
-                                {courseModificationRequest.rationale == ""
-                                    ? "N/A"
-                                    : courseModificationRequest.rationale}
-                            </Text>
-                            <CourseDiffViewer
-                                oldCourse={dossierReport?.oldCourses[index]}
-                                newCourse={courseModificationRequest.course}
-                                allCourseSettings={allCourseSettings}
-                            ></CourseDiffViewer>
-                            <Divider />
-                        </>
-                    ))}
+                    {dossierReport?.state === DossierStateEnum.Created && (
+                        <Badge fontSize="md" variant={"solid"} marginBottom="2">
+                            Created
+                        </Badge>
+                    )}
                 </Container>
-            </div>
-            <Button style="primary" variant="outline" height="40px" width="fit-content" onClick={handlePrint} m={14}>
+
+                <Text fontSize="xl" marginBottom="2" style={{ height: "100%" }}>
+                    <b>Description of Dossier:</b>
+                </Text>
+                <Box p={"8px 16px"} mb={3} width={"100%"} backgroundColor={"gray.100"} borderRadius={"lg"}>
+                    {dossierReport?.description}
+                </Box>
+
+                <Box mb={8}>
+                    <Box display={"flex"} gap={1}>
+                        <Text fontSize="xl" mb={2}>
+                            <b>Approval Stages: </b>
+                        </Text>
+                        <Text alignSelf={"center"}>
+                            {dossierReport?.state === DossierStateEnum.Created && "(Not Submitted)"}
+                        </Text>
+                    </Box>
+                    <OrderedList>
+                        {dossierReport?.approvalStages
+                            .sort((a, b) => (a.stageIndex - b.stageIndex > 0 ? 1 : -1))
+                            .map((stage, index) => (
+                                <ListItem ml={12} mb={2} key={index}>
+                                    <Box fontSize="md">
+                                        <Text>
+                                            {" "}
+                                            <b>{stage.group.name}</b> {stage.isCurrentStage ? "(Current Stage)" : ""}
+                                        </Text>
+                                    </Box>
+                                </ListItem>
+                            ))}
+                    </OrderedList>
+                </Box>
+
+                <Heading fontSize="4xl" mb={4} mt={4}>
+                    Course Creation Requests:
+                </Heading>
+
+                <OrderedList ml={12} mt={2} mb={10}>
+                    {dossierReport?.courseCreationRequests?.length === 0 && (
+                        <Box backgroundColor={"brandRed600"} p={5} borderRadius={"xl"}>
+                            <Text fontSize="md">No course creation requests.</Text>
+                        </Box>
+                    )}
+
+                    {dossierReport?.courseCreationRequests?.map((courseCreationRequest, index) => (
+                        <ListItem key={index} backgroundColor={"brandRed600"} p={5} borderRadius={"xl"} mb={2}>
+                            <div>
+                                <Flex mb={6} gap={12} flexWrap={"wrap"}>
+                                    <Box>
+                                        <Text fontSize="md">
+                                            <b>Course Career:</b>{" "}
+                                            {allCourseSettings?.courseCareers.find(
+                                                (career) => career.careerCode === courseCreationRequest.newCourse.career
+                                            ).careerName ?? "N/A"}
+                                        </Text>
+
+                                        <Text fontSize="md">
+                                            <b>Course Subject:</b> {courseCreationRequest.newCourse.subject ?? "N/A"}
+                                        </Text>
+
+                                        <Text fontSize="md">
+                                            <b>Course Name:</b> {courseCreationRequest.newCourse.title ?? "N/A"}
+                                        </Text>
+
+                                        <Text fontSize="md" marginBottom="1">
+                                            <b>Course Code:</b> {courseCreationRequest.newCourse.catalog ?? "N/A"}
+                                        </Text>
+
+                                        <Text fontSize="md">
+                                            <b>Credits:</b> {courseCreationRequest.newCourse.creditValue ?? "N/A"}
+                                        </Text>
+                                    </Box>
+                                    <Spacer />
+                                    <Spacer />
+                                    <Box>
+                                        <Text fontSize="md" marginBottom="1">
+                                            <b>Component(s):</b>{" "}
+                                            {allCourseSettings?.courseComponents
+                                                .filter((component) =>
+                                                    Object.keys(
+                                                        courseCreationRequest?.newCourse.componentCodes || {}
+                                                    ).includes(componentMappings[component.componentName])
+                                                )
+                                                .map((filteredComponent) => {
+                                                    const code = componentMappings[filteredComponent.componentName];
+                                                    const hours = courseCreationRequest.newCourse.componentCodes[code];
+                                                    return `${filteredComponent.componentName} ${hours} hour(s) per week`;
+                                                })
+                                                .join(", ")}
+                                        </Text>
+
+                                        <Text fontSize="md" marginBottom="1">
+                                            <b>Equivalent Courses:</b>{" "}
+                                            {courseCreationRequest.newCourse.equivalentCourses ?? "N/A"}
+                                        </Text>
+
+                                        <Text fontSize="md" marginBottom="3">
+                                            <b>Prerequisites or Corequisites:</b>{" "}
+                                            {courseCreationRequest.newCourse.preReqs == ""
+                                                ? "N/A"
+                                                : courseCreationRequest.newCourse.preReqs}
+                                        </Text>
+                                    </Box>
+                                </Flex>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Course Description:</b> <br />{" "}
+                                    {courseCreationRequest.newCourse.description ?? "N/A"}
+                                </Text>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Rationale:</b> <br />
+                                    {courseCreationRequest.newCourse.rationale ?? "N/A"}
+                                </Text>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b> Resource Implication:</b> <br />
+                                    {courseCreationRequest.newCourse.resourceImplication ?? "N/A"}
+                                </Text>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Comments:</b> <br />
+                                    {courseCreationRequest.comment == "" ? "N/A" : courseCreationRequest.comment}
+                                </Text>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Conflicts:</b> <br />
+                                    {courseCreationRequest.conflict == "" ? "N/A" : courseCreationRequest.comment}
+                                </Text>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Notes:</b> <br />
+                                    {courseCreationRequest.newCourse.courseNotes == ""
+                                        ? "N/A"
+                                        : courseCreationRequest.newCourse.courseNotes}
+                                </Text>
+                            </div>
+                        </ListItem>
+                    ))}
+                </OrderedList>
+
+                <Heading size="xl">Course Deletion Requests:</Heading>
+
+                <OrderedList ml={12} mt={2}>
+                    {dossierReport?.courseDeletionRequests?.length === 0 && (
+                        <Box backgroundColor={"brandGray200"} p={5} borderRadius={"xl"}>
+                            <Text fontSize="md">No course deletion requests.</Text>
+                        </Box>
+                    )}
+
+                    {dossierReport?.courseDeletionRequests.map((courseCreationRequest, index) => (
+                        <ListItem key={index} backgroundColor={"brandGray200"} p={5} borderRadius={"xl"} mb={2}>
+                            <div>
+                                <Flex mb={6} gap={12} flexWrap={"wrap"}>
+                                    <Box>
+                                        <Text fontSize="md">
+                                            <b>Course Career:</b>{" "}
+                                            {allCourseSettings?.courseCareers.find(
+                                                (career) => career.careerCode === courseCreationRequest.course.career
+                                            ).careerName ?? "N/A"}
+                                        </Text>
+
+                                        <Text fontSize="md">
+                                            <b>Course Subject:</b> {courseCreationRequest.course.subject ?? "N/A"}
+                                        </Text>
+
+                                        <Text fontSize="md">
+                                            <b>Course Name:</b> {courseCreationRequest.course.title ?? "N/A"}
+                                        </Text>
+
+                                        <Text fontSize="md" marginBottom="1">
+                                            <b>Course Code:</b> {courseCreationRequest.course.catalog ?? "N/A"}
+                                        </Text>
+
+                                        <Text fontSize="md">
+                                            <b>Credits:</b> {courseCreationRequest.course.creditValue ?? "N/A"}
+                                        </Text>
+                                    </Box>
+                                    <Spacer />
+                                    <Spacer />
+                                    <Box>
+                                        <Text fontSize="md" marginBottom="1">
+                                            <b>Component(s):</b>{" "}
+                                            {allCourseSettings?.courseComponents
+                                                .filter((component) =>
+                                                    Object.keys(
+                                                        courseCreationRequest?.course.componentCodes || {}
+                                                    ).includes(componentMappings[component.componentName])
+                                                )
+                                                .map((filteredComponent) => {
+                                                    const code = componentMappings[filteredComponent.componentName];
+                                                    const hours = courseCreationRequest.course.componentCodes[code];
+                                                    return `${filteredComponent.componentName} ${hours} hour(s) per week`;
+                                                })
+                                                .join(", ")}
+                                        </Text>
+
+                                        <Text fontSize="md" marginBottom="1">
+                                            <b>Equivalent Courses:</b>{" "}
+                                            {courseCreationRequest.course.equivalentCourses ?? "N/A"}
+                                        </Text>
+
+                                        <Text fontSize="md" marginBottom="3">
+                                            <b>Prerequisites or Corequisites:</b>{" "}
+                                            {courseCreationRequest.course.preReqs == ""
+                                                ? "N/A"
+                                                : courseCreationRequest.course.preReqs}
+                                        </Text>
+                                    </Box>
+                                </Flex>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Course Description:</b> <br />{" "}
+                                    {courseCreationRequest.course.description ?? "N/A"}
+                                </Text>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Rationale:</b> <br />
+                                    {courseCreationRequest.course.rationale ?? "N/A"}
+                                </Text>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b> Ressource Implications:</b> <br />
+                                    {courseCreationRequest.course.resourceImplication ?? "N/A"}
+                                </Text>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Comments:</b> <br />
+                                    {courseCreationRequest.comment == "" ? "N/A" : courseCreationRequest.comment}
+                                </Text>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Conflicts:</b> <br />
+                                    {courseCreationRequest.conflict == "" ? "N/A" : courseCreationRequest.comment}
+                                </Text>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Notes:</b> <br />
+                                    {courseCreationRequest.course.courseNotes == ""
+                                        ? "N/A"
+                                        : courseCreationRequest.course.courseNotes}
+                                </Text>
+                            </div>
+                        </ListItem>
+                    ))}
+                </OrderedList>
+
+                <Heading fontSize="4xl" mb={4} mt={4}>
+                    Course Modification Requests:
+                </Heading>
+
+                <OrderedList ml={12} mt={2}>
+                    {dossierReport?.courseModificationRequests?.length === 0 && (
+                        <Box backgroundColor={"brandBlue600"} p={5} borderRadius={"xl"}>
+                            <Text fontSize="md">No course modification requests.</Text>
+                        </Box>
+                    )}
+
+                    {dossierReport?.courseModificationRequests?.map((courseModificationRequest, index) => (
+                        <ListItem key={index} backgroundColor={"brandBlue600"} p={5} borderRadius={"xl"} mb={2}>
+                            <>
+                                <Heading size={"md"} mb={2}>
+                                    {courseModificationRequest.course.subject}{" "}
+                                    {courseModificationRequest.course.catalog} {courseModificationRequest.course.title}
+                                </Heading>
+                                <Text fontSize="md" marginBottom="3">
+                                    <b> Ressource Implications: </b>
+                                    {courseModificationRequest.resourceImplication == ""
+                                        ? "N/A"
+                                        : courseModificationRequest.resourceImplication}
+                                </Text>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Comments: </b>
+                                    {courseModificationRequest.comment == ""
+                                        ? "N/A"
+                                        : courseModificationRequest.comment}
+                                </Text>
+
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Conflicts: </b>
+                                    {courseModificationRequest.conflict == ""
+                                        ? "N/A"
+                                        : courseModificationRequest.comment}
+                                </Text>
+                                <Text fontSize="md" marginBottom="3">
+                                    <b>Rationale: </b>
+                                    {courseModificationRequest.rationale == ""
+                                        ? "N/A"
+                                        : courseModificationRequest.rationale}
+                                </Text>
+                                <CourseDiffViewer
+                                    oldCourse={dossierReport?.oldCourses[index]}
+                                    newCourse={courseModificationRequest.course}
+                                    allCourseSettings={allCourseSettings}
+                                ></CourseDiffViewer>
+                                <Divider />
+                            </>
+                        </ListItem>
+                    ))}
+                </OrderedList>
+            </Container>
+
+            <Button
+                style="primary"
+                variant="outline"
+                height="40px"
+                width="fit-content"
+                onClick={handlePrint}
+                m={14}
+                className="non-printable-content"
+            >
                 Print Dossier Report
             </Button>
         </div>

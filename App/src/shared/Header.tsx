@@ -52,7 +52,7 @@ export default function Header(props: HeaderProps) {
     }
 
     return (
-        <Box>
+        <Box className="non-printable-content">
             <Flex
                 bg={useColorModeValue("white", "gray.800")}
                 color={useColorModeValue("gray.600", "white")}
