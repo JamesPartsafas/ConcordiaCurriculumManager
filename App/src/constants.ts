@@ -24,5 +24,5 @@ export enum BaseRoutes {
     CourseDetails = "/CourseDetails",
     GroupingBySchool = "/GetCourseBySchool",
     NoData = "/NoData",
-    CourseGrouping = "/CourseGrouping/:groupId",
+    CourseGrouping = "/CourseGrouping/:courseGroupingId",
 }
