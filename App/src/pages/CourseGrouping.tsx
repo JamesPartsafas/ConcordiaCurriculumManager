@@ -18,6 +18,7 @@ export default function CourseGrouping() {
         GetCourseGrouping(CourseGroupingId)
             .then(
                 (response) => {
+                    console.log(response.data);
                     setCourseGrouping(response.data);
                 },
                 (rej) => {
@@ -71,6 +72,12 @@ export default function CourseGrouping() {
 
                         <Text>{subGrouping?.description}</Text>
 
+                        {subGrouping.notes && (
+                            <Text mt={3} mb={3}>
+                               <u><b> Notes:</b></u> {subGrouping.notes}
+                            </Text>
+                        )}
+
                         {/* level 2 */}
                         {subGrouping?.subGroupings.map((subGrouping, index) => (
                             <Box ml={5} mt={5} mb={5} key={index}>
@@ -79,6 +86,12 @@ export default function CourseGrouping() {
                                 </Heading>
 
                                 <Text>{subGrouping?.description}</Text>
+
+                                {subGrouping.notes && (
+                                    <Text mt={3} mb={3}>
+                                        <u><b> Notes:</b></u> {subGrouping.notes}
+                                    </Text>
+                                )}
 
                                 <UnorderedList ml={12} mt={2}>
                                     {subGrouping.courses.map((course, index) => (
