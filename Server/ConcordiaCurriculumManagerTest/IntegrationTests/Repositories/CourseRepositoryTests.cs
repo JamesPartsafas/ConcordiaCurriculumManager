@@ -3,7 +3,8 @@ using ConcordiaCurriculumManager.Repositories;
 using Microsoft.EntityFrameworkCore;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
-using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Moq;
 
 namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories;
 
@@ -18,6 +19,7 @@ public class CourseRepositoryTests
     {
         var options = new DbContextOptionsBuilder<CCMDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
             .Options;
 
         dbContext = new CCMDbContext(options);
@@ -428,5 +430,117 @@ public class CourseRepositoryTests
 
         Assert.AreEqual(true, course.Published);
         Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public async Task UpdateCourseReferences_ValidInput_ReturnsTrueAndUpdatesAllReferences()
+    {
+        var oldCourse = TestData.GetSampleAcceptedCourse();
+        var newCourse = TestData.GetSampleAcceptedCourse();
+        var randomCourse1 = TestData.GetSampleAcceptedCourse();
+        var randomCourse2 = TestData.GetSampleAcceptedCourse();
+
+        newCourse.Subject = oldCourse.Subject;
+        newCourse.Catalog = oldCourse.Catalog;
+        newCourse.Version = oldCourse.Version + 1;
+
+        randomCourse2.Subject = "COMP";
+        randomCourse2.Catalog = "560T";
+        randomCourse2.Published = true;
+
+        var newCourseReferences = new List<(string Subject, string Catalog)>
+        {
+            (randomCourse2.Subject, randomCourse2.Catalog)
+        };
+
+        var references = new List<CourseReference>
+        {
+            new() {
+                CourseReferenced = oldCourse,
+                CourseReferencedId = oldCourse.Id,
+                CourseReferencing = randomCourse1,
+                CourseReferencingId = randomCourse1.Id,
+                State = CourseReferenceEnum.UpToDate
+            }
+        };
+
+        await dbContext.Courses.AddRangeAsync(new List<Course> { oldCourse, newCourse, randomCourse1, randomCourse2 });
+        await dbContext.CourseReferences.AddRangeAsync(references);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseRepository.UpdateCourseReferences(oldCourse, newCourse, newCourseReferences);
+
+        Assert.IsTrue(result);
+
+        var oldUpdatedReferences = await dbContext.CourseReferences
+            .Where(c => c.CourseReferencedId.Equals(oldCourse.Id) || c.CourseReferencingId.Equals(oldCourse.Id))
+            .ToListAsync();
+
+        var newUpdatedReferences = await dbContext.CourseReferences
+            .Where(c => c.CourseReferencedId.Equals(newCourse.Id) || c.CourseReferencingId.Equals(newCourse.Id))
+            .ToListAsync();
+
+        oldUpdatedReferences.ForEach(r => Assert.AreEqual(CourseReferenceEnum.OutOfDate, r.State));
+
+        foreach (var reference in newUpdatedReferences)
+        {
+            if (reference.CourseReferencedId.Equals(newCourse.Id))
+            {
+                Assert.AreEqual(randomCourse1.Id, reference.CourseReferencingId);
+            }
+            else
+            {
+                Assert.AreEqual(randomCourse2.Id, reference.CourseReferencedId);
+            }
+
+            Assert.AreEqual(CourseReferenceEnum.UpToDate, reference.State);
+        }
+    }
+
+    [TestMethod]
+    public async Task InvalidateAllCourseReferences_ValidInput_ReturnsTrueAndSetsStatusToOutOfDate()
+    {
+        var firstCourse = TestData.GetSampleAcceptedCourse();
+        var secondCourse = TestData.GetSampleAcceptedCourse();
+        var thirdCourse = TestData.GetSampleAcceptedCourse();
+
+        var references = new List<CourseReference>() {
+            new()
+            {
+                CourseReferenced = firstCourse,
+                CourseReferencedId = firstCourse.Id,
+                CourseReferencing = secondCourse,
+                CourseReferencingId = secondCourse.Id,
+                State = CourseReferenceEnum.UpToDate
+            },
+            new()
+            {
+                CourseReferenced = thirdCourse,
+                CourseReferencedId = thirdCourse.Id,
+                CourseReferencing = firstCourse,
+                CourseReferencingId = firstCourse.Id,
+                State = CourseReferenceEnum.UpToDate
+            },
+        };
+
+        await dbContext.Courses.AddRangeAsync(new List<Course>() { firstCourse, secondCourse, thirdCourse });
+        await dbContext.CourseReferences.AddRangeAsync(references);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseRepository.InvalidateAllCourseReferences(firstCourse.Id);
+
+        var newReferences = await dbContext.CourseReferences
+               .Where(c => (c.CourseReferencedId.Equals(firstCourse.Id) || c.CourseReferencingId.Equals(firstCourse.Id)))
+               .ToListAsync();
+
+        Assert.IsTrue(result);
+        foreach (var reference in newReferences)
+        {
+            var originalReference = references.FirstOrDefault(r => r.CourseReferencedId.Equals(reference.CourseReferencedId)
+                                                                   && r.CourseReferencingId.Equals(reference.CourseReferencingId));
+
+            Assert.IsNotNull(originalReference);
+            Assert.AreEqual(CourseReferenceEnum.OutOfDate, reference.State);
+        }
     }
 }

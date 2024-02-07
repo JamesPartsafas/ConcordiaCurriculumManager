@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace ConcordiaCurriculumManager.Services;
 
@@ -43,6 +44,8 @@ public class CourseService : ICourseService
     private readonly IDossierRepository _dossierRepository;
     private readonly ICourseGroupingRepository _courseGroupingRepository;
     private readonly ICourseIdentifiersRepository _courseIdentifiersRepository;
+
+    private const char NonBreakingSpaceChar = '\u00A0';
 
     public CourseService(
         ILogger<CourseService> logger,
@@ -334,7 +337,13 @@ public class CourseService : ICourseService
         foreach (var reference in course.CourseReferenced)
         {
             var courseReferencing = reference.CourseReferencing;
-            courseNames.Add($"{courseReferencing.Subject}-{courseReferencing.Catalog}");
+
+            if (reference.State.Equals(CourseReferenceEnum.OutOfDate))
+            {
+                continue;
+            }
+
+            courseNames.Add($"{courseReferencing.Subject} {courseReferencing.Catalog}");
         }
 
         var courses = courseNames.Count == 1 ? courseNames.First() : string.Join(", ", courseNames.Take(courseNames.Count - 1)) + ", and " + courseNames.Last();
@@ -399,6 +408,42 @@ public class CourseService : ICourseService
         await _courseRepository.UpdateCourse(newCourse);
         await _courseRepository.UpdateCourse(oldCourse);
 
+        var courseSubjectAndCatalog = ExtractReferencedCourseSubjectAndCatalog(newCourse);
+
+        bool result = newCourse.CourseState.Equals(CourseStateEnum.Deleted)
+            ? await _courseRepository.InvalidateAllCourseReferences(oldCourse.Id)
+            : await _courseRepository.UpdateCourseReferences(oldCourse, newCourse, courseSubjectAndCatalog);
+
+        if (!result)
+        {
+            _logger.LogError($"Failed to update the course references for {subject}-{catalog} with Id {newCourse.Id}");
+        }
+
         return newCourse;
+    }
+
+    private List<(string subject, string catalog)> ExtractReferencedCourseSubjectAndCatalog(Course course)
+    {
+        var pattern = @"[a-zA-Z]{3,4}[, ]?\d{3}[a-zA-Z]?";
+        var possibleInput = new List<string>
+        {
+            course.Description,
+            course.CourseNotes ?? "",
+            course.PreReqs,
+            course.EquivalentCourses ?? ""
+        };
+
+        var regexResult = possibleInput.SelectMany(input =>
+        {
+            input = input.Replace(NonBreakingSpaceChar, ' ');
+            var result = Regex.Matches(input, pattern);
+            return result.Select(r => r.Value);
+        }).Select(r =>
+        {
+            var indexOfCatalog = r.IndexOfAny("0123456789".ToCharArray());
+            return (r[..indexOfCatalog].Trim(), r[indexOfCatalog..].Trim());
+        }).DistinctBy(r => $"{r.Item1} {r.Item2}").ToList();
+
+        return regexResult;
     }
 }
