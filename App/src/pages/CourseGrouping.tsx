@@ -2,17 +2,19 @@ import { useEffect, useState } from "react";
 import { GetCourseGrouping } from "../services/courseGrouping";
 import { CourseGroupingDTO } from "../models/courseGrouping";
 
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Box, Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react";
+import { BaseRoutes } from "../constants";
 
 export default function CourseGrouping() {
     const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO>();
 
     const { courseGroupingId } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         requestCourseGrouping(courseGroupingId);
-    }, []);
+    }, [courseGroupingId]);
 
     function requestCourseGrouping(CourseGroupingId: string) {
         GetCourseGrouping(CourseGroupingId)
@@ -42,7 +44,9 @@ export default function CourseGrouping() {
             >
                 <Box w={"70%"} margin={"auto"} py={3}>
                     <Heading size={"3xl"} color={"white"}>
-                        Degree Requirements for {courseGrouping?.name}
+                        {courseGrouping?.isTopLevel
+                            ? " Degree Requirements for " + courseGrouping?.name
+                            : "" + courseGrouping?.name}
                     </Heading>
                 </Box>
             </Box>
@@ -53,43 +57,92 @@ export default function CourseGrouping() {
                 </Heading>
                 <Text>{courseGrouping?.description}</Text>
 
+                {courseGrouping?.notes && (
+                    <Text mt={3} mb={3}>
+                        <u>
+                            <b> Notes:</b>
+                        </u>{" "}
+                        {courseGrouping?.notes}
+                    </Text>
+                )}
+
                 <Heading mb={3} mt={10} color={"brandRed"}>
-                    {courseGrouping?.name} ({parseFloat(courseGrouping?.requiredCredits)} credits)
+                    {courseGrouping?.name}{" "}
+                    {parseFloat(courseGrouping?.requiredCredits)
+                        ? " (" + parseFloat(courseGrouping?.requiredCredits) + " credits)"
+                        : ""}
                 </Heading>
 
+                {courseGrouping?.subGroupings.some((subGrouping) => subGrouping.requiredCredits !== "N/A") ||
+                courseGrouping?.subGroupings.length == 0 ? (
+                    ""
+                ) : (
+                    <Text mb={5}>
+                        To fulfill the requirements of the {courseGrouping.name}, students may choose the courses from
+                        the {courseGrouping?.subGroupings.length} lists below:
+                    </Text>
+                )}
+
                 {courseGrouping?.subGroupings.map((subGrouping, index) => (
-                    <Text ml={2} mb={3} key={index}>
-                        {parseFloat(subGrouping.requiredCredits).toString().padEnd(5, "\u00A0")} credits from the{" "}
+                    <Text ml={2} mb={4} key={index}>
+                        {parseFloat(subGrouping.requiredCredits)
+                            ? parseFloat(subGrouping.requiredCredits).toString().padEnd(5, "\u00A0") +
+                              "credits from the "
+                            : ""}
                         {subGrouping.name} <br />
                     </Text>
                 ))}
 
+                <UnorderedList ml={12} mt={2}>
+                    {courseGrouping?.courses.map((course, index) => (
+                        <ListItem key={index}>
+                            <Text mb={2}>
+                                {course.subject + " " + course.catalog + " " + course.title} (
+                                {parseFloat(course.creditValue)})
+                            </Text>
+                        </ListItem>
+                    ))}
+                </UnorderedList>
+
                 {courseGrouping?.subGroupings.map((subGrouping, index) => (
                     <Box ml={2} mb={5} key={index}>
-                        <Heading color={"brandRed"} mb={3}>
-                            {subGrouping.name} ({parseFloat(subGrouping.requiredCredits)} credits)
-                        </Heading>
+                        <Link to={BaseRoutes.CourseGrouping.replace(":courseGroupingId", subGrouping.id)}>
+                            <Heading color={"brandRed"} mb={3}>
+                                {subGrouping.name}
+                                {parseFloat(subGrouping?.requiredCredits)
+                                    ? " (" + parseFloat(subGrouping?.requiredCredits) + " credits)"
+                                    : ""}
+                            </Heading>
+                        </Link>
 
-                        <Text>{subGrouping?.description}</Text>
+                        <Text mb={3}>{subGrouping?.description}</Text>
 
                         {subGrouping.notes && (
                             <Text mt={3} mb={3}>
-                               <u><b> Notes:</b></u> {subGrouping.notes}
+                                <u>
+                                    <b> Notes:</b>
+                                </u>{" "}
+                                {subGrouping.notes}
                             </Text>
                         )}
 
                         {/* level 2 */}
                         {subGrouping?.subGroupings.map((subGrouping, index) => (
                             <Box ml={5} mt={5} mb={5} key={index}>
-                                <Heading size={"md"} mb={3}>
-                                    {subGrouping.name}
-                                </Heading>
+                                <Link to={BaseRoutes.CourseGrouping.replace(":courseGroupingId", subGrouping.id)}>
+                                    <Heading size={"md"} mb={3}>
+                                        {subGrouping.name}
+                                    </Heading>
+                                </Link>
 
                                 <Text>{subGrouping?.description}</Text>
 
                                 {subGrouping.notes && (
                                     <Text mt={3} mb={3}>
-                                        <u><b> Notes:</b></u> {subGrouping.notes}
+                                        <u>
+                                            <b> Notes:</b>
+                                        </u>{" "}
+                                        {subGrouping.notes}
                                     </Text>
                                 )}
 
