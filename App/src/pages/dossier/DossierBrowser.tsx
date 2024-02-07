@@ -9,7 +9,7 @@ import { BaseRoutes } from "../../constants";
 import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../../services/group";
 
 export default function DossierBrowser() {
-    const [searchInput, setSearchInput] = useState<string>();
+    const [searchInput, setSearchInput] = useState<string>("");
     const [mySearchedDossiers, setMySearchedDossiers] = useState<DossierDTO[]>([]);
     const navigate = useNavigate();
     const handleChange = (event) => setSearchInput(event.target.value);
@@ -17,7 +17,7 @@ export default function DossierBrowser() {
     const selectedStateRef = useRef<HTMLSelectElement>(null);
     const selectedGroupRef = useRef<HTMLSelectElement>(null);
     const [selectedState, setSelectedState] = useState<string>("Created");
-    const [selectedGroup, setSelectedGroup] = useState<string>();
+    const [selectedGroup, setSelectedGroup] = useState<string>("");
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
     const [changer, setChanger] = useState<DossierStateEnum>(DossierStateEnum.Created);
