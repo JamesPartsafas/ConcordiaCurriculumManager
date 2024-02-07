@@ -59,7 +59,7 @@ export default function CourseGrouping() {
                 ) : (
                     <></>
                 )}
-                
+
                 <Text>{courseGrouping?.description}</Text>
 
                 <Heading mb={3} mt={10} color={"brandRed"}>
