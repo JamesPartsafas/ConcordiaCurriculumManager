@@ -35,6 +35,7 @@ export default function CourseGrouping() {
         <>
             <Box
                 mt={10}
+                mb={10}
                 backgroundColor={"brandRed"}
                 minH={"100px"}
                 display="flex"
@@ -45,25 +46,23 @@ export default function CourseGrouping() {
                     <Heading size={"3xl"} color={"white"}>
                         {courseGrouping?.isTopLevel
                             ? " Degree Requirements for " + courseGrouping?.name
-                            : "" + courseGrouping?.name}
+                            : "Degree Requirements" }
                     </Heading>
                 </Box>
             </Box>
 
             <Box w={"70%"} margin={"auto"}>
-                <Heading size={"2xl"} mb={3} mt={10}>
-                    Degree Requirements
-                </Heading>
-                <Text>{courseGrouping?.description}</Text>
-
-                {courseGrouping?.notes && (
-                    <Text mt={3} mb={3}>
-                        <u>
-                            <b> Notes:</b>
-                        </u>{" "}
-                        {courseGrouping?.notes}
-                    </Text>
+                {courseGrouping?.isTopLevel ? (
+                    <Heading size={"2xl"} mb={3}>
+                        Degree Requirements
+                    </Heading>
+                ): (
+                    <Heading size={"2xl"} mb={3}>
+                        {courseGrouping?.name}
+                    </Heading>
+                
                 )}
+                <Text>{courseGrouping?.description}</Text>
 
                 <Heading mb={3} mt={10} color={"brandRed"}>
                     {courseGrouping?.name}{" "}
@@ -71,16 +70,6 @@ export default function CourseGrouping() {
                         ? " (" + parseFloat(courseGrouping?.requiredCredits) + " credits)"
                         : ""}
                 </Heading>
-
-                {courseGrouping?.subGroupings.some((subGrouping) => subGrouping.requiredCredits !== "N/A") ||
-                courseGrouping?.subGroupings.length == 0 ? (
-                    ""
-                ) : (
-                    <Text mb={5}>
-                        To fulfill the requirements of the {courseGrouping?.name}, students may choose the courses from
-                        the {courseGrouping?.subGroupings.length} lists below:
-                    </Text>
-                )}
 
                 {courseGrouping?.subGroupings.map((subGrouping, index) => (
                     <Text ml={2} mb={4} key={index}>
@@ -170,6 +159,16 @@ export default function CourseGrouping() {
                         </UnorderedList>
                     </Box>
                 ))}
+                {courseGrouping?.notes && (
+                    <Box mt={12}>
+                        <Heading mb={3}>
+                            Notes
+                        </Heading>
+                        <Text mt={3} mb={3}>
+                            {courseGrouping?.notes}
+                        </Text>
+                    </Box>
+                )}
             </Box>
         </>
     );
