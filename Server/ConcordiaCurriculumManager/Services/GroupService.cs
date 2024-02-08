@@ -18,6 +18,7 @@ public interface IGroupService
     Task<bool> IsGroupIdListValid(IList<Guid> groupIds);
     Task<bool> UpdateGroupAsync(Guid id, GroupCreateDTO groupDto);
     Task<bool> DeleteGroupAsync(Guid id);
+    Task<List<string>> GetAllGroupMembersAndMastersEmails(Guid id);
 }
 
 public class GroupService : IGroupService
@@ -92,5 +93,19 @@ public class GroupService : IGroupService
     public async Task<bool> DeleteGroupAsync(Guid id)
     {
         return await _groupRepository.DeleteGroupAsync(id);
+    }
+
+    public async Task<List<string>> GetAllGroupMembersAndMastersEmails(Guid id)
+    {
+        var group = await _groupRepository.GetGroupById(id);
+
+        if (group is null)
+        {
+            throw new BadRequestException($"Group with id={id} does not exist");
+        }
+
+        var emails = group.Members.Select(m => m.Email.Trim()).Union(group.GroupMasters.Select(m => m.Email.Trim())).Distinct().ToList();
+
+        return emails;
     }
 }
