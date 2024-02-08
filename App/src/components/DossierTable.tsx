@@ -74,11 +74,16 @@ function DossierTable({
                 <Tbody>
                     {dossiers.slice(startIndex - 1, endIndex).map((dossier) => (
                         <Tr key={dossier.id} display={"flex"}>
-                            <Td minW={"200px"} maxW={"200px"}>
+                            <Td minW={"200px"} maxW={"200px"} style={{ whiteSpace: "normal" }}>
                                 {dossier.title}
                             </Td>
                             <Td minW={"450px"} maxW={"450px"}>
-                                <Text overflow="hidden" textOverflow="ellipsis" maxW={"500px"}>
+                                <Text
+                                    overflow="hidden"
+                                    textOverflow="ellipsis"
+                                    maxW={"500px"}
+                                    style={{ whiteSpace: "normal" }}
+                                >
                                     {dossier.description}
                                 </Text>
                             </Td>
