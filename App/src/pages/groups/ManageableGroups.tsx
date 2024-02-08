@@ -132,13 +132,15 @@ export default function DisplayManageableGroups() {
                         onEditGroup={onEditGroup}
                     />
 
-                    <Flex justify="center" mt={4}>
-                        <Link to={BaseRoutes.CreateGroup}>
-                            <Button color="white" backgroundColor={"#932439"} variant="solid" height="40px">
-                                Create Group
-                            </Button>
-                        </Link>
-                    </Flex>
+                    {isAdmin(user) && (
+                        <Flex justify="center" mt={4}>
+                            <Link to={BaseRoutes.CreateGroup}>
+                                <Button color="white" backgroundColor={"#932439"} variant="solid" height="40px">
+                                    Create Group
+                                </Button>
+                            </Link>
+                        </Flex>
+                    )}
 
                     <Flex justify="center" mt={4}>
                         <Link to={BaseRoutes.Home}>
