@@ -28,7 +28,6 @@ export default function DossierReport() {
     async function requestDossierReport(dossierId: string) {
         const dossierReportData: DossierReportResponse = await getDossierReport(dossierId);
         setDossierReport(dossierReportData.data);
-        console.log(dossierReportData.data);
     }
 
     async function requestAllCareerSettings() {

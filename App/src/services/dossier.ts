@@ -47,3 +47,7 @@ export function getDossierReport(id: string): Promise<DossierReportResponse> {
 export function searchDossiers(title: string, state: DossierStateEnum, guid: string): Promise<GetMyDossiersResponse> {
     return axios.get("/Dossier/SearchDossiers?title=" + title + "&state=" + state + "&groupId=" + guid);
 }
+
+export function getChangesAcrossAllDossiers(): Promise<DossierReportResponse> {
+    return axios.get(`/Dossier/GetChangesAcrossAllDossiers`);
+}
