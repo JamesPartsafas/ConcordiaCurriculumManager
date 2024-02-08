@@ -649,10 +649,9 @@ export default function DossierReview() {
                                     <Heading size={"md"} color="brandBlue">
                                         Course Creation Requests:
                                     </Heading>
-                                    {/* TODO: Change the links below to the Course Details Page */}
                                     {dossierDetails?.courseCreationRequests?.map((courseCreationRequest) => (
                                         <Text key={courseCreationRequest.id} as="u">
-                                            <Link to={BaseRoutes.ManageableGroup}>
+                                            <Link to={`/CourseDetails?subject=${courseCreationRequest.newCourse?.subject}&catalog=${courseCreationRequest.newCourse?.catalog}`}>
                                                 {courseCreationRequest.newCourse?.subject}{" "}
                                                 {courseCreationRequest.newCourse?.catalog}
                                             </Link>
@@ -663,10 +662,9 @@ export default function DossierReview() {
                                     <Heading size={"md"} color="brandBlue">
                                         Course Modification Requests:
                                     </Heading>
-                                    {/* TODO: Change the link below to the Course Details Page */}
                                     {dossierDetails?.courseModificationRequests?.map((courseModificationRequest) => (
                                         <Text key={courseModificationRequest.id} as="u">
-                                            <Link to={BaseRoutes.ManageableGroup}>
+                                            <Link to={`/CourseDetails?subject=${courseModificationRequest.course?.subject}&catalog=${courseModificationRequest.course?.catalog}`}>
                                                 {courseModificationRequest.course?.subject}{" "}
                                                 {courseModificationRequest.course?.catalog}
                                             </Link>
@@ -677,10 +675,9 @@ export default function DossierReview() {
                                     <Heading size={"md"} color="brandBlue">
                                         Course Deletion Requests:
                                     </Heading>
-                                    {/* TODO: Change the link below to the Course Details Page */}
                                     {dossierDetails?.courseDeletionRequests?.map((courseDeletionRequest) => (
                                         <Text key={courseDeletionRequest.id} as="u">
-                                            <Link to={BaseRoutes.ManageableGroup}>
+                                            <Link to={`/CourseDetails?subject=${courseDeletionRequest.course?.subject}&catalog=${courseDeletionRequest.course?.catalog}`}>
                                                 {courseDeletionRequest.course?.subject}{" "}
                                                 {courseDeletionRequest.course?.catalog}
                                             </Link>
