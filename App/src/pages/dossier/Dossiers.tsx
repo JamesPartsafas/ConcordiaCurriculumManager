@@ -187,6 +187,16 @@ export default function Dossiers() {
                 >
                     Dossiers To Review
                 </Button>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    ml="2"
+                    onClick={() => navigate(BaseRoutes.DossierBrowser)}
+                >
+                    Dossier Browser
+                </Button>
             </Container>
             <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                 {user?.firstName + "'s"} Dossiers

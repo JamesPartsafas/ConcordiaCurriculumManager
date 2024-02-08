@@ -6,6 +6,7 @@ import {
     DossierDTOResponse,
     DossierDetailsResponse,
     DossierReportResponse,
+    DossierStateEnum,
     GetMyDossiersResponse,
 } from "../models/dossier";
 
@@ -41,4 +42,8 @@ export function getDossierRequiredReview(): Promise<GetMyDossiersResponse> {
 
 export function getDossierReport(id: string): Promise<DossierReportResponse> {
     return axios.get(`/Dossier/GetDossierReportByDossierId/${id}`);
+}
+
+export function searchDossiers(title: string, state: DossierStateEnum, guid: string): Promise<GetMyDossiersResponse> {
+    return axios.get("/Dossier/SearchDossiers?title=" + title + "&state=" + state + "&groupId=" + guid);
 }
