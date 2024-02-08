@@ -11,14 +11,14 @@ namespace ConcordiaCurriculumManager.Repositories;
 
 public interface IDossierRepository
 {
-    Task<bool> SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
-    Task<bool> SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
-    Task<bool> SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
-    Task<List<Dossier>> GetDossiersByID(Guid userId);
-    Task<Dossier?> GetDossierByDossierId(Guid dossierId);
-    Task<bool> SaveDossier(Dossier dossier);
-    Task<bool> UpdateDossier(Dossier dossier);
-    Task<bool> DeleteDossier(Dossier dossier);
+    public Task<bool> SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
+    public Task<bool> SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
+    public Task<bool> SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
+    public Task<List<Dossier>> GetDossiersByID(Guid userId);
+    public Task<Dossier?> GetDossierByDossierId(Guid dossierId);
+    public Task<bool> SaveDossier(Dossier dossier);
+    public Task<bool> UpdateDossier(Dossier dossier);
+    public Task<bool> DeleteDossier(Dossier dossier);
     public Task<CourseCreationRequest?> GetCourseCreationRequest(Guid courseRequestId);
     public Task<bool> UpdateCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task<CourseModificationRequest?> GetCourseModificationRequest(Guid courseRequestId);
