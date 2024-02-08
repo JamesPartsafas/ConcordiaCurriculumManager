@@ -1,16 +1,11 @@
 ﻿using ConcordiaCurriculumManager.Filters.Exceptions;
-using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
-using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
-using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System.Security.Claims;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
 
@@ -134,6 +129,8 @@ public class DossierReviewServiceTest
         var user = TestData.GetSampleUser();
 
         dossier.State = DossierStateEnum.InReview;
+        user.Id = dossier.InitiatorId;
+        dossier.Initiator = user;
 
         dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStages(dossier.Id)).ReturnsAsync(dossier);
         dossierRepository.Setup(dr => dr.UpdateDossier(It.IsAny<Dossier>())).ReturnsAsync(true);
@@ -149,6 +146,9 @@ public class DossierReviewServiceTest
     {
         var dossier = TestData.GetSampleDossierInFinalStage();
         var user = TestData.GetSampleUser();
+
+        user.Id = dossier.InitiatorId;
+        dossier.Initiator = user;
 
         dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStages(dossier.Id)).ReturnsAsync(dossier);
 
@@ -174,6 +174,9 @@ public class DossierReviewServiceTest
     {
         var dossier = TestData.GetSampleDossierInInitialStage();
         var user = TestData.GetSampleUser();
+
+        user.Id = dossier.InitiatorId;
+        dossier.Initiator = user;
 
         dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequests(dossier.Id)).ReturnsAsync(dossier);
 
