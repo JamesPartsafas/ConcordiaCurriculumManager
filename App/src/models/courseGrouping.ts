@@ -45,3 +45,7 @@ export interface CourseGroupingDTO {
     createdDate: Date;
     modifiedDate: string;
 }
+
+export interface MultiCourseGroupingDTO {
+    data: CourseGroupingDTO[];
+}

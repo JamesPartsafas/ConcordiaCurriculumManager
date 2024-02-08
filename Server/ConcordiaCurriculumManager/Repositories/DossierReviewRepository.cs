@@ -25,7 +25,7 @@ public class DossierReviewRepository : IDossierReviewRepository
 
     public async Task<bool> SaveApprovalStages(IList<ApprovalStage> stages)
     {
-        _dbContext.BulkInsert(stages);
+        await _dbContext.ApprovalStages.AddRangeAsync(stages);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }

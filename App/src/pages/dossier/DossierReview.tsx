@@ -37,12 +37,13 @@ import {
 } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
-import { ArrowLeftIcon } from "@chakra-ui/icons";
+import { ArrowLeftIcon, CopyIcon } from "@chakra-ui/icons";
 import React from "react";
 import { forwardDossier, rejectDossier, returnDossier, reviewDossier } from "../../services/dossierreview";
 import { showToast } from "../../utils/toastUtils";
 import { UserContext } from "../../App";
 import { UserRoles } from "../../models/user";
+import DossierHistoryModal from "./DossierHistoryModal";
 
 export default function DossierReview() {
     const { dossierId } = useParams();
@@ -59,6 +60,7 @@ export default function DossierReview() {
     const [currentGroup, setCurrentGroup] = useState<ApprovalStage | null>(null);
     const [isGroupMaster, setIsGroupMaster] = useState(false);
     const [isPartOfCurrentStageGroup, setIsPartOfCurrentStageGroup] = useState(false);
+    const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
     const user = useContext(UserContext);
 
     const navigate = useNavigate();
@@ -486,6 +488,14 @@ export default function DossierReview() {
         );
     };
 
+    function displayHistoryModal() {
+        setShowHistoryModal(true);
+    }
+
+    function closeHistoryModal() {
+        setShowHistoryModal(false);
+    }
+
     return (
         <>
             <Box>
@@ -618,7 +628,19 @@ export default function DossierReview() {
                             ) : (
                                 ""
                             )}
-
+                            <Stack>
+                                <Button
+                                    leftIcon={<CopyIcon />}
+                                    width="200px"
+                                    height="40px"
+                                    mb="2"
+                                    onClick={() => {
+                                        displayHistoryModal();
+                                    }}
+                                >
+                                    View History Log
+                                </Button>
+                            </Stack>
                             <Stack>
                                 <Heading margin="auto" size="xl" color="brandRed">
                                     Changes
@@ -763,6 +785,14 @@ export default function DossierReview() {
                         </Stack>
                     </Flex>
                 </form>
+
+                {showHistoryModal && (
+                    <DossierHistoryModal
+                        approvalHistories={dossierDetails.approvalHistories}
+                        open={showHistoryModal}
+                        closeModal={closeHistoryModal}
+                    />
+                )}
             </Box>
             {messageAlertDialog()}
             {forwardAlertDialog()}

@@ -6,7 +6,6 @@ using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Security;
-using System.Runtime.ConstrainedExecution;
 
 namespace ConcordiaCurriculumManager.Services;
 
@@ -66,11 +65,17 @@ public class DossierReviewService : IDossierReviewService
         var approvalStages = dossier.PrepareForPublishing(dto);
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
         var areStagesSaved = await _dossierReviewRepository.SaveApprovalStages(approvalStages);
+        dossier.ApprovalStages = approvalStages;
 
         if (isDossierSaved && areStagesSaved)
+        {
+            _ = SendEmailToCurrentApprovingGroup(dossier, "Pending Dossier Review", EmailTemplates.GetDossierPendingReviewTemplate);
             _logger.LogInformation($"Dossier {dossier.Id} submitted for review to group {approvalStages.First().Id}");
+        }
         else
+        {
             _logger.LogError($"Encountered error attempting to submit dossier {dossier.Id} for review");
+        }
     }
 
     public async Task RejectDossier(Guid dossierId, User user)
@@ -80,10 +85,23 @@ public class DossierReviewService : IDossierReviewService
         dossier.MarkAsRejected(user);
 
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
+        var emailAddress = dossier.Initiator?.Email;
+
+        if (emailAddress is null)
+        {
+            var initiator = await _dossierRepository.GetDossierInitiator(dossier.Id);
+            emailAddress = initiator.Email;
+        }
+
         if (isDossierSaved)
+        {
+            _ = _emailService.SendEmail(emailAddress, $"Dossier Status Change", EmailTemplates.GetDossierRejectedTemplate(dossier.Title, dossier.Id));
             _logger.LogInformation($"Dossier {dossier.Id} successfully rejected from the review process");
+        }
         else
+        {
             _logger.LogError($"Encountered error attempting to reject dossier {dossier.Id} from the review process");
+        }
     }
 
     public async Task ReturnDossier(Guid dossierId, User user)
@@ -93,10 +111,24 @@ public class DossierReviewService : IDossierReviewService
         dossier.MarkAsReturned(user);
 
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
+        var emailAddress = dossier.Initiator?.Email;
+
+        if (emailAddress is null)
+        {
+            var initiator = await _dossierRepository.GetDossierInitiator(dossier.Id);
+            emailAddress = initiator.Email;
+        }
+
         if (isDossierSaved)
+        {
+            _ = _emailService.SendEmail(emailAddress, $"Dossier Status Change", EmailTemplates.GetDossierReturnedTemplate(dossier.Title, dossier.Id));
+            _ = SendEmailToCurrentApprovingGroup(dossier, "Pending Dossier Review", EmailTemplates.GetDossierPendingReviewTemplate);
             _logger.LogInformation($"Dossier {dossier.Id} successfully returned to the previous group in the review process");
+        }
         else
+        {
             _logger.LogError($"Encountered error attempting to return dossier {dossier.Id} to the previous group in the review process");
+        }
     }
 
     public async Task ForwardDossier(Guid dossierId, User user)
@@ -114,10 +146,24 @@ public class DossierReviewService : IDossierReviewService
         dossier.MarkAsForwarded(user);
 
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
+        var emailAddress = dossier.Initiator?.Email;
+
+        if (emailAddress is null)
+        {
+            var initiator = await _dossierRepository.GetDossierInitiator(dossier.Id);
+            emailAddress = initiator.Email;
+        }
+
         if (isDossierSaved)
+        {
+            _ = _emailService.SendEmail(emailAddress, $"Dossier Status Change", EmailTemplates.GetDossierForwardedTemplate(dossier.Title, dossier.Id));
+            _ = SendEmailToCurrentApprovingGroup(dossier, "Pending Dossier Review", EmailTemplates.GetDossierPendingReviewTemplate);
             _logger.LogInformation($"Dossier {dossier.Id} successfully forwarded to the next group in the review process");
+        }
         else
+        {
             _logger.LogError($"Encountered error attempting to forward dossier {dossier.Id} to the next group in the review process");
+        }
     }
 
     private async Task AcceptDossierChanges(Dossier dossier, User user)
@@ -137,7 +183,7 @@ public class DossierReviewService : IDossierReviewService
 
         if (isDossierSaved)
         {
-            _ = _emailService.SendEmail(emailAddress, $"Dossier {dossier.Title} has been approved", $"{dossier.Title} ({dossier.Id}) has been approved!");
+            _ = _emailService.SendEmail(emailAddress, $"Dossier Status Change", EmailTemplates.GetDossierApprovalTemplate(dossier.Title, dossier.Id)); ;
             _logger.LogInformation($"Dossier {dossier.Id} successfully accepted and removed from the review process");
         }
         else
@@ -147,7 +193,8 @@ public class DossierReviewService : IDossierReviewService
 
         var dossiers = await _dossierRepository.GetAllNonApprovedDossiers();
 
-        foreach (var request in dossier.CourseCreationRequests) {
+        foreach (var request in dossier.CourseCreationRequests)
+        {
             await ChangeAllCourseRequests(dossiers, request.NewCourse!.Subject, request.NewCourse.Catalog, "creation");
         }
 
@@ -188,11 +235,11 @@ public class DossierReviewService : IDossierReviewService
         await _dossierRepository.GetDossierByDossierId(dossierId)
         ?? throw new NotFoundException("The dossier does not exist.");
 
-    private async Task ChangeAllCourseRequests(IList<Dossier> dossiers, string subject, string catalog, string type) 
+    private async Task ChangeAllCourseRequests(IList<Dossier> dossiers, string subject, string catalog, string type)
     {
         foreach (var d in dossiers)
         {
-            if (type == "creation") 
+            if (type == "creation")
             {
                 foreach (var ccr in d.CourseCreationRequests)
                 {
@@ -255,5 +302,12 @@ public class DossierReviewService : IDossierReviewService
                 }
             }
         }
+    }
+
+    private async Task SendEmailToCurrentApprovingGroup(Dossier dossier, string subject, Func<string, Guid, string> EmailTemplateFunc)
+    {
+        var currentApprovingGroup = dossier.ApprovalStages.Where(stage => stage.IsCurrentStage).FirstOrDefault() ?? throw new BadRequestException("Unexpected error occurred: Could not find current group");
+        var groupEmails = await _groupService.GetAllGroupMembersAndMastersEmails(currentApprovingGroup.GroupId);
+        await Task.WhenAll(groupEmails.Select(async (email) => await _emailService.SendEmail(email, subject, EmailTemplateFunc(dossier.Title, dossier.Id))));
     }
 }

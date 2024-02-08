@@ -236,6 +236,7 @@ export default function DossierDetails() {
     function editCourseCreationRequest(creationRequest: CourseCreationRequest) {
         getCourseCreationRequest(creationRequest.id).then((res: CourseCreationRequestDTOResponse) => {
             const creationRequestToEdit = {
+                ...res.data,
                 ...res.data.newCourse,
                 id: res.data.id,
             };
@@ -253,6 +254,7 @@ export default function DossierDetails() {
     function editCourseModificationRequest(modificationRequest: CourseModificationRequest) {
         getCourseModificationRequest(modificationRequest.id).then((res: CourseModificationRequestDTOResponse) => {
             const modificationRequestToEdit = {
+                ...res.data,
                 ...res.data.course,
                 id: res.data.id,
             };
@@ -285,39 +287,41 @@ export default function DossierDetails() {
             {deleteRequestAlert()}
             {createModificationRequest()}
             <Container maxW={"70%"} mt={5} mb={2}>
-                <Button
-                    style="primary"
-                    variant="outline"
-                    width="fit-content"
-                    height="40px"
-                    ml="2"
-                    isDisabled={!user.roles.includes(UserRoles.Initiator)}
-                    onClick={() => {
-                        navigate(BaseRoutes.DossiersToReview);
-                    }}
-                >
-                    Dossiers To Review
-                </Button>
-                <Button
-                    style="primary"
-                    variant="outline"
-                    height="40px"
-                    width="fit-content"
-                    ml="2"
-                    onClick={() => navigate(BaseRoutes.Dossiers)}
-                >
-                    My Dossiers
-                </Button>
-                <Button
-                    style="primary"
-                    variant="outline"
-                    height="40px"
-                    width="fit-content"
-                    ml="2"
-                    onClick={() => navigate(BaseRoutes.DossierReport.replace(":dossierId", dossierId))}
-                >
-                    Dossier Report
-                </Button>
+                <Box mb={5}>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        width="fit-content"
+                        height="40px"
+                        isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                        onClick={() => {
+                            navigate(BaseRoutes.DossiersToReview);
+                        }}
+                    >
+                        Dossiers To Review
+                    </Button>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        height="40px"
+                        width="fit-content"
+                        ml="2"
+                        onClick={() => navigate(BaseRoutes.Dossiers)}
+                    >
+                        My Dossiers
+                    </Button>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        height="40px"
+                        width="fit-content"
+                        ml="2"
+                        onClick={() => navigate(BaseRoutes.DossierReport.replace(":dossierId", dossierId))}
+                    >
+                        Dossier Report
+                    </Button>
+                </Box>
+
                 {dossierStateToString(dossierDetails) != "Created" && (
                     <Button
                         style="primary"
@@ -330,7 +334,7 @@ export default function DossierDetails() {
                         Dossier Review
                     </Button>
                 )}
-                <div style={{ margin: "auto", width: "fit-content" }}>
+                <div style={{ margin: "auto" }}>
                     <Heading textAlign={"center"} color={"brandRed"}>
                         {dossierDetails?.title}
                     </Heading>

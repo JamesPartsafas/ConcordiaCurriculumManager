@@ -1,8 +1,15 @@
 @media print {
-    .printable-content {
-        display: block !important;
+    .non-printable-content {
+        display: none !important;
     }
+
+    /* .printable-content {
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    } */
+
     @page {
         margin: 20mm; /* Adjust the margin values as needed */
+
     }
 }

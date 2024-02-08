@@ -14,4 +14,6 @@ public class ApprovalHistoryDTO
     public required int OrderIndex { get; set; }
 
     public required ActionEnum Action { get; set; }
+
+    public required DateTime CreatedDate { get; set; }
 }

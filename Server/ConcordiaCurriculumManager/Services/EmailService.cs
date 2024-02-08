@@ -7,7 +7,7 @@ namespace ConcordiaCurriculumManager.Services;
 
 public interface IEmailService
 {
-    public Task<bool> SendEmail(string recipientEmail, string subject, string body, bool isBodyHtml = false);
+    public Task<bool> SendEmail(string recipientEmail, string subject, string body, bool isBodyHtml = true);
 }
 
 public class EmailService : IEmailService
