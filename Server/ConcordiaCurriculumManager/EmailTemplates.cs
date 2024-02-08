@@ -544,7 +544,7 @@ public static class EmailTemplates
                                             {1}
                                             <br />
                                             <br />
-                                            Please login the Concordia Curriculum Portal for more details. 
+                                            Please login into the Concordia Curriculum Portal for more details. 
                                           </p>
                                         </td>
                                       </tr>
