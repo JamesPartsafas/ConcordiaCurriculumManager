@@ -41,7 +41,7 @@ export default function CallToActionWithIllustration() {
                             width="200px"
                             margin="0px"
                             height="40px"
-                            onClick={() => navigate(BaseRoutes.Dossiers)}
+                            onClick={() => navigate(BaseRoutes.myGroups)}
                         >
                             View Groups List
                         </Button>
