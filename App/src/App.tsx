@@ -35,6 +35,7 @@ import NoData from "./pages/NoData";
 import CourseGrouping from "./pages/CourseGrouping";
 import DossierBrowser from "./pages/dossier/DossierBrowser";
 import GroupingBySchool from "./pages/CourseGroupingBySchool";
+import MyGroups from "./pages/groups/myGroups";
 import DossierChangeLog from "./pages/dossier/DossierChangeLog";
 
 export const UserContext = createContext<User | null>(null);
@@ -205,6 +206,11 @@ export function App() {
 
                     {/* whenever none of the other routes match we show the not found page */}
                     <Route path={BaseRoutes.NotFound} element={<NotFound />} />
+
+                    <Route
+                        path={BaseRoutes.myGroups}
+                        element={isLoggedIn == true ? <MyGroups /> : <Navigate to={BaseRoutes.Login} />}
+                    />
                 </Routes>
             </UserContext.Provider>
         </>

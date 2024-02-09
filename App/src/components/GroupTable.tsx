@@ -21,6 +21,7 @@ GroupTable.propTypes = {
     useIcons: PropTypes.bool,
     groupsPerPage: PropTypes.number,
     onEditGroup: PropTypes.func,
+    showManageMembers: PropTypes.bool,
 };
 
 function GroupTable({
@@ -33,6 +34,7 @@ function GroupTable({
     groupsPerPage,
     onEditGroup,
     setDeleteGroupId,
+    showManageMembers = true,
 }) {
     const handleEditGroup = (groupId) => {
         onEditGroup(groupId);
@@ -55,9 +57,11 @@ function GroupTable({
                     <Th whiteSpace="nowrap" textAlign={"center"}>
                         Number of Members
                     </Th>
-                    <Th whiteSpace="nowrap" textAlign={"center"}>
-                        Manage Members
-                    </Th>
+                    {showManageMembers && (
+                        <Th whiteSpace="nowrap" textAlign={"center"}>
+                            Manage Members
+                        </Th>
+                    )}
                     {isAdmin(user) && (
                         <Th whiteSpace="nowrap" textAlign={"center"}>
                             Manage Masters
@@ -84,20 +88,25 @@ function GroupTable({
                         <Td whiteSpace="nowrap" padding="16px" textAlign="center">
                             {group.members?.length ?? 0}
                         </Td>
-                        <Td whiteSpace="nowrap" padding="16px">
-                            <Link to={BaseRoutes.AddUserToGroup} state={{ gid: group.id, name: group.name }}>
-                                <Button colorScheme="primary" variant="outline" width="25%" height="40px" mr={1}>
-                                    Add
-                                </Button>
-                            </Link>
-                            {(group.members?.length || 0) !== 0 && (
-                                <Link to={BaseRoutes.RemoveUserFromGroup} state={{ gid: group.id, name: group.name }}>
-                                    <Button colorScheme="primary" variant="outline" width="43%" height="40px">
-                                        Remove
+                        {showManageMembers && (
+                            <Td whiteSpace="nowrap" padding="16px">
+                                <Link to={BaseRoutes.AddUserToGroup} state={{ gid: group.id, name: group.name }}>
+                                    <Button colorScheme="primary" variant="outline" width="25%" height="40px" mr={1}>
+                                        Add
                                     </Button>
                                 </Link>
-                            )}
-                        </Td>
+                                {(group.members?.length || 0) !== 0 && (
+                                    <Link
+                                        to={BaseRoutes.RemoveUserFromGroup}
+                                        state={{ gid: group.id, name: group.name }}
+                                    >
+                                        <Button colorScheme="primary" variant="outline" width="43%" height="40px">
+                                            Remove
+                                        </Button>
+                                    </Link>
+                                )}
+                            </Td>
+                        )}
                         {isAdmin(user) && (
                             <Td whiteSpace="nowrap" padding="16px">
                                 <Link to={BaseRoutes.AddGroupMaster} state={{ gid: group.id, name: group.name }}>
