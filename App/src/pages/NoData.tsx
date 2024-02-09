@@ -1,6 +1,6 @@
 import { Container, Heading, Stack, Text } from "@chakra-ui/react";
 import Button from "../components/Button";
-import { BaseRoutes } from "../constants";
+//import { BaseRoutes } from "../constants";
 import { useNavigate } from "react-router-dom";
 
 export default function NoData() {
