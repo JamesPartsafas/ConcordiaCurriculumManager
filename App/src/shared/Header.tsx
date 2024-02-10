@@ -269,8 +269,8 @@ const NAV_ITEMS: Array<NavItem> = [
         href: "#",
     },
     {
-        label: "User Settings",
-        href: "#",
+        label: "User Profile",
+        href: "/profile",
     },
     {
         label: "Groups",

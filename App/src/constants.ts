@@ -28,4 +28,6 @@ export enum BaseRoutes {
     NoData = "/NoData",
     CourseGrouping = "/CourseGrouping/:courseGroupingId",
     myGroups = "/myGroups",
+    profile ="/profile",
+    editProfileInfo ="/editProfileInfo"
 }
