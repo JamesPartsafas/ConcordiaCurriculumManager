@@ -213,6 +213,16 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
             return grouping;
         }
 
+        public CourseGroupingRequest CreateCourseGroupingDeletionRequest(CourseGroupingModificationRequestDTO dto)
+        {
+            VerifyDossierDoesNotContainDuplicateGroupingRequests(dto.CourseGrouping);
+
+            var grouping = CourseGroupingRequest.CreateCourseGroupingDeletionRequestFromDTO(dto);
+            CourseGroupingRequests.Add(grouping);
+
+            return grouping;
+        }
+
         private void VerifyDossierDoesNotContainDuplicateGroupingRequests(CourseGroupingModificationInputDTO dto)
         {
             if (CourseGroupingRequests.Any(request => request.CourseGrouping!.CommonIdentifier.Equals(dto.CommonIdentifier)))
