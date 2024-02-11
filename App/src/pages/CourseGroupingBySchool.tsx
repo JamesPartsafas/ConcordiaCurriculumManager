@@ -18,11 +18,14 @@ import { CourseGroupingDTO, MultiCourseGroupingDTO, SchoolEnum } from "../models
 import Button from "../components/Button";
 import { GetCourseGroupingBySchool } from "../services/courseGrouping";
 import { InfoIcon } from "@chakra-ui/icons";
+import { BaseRoutes } from "../constants";
+import { useNavigate } from "react-router-dom";
 export default function GroupingBySchool() {
     const selectedSchoolRef = useRef<HTMLSelectElement>(null);
     const [selectedSchool, setSelectedSchool] = useState<string>("GinaCody");
     const [changer, setChanger] = useState<SchoolEnum>(SchoolEnum.GinaCody);
     const [courseGroupings, setCourseGroupings] = useState<CourseGroupingDTO[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (selectedSchool == "GinaCody") {
@@ -51,8 +54,8 @@ export default function GroupingBySchool() {
     }
 
     function handleNavigateToCurriculumDetails(input: string) {
-        //To Send to details page once it's implemented
         console.log(input);
+        navigate(BaseRoutes.CourseGrouping.replace(":courseGroupingId", input));
     }
     return (
         <div>
