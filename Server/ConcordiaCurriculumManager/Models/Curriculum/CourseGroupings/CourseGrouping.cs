@@ -25,8 +25,11 @@ public class CourseGrouping : BaseModel
     public static CourseGrouping CreateCourseGroupingFromCreationDTO(Guid id, CourseGroupingInputDTO dto) =>
         CreateCourseGroupingFromDTO(id, dto, Guid.NewGuid(), CourseGroupingStateEnum.NewCourseGroupingProposal);
 
-    public static CourseGrouping CreateCourseGroupingFromModificationDTO(Guid id, CourseGroupingModificationInputDTO dto) =>
+    public static CourseGrouping CreateCourseGroupingModificationFromModificationDTO(Guid id, CourseGroupingModificationInputDTO dto) =>
         CreateCourseGroupingFromDTO(id, dto, dto.CommonIdentifier, CourseGroupingStateEnum.CourseGroupingChangeProposal);
+
+    public static CourseGrouping CreateCourseGroupingDeletionFromModificationDTO(Guid id, CourseGroupingModificationInputDTO dto) =>
+        CreateCourseGroupingFromDTO(id, dto, dto.CommonIdentifier, CourseGroupingStateEnum.CourseGroupingDeletionProposal);
 
     private static CourseGrouping CreateCourseGroupingFromDTO(Guid id,CourseGroupingInputDTO dto, Guid commonId, CourseGroupingStateEnum state)
     {

@@ -18,6 +18,7 @@ public interface ICourseGroupingService
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name);
     public Task<CourseGroupingRequest> InitiateCourseGroupingCreation(CourseGroupingCreationRequestDTO dto);
     public Task<CourseGroupingRequest> InitiateCourseGroupingModification(CourseGroupingModificationRequestDTO dto);
+    public Task<CourseGroupingRequest> InitiateCourseGroupingDeletion(CourseGroupingModificationRequestDTO dto);
     public Task<CourseGroupingRequest> EditCourseGroupingModification(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
     public Task DeleteCourseGroupingRequest(Guid dossierId, Guid requestId);
 }
@@ -128,6 +129,27 @@ public class CourseGroupingService : ICourseGroupingService
         {
             _logger.LogError($"New course grouping modification for dossier {dossier.Id} failed to save");
             throw new ServiceUnavailableException("The course grouping modification could not be saved");
+        }
+
+        return grouping;
+    }
+
+    public async Task<CourseGroupingRequest> InitiateCourseGroupingDeletion(CourseGroupingModificationRequestDTO dto)
+    {
+        await VerifyCourseGroupingExists(dto.CourseGrouping);
+
+        var dossier = await _dossierService.GetDossierDetailsByIdOrThrow(dto.DossierId);
+
+        var grouping = dossier.CreateCourseGroupingDeletionRequest(dto);
+
+        var groupingSaved = await _courseGroupingRepository.SaveCourseGroupingRequest(grouping);
+
+        if (groupingSaved)
+            _logger.LogInformation($"New course grouping deletion created for dossier {dossier.Id} with Id {grouping.Id}");
+        else
+        {
+            _logger.LogError($"New course grouping deletion for dossier {dossier.Id} failed to save");
+            throw new ServiceUnavailableException("The course grouping deletion could not be saved");
         }
 
         return grouping;
