@@ -20,6 +20,7 @@ public interface ICourseGroupingService
     public Task<CourseGroupingRequest> InitiateCourseGroupingModification(CourseGroupingModificationRequestDTO dto);
     public Task<CourseGroupingRequest> InitiateCourseGroupingDeletion(CourseGroupingModificationRequestDTO dto);
     public Task<CourseGroupingRequest> EditCourseGroupingModification(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
+    public Task<CourseGroupingRequest> EditCourseGroupingDeletion(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
     public Task DeleteCourseGroupingRequest(Guid dossierId, Guid requestId);
 }
 
@@ -169,6 +170,15 @@ public class CourseGroupingService : ICourseGroupingService
         await DeleteCourseGroupingRequest(dto.DossierId, originalRequestId);
 
         return await InitiateCourseGroupingModification(dto);
+    }
+
+    public async Task<CourseGroupingRequest> EditCourseGroupingDeletion(Guid originalRequestId, CourseGroupingModificationRequestDTO dto)
+    {
+        await VerifyEditRequestsMatchOrThrow(originalRequestId, dto);
+
+        await DeleteCourseGroupingRequest(dto.DossierId, originalRequestId);
+
+        return await InitiateCourseGroupingDeletion(dto);
     }
 
     private async Task VerifyEditRequestsMatchOrThrow(Guid originalRequestId, CourseGroupingModificationRequestDTO dto)
