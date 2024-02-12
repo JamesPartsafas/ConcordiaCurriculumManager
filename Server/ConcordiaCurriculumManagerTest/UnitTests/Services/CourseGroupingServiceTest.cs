@@ -334,6 +334,61 @@ public class CourseGroupingServiceTest
     }
 
     [TestMethod]
+    [ExpectedException(typeof(ServiceUnavailableException))]
+    public async Task EditCourseGroupingDeletion_FailsToQuery_Throws()
+    {
+        var dto = TestData.GetSampleCourseGroupingModificationRequestDTO();
+        var originalRequestId = Guid.NewGuid();
+
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingRequestById(originalRequestId)).ReturnsAsync((CourseGroupingRequest)null!);
+
+        await courseGroupingService.EditCourseGroupingDeletion(originalRequestId, dto);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ServiceUnavailableException))]
+    public async Task EditCourseGroupingDeletion_FailsToQueryIncludedGrouping_Throws()
+    {
+        var dto = TestData.GetSampleCourseGroupingModificationRequestDTO();
+        var request = TestData.GetSampleCourseGroupingRequest();
+        request.CourseGrouping = null;
+
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingRequestById(request.Id)).ReturnsAsync(request);
+
+        await courseGroupingService.EditCourseGroupingDeletion(request.Id, dto);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task EditCourseGroupingDeletion_WithMismatchedCommonIdentifier_Throws()
+    {
+        var dto = TestData.GetSampleCourseGroupingModificationRequestDTO();
+        var request = TestData.GetSampleCourseGroupingRequest();
+        request.DossierId = dto.DossierId;
+        dto.CourseGrouping.CommonIdentifier = Guid.NewGuid();
+        request.CourseGrouping!.CommonIdentifier = Guid.NewGuid();
+
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingRequestById(request.Id)).ReturnsAsync(request);
+
+        await courseGroupingService.EditCourseGroupingDeletion(request.Id, dto);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task EditCourseGroupingDeletion_WithMismatchedDossierId_Throws()
+    {
+        var dto = TestData.GetSampleCourseGroupingModificationRequestDTO();
+        var request = TestData.GetSampleCourseGroupingRequest();
+        request.DossierId = Guid.NewGuid();
+        dto.DossierId = Guid.NewGuid();
+        dto.CourseGrouping.CommonIdentifier = request.CourseGrouping!.CommonIdentifier;
+
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingRequestById(request.Id)).ReturnsAsync(request);
+
+        await courseGroupingService.EditCourseGroupingDeletion(request.Id, dto);
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(BadRequestException))]
     public async Task DeleteCourseGroupingRequest_RequestDoesNotExist_Throws()
     {
