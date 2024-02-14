@@ -106,6 +106,19 @@ public class CourseGroupingController : Controller
         return Created($"/{nameof(InitiateCourseGroupingDeletion)}", groupingDTO);
     }
 
+    [HttpPut(nameof(EditCourseGroupingCreation) + "/{dossierId}" + "/{requestId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Course grouping creation edited successfully", typeof(CourseGroupingRequestDTO))]
+    public async Task<ActionResult> EditCourseGroupingCreation([FromRoute, Required] Guid requestId, [FromBody, Required] CourseGroupingCreationRequestDTO dto)
+    {
+        var grouping = await _courseGroupingService.EditCourseGroupingCreation(requestId, dto);
+        var groupingDTO = _mapper.Map<CourseGroupingRequestDTO>(grouping);
+
+        return Created($"/{nameof(EditCourseGroupingCreation)}", groupingDTO);
+    }
+
     [HttpPut(nameof(EditCourseGroupingModification) + "/{dossierId}" + "/{requestId}")]
     [Authorize(Policies.IsOwnerOfDossier)]
     [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]

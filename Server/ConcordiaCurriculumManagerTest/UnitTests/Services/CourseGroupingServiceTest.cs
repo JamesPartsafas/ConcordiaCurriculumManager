@@ -280,6 +280,31 @@ public class CourseGroupingServiceTest
 
     [TestMethod]
     [ExpectedException(typeof(ServiceUnavailableException))]
+    public async Task EditCourseGroupingCreation_FailsToQuery_Throws()
+    {
+        var dto = TestData.GetSampleCourseGroupingCreationRequestDTO();
+        var originalRequestId = Guid.NewGuid();
+
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingRequestById(originalRequestId)).ReturnsAsync((CourseGroupingRequest)null!);
+
+        await courseGroupingService.EditCourseGroupingCreation(originalRequestId, dto);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ServiceUnavailableException))]
+    public async Task EditCourseGroupingCreation_FailsToQueryIncludedGrouping_Throws()
+    {
+        var dto = TestData.GetSampleCourseGroupingCreationRequestDTO();
+        var request = TestData.GetSampleCourseGroupingRequest();
+        request.CourseGrouping = null;
+
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingRequestById(request.Id)).ReturnsAsync(request);
+
+        await courseGroupingService.EditCourseGroupingCreation(request.Id, dto);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ServiceUnavailableException))]
     public async Task EditCourseGroupingModification_FailsToQuery_Throws()
     {
         var dto = TestData.GetSampleCourseGroupingModificationRequestDTO();
