@@ -258,7 +258,7 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
                 .FirstOrDefault();
 
             if (request is null)
-                return true;
+                return false;
 
             return true;
         }
