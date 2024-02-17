@@ -51,7 +51,17 @@ export interface CourseGroupingDTO {
     modifiedDate: string;
 }
 
-export interface CourseGroupingRequestDTO {
+// export interface CourseGroupingRequestDTO {
+//     id: string;
+//     dossierId: string;
+//     rationale: string;
+//     resourceImplication: string;
+//     comment: string;
+//     conflict: string;
+//     courseGrouping: CourseGroupingDTO;
+// }
+
+export interface CourseGroupingRequestInputDTO {
     name: string;
     requiredCredits: string;
     isTopLevel: boolean;
@@ -68,7 +78,7 @@ export interface CourseGroupingModificationRequestDTO {
     rationale: string;
     resourceImplication: string;
     comment: string;
-    courseGrouping: CourseGroupingRequestDTO;
+    courseGrouping: CourseGroupingRequestInputDTO;
 }
 
 export interface MultiCourseGroupingDTO {

@@ -236,7 +236,77 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
             if (request is null)
                 throw new BadRequestException($"The course grouping request with Id {requestId} does not exist");
 
+            CourseGroupingRequests.Remove(request);
+
             return request;
+        }
+
+        public bool IsDossierCreatingCourse(int concordiaCourseId)
+        {
+            var request = CourseCreationRequests.Where(request => request.NewCourse!.CourseID.Equals(concordiaCourseId)).FirstOrDefault();
+
+            if (request is null)
+                return false;
+
+            return true;
+        }
+
+        public bool IsDossierCreatingGrouping(Guid commonIdentifier)
+        {
+            var request = CourseGroupingRequests.Where(request =>
+                request.CourseGrouping!.CommonIdentifier.Equals(commonIdentifier) && request.RequestType.Equals(RequestType.CreationRequest))
+                .FirstOrDefault();
+
+            if (request is null)
+                return false;
+
+            return true;
+        }
+
+        public bool IsModifiedParentGroupingReferencingCourse(Guid parentCommonId, int courseId)
+        {
+            var request = CourseGroupingRequests.Where(request =>
+                request.CourseGrouping!.CommonIdentifier.Equals(parentCommonId) && request.RequestType.Equals(RequestType.ModificationRequest))
+                .FirstOrDefault();
+
+            if (request is null)
+                return true;
+
+            return request.CourseGrouping!.CourseIdentifiers.Any(identifier => identifier.ConcordiaCourseId.Equals(courseId));
+        }
+
+        public bool IsModifiedParentGroupingReferencingChildGrouping(Guid parentCommonId, Guid childCommonId)
+        {
+            var request = CourseGroupingRequests.Where(request =>
+                request.CourseGrouping!.CommonIdentifier.Equals(parentCommonId) && request.RequestType.Equals(RequestType.ModificationRequest))
+                .FirstOrDefault();
+
+            if (request is null)
+                return true;
+
+            return request.CourseGrouping!.SubGroupings.Any(subgrouping => subgrouping.CommonIdentifier.Equals(childCommonId));
+        }
+
+        public bool IsDossierDeletingCourse(int concordiaCourseId)
+        {
+            var request = CourseDeletionRequests.Where(request => request.Course!.CourseID.Equals(concordiaCourseId)).FirstOrDefault();
+
+            if (request is null)
+                return false;
+
+            return true;
+        }
+
+        public bool IsDossierDeletingGrouping(Guid commonIdentifier)
+        {
+            var request = CourseGroupingRequests.Where(request => 
+                request.CourseGrouping!.CommonIdentifier.Equals(commonIdentifier) && request.RequestType.Equals(RequestType.DeletionRequest))
+                .FirstOrDefault();
+
+            if (request is null)
+                return false;
+
+            return true;
         }
     }
 
