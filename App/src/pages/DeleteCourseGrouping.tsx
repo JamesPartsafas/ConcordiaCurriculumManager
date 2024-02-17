@@ -121,7 +121,14 @@ export default function DeleteCourse() {
                 setCourseGroupings(res.data);
             })
             .catch((err) => {
-                console.log(err);
+                if (err.response.status == 400) {
+                    showToast(
+                        toast,
+                        "Error!",
+                        err.response ? "You cannot search an empty string." : "One or more validation errors occurred",
+                        "error"
+                    );
+                }
             });
     };
 
