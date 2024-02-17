@@ -51,15 +51,15 @@ export interface CourseGroupingDTO {
     modifiedDate: string;
 }
 
-// export interface CourseGroupingRequestDTO {
-//     id: string;
-//     dossierId: string;
-//     rationale: string;
-//     resourceImplication: string;
-//     comment: string;
-//     conflict: string;
-//     courseGrouping: CourseGroupingDTO;
-// }
+export interface CourseGroupingRequestDTO {
+    id: string;
+    dossierId: string;
+    rationale: string;
+    resourceImplication: string;
+    comment: string;
+    conflict: string;
+    courseGrouping: CourseGroupingDTO;
+}
 
 export interface CourseGroupingRequestInputDTO {
     name: string;
