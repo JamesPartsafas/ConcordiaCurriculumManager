@@ -202,7 +202,7 @@ export default function DeleteCourse() {
                                         Search
                                     </Button>
                                 </Stack>
-                                <Stack>
+                                <Stack mb={10}>
                                     <TableContainer borderRadius="xl" boxShadow="xl" border="2px">
                                         <Table
                                             variant="simple"
