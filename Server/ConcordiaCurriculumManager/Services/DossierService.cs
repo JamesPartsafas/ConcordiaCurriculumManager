@@ -8,6 +8,8 @@ using ConcordiaCurriculumManager.Repositories;
 using NetTopologySuite.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
+using System.Linq;
 
 namespace ConcordiaCurriculumManager.Services;
 public interface IDossierService
@@ -30,6 +32,7 @@ public interface IDossierService
     public Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId);
     public Task<CourseChanges> GetChangesAcrossAllDossiers();
     public Task<IList<Dossier>> SearchDossiers(string? title, DossierStateEnum? state, Guid? groupId);
+    public Task VerifyDossierStateIsValid(Dossier dossier);
 }
 
 public class DossierService : IDossierService
@@ -37,12 +40,18 @@ public class DossierService : IDossierService
     private readonly ILogger<DossierService> _logger;
     private readonly IDossierRepository _dossierRepository;
     private readonly ICourseRepository _courseRepository;
+    private readonly ICourseGroupingRepository _courseGroupingRepository;
 
-    public DossierService(ILogger<DossierService> logger, IDossierRepository dossierRepository, ICourseRepository courseRepository)
+    public DossierService(
+        ILogger<DossierService> logger,
+        IDossierRepository dossierRepository,
+        ICourseRepository courseRepository,
+        ICourseGroupingRepository courseGroupingRepository)
     {
         _logger = logger;
         _dossierRepository = dossierRepository;
         _courseRepository = courseRepository;
+        _courseGroupingRepository = courseGroupingRepository;
     }
 
     public async Task<List<Dossier>> GetDossiersByID(Guid ID)
@@ -263,5 +272,134 @@ public class DossierService : IDossierService
             throw new InvalidInputException("A dossier cannot be in an approval stage if its state is not under review.");
         }
         return await _dossierRepository.SearchDossiers(title, state, groupId);
+    }
+
+    /// <summary>
+    /// Validity implies:
+    /// 1: For any grouping creation or modification request,
+    /// all its subgroupings and courses either have their current version be accepted or are being created in the dossier.
+    /// In addition, the dossier must not have any deletion request for any of its subgroupings or courses.
+    /// 2: For any grouping deletion request, no grouping may have this grouping as a subgrouping, unless this parent grouping
+    /// is being modified or deleted in the dossier to remove this subgrouping reference.
+    /// 3: For any course deletion request, no grouping may reference this course, unless the grouping is being deleted or modified within
+    /// the dossier to remove this course reference.
+    /// </summary>
+    /// <param name="dossier"></param>
+    public async Task VerifyDossierStateIsValid(Dossier dossier)
+    {
+        foreach (var groupingRequest in dossier.CourseGroupingRequests)
+        {
+            await VerifyGroupingRequestIsValid(dossier, groupingRequest);
+        }
+
+        foreach (var courseDeletionRequest in dossier.CourseDeletionRequests)
+        {
+            await VerifyCourseDeletionRequestIsValid(dossier, courseDeletionRequest);
+        }
+    }
+
+    private async Task VerifyGroupingRequestIsValid(Dossier dossier, CourseGroupingRequest request)
+    {
+        var grouping = request.CourseGrouping;
+        if (grouping == null)
+            return;
+
+        if (request.RequestType.Equals(RequestType.CreationRequest) || request.RequestType.Equals(RequestType.ModificationRequest))
+        {
+            await VerifyGroupingCreationAndModificationRequestIsValid(dossier, grouping);
+        }
+        else
+        {
+            await VerifyGroupingDeletionRequestIsValid(dossier, grouping);
+        }
+    }
+
+    private async Task VerifyGroupingCreationAndModificationRequestIsValid(Dossier dossier, CourseGrouping grouping)
+    {
+        VerifyNoInvalidDeletions(dossier, grouping);
+
+        await VerifySubComponentsExist(dossier, grouping);
+    }
+
+    private void VerifyNoInvalidDeletions(Dossier dossier, CourseGrouping grouping)
+    {
+        // Verify no subgroupings are being deleted
+        foreach (var subgrouping in grouping.SubGroupings)
+        {
+            if (dossier.IsDossierDeletingGrouping(subgrouping.CommonIdentifier))
+                throw new BadRequestException($"The grouping {grouping.Name} and a deletion request for its subgrouping cannot exist in the same dossier");
+        }
+
+        // Verify no courses are being deleted from grouping
+        foreach (var courseIdentifier in grouping.CourseIdentifiers)
+        {
+            if (dossier.IsDossierDeletingCourse(courseIdentifier.ConcordiaCourseId))
+                throw new BadRequestException($"The grouping {grouping.Name} and a deletion request for its course cannot exist in the same dossier");
+        }
+    }
+
+    private async Task VerifySubComponentsExist(Dossier dossier, CourseGrouping grouping)
+    {
+        // Verify subgroupings are being created or are already accepted
+        foreach (var subgrouping in grouping.SubGroupings)
+        {
+            // Check if subgrouping is being created in dossier
+            if (dossier.IsDossierCreatingGrouping(subgrouping.CommonIdentifier))
+                continue;
+
+            // Subgrouping is not being created in dossier, so check if subgrouping is already accepted.
+            var queriedSubgrouping = await _courseGroupingRepository.GetCourseGroupingByCommonIdentifier(subgrouping.CommonIdentifier);
+            if (queriedSubgrouping != null)
+                continue;
+
+            throw new BadRequestException($"The grouping {grouping.Name} references a subgrouping that does not exist");
+        }
+
+        // Verify courses in grouping are being created or are already accepted
+        foreach (var courseIdentifier in grouping.CourseIdentifiers)
+        {
+            // Check if course is being created in dossier
+            if (dossier.IsDossierCreatingCourse(courseIdentifier.ConcordiaCourseId))
+                continue;
+
+            // Course is not being created in dossier, so check if course is already accepted.
+            var queriedCourse = await _courseRepository.GetCourseByCourseIdAndLatestVersion(courseIdentifier.ConcordiaCourseId);
+            if (queriedCourse != null)
+                continue;
+
+            throw new BadRequestException($"The grouping {grouping.Name} references a course that does not exist");
+        }
+    }
+
+    private async Task VerifyGroupingDeletionRequestIsValid(Dossier dossier, CourseGrouping grouping)
+    {
+        // Verify no parent groupings reference the grouping to be deleted, unless the parent is itself being deleted or modified
+        var parentGroupings = await _courseGroupingRepository.GetCourseGroupingsContainingSubgrouping(grouping);
+        foreach (var parentGrouping in parentGroupings)
+        {
+            if (dossier.IsDossierDeletingGrouping(parentGrouping.CommonIdentifier))
+                continue;
+
+            if (!dossier.IsModifiedParentGroupingReferencingChildGrouping(parentGrouping.CommonIdentifier, grouping.CommonIdentifier))
+                continue;
+
+            throw new BadRequestException($"The grouping {grouping.Name} cannot be deleted while its parent grouping {parentGrouping.Name} still references it");
+        }
+    }
+
+    private async Task VerifyCourseDeletionRequestIsValid(Dossier dossier, CourseDeletionRequest request)
+    {
+        // Verify no parent groupings reference the course to be deleted, unless the parent is itself being deleted or modified
+        var parentGroupings = await _courseGroupingRepository.GetCourseGroupingsContainingCourse(request.Course!);
+        foreach (var parentGrouping in parentGroupings)
+        {
+            if (dossier.IsDossierDeletingGrouping(parentGrouping.CommonIdentifier))
+                continue;
+
+            if (!dossier.IsModifiedParentGroupingReferencingCourse(parentGrouping.CommonIdentifier, request.Course!.CourseID))
+                continue;
+
+            throw new BadRequestException($"The course {request.Course!.Title} cannot be deleted while its parent grouping {parentGrouping.Name} still references it");
+        }
     }
 }
