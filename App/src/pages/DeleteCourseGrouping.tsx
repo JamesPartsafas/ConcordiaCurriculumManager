@@ -273,7 +273,7 @@ export default function DeleteCourse() {
                                             <Textarea
                                                 value={rationale}
                                                 onChange={handleChangeRationale}
-                                                placeholder="Explain reasoning for this course deletion."
+                                                placeholder="Explain reasoning for this course grouping deletion."
                                                 minH={"200px"}
                                             ></Textarea>
                                             <FormErrorMessage>Rationale is required</FormErrorMessage>
@@ -291,7 +291,7 @@ export default function DeleteCourse() {
                                             <Textarea
                                                 value={resourceImplication}
                                                 onChange={handleChangeResourceImplication}
-                                                placeholder="Explain any resource implications for the course deletion."
+                                                placeholder="Explain any resource implications for the course grouping deletion."
                                                 minH={"200px"}
                                             ></Textarea>
                                             <FormErrorMessage>Resource Implication is required</FormErrorMessage>
