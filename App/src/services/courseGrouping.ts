@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CourseGroupingDTO, SchoolEnum } from "../models/courseGrouping";
+import { CourseGroupingDTO, CourseGroupingModificationRequestDTO, SchoolEnum } from "../models/courseGrouping";
 
 interface GetCourseGroupingResponse {
     data: CourseGroupingDTO;
@@ -12,6 +12,7 @@ interface GetMultiCourseGroupingResponse {
 const CourseGroupingAPIEndpoints = {
     GetCourseGrouping: "/CourseGrouping/GetCourseGrouping",
     GetGroupingBySchool: "/CourseGrouping/GetCourseGroupingsBySchoolNonRecursive",
+    InitiateCourseGroupingDeletion: "/CourseGrouping/InitiateCourseGroupingDeletion",
 };
 
 export function GetCourseGrouping(courseGroupingId: string): Promise<GetCourseGroupingResponse> {
@@ -20,4 +21,18 @@ export function GetCourseGrouping(courseGroupingId: string): Promise<GetCourseGr
 
 export function GetCourseGroupingBySchool(school: SchoolEnum): Promise<GetMultiCourseGroupingResponse> {
     return axios.get("/CourseGrouping/GetCourseGroupingsBySchool/" + school);
+}
+
+export function GetCourseGroupingByName(name: string): Promise<GetMultiCourseGroupingResponse> {
+    return axios.get("/CourseGrouping/SearchCourseGroupingsByName?name=" + name);
+}
+
+export function InitiateCourseGroupingDeletion(
+    dossierId: string,
+    courseGroupingDeletionRequest: CourseGroupingModificationRequestDTO
+): Promise<unknown> {
+    return axios.post(
+        `${CourseGroupingAPIEndpoints.InitiateCourseGroupingDeletion}/${dossierId}`,
+        courseGroupingDeletionRequest
+    );
 }
