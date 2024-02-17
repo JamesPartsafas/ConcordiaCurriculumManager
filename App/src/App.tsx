@@ -37,6 +37,7 @@ import DossierBrowser from "./pages/dossier/DossierBrowser";
 import GroupingBySchool from "./pages/CourseGroupingBySchool";
 import MyGroups from "./pages/groups/myGroups";
 import DossierChangeLog from "./pages/dossier/DossierChangeLog";
+import DeleteCourseGrouping from "./pages/DeleteCourseGrouping";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -172,6 +173,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.DeleteCourse}
                         element={isLoggedIn == true ? <DeleteCourse /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.DeleteCourseGrouping}
+                        element={isLoggedIn == true ? <DeleteCourseGrouping /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
                         path={BaseRoutes.CreateGroup}
