@@ -1,5 +1,6 @@
 import { GroupDTO } from "../services/group";
 import { Course, CourseCreationRequest, CourseDeletionRequest, CourseModificationRequest } from "./course";
+import { CourseGroupingRequestDTO } from "./courseGrouping";
 import { UserDTO } from "./user";
 
 export interface DossierDTO {
@@ -21,6 +22,7 @@ export interface DossierDetailsDTO {
     courseCreationRequests: CourseCreationRequest[];
     courseModificationRequests: CourseModificationRequest[];
     courseDeletionRequests: CourseDeletionRequest[];
+    courseGroupingRequests: CourseGroupingRequestDTO[];
     approvalStages: ApprovalStage[];
     approvalHistories: ApprovalHistoryDTO[];
     discussion: DossierDiscussion;
