@@ -705,6 +705,128 @@ export default function DossierDetails() {
                         Add Deletion Request
                     </Button>
                 </Box>
+                <Box backgroundColor="brandGray" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
+                    <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
+                        Course Grouping Deletion Requests
+                    </Heading>
+                    <SimpleGrid
+                        templateColumns="repeat(auto-fill, minmax(200px, 400px))"
+                        spacing={4}
+                        justifyContent={"center"}
+                    >
+                        {/* ===== TO BE CHANGED IN ANOTHER ISSUE ===== */}
+                        {/* {dossierDetails?.courseDeletionRequests?.map((courseDeletionRequest) => (
+                            <Card key={courseDeletionRequest.id} boxShadow={"xl"}>
+                                <CardBody>
+                                    <Stack spacing="4">
+                                        <Heading size="md" color={"brandBlue"}>
+                                            {courseDeletionRequest.course?.title}
+                                        </Heading>
+                                        <Stack>
+                                            <Kbd width={"fit-content"}>
+                                                Course ID: {courseDeletionRequest.course?.courseID}
+                                            </Kbd>
+                                            <Kbd width={"fit-content"}>
+                                                Subject: {courseDeletionRequest.course?.subject}
+                                            </Kbd>
+                                            <Kbd width={"fit-content"}>
+                                                Catalog: {courseDeletionRequest.course?.catalog}
+                                            </Kbd>
+                                        </Stack>
+                                        <Textarea
+                                            isReadOnly
+                                            variant={"filled"}
+                                            value={courseDeletionRequest.course?.description}
+                                        />
+                                        <Stack>
+                                            <Text>Credits: {courseDeletionRequest.course?.creditValue}</Text>
+                                            <Text>Prerequisites: {courseDeletionRequest.course?.preReqs}</Text>
+                                            <Text>
+                                                Equivalent Courses:{" "}
+                                                {courseDeletionRequest.course.equivalentCourses === null ||
+                                                courseDeletionRequest.course?.equivalentCourses === ""
+                                                    ? "N/A"
+                                                    : courseDeletionRequest.course?.equivalentCourses}
+                                            </Text>
+                                            <Text>
+                                                Career:{" "}
+                                                {" " +
+                                                    courseSettings?.courseCareers.find(
+                                                        (courseCareer) =>
+                                                            courseCareer.careerCode ===
+                                                            courseDeletionRequest.course?.career
+                                                    )?.careerName}
+                                            </Text>
+                                            <Text>
+                                                Rationale:{" "}
+                                                {courseDeletionRequest?.rationale === null ||
+                                                courseDeletionRequest?.rationale === ""
+                                                    ? "N/A"
+                                                    : courseDeletionRequest?.rationale}
+                                            </Text>
+                                            <Text>
+                                                Comment:{" "}
+                                                {courseDeletionRequest?.comment === null ||
+                                                courseDeletionRequest?.comment === ""
+                                                    ? "N/A"
+                                                    : courseDeletionRequest?.comment}
+                                            </Text>
+                                        </Stack>
+                                    </Stack>
+                                </CardBody>
+                                <Divider />
+                                <CardFooter>
+                                    <ButtonGroup spacing="2">
+                                        <Button
+                                            variant="solid"
+                                            style="primary"
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
+                                            onClick={() => {
+                                                navigate(BaseRoutes.DeleteCourseEdit.replace(":dossierId", dossierId), {
+                                                    state: { key: courseDeletionRequest },
+                                                });
+                                            }}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            style="primary"
+                                            isDisabled={
+                                                dossierDetails?.state !== DossierStateEnum.Created &&
+                                                !isUserACurrentReviewer()
+                                            }
+                                            onClick={() => {
+                                                setSelectedCourseDeletionRequest(courseDeletionRequest);
+                                                onOpen();
+                                            }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </ButtonGroup>
+                                </CardFooter>
+                            </Card>
+                        ))} */}
+                    </SimpleGrid>
+                    <Divider marginTop={10} marginBottom={2} />
+
+                    <Button
+                        backgroundColor="brandGray500"
+                        _hover={{ bg: "brandGray" }}
+                        variant="solid"
+                        style="secondary"
+                        width="100%"
+                        isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
+                        onClick={() => {
+                            navigate(BaseRoutes.DeleteCourseGrouping.replace(":dossierId", dossierId));
+                        }}
+                    >
+                        Add Deletion Request
+                    </Button>
+                </Box>
                 <Box
                     mt={2}
                     p={2}
