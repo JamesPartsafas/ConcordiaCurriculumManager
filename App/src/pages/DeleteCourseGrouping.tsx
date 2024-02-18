@@ -16,7 +16,6 @@ import {
     Thead,
     Tr,
     Td,
-    Tooltip,
     IconButton,
     Tbody,
     Th,
@@ -26,7 +25,7 @@ import { getAllCourseSettings } from "../services/course";
 import { AllCourseSettings } from "../models/course";
 import { showToast } from "./../utils/toastUtils";
 import Button from "../components/Button";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { BaseRoutes } from "../constants";
 import {
     CourseGroupingDTO,
@@ -213,7 +212,9 @@ export default function DeleteCourse() {
                                                     <Th width={"65%"}>Name</Th>
                                                     <Th width={"15%"}>Credits Required</Th>
                                                     <Th width={"15%"}>State</Th>
-                                                    <Th width={"15%"}>See Details</Th>
+                                                    <Th width={"15%"} textAlign={"center"}>
+                                                        See Details
+                                                    </Th>
                                                 </Tr>
                                             </Thead>
                                             <Tbody>
@@ -244,17 +245,16 @@ export default function DeleteCourse() {
                                                         </Td>
                                                         <Td width={"15%"}>{grouping.school}</Td>
 
-                                                        <Td width={"15%"}>
-                                                            <Tooltip label="Curriculum Details">
-                                                                <IconButton
-                                                                    ml={2}
-                                                                    aria-label="Details"
-                                                                    icon={<InfoIcon />}
-                                                                    onClick={() => {
-                                                                        // handleNavigateToCurriculumDetails(grouping.id);
-                                                                    }}
-                                                                />
-                                                            </Tooltip>
+                                                        <Td width={"15%"} textAlign={"center"}>
+                                                            <Link
+                                                                to={BaseRoutes.CourseGrouping.replace(
+                                                                    ":courseGroupingId",
+                                                                    grouping.id
+                                                                )}
+                                                                target="_blank"
+                                                            >
+                                                                <IconButton aria-label="Details" icon={<InfoIcon />} />
+                                                            </Link>
                                                         </Td>
                                                     </Tr>
                                                 ))}
