@@ -788,14 +788,17 @@ export default function DossierDetails() {
                                                     !isUserACurrentReviewer()
                                                 }
                                                 // =========== TO BE CHANGED WHEN THE EDIT PAGE IS CREATED IN ANOTHER ISSUE ============
-                                                // onClick={() => {
-                                                //     navigate(
-                                                //         BaseRoutes.DeleteCourseEdit.replace(":dossierId", dossierId),
-                                                //         {
-                                                //             state: { key: courseDeletionRequest },
-                                                //         }
-                                                //     );
-                                                // }}
+                                                onClick={() => {
+                                                    navigate(
+                                                        BaseRoutes.DeleteCourseGroupingEdit.replace(
+                                                            ":dossierId",
+                                                            dossierId
+                                                        ),
+                                                        {
+                                                            state: { key: courseGroupingRequest },
+                                                        }
+                                                    );
+                                                }}
                                             >
                                                 Edit
                                             </Button>
