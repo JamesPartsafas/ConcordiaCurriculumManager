@@ -13,6 +13,7 @@ const CourseGroupingAPIEndpoints = {
     GetCourseGrouping: "/CourseGrouping/GetCourseGrouping",
     GetGroupingBySchool: "/CourseGrouping/GetCourseGroupingsBySchoolNonRecursive",
     InitiateCourseGroupingDeletion: "/CourseGrouping/InitiateCourseGroupingDeletion",
+    EditCourseGroupingDeletion: "/CourseGrouping/EditCourseGroupingDeletion",
 };
 
 export function GetCourseGrouping(courseGroupingId: string): Promise<GetCourseGroupingResponse> {
@@ -33,6 +34,17 @@ export function InitiateCourseGroupingDeletion(
 ): Promise<unknown> {
     return axios.post(
         `${CourseGroupingAPIEndpoints.InitiateCourseGroupingDeletion}/${dossierId}`,
+        courseGroupingDeletionRequest
+    );
+}
+
+export function EditCourseGroupingDeletion(
+    dossierId: string,
+    requestId: string,
+    courseGroupingDeletionRequest: CourseGroupingModificationRequestDTO
+): Promise<unknown> {
+    return axios.put(
+        `${CourseGroupingAPIEndpoints.EditCourseGroupingDeletion}/${dossierId}/${requestId}`,
         courseGroupingDeletionRequest
     );
 }

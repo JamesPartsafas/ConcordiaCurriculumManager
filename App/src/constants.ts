@@ -8,6 +8,7 @@ export enum BaseRoutes {
     EditCourse = "/edit-course/:id/:dossierId",
     DeleteCourse = "/delete-course/:dossierId",
     DeleteCourseGrouping = "/delete-course-grouping/:dossierId",
+    DeleteCourseGroupingEdit = "/delete-course-grouping-edit/:dossierId",
     DeleteCourseEdit = "/delete-course-edit/:dossierId",
     ComponentsList = "/components-list",
     CourseBrowser = "/CourseBrowser",
