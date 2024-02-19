@@ -126,11 +126,16 @@ export default function GroupingBySchool() {
                             <Tbody>
                                 {courseGroupings.slice(0, courseGroupings.length).map((grouping) => (
                                     <Tr key={grouping.id} display={"flex"}>
-                                        <Td minW={"250px"} maxW={"250px"}>
+                                        <Td minW={"250px"} maxW={"250px"} style={{ whiteSpace: "normal" }}>
                                             {grouping.name}
                                         </Td>
                                         <Td minW={"455px"} maxW={"455px"}>
-                                            <Text overflow="hidden" textOverflow="ellipsis" maxW={"500px"}>
+                                            <Text
+                                                overflow="hidden"
+                                                textOverflow="ellipsis"
+                                                maxW={"500px"}
+                                                style={{ whiteSpace: "normal" }}
+                                            >
                                                 {grouping.requiredCredits}
                                             </Text>
                                         </Td>

@@ -71,13 +71,19 @@ export default function CourseGroupingByName() {
                         <Table variant="simple" style={{ backgroundColor: "white", tableLayout: "auto" }}>
                             <Thead backgroundColor={"#e2e8f0"}>
                                 <Tr display={"flex"}>
-                                    <Th minW={"250px"} maxW={"250px"}>
+                                    <Th
+                                        overflow="hidden"
+                                        textOverflow="ellipsis"
+                                        minW={"250px"}
+                                        maxW={"250px"}
+                                        style={{ whiteSpace: "normal" }}
+                                    >
                                         Name
                                     </Th>
-                                    <Th minW={"450px"} maxW={"450px"}>
+                                    <Th overflow="hidden" textOverflow="ellipsis" minW={"450px"} maxW={"450px"}>
                                         Credits Required
                                     </Th>
-                                    <Th minW={"120px"} maxW={"120px"}>
+                                    <Th overflow="hidden" textOverflow="ellipsis" minW={"120px"} maxW={"120px"}>
                                         State
                                     </Th>
                                     <Th width={"25%"}>See Details</Th>
