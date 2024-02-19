@@ -790,7 +790,10 @@ export default function DossierDetails() {
                                                 // =========== TO BE CHANGED WHEN THE EDIT PAGE IS CREATED IN ANOTHER ISSUE ============
                                                 onClick={() => {
                                                     navigate(
-                                                        BaseRoutes.DeleteCourseGroupingEdit.replace(":dossierId", dossierId),
+                                                        BaseRoutes.DeleteCourseGroupingEdit.replace(
+                                                            ":dossierId",
+                                                            dossierId
+                                                        ),
                                                         {
                                                             state: { key: courseGroupingRequest },
                                                         }
