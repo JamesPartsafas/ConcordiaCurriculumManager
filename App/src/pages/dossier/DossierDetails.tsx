@@ -282,6 +282,21 @@ export default function DossierDetails() {
             ?.group?.members?.find((member) => member.id === user.id);
     }
 
+    function getSchoolName(school) {
+        switch (school) {
+            case 0:
+                return "GinaCody";
+            case 1:
+                return "ArtsAndScience";
+            case 2:
+                return "FineArts";
+            case 3:
+                return "JMSB";
+            default:
+                return "N/A";
+        }
+    }
+
     return (
         <>
             {deleteRequestAlert()}
@@ -714,102 +729,95 @@ export default function DossierDetails() {
                         spacing={4}
                         justifyContent={"center"}
                     >
-                        {/* ===== TO BE CHANGED IN ANOTHER ISSUE ===== */}
-                        {/* {dossierDetails?.courseDeletionRequests?.map((courseDeletionRequest) => (
-                            <Card key={courseDeletionRequest.id} boxShadow={"xl"}>
-                                <CardBody>
-                                    <Stack spacing="4">
-                                        <Heading size="md" color={"brandBlue"}>
-                                            {courseDeletionRequest.course?.title}
-                                        </Heading>
-                                        <Stack>
-                                            <Kbd width={"fit-content"}>
-                                                Course ID: {courseDeletionRequest.course?.courseID}
-                                            </Kbd>
-                                            <Kbd width={"fit-content"}>
-                                                Subject: {courseDeletionRequest.course?.subject}
-                                            </Kbd>
-                                            <Kbd width={"fit-content"}>
-                                                Catalog: {courseDeletionRequest.course?.catalog}
-                                            </Kbd>
+                        {dossierDetails?.courseGroupingRequests
+                            ?.filter((cgr) => cgr.courseGrouping.state == 3)
+                            .map((courseGroupingRequest) => (
+                                <Card key={courseGroupingRequest.id} boxShadow={"xl"}>
+                                    <CardBody>
+                                        <Stack spacing="4">
+                                            <Heading size="md" color={"brandBlue"}>
+                                                {courseGroupingRequest.courseGrouping?.name}
+                                            </Heading>
+                                            <Stack>
+                                                <Kbd width={"fit-content"}>
+                                                    Common ID: {courseGroupingRequest.courseGrouping.commonIdentifier}
+                                                </Kbd>
+                                                <Kbd width={"fit-content"}>
+                                                    School: {getSchoolName(courseGroupingRequest.courseGrouping.school)}
+                                                </Kbd>
+                                                <Kbd width={"fit-content"}>
+                                                    Credits: {courseGroupingRequest.courseGrouping.requiredCredits}
+                                                </Kbd>
+                                            </Stack>
+                                            <Textarea
+                                                isReadOnly
+                                                variant={"filled"}
+                                                value={
+                                                    courseGroupingRequest?.courseGrouping.description === null ||
+                                                    courseGroupingRequest?.courseGrouping.description === ""
+                                                        ? "N/A"
+                                                        : courseGroupingRequest?.courseGrouping.description
+                                                }
+                                            />
+                                            <Stack>
+                                                <Text>
+                                                    Rationale:{" "}
+                                                    {courseGroupingRequest?.rationale === null ||
+                                                    courseGroupingRequest?.rationale === ""
+                                                        ? "N/A"
+                                                        : courseGroupingRequest?.rationale}
+                                                </Text>
+                                                <Text>
+                                                    Comment:{" "}
+                                                    {courseGroupingRequest?.comment === null ||
+                                                    courseGroupingRequest?.comment === ""
+                                                        ? "N/A"
+                                                        : courseGroupingRequest?.comment}
+                                                </Text>
+                                            </Stack>
                                         </Stack>
-                                        <Textarea
-                                            isReadOnly
-                                            variant={"filled"}
-                                            value={courseDeletionRequest.course?.description}
-                                        />
-                                        <Stack>
-                                            <Text>Credits: {courseDeletionRequest.course?.creditValue}</Text>
-                                            <Text>Prerequisites: {courseDeletionRequest.course?.preReqs}</Text>
-                                            <Text>
-                                                Equivalent Courses:{" "}
-                                                {courseDeletionRequest.course.equivalentCourses === null ||
-                                                courseDeletionRequest.course?.equivalentCourses === ""
-                                                    ? "N/A"
-                                                    : courseDeletionRequest.course?.equivalentCourses}
-                                            </Text>
-                                            <Text>
-                                                Career:{" "}
-                                                {" " +
-                                                    courseSettings?.courseCareers.find(
-                                                        (courseCareer) =>
-                                                            courseCareer.careerCode ===
-                                                            courseDeletionRequest.course?.career
-                                                    )?.careerName}
-                                            </Text>
-                                            <Text>
-                                                Rationale:{" "}
-                                                {courseDeletionRequest?.rationale === null ||
-                                                courseDeletionRequest?.rationale === ""
-                                                    ? "N/A"
-                                                    : courseDeletionRequest?.rationale}
-                                            </Text>
-                                            <Text>
-                                                Comment:{" "}
-                                                {courseDeletionRequest?.comment === null ||
-                                                courseDeletionRequest?.comment === ""
-                                                    ? "N/A"
-                                                    : courseDeletionRequest?.comment}
-                                            </Text>
-                                        </Stack>
-                                    </Stack>
-                                </CardBody>
-                                <Divider />
-                                <CardFooter>
-                                    <ButtonGroup spacing="2">
-                                        <Button
-                                            variant="solid"
-                                            style="primary"
-                                            isDisabled={
-                                                dossierDetails?.state !== DossierStateEnum.Created &&
-                                                !isUserACurrentReviewer()
-                                            }
-                                            onClick={() => {
-                                                navigate(BaseRoutes.DeleteCourseEdit.replace(":dossierId", dossierId), {
-                                                    state: { key: courseDeletionRequest },
-                                                });
-                                            }}
-                                        >
-                                            Edit
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            style="primary"
-                                            isDisabled={
-                                                dossierDetails?.state !== DossierStateEnum.Created &&
-                                                !isUserACurrentReviewer()
-                                            }
-                                            onClick={() => {
-                                                setSelectedCourseDeletionRequest(courseDeletionRequest);
-                                                onOpen();
-                                            }}
-                                        >
-                                            Delete
-                                        </Button>
-                                    </ButtonGroup>
-                                </CardFooter>
-                            </Card>
-                        ))} */}
+                                    </CardBody>
+                                    <Divider />
+                                    <CardFooter>
+                                        <ButtonGroup spacing="2">
+                                            <Button
+                                                variant="solid"
+                                                style="primary"
+                                                isDisabled={
+                                                    dossierDetails?.state !== DossierStateEnum.Created &&
+                                                    !isUserACurrentReviewer()
+                                                }
+                                                // =========== TO BE CHANGED WHEN THE EDIT PAGE IS CREATED IN ANOTHER ISSUE ============
+                                                // onClick={() => {
+                                                //     navigate(
+                                                //         BaseRoutes.DeleteCourseEdit.replace(":dossierId", dossierId),
+                                                //         {
+                                                //             state: { key: courseDeletionRequest },
+                                                //         }
+                                                //     );
+                                                // }}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                style="primary"
+                                                isDisabled={
+                                                    dossierDetails?.state !== DossierStateEnum.Created &&
+                                                    !isUserACurrentReviewer()
+                                                }
+                                                // =========== TO BE CHANGED IN ANOTHER ISSUE============
+                                                // onClick={() => {
+                                                //     setSelectedCourseDeletionRequest(courseDeletionRequest);
+                                                //     onOpen();
+                                                // }}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </ButtonGroup>
+                                    </CardFooter>
+                                </Card>
+                            ))}
                     </SimpleGrid>
                     <Divider marginTop={10} marginBottom={2} />
 
