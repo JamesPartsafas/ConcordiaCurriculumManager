@@ -26,7 +26,9 @@ export enum BaseRoutes {
     DossierBrowser = "/dossierbrowser",
     CourseDetails = "/CourseDetails",
     GroupingBySchool = "/GetCourseBySchool",
+    GroupingByName = "/GetCourseByName",
     NoData = "/NoData",
     CourseGrouping = "/CourseGrouping/:courseGroupingId",
     myGroups = "/myGroups",
+    browserList = "/browserList",
 }

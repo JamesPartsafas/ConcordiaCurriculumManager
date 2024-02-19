@@ -37,6 +37,8 @@ import DossierBrowser from "./pages/dossier/DossierBrowser";
 import GroupingBySchool from "./pages/CourseGroupingBySchool";
 import MyGroups from "./pages/groups/myGroups";
 import DossierChangeLog from "./pages/dossier/DossierChangeLog";
+import BrowserList from "./pages/BrowserList";
+import CourseGroupingByName from "./pages/CourseGroupingByName";
 import DeleteCourseGrouping from "./pages/DeleteCourseGrouping";
 
 export const UserContext = createContext<User | null>(null);
@@ -195,6 +197,10 @@ export function App() {
                         element={isLoggedIn == true ? <GroupingBySchool /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
+                        path={BaseRoutes.GroupingByName}
+                        element={isLoggedIn == true ? <CourseGroupingByName /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
                         path={BaseRoutes.NoData}
                         element={isLoggedIn == true ? <NoData /> : <Navigate to={BaseRoutes.Login} />}
                     />
@@ -215,6 +221,11 @@ export function App() {
                     <Route
                         path={BaseRoutes.myGroups}
                         element={isLoggedIn == true ? <MyGroups /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.browserList}
+                        element={isLoggedIn == true ? <BrowserList /> : <Navigate to={BaseRoutes.Login} />}
                     />
                 </Routes>
             </UserContext.Provider>
