@@ -18,7 +18,10 @@ public interface ICourseGroupingService
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name);
     public Task<CourseGroupingRequest> InitiateCourseGroupingCreation(CourseGroupingCreationRequestDTO dto);
     public Task<CourseGroupingRequest> InitiateCourseGroupingModification(CourseGroupingModificationRequestDTO dto);
+    public Task<CourseGroupingRequest> InitiateCourseGroupingDeletion(CourseGroupingModificationRequestDTO dto);
+    public Task<CourseGroupingRequest> EditCourseGroupingCreation(Guid originalRequestId, CourseGroupingCreationRequestDTO dto);
     public Task<CourseGroupingRequest> EditCourseGroupingModification(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
+    public Task<CourseGroupingRequest> EditCourseGroupingDeletion(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
     public Task DeleteCourseGroupingRequest(Guid dossierId, Guid requestId);
 }
 
@@ -133,11 +136,43 @@ public class CourseGroupingService : ICourseGroupingService
         return grouping;
     }
 
+    public async Task<CourseGroupingRequest> InitiateCourseGroupingDeletion(CourseGroupingModificationRequestDTO dto)
+    {
+        await VerifyCourseGroupingExists(dto.CourseGrouping);
+
+        var dossier = await _dossierService.GetDossierDetailsByIdOrThrow(dto.DossierId);
+
+        var grouping = dossier.CreateCourseGroupingDeletionRequest(dto);
+
+        var groupingSaved = await _courseGroupingRepository.SaveCourseGroupingRequest(grouping);
+
+        if (groupingSaved)
+            _logger.LogInformation($"New course grouping deletion created for dossier {dossier.Id} with Id {grouping.Id}");
+        else
+        {
+            _logger.LogError($"New course grouping deletion for dossier {dossier.Id} failed to save");
+            throw new ServiceUnavailableException("The course grouping deletion could not be saved");
+        }
+
+        return grouping;
+    }
+
     private async Task VerifyCourseGroupingExists(CourseGroupingModificationInputDTO dto)
     {
         var grouping = await _courseGroupingRepository.GetCourseGroupingByCommonIdentifier(dto.CommonIdentifier);
         if (grouping is null)
             throw new BadRequestException($"The course grouping with the identifier {dto.CommonIdentifier} does not exist");
+    }
+
+    public async Task<CourseGroupingRequest> EditCourseGroupingCreation(Guid originalRequestId, CourseGroupingCreationRequestDTO dto)
+    {
+        var request = await _courseGroupingRepository.GetCourseGroupingRequestById(originalRequestId);
+        if (request == null || request.CourseGrouping == null)
+            throw new ServiceUnavailableException("The course grouping request could not be edited");
+
+        await DeleteCourseGroupingRequest(dto.DossierId, originalRequestId);
+
+        return await InitiateCourseGroupingCreation(dto);
     }
 
     public async Task<CourseGroupingRequest> EditCourseGroupingModification(Guid originalRequestId, CourseGroupingModificationRequestDTO dto)
@@ -147,6 +182,15 @@ public class CourseGroupingService : ICourseGroupingService
         await DeleteCourseGroupingRequest(dto.DossierId, originalRequestId);
 
         return await InitiateCourseGroupingModification(dto);
+    }
+
+    public async Task<CourseGroupingRequest> EditCourseGroupingDeletion(Guid originalRequestId, CourseGroupingModificationRequestDTO dto)
+    {
+        await VerifyEditRequestsMatchOrThrow(originalRequestId, dto);
+
+        await DeleteCourseGroupingRequest(dto.DossierId, originalRequestId);
+
+        return await InitiateCourseGroupingDeletion(dto);
     }
 
     private async Task VerifyEditRequestsMatchOrThrow(Guid originalRequestId, CourseGroupingModificationRequestDTO dto)

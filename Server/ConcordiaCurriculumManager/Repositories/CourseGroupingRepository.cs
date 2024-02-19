@@ -3,6 +3,7 @@ using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ConcordiaCurriculumManager.Repositories;
 
@@ -15,7 +16,10 @@ public interface ICourseGroupingRepository
     public Task<CourseGrouping?> GetCourseGroupingByCommonIdentifier(Guid commonId);
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchool(SchoolEnum school);
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name);
+    public Task<IList<CourseGrouping>> GetCourseGroupingsContainingSubgrouping(CourseGrouping grouping);
+    public Task<IList<CourseGrouping>> GetCourseGroupingsContainingCourse(Course course);
     public Task<CourseGrouping?> GetCourseGroupingContainingCourse(Course course);
+
 }
 
 public class CourseGroupingRepository : ICourseGroupingRepository
@@ -76,8 +80,32 @@ public class CourseGroupingRepository : ICourseGroupingRepository
         .Include(cg => cg.CourseIdentifiers)
         .ToListAsync();
 
+    public async Task<IList<CourseGrouping>> GetCourseGroupingsContainingSubgrouping(CourseGrouping grouping)
+    {
+        var query = _dbContext.CourseGroupings.FromSqlInterpolated(
+                $@"SELECT DISTINCT ON (""CommonIdentifier"") c.* FROM ""CourseGroupings"" c WHERE ""Version"" IS NOT NULL ORDER BY ""CommonIdentifier"", ""Version"" DESC"
+            );
+
+        query = query.Include(g => g.SubGroupingReferences);
+        query = query.Where(g => g.SubGroupingReferences.Any(reference => reference.ChildGroupCommonIdentifier.Equals(grouping.CommonIdentifier)));
+
+        return await query.ToListAsync();
+    }
+
+    public async Task<IList<CourseGrouping>> GetCourseGroupingsContainingCourse(Course course)
+    {
+        var query = _dbContext.CourseGroupings.FromSqlInterpolated(
+                $@"SELECT DISTINCT ON (""CommonIdentifier"") c.* FROM ""CourseGroupings"" c WHERE ""Version"" IS NOT NULL ORDER BY ""CommonIdentifier"", ""Version"" DESC"
+            );
+
+        query = query.Include(cg => cg.CourseIdentifiers);
+        query = query.Where(cg => cg.CourseIdentifiers.Any(ci => ci.ConcordiaCourseId.Equals(course.CourseID)));
+
+        return await query.ToListAsync();
+    }
+
     public async Task<CourseGrouping?> GetCourseGroupingContainingCourse(Course course) => await _dbContext.CourseGroupings
-        .Include(cg => cg.CourseIdentifiers)
-        .Where(cg => cg.CourseIdentifiers.Any(ci => ci.ConcordiaCourseId.Equals(course.CourseID)))
-        .FirstOrDefaultAsync();
+       .Include(cg => cg.CourseIdentifiers)
+       .Where(cg => cg.CourseIdentifiers.Any(ci => ci.ConcordiaCourseId.Equals(course.CourseID)))
+       .FirstOrDefaultAsync();
 }

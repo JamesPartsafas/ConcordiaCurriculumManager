@@ -687,6 +687,23 @@ export default function DossierReview() {
                                         </Text>
                                     ))}
                                 </Stack>
+                                <Stack mb={4}>
+                                    <Heading size={"md"} color="brandBlue">
+                                        Course Grouping Requests:
+                                    </Heading>
+                                    {dossierDetails?.courseGroupingRequests?.map((courseGroupingRequest) => (
+                                        <Text key={courseGroupingRequest.id} as="u">
+                                            <Link
+                                                to={BaseRoutes.CourseGrouping.replace(
+                                                    ":courseGroupingId",
+                                                    courseGroupingRequest?.courseGrouping.id
+                                                )}
+                                            >
+                                                {courseGroupingRequest?.courseGrouping.name}{" "}
+                                            </Link>
+                                        </Text>
+                                    ))}
+                                </Stack>
                             </Stack>
                         </Stack>
                         <Stack w="75%" p={8}>

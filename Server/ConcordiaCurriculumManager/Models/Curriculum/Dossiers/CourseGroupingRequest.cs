@@ -23,8 +23,15 @@ public class CourseGroupingRequest : CourseRequest
     public static CourseGroupingRequest CreateCourseGroupingModificationRequestFromDTO(CourseGroupingModificationRequestDTO dto) =>
         CreateCourseGroupingRequestFromDTO(
             dto,
-            CourseGrouping.CreateCourseGroupingFromModificationDTO(Guid.NewGuid(), dto.CourseGrouping),
+            CourseGrouping.CreateCourseGroupingModificationFromModificationDTO(Guid.NewGuid(), dto.CourseGrouping),
             RequestType.ModificationRequest
+         );
+
+    public static CourseGroupingRequest CreateCourseGroupingDeletionRequestFromDTO(CourseGroupingModificationRequestDTO dto) =>
+        CreateCourseGroupingRequestFromDTO(
+            dto,
+            CourseGrouping.CreateCourseGroupingDeletionFromModificationDTO(Guid.NewGuid(), dto.CourseGrouping),
+            RequestType.DeletionRequest
          );
 
     private static CourseGroupingRequest CreateCourseGroupingRequestFromDTO(CourseInitiationDTO dto, CourseGrouping courseGrouping, RequestType requestType)
@@ -52,6 +59,6 @@ public enum RequestType
     [PgName(nameof(ModificationRequest))]
     ModificationRequest,
 
-    [PgName(nameof(DeletionRequestRequest))]
-    DeletionRequestRequest
+    [PgName(nameof(DeletionRequest))]
+    DeletionRequest
 }
