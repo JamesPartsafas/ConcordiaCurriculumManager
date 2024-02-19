@@ -4,37 +4,25 @@ import {
     Text,
     Heading,
     FormControl,
-    FormLabel,
     Stack,
     Box,
     Textarea,
     useToast,
     FormErrorMessage,
-    Input,
-    TableContainer,
-    Table,
-    Thead,
-    Tr,
-    Td,
-    IconButton,
-    Tbody,
-    Th,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { getAllCourseSettings } from "../services/course";
 import { AllCourseSettings } from "../models/course";
 import { showToast } from "./../utils/toastUtils";
 import Button from "../components/Button";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { BaseRoutes } from "../constants";
 import {
     CourseGroupingDTO,
     CourseGroupingModificationRequestDTO,
     CourseGroupingRequestInputDTO,
-    MultiCourseGroupingDTO,
 } from "../models/courseGrouping";
-import { EditCourseGroupingDeletion, GetCourseGroupingByName, InitiateCourseGroupingDeletion } from "../services/courseGrouping";
-import { InfoIcon } from "@chakra-ui/icons";
+import { EditCourseGroupingDeletion } from "../services/courseGrouping";
 
 export default function DeleteCourse() {
     const { dossierId } = useParams();
