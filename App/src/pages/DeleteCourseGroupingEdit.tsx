@@ -64,8 +64,7 @@ export default function DeleteCourse() {
         } else if (resourceImplication.trim().length === 0) {
             setResourceImplicationError(true);
             return;
-        }
-        else {
+        } else {
             const subGroupingReferences = selectedCourseGrouping?.subGroupingReferences?.map(
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 ({ id, parentGroupId, ...rest }) => rest
@@ -112,7 +111,7 @@ export default function DeleteCourse() {
         setResourceImplication(location.state.key.resourceImplication);
         setComment(location.state.key.comment);
         setSelectedCourseGrouping(location.state.key.courseGrouping);
-        setRequestId(location.state.key.id)
+        setRequestId(location.state.key.id);
         getAllCourseSettings()
             .then((res) => {
                 setAllCourseSettings(res.data);
