@@ -442,6 +442,8 @@ export default function DossierDetails() {
                     <Text>created: {new Date(dossierDetails?.createdDate)?.toLocaleString()}</Text>
                     <Text>updated: {new Date(dossierDetails?.modifiedDate)?.toLocaleString()}</Text>
                 </div>
+
+                {/* course creation requests */}
                 <Box backgroundColor={"brandRed"} m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
                     <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
                         Course Creation Requests
@@ -561,6 +563,8 @@ export default function DossierDetails() {
                         Add Creation Request
                     </Button>
                 </Box>
+
+                {/* course modification requests */}
                 <Box backgroundColor="brandBlue" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
                     <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
                         Course Modification Requests
@@ -680,6 +684,8 @@ export default function DossierDetails() {
                         Add Modification Request
                     </Button>
                 </Box>
+                
+                {/* course deletion requests */}
                 <Box backgroundColor="brandGray" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
                     <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
                         Course Deletion Requests
