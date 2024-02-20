@@ -91,9 +91,9 @@ export interface CourseGroupingInputDTO {
 
 export interface CourseGroupingCreationRequestDTO {
     dossierId: string;
-    rationale: string;
-    resourceImplication: string;
-    comment: string;
+    rationale: string | null;
+    resourceImplication: string | null;
+    comment: string | null;
     courseGrouping: CourseGroupingInputDTO;
 }
 
