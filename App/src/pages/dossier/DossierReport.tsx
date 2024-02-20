@@ -54,12 +54,14 @@ export default function DossierReport() {
                     </Button>
 
                     <Button
+                        className="non-printable-content"
                         style="primary"
                         variant="outline"
                         width="fit-content"
                         height="40px"
                         ml={2}
                         isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                        
                         onClick={() => {
                             navigate(BaseRoutes.DossiersToReview);
                         }}
@@ -68,6 +70,7 @@ export default function DossierReport() {
                     </Button>
 
                     <Button
+                        className="non-printable-content"
                         style="primary"
                         variant="outline"
                         width="fit-content"
@@ -82,6 +85,7 @@ export default function DossierReport() {
                     </Button>
 
                     <Button
+                        className="non-printable-content"
                         style="primary"
                         variant="outline"
                         width="fit-content"
