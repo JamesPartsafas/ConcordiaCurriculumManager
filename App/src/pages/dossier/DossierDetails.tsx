@@ -49,6 +49,8 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import EditApprovalStagesModal from "./EditApprovalStagesModal";
 import { UserContext } from "../../App";
 import { UserRoles } from "../../models/user";
+import { CourseGroupingRequestDTO } from "../../models/courseGrouping";
+import { DeleteCourseGroupingRequest } from "../../services/courseGrouping";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
@@ -61,6 +63,8 @@ export default function DossierDetails() {
     const [selectedCourseModificationRequest, setSelectedCourseModificationRequest] =
         useState<CourseModificationRequest>(null);
     const [selectedCourseDeletionRequest, setSelectedCourseDeletionRequest] = useState<CourseDeletionRequest>(null);
+    const [selectedCourseGroupingDeletionRequest, setSelectedCourseGroupingDeletionRequest] =
+        useState<CourseGroupingRequestDTO>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [showApprovalStagesModal, setShowApprovalStagesModal] = useState<boolean>(false);
 
@@ -120,6 +124,18 @@ export default function DossierDetails() {
                     title={selectedCourseDeletionRequest?.course.title}
                     item={selectedCourseDeletionRequest}
                     onDelete={deleteDeletionRequest}
+                />
+            );
+        } else if (selectedCourseGroupingDeletionRequest) {
+            return (
+                <DeleteAlert
+                    isOpen={isOpen}
+                    onClose={handleOnClose}
+                    loading={loading}
+                    headerTitle="Delete Course Grouping Deletion Request"
+                    title={selectedCourseGroupingDeletionRequest?.courseGrouping.name}
+                    item={selectedCourseGroupingDeletionRequest}
+                    onDelete={deleteCourseGroupingRequest}
                 />
             );
         }
@@ -219,6 +235,36 @@ export default function DossierDetails() {
                 showToast(toast, "Error!", "Course deletion request could not be deleted.", "error");
                 setLoading(false);
                 setSelectedCourseDeletionRequest(null);
+            });
+    }
+
+    function deleteCourseGroupingRequest(courseGroupingRequest: CourseGroupingRequestDTO) {
+        setLoading(true);
+        DeleteCourseGroupingRequest(dossierId, courseGroupingRequest.id)
+            .then(
+                () => {
+                    showToast(toast, "Success!", "Course grouping request deleted.", "success");
+                    setDossierDetails((prevDetails) => {
+                        // Create a new array without the deleted course grouping request
+                        const updatedRequests = prevDetails.courseGroupingRequests.filter(
+                            (c) => c.id !== courseGroupingRequest.id
+                        );
+                        // Return a new object for the state with the updated array
+                        return { ...prevDetails, courseGroupingRequests: updatedRequests };
+                    });
+                    setLoading(false);
+                    setSelectedCourseGroupingDeletionRequest(null);
+                },
+                () => {
+                    showToast(toast, "Error!", "Course grouping request could not be deleted.", "error");
+                    setLoading(false);
+                    setSelectedCourseGroupingDeletionRequest(null);
+                }
+            )
+            .catch(() => {
+                showToast(toast, "Error!", "Course grouping request could not be deleted.", "error");
+                setLoading(false);
+                setSelectedCourseGroupingDeletionRequest(null);
             });
     }
 
@@ -787,7 +833,6 @@ export default function DossierDetails() {
                                                     dossierDetails?.state !== DossierStateEnum.Created &&
                                                     !isUserACurrentReviewer()
                                                 }
-                                                // =========== TO BE CHANGED WHEN THE EDIT PAGE IS CREATED IN ANOTHER ISSUE ============
                                                 onClick={() => {
                                                     navigate(
                                                         BaseRoutes.DeleteCourseGroupingEdit.replace(
@@ -809,11 +854,10 @@ export default function DossierDetails() {
                                                     dossierDetails?.state !== DossierStateEnum.Created &&
                                                     !isUserACurrentReviewer()
                                                 }
-                                                // =========== TO BE CHANGED IN ANOTHER ISSUE============
-                                                // onClick={() => {
-                                                //     setSelectedCourseDeletionRequest(courseDeletionRequest);
-                                                //     onOpen();
-                                                // }}
+                                                onClick={() => {
+                                                    setSelectedCourseGroupingDeletionRequest(courseGroupingRequest);
+                                                    onOpen();
+                                                }}
                                             >
                                                 Delete
                                             </Button>
