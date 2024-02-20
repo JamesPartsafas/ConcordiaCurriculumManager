@@ -177,6 +177,58 @@ export default function DossierDetails() {
         onClose();
     }
 
+    // course related functions
+
+    // creations
+    function createModificationRequest() {
+        return (
+            <EditCourseModal
+                isOpen={isEditOpen}
+                onClose={onEditClose}
+                allCourseSettings={courseSettings}
+                dossierId={dossierId}
+            ></EditCourseModal>
+        );
+    }
+
+    // edits
+    function editCourseCreationRequest(creationRequest: CourseCreationRequest) {
+        getCourseCreationRequest(creationRequest.id).then((res: CourseCreationRequestDTOResponse) => {
+            const creationRequestToEdit = {
+                ...res.data,
+                ...res.data.newCourse,
+                id: res.data.id,
+            };
+
+            navigate(
+                BaseRoutes.EditCourse.replace(":id", creationRequest.newCourse.catalog.toString()).replace(
+                    ":dossierId",
+                    dossierId
+                ),
+                { state: { ...creationRequestToEdit, api: "editCreationRequest" } }
+            );
+        });
+    }
+
+    function editCourseModificationRequest(modificationRequest: CourseModificationRequest) {
+        getCourseModificationRequest(modificationRequest.id).then((res: CourseModificationRequestDTOResponse) => {
+            const modificationRequestToEdit = {
+                ...res.data,
+                ...res.data.course,
+                id: res.data.id,
+            };
+
+            navigate(
+                BaseRoutes.EditCourse.replace(":id", modificationRequest.course.catalog.toString()).replace(
+                    ":dossierId",
+                    dossierId
+                ),
+                { state: { ...modificationRequestToEdit, api: "editModificationRequest" } }
+            );
+        });
+    }
+
+    // deletions
     function deleteCreationRequest(courseCreationRequest: CourseCreationRequest) {
         setLoading(true);
         deleteCourseCreationRequest(dossierId, courseCreationRequest.id)
@@ -267,6 +319,10 @@ export default function DossierDetails() {
             });
     }
 
+
+    // course grouping related functions
+
+    // deletions
     function deleteCourseGroupingRequest(courseGroupingRequest: CourseGroupingRequestDTO) {
         setLoading(true);
         DeleteCourseGroupingRequest(dossierId, courseGroupingRequest.id)
@@ -303,66 +359,6 @@ export default function DossierDetails() {
             });
     }
 
-    function createModificationRequest() {
-        return (
-            <EditCourseModal
-                isOpen={isEditOpen}
-                onClose={onEditClose}
-                allCourseSettings={courseSettings}
-                dossierId={dossierId}
-            ></EditCourseModal>
-        );
-    }
-
-    function editCourseCreationRequest(creationRequest: CourseCreationRequest) {
-        getCourseCreationRequest(creationRequest.id).then((res: CourseCreationRequestDTOResponse) => {
-            const creationRequestToEdit = {
-                ...res.data,
-                ...res.data.newCourse,
-                id: res.data.id,
-            };
-
-            navigate(
-                BaseRoutes.EditCourse.replace(":id", creationRequest.newCourse.catalog.toString()).replace(
-                    ":dossierId",
-                    dossierId
-                ),
-                { state: { ...creationRequestToEdit, api: "editCreationRequest" } }
-            );
-        });
-    }
-
-    function editCourseModificationRequest(modificationRequest: CourseModificationRequest) {
-        getCourseModificationRequest(modificationRequest.id).then((res: CourseModificationRequestDTOResponse) => {
-            const modificationRequestToEdit = {
-                ...res.data,
-                ...res.data.course,
-                id: res.data.id,
-            };
-
-            navigate(
-                BaseRoutes.EditCourse.replace(":id", modificationRequest.course.catalog.toString()).replace(
-                    ":dossierId",
-                    dossierId
-                ),
-                { state: { ...modificationRequestToEdit, api: "editModificationRequest" } }
-            );
-        });
-    }
-
-    function dispaylayApprovalStagesModal() {
-        setShowApprovalStagesModal(true);
-    }
-    function closeApprovalStagesModal() {
-        setShowApprovalStagesModal(false);
-    }
-
-    function isUserACurrentReviewer() {
-        return dossierDetails?.approvalStages
-            ?.find((stage) => stage.isCurrentStage)
-            ?.group?.members?.find((member) => member.id === user.id);
-    }
-
     function getSchoolName(school: number) {
         switch (school) {
             case 0:
@@ -377,6 +373,22 @@ export default function DossierDetails() {
                 return "N/A";
         }
     }
+
+    // approval stages related functions
+    function dispaylayApprovalStagesModal() {
+        setShowApprovalStagesModal(true);
+    }
+    function closeApprovalStagesModal() {
+        setShowApprovalStagesModal(false);
+    }
+
+    function isUserACurrentReviewer() {
+        return dossierDetails?.approvalStages
+            ?.find((stage) => stage.isCurrentStage)
+            ?.group?.members?.find((member) => member.id === user.id);
+    }
+
+
 
     return (
         <>
@@ -684,7 +696,7 @@ export default function DossierDetails() {
                         Add Modification Request
                     </Button>
                 </Box>
-                
+
                 {/* course deletion requests */}
                 <Box backgroundColor="brandGray" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
                     <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
