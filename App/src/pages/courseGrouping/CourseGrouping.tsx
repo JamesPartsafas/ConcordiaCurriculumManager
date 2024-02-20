@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { GetCourseGrouping } from "../services/courseGrouping";
-import { CourseGroupingDTO } from "../models/courseGrouping";
+import { GetCourseGrouping } from "../../services/courseGrouping";
+import { CourseGroupingDTO } from "../../models/courseGrouping";
 
 import { Link, useParams } from "react-router-dom";
 import { Box, Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react";
-import { BaseRoutes } from "../constants";
+import { BaseRoutes } from "../../constants";
 
 export default function CourseGrouping() {
     const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO>();

@@ -32,15 +32,15 @@ import Header from "./shared/Header";
 import DossierReview from "./pages/dossier/DossierReview";
 import DossierReport from "./pages/dossier/DossierReport";
 import NoData from "./pages/NoData";
-import CourseGrouping from "./pages/CourseGrouping";
+import CourseGrouping from "./pages/courseGrouping/CourseGrouping";
 import DossierBrowser from "./pages/dossier/DossierBrowser";
-import GroupingBySchool from "./pages/CourseGroupingBySchool";
+import GroupingBySchool from "./pages/courseGrouping/CourseGroupingBySchool";
 import MyGroups from "./pages/groups/myGroups";
 import DossierChangeLog from "./pages/dossier/DossierChangeLog";
 import BrowserList from "./pages/BrowserList";
-import CourseGroupingByName from "./pages/CourseGroupingByName";
-import DeleteCourseGrouping from "./pages/DeleteCourseGrouping";
-import DeleteCourseGroupingEdit from "./pages/DeleteCourseGroupingEdit";
+import CourseGroupingByName from "./pages/courseGrouping/CourseGroupingByName";
+import DeleteCourseGrouping from "./pages/courseGrouping/DeleteCourseGrouping";
+import DeleteCourseGroupingEdit from "./pages/courseGrouping/DeleteCourseGroupingEdit";
 
 export const UserContext = createContext<User | null>(null);
 
