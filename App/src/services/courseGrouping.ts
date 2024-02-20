@@ -14,6 +14,7 @@ const CourseGroupingAPIEndpoints = {
     GetGroupingBySchool: "/CourseGrouping/GetCourseGroupingsBySchoolNonRecursive",
     InitiateCourseGroupingDeletion: "/CourseGrouping/InitiateCourseGroupingDeletion",
     EditCourseGroupingDeletion: "/CourseGrouping/EditCourseGroupingDeletion",
+    DeleteCourseGroupingRequest: "/CourseGrouping/DeleteCourseGroupingRequest",
 };
 
 export function GetCourseGrouping(courseGroupingId: string): Promise<GetCourseGroupingResponse> {
@@ -47,4 +48,8 @@ export function EditCourseGroupingDeletion(
         `${CourseGroupingAPIEndpoints.EditCourseGroupingDeletion}/${dossierId}/${requestId}`,
         courseGroupingDeletionRequest
     );
+}
+
+export function DeleteCourseGroupingRequest(dossierId: string, requestId: string): Promise<unknown> {
+    return axios.delete(`${CourseGroupingAPIEndpoints.DeleteCourseGroupingRequest}/${dossierId}/${requestId}`);
 }
