@@ -20,7 +20,7 @@ import { BaseRoutes } from "../constants";
 import {
     CourseGroupingDTO,
     CourseGroupingModificationRequestDTO,
-    CourseGroupingRequestInputDTO,
+    CourseGroupingModificationInputDTO,
 } from "../models/courseGrouping";
 import { EditCourseGroupingDeletion } from "../services/courseGrouping";
 
@@ -69,7 +69,7 @@ export default function DeleteCourse() {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 ({ id, parentGroupId, ...rest }) => rest
             );
-            const courseGroupingRequestDTO: CourseGroupingRequestInputDTO = {
+            const courseGroupingRequestDTO: CourseGroupingModificationInputDTO = {
                 name: selectedCourseGrouping.name,
                 requiredCredits: selectedCourseGrouping.requiredCredits,
                 isTopLevel: selectedCourseGrouping.isTopLevel,

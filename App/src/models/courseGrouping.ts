@@ -25,8 +25,13 @@ export interface CourseIdentifierDTO {
 }
 
 export interface CourseGroupingReferenceDTO {
-    id?: string;
-    parentGroupId?: string;
+    id: string;
+    parentGroupId: string;
+    childGroupCommonIdentifier: string;
+    groupingType: GroupingTypeEnum;
+}
+
+export interface CourseGroupingReferenceInputDTO {
     childGroupCommonIdentifier: string;
     groupingType: GroupingTypeEnum;
 }
@@ -61,14 +66,14 @@ export interface CourseGroupingRequestDTO {
     courseGrouping: CourseGroupingDTO;
 }
 
-export interface CourseGroupingRequestInputDTO {
+export interface CourseGroupingModificationInputDTO {
     name: string;
     requiredCredits: string;
     isTopLevel: boolean;
     school: SchoolEnum;
     description: string | null;
     notes: string | null;
-    subGroupingReferences: CourseGroupingReferenceDTO[];
+    subGroupingReferences: CourseGroupingReferenceInputDTO[];
     courseIdentifiers: CourseIdentifierDTO[];
     commonIdentifier: string;
 }
@@ -80,7 +85,7 @@ export interface CourseGroupingInputDTO {
     school: SchoolEnum;
     description: string | null;
     notes: string | null;
-    subGroupingReferences: CourseGroupingReferenceDTO[];
+    subGroupingReferences: CourseGroupingReferenceInputDTO[];
     courseIdentifiers: CourseIdentifierDTO[];
 }
 
@@ -97,7 +102,7 @@ export interface CourseGroupingModificationRequestDTO {
     rationale: string;
     resourceImplication: string;
     comment: string;
-    courseGrouping: CourseGroupingRequestInputDTO;
+    courseGrouping: CourseGroupingModificationInputDTO;
 }
 
 export interface MultiCourseGroupingDTO {
