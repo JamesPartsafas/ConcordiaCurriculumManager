@@ -61,7 +61,6 @@ export default function DossierReport() {
                         height="40px"
                         ml={2}
                         isDisabled={!user.roles.includes(UserRoles.Initiator)}
-                        
                         onClick={() => {
                             navigate(BaseRoutes.DossiersToReview);
                         }}
