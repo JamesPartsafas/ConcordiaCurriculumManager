@@ -277,7 +277,7 @@ const NAV_ITEMS: Array<NavItem> = [
         href: "/myGroups",
     },
     {
-        label: "Course info",
-        href: "/CourseBrowser",
+        label: "Browse",
+        href: "/browserList",
     },
 ];

@@ -157,4 +157,93 @@ public class DossierTest
 
         dossier.MarkAsReturned(user);
     }
+
+    [TestMethod]
+    public void IsDossierCreatingCourse_ThatIsCreating_ReturnsTrue()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+        var request = TestData.GetSampleCourseCreationRequest();
+        dossier.CourseCreationRequests.Add(request);
+
+        var result = dossier.IsDossierCreatingCourse(request.NewCourse!.CourseID);
+
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void IsDossierCreatingCourse_ThatIsNotCreating_ReturnsFalse()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+
+        var result = dossier.IsDossierCreatingCourse(5);
+
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public void IsDossierCreatingGrouping_ThatIsCreating_ReturnsTrue()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+        var request = TestData.GetSampleCourseGroupingRequest();
+        dossier.CourseGroupingRequests.Add(request);
+
+        var result = dossier.IsDossierCreatingGrouping(request.CourseGrouping!.CommonIdentifier);
+
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void IsDossierCreatingGrouping_ThatIsNotCreating_ReturnsFalse()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+
+        var result = dossier.IsDossierCreatingGrouping(Guid.NewGuid());
+
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public void IsDossierDeletingCourse_ThatIsDeleting_ReturnsTrue()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+        var request = TestData.GetSampleCourseDeletionRequest();
+        dossier.CourseDeletionRequests.Add(request);
+
+        var result = dossier.IsDossierDeletingCourse(request.Course!.CourseID);
+
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void IsDossierDeletingCourse_ThatIsDeleting_ReturnsFalse()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+
+        var result = dossier.IsDossierDeletingCourse(5);
+
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public void IsDossierDeletingGrouping_ThatIsDeleting_ReturnsTrue()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+        var request = TestData.GetSampleCourseGroupingRequest();
+        request.RequestType = RequestType.DeletionRequest;
+        dossier.CourseGroupingRequests.Add(request);
+
+        var result = dossier.IsDossierDeletingGrouping(request.CourseGrouping!.CommonIdentifier);
+
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void IsDossierDeletingGrouping_ThatIsDeleting_ReturnsFalse()
+    {
+        var dossier = TestData.GetSampleDossierInInitialStage();
+
+        var result = dossier.IsDossierDeletingGrouping(Guid.NewGuid());
+
+        Assert.IsFalse(result);
+    }
 }

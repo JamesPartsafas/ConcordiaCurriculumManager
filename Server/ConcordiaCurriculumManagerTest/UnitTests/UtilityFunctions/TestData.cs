@@ -767,6 +767,8 @@ public static class TestData
         };
     }
 
+    public static CourseGroupingModificationRequestDTO GetSampleCourseGroupingDeletionRequestDTO() => GetSampleCourseGroupingModificationRequestDTO();
+
     public static CourseGroupingRequest GetSampleCourseGroupingRequest()
     {
         return new CourseGroupingRequest

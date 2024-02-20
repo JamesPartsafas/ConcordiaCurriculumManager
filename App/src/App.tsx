@@ -37,6 +37,10 @@ import DossierBrowser from "./pages/dossier/DossierBrowser";
 import GroupingBySchool from "./pages/CourseGroupingBySchool";
 import MyGroups from "./pages/groups/myGroups";
 import DossierChangeLog from "./pages/dossier/DossierChangeLog";
+import BrowserList from "./pages/BrowserList";
+import CourseGroupingByName from "./pages/CourseGroupingByName";
+import DeleteCourseGrouping from "./pages/DeleteCourseGrouping";
+import DeleteCourseGroupingEdit from "./pages/DeleteCourseGroupingEdit";
 import ProfilePage from "./pages/ProfilePage";
 import EditProfileInfo from "./pages/EditProfileInfo";
 
@@ -176,6 +180,14 @@ export function App() {
                         element={isLoggedIn == true ? <DeleteCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
+                        path={BaseRoutes.DeleteCourseGrouping}
+                        element={isLoggedIn == true ? <DeleteCourseGrouping /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.DeleteCourseGroupingEdit}
+                        element={isLoggedIn == true ? <DeleteCourseGroupingEdit /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
                         path={BaseRoutes.CreateGroup}
                         element={isAdmin(user) == true ? <CreateGroup /> : <Navigate to={BaseRoutes.Login} />}
                     />
@@ -190,6 +202,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.GroupingBySchool}
                         element={isLoggedIn == true ? <GroupingBySchool /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.GroupingByName}
+                        element={isLoggedIn == true ? <CourseGroupingByName /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
                         path={BaseRoutes.NoData}
@@ -212,6 +228,11 @@ export function App() {
                     <Route
                         path={BaseRoutes.myGroups}
                         element={isLoggedIn == true ? <MyGroups /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.browserList}
+                        element={isLoggedIn == true ? <BrowserList /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
                         path={BaseRoutes.profile}

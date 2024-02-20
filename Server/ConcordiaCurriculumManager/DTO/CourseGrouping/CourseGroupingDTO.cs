@@ -12,6 +12,7 @@ public class CourseGroupingDTO : AbstractCourseGroupingDTO
     public required bool Published { get; set; }
     public required ICollection<CourseGroupingReferenceDTO> SubGroupingReferences { get; set; } = new List<CourseGroupingReferenceDTO>();
     public required ICollection<CourseGroupingDTO> SubGroupings { get; set; } = new List<CourseGroupingDTO>();
+    public required ICollection<CourseIdentifierDTO> CourseIdentifiers { get; set; } = new List<CourseIdentifierDTO>();
     public required ICollection<CourseDataDTO> Courses { get; set; } = new List<CourseDataDTO>();
     public required DateTime CreatedDate { get; set; }
     public required DateTime ModifiedDate { get; set; }

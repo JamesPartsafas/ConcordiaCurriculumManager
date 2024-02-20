@@ -7,6 +7,8 @@ export enum BaseRoutes {
     AddCourse = "/add-course/:dossierId",
     EditCourse = "/edit-course/:id/:dossierId",
     DeleteCourse = "/delete-course/:dossierId",
+    DeleteCourseGrouping = "/delete-course-grouping/:dossierId",
+    DeleteCourseGroupingEdit = "/delete-course-grouping-edit/:dossierId",
     DeleteCourseEdit = "/delete-course-edit/:dossierId",
     ComponentsList = "/components-list",
     CourseBrowser = "/CourseBrowser",
@@ -25,9 +27,11 @@ export enum BaseRoutes {
     DossierBrowser = "/dossierbrowser",
     CourseDetails = "/CourseDetails",
     GroupingBySchool = "/GetCourseBySchool",
+    GroupingByName = "/GetCourseByName",
     NoData = "/NoData",
     CourseGrouping = "/CourseGrouping/:courseGroupingId",
     myGroups = "/myGroups",
     profile ="/profile",
-    editProfileInfo ="/editProfileInfo"
+    editProfileInfo ="/editProfileInfo",
+    browserList = "/browserList",
 }

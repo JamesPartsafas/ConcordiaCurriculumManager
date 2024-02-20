@@ -49,7 +49,7 @@ export default function CallToActionWithIllustration() {
                     {isAdminOrGroupMaster(user) && (
                         <Stack>
                             <Text color={"gray.500"} maxW={"3xl"}>
-                                Manage Groups is reserved for admins only:
+                                Manage Groups is reserved for admins and group masters only:
                             </Text>
                             <Button
                                 style="secondary"
@@ -63,6 +63,21 @@ export default function CallToActionWithIllustration() {
                             </Button>
                         </Stack>
                     )}
+                    <Stack>
+                        <Text color={"gray.500"} maxW={"3xl"}>
+                            View list of browsers for courses, dossiers and curriculums:
+                        </Text>
+                        <Button
+                            style="primary"
+                            variant="solid"
+                            width="240px"
+                            height="40px"
+                            margin="auto"
+                            onClick={() => navigate(BaseRoutes.browserList)}
+                        >
+                            View List of Browsers
+                        </Button>
+                    </Stack>
                     <Flex w={"full"}>
                         {/* <Illustration height={{ sm: "24rem", lg: "28rem" }} mt={{ base: 12, sm: 16 }} /> */}
                     </Flex>
