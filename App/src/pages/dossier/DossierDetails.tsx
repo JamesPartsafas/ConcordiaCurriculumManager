@@ -49,8 +49,9 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import EditApprovalStagesModal from "./EditApprovalStagesModal";
 import { UserContext } from "../../App";
 import { UserRoles } from "../../models/user";
-import { CourseGroupingRequestDTO } from "../../models/courseGrouping";
+import { CourseGroupingRequestDTO, CourseGroupingStateEnum } from "../../models/courseGrouping";
 import { DeleteCourseGroupingRequest } from "../../services/courseGrouping";
+import { set } from "react-hook-form";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
@@ -65,6 +66,8 @@ export default function DossierDetails() {
     const [selectedCourseDeletionRequest, setSelectedCourseDeletionRequest] = useState<CourseDeletionRequest>(null);
     const [selectedCourseGroupingDeletionRequest, setSelectedCourseGroupingDeletionRequest] =
         useState<CourseGroupingRequestDTO>(null);
+    const [selectedCourseGroupingCreationRequest, setSelectedCourseGroupingCreationRequest] = useState<CourseGroupingRequestDTO>(null);
+    const [selectedCourseGroupingModificationRequest, setSelectedCourseGroupingModificationRequest] = useState<CourseGroupingRequestDTO>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [showApprovalStagesModal, setShowApprovalStagesModal] = useState<boolean>(false);
 
@@ -138,7 +141,33 @@ export default function DossierDetails() {
                     onDelete={deleteCourseGroupingRequest}
                 />
             );
+        } else if (selectedCourseGroupingCreationRequest) {
+            return (
+                <DeleteAlert
+                    isOpen={isOpen}
+                    onClose={handleOnClose}
+                    loading={loading}
+                    headerTitle="Delete Course Grouping Creation Request"
+                    title={selectedCourseGroupingCreationRequest?.courseGrouping.name}
+                    item={selectedCourseGroupingCreationRequest}
+                    onDelete={deleteCourseGroupingRequest}
+                />
+            );
+        } else if (selectedCourseGroupingModificationRequest) {
+            return (
+                <DeleteAlert
+                    isOpen={isOpen}
+                    onClose={handleOnClose}
+                    loading={loading}
+                    headerTitle="Delete Course Grouping Modification Request"
+                    title={selectedCourseGroupingModificationRequest?.courseGrouping.name}
+                    item={selectedCourseGroupingModificationRequest}
+                    onDelete={deleteCourseGroupingRequest}
+                />
+            );
+        
         }
+
     }
 
     function handleOnClose() {
@@ -254,17 +283,23 @@ export default function DossierDetails() {
                     });
                     setLoading(false);
                     setSelectedCourseGroupingDeletionRequest(null);
+                    setSelectedCourseGroupingCreationRequest(null);
+                    setSelectedCourseGroupingModificationRequest(null);
                 },
                 () => {
                     showToast(toast, "Error!", "Course grouping request could not be deleted.", "error");
                     setLoading(false);
                     setSelectedCourseGroupingDeletionRequest(null);
+                    setSelectedCourseGroupingCreationRequest(null);
+                    setSelectedCourseGroupingModificationRequest(null);
                 }
             )
             .catch(() => {
                 showToast(toast, "Error!", "Course grouping request could not be deleted.", "error");
                 setLoading(false);
                 setSelectedCourseGroupingDeletionRequest(null);
+                setSelectedCourseGroupingCreationRequest(null);
+                setSelectedCourseGroupingModificationRequest(null);
             });
     }
 
@@ -328,7 +363,7 @@ export default function DossierDetails() {
             ?.group?.members?.find((member) => member.id === user.id);
     }
 
-    function getSchoolName(school) {
+    function getSchoolName(school: number) {
         switch (school) {
             case 0:
                 return "GinaCody";
@@ -766,6 +801,221 @@ export default function DossierDetails() {
                         Add Deletion Request
                     </Button>
                 </Box>
+
+                {/* grouping creation requests */}
+                <Box backgroundColor="brandRed" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
+                    <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
+                        Course Grouping Creation Requests
+                    </Heading>
+                    <SimpleGrid
+                        templateColumns="repeat(auto-fill, minmax(200px, 400px))"
+                        spacing={4}
+                        justifyContent={"center"}
+                    >
+                        {dossierDetails?.courseGroupingRequests
+                            ?.filter((cgr) => cgr.courseGrouping.state == CourseGroupingStateEnum.NewCourseGroupingProposal)
+                            .map((courseGroupingCreationRequest) => (
+                                <Card key={courseGroupingCreationRequest.id} boxShadow={"xl"}>
+                                    <CardBody>
+                                        <Stack spacing="4">
+                                            <Heading size="md" color={"brandBlue"}>
+                                                {courseGroupingCreationRequest.courseGrouping?.name}
+                                            </Heading>
+                                            <Stack>
+                                                <Kbd width={"fit-content"}>
+                                                    Common ID: {courseGroupingCreationRequest.courseGrouping.commonIdentifier}
+                                                </Kbd>
+                                                <Kbd width={"fit-content"}>
+                                                    School: {getSchoolName(courseGroupingCreationRequest.courseGrouping.school)}
+                                                </Kbd>
+                                                <Kbd width={"fit-content"}>
+                                                    Credits: {courseGroupingCreationRequest.courseGrouping.requiredCredits}
+                                                </Kbd>
+                                            </Stack>
+                                            <Textarea
+                                                isReadOnly
+                                                variant={"filled"}
+                                                value={
+                                                    courseGroupingCreationRequest?.courseGrouping.description === null ||
+                                                    courseGroupingCreationRequest?.courseGrouping.description === ""
+                                                        ? "N/A"
+                                                        : courseGroupingCreationRequest?.courseGrouping.description
+                                                }
+                                            />
+                                            <Stack>
+                                                <Text>
+                                                    Rationale:{" "}
+                                                    {courseGroupingCreationRequest?.rationale === null ||
+                                                    courseGroupingCreationRequest?.rationale === ""
+                                                        ? "N/A"
+                                                        : courseGroupingCreationRequest?.rationale}
+                                                </Text>
+                                                <Text>
+                                                    Comment:{" "}
+                                                    {courseGroupingCreationRequest?.comment === null ||
+                                                    courseGroupingCreationRequest?.comment === ""
+                                                        ? "N/A"
+                                                        : courseGroupingCreationRequest?.comment}
+                                                </Text>
+                                            </Stack>
+                                        </Stack>
+                                    </CardBody>
+                                    <Divider />
+                                    <CardFooter>
+                                        <ButtonGroup spacing="2">
+                                            <Button
+                                                variant="solid"
+                                                style="primary"
+                                                isDisabled={
+                                                    dossierDetails?.state !== DossierStateEnum.Created &&
+                                                    !isUserACurrentReviewer()
+                                                }
+                                                onClick={() => {}}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                style="primary"
+                                                isDisabled={
+                                                    dossierDetails?.state !== DossierStateEnum.Created &&
+                                                    !isUserACurrentReviewer()
+                                                }
+                                                onClick={() => {
+                                                    setSelectedCourseGroupingCreationRequest(courseGroupingCreationRequest);
+                                                    onOpen();
+                                                }}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </ButtonGroup>
+                                    </CardFooter>
+                                </Card>
+                            ))}
+                    </SimpleGrid>
+                    <Divider marginTop={10} marginBottom={2} />
+
+                    <Button
+                        backgroundColor="brandGray500"
+                        _hover={{ bg: "brandGray" }}
+                        variant="solid"
+                        style="secondary"
+                        width="100%"
+                        isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
+                        onClick={() => {}}
+                    >
+                        Add Creation Request
+                    </Button>
+                </Box>
+
+                {/* grouping modification requests */}
+                <Box backgroundColor="brandBlue" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
+                    <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
+                        Course Grouping Modification Requests
+                    </Heading>
+                    <SimpleGrid
+                        templateColumns="repeat(auto-fill, minmax(200px, 400px))"
+                        spacing={4}
+                        justifyContent={"center"}
+                    >
+                        {dossierDetails?.courseGroupingRequests
+                            ?.filter((cgr) => cgr.courseGrouping.state == CourseGroupingStateEnum.CourseGroupingChangeProposal)
+                            .map((courseGroupingModificationRequest) => (
+                                <Card key={courseGroupingModificationRequest.id} boxShadow={"xl"}>
+                                    <CardBody>
+                                        <Stack spacing="4">
+                                            <Heading size="md" color={"brandBlue"}>
+                                                {courseGroupingModificationRequest.courseGrouping?.name}
+                                            </Heading>
+                                            <Stack>
+                                                <Kbd width={"fit-content"}>
+                                                    Common ID: {courseGroupingModificationRequest.courseGrouping.commonIdentifier}
+                                                </Kbd>
+                                                <Kbd width={"fit-content"}>
+                                                    School: {getSchoolName(courseGroupingModificationRequest.courseGrouping.school)}
+                                                </Kbd>
+                                                <Kbd width={"fit-content"}>
+                                                    Credits: {courseGroupingModificationRequest.courseGrouping.requiredCredits}
+                                                </Kbd>
+                                            </Stack>
+                                            <Textarea
+                                                isReadOnly
+                                                variant={"filled"}
+                                                value={
+                                                    courseGroupingModificationRequest?.courseGrouping.description === null ||
+                                                    courseGroupingModificationRequest?.courseGrouping.description === ""
+                                                        ? "N/A"
+                                                        : courseGroupingModificationRequest?.courseGrouping.description
+                                                }
+                                            />
+                                            <Stack>
+                                                <Text>
+                                                    Rationale:{" "}
+                                                    {courseGroupingModificationRequest?.rationale === null ||
+                                                    courseGroupingModificationRequest?.rationale === ""
+                                                        ? "N/A"
+                                                        : courseGroupingModificationRequest?.rationale}
+                                                </Text>
+                                                <Text>
+                                                    Comment:{" "}
+                                                    {courseGroupingModificationRequest?.comment === null ||
+                                                    courseGroupingModificationRequest?.comment === ""
+                                                        ? "N/A"
+                                                        : courseGroupingModificationRequest?.comment}
+                                                </Text>
+                                            </Stack>
+                                        </Stack>
+                                    </CardBody>
+                                    <Divider />
+                                    <CardFooter>
+                                        <ButtonGroup spacing="2">
+                                            <Button
+                                                variant="solid"
+                                                style="primary"
+                                                isDisabled={
+                                                    dossierDetails?.state !== DossierStateEnum.Created &&
+                                                    !isUserACurrentReviewer()
+                                                }
+                                                onClick={() => {}}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                style="primary"
+                                                isDisabled={
+                                                    dossierDetails?.state !== DossierStateEnum.Created &&
+                                                    !isUserACurrentReviewer()
+                                                }
+                                                onClick={() => {
+                                                    setSelectedCourseGroupingModificationRequest(courseGroupingModificationRequest);
+                                                    onOpen();
+                                                }}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </ButtonGroup>
+                                    </CardFooter>
+                                </Card>
+                            ))}
+                    </SimpleGrid>
+                    <Divider marginTop={10} marginBottom={2} />
+
+                    <Button
+                        backgroundColor="brandGray500"
+                        _hover={{ bg: "brandGray" }}
+                        variant="solid"
+                        style="secondary"
+                        width="100%"
+                        isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
+                        onClick={() => {}}
+                    >
+                        Add Modification Request
+                    </Button>
+                </Box>
+
+
+                {/* grouping deletion requests */}
                 <Box backgroundColor="brandGray" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
                     <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
                         Course Grouping Deletion Requests
@@ -882,6 +1132,8 @@ export default function DossierDetails() {
                         Add Deletion Request
                     </Button>
                 </Box>
+
+                {/* approval stages */}
                 <Box
                     mt={2}
                     p={2}
@@ -918,6 +1170,7 @@ export default function DossierDetails() {
                         Edit
                     </Button>
                 </Box>
+
                 {showApprovalStagesModal && (
                     <EditApprovalStagesModal
                         open={showApprovalStagesModal}

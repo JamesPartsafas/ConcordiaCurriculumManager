@@ -20,15 +20,15 @@ export enum GroupingTypeEnum {
     optionalGrouping = 1,
 }
 
+export interface CourseIdentifierDTO {
+    concordiaCourseId: number;
+}
+
 export interface CourseGroupingReferenceDTO {
     id?: string;
     parentGroupId?: string;
     childGroupCommonIdentifier: string;
     groupingType: GroupingTypeEnum;
-}
-
-export interface CourseIdentifierDTO {
-    concordiaCourseId: number;
 }
 
 export interface CourseGroupingDTO {
@@ -71,6 +71,25 @@ export interface CourseGroupingRequestInputDTO {
     subGroupingReferences: CourseGroupingReferenceDTO[];
     courseIdentifiers: CourseIdentifierDTO[];
     commonIdentifier: string;
+}
+
+export interface CourseGroupingInputDTO {
+    name: string | null;
+    requiredCredits: string | null;
+    isTopLevel: boolean;
+    school: SchoolEnum;
+    description: string | null;
+    notes: string | null;
+    subGroupingReferences: CourseGroupingReferenceDTO[];
+    courseIdentifiers: CourseIdentifierDTO[];
+}
+
+export interface CourseGroupingCreationRequestDTO {
+    dossierId: string;
+    rationale: string;
+    resourceImplication: string;
+    comment: string;
+    courseGrouping: CourseGroupingInputDTO;
 }
 
 export interface CourseGroupingModificationRequestDTO {
