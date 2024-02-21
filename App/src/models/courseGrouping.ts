@@ -25,8 +25,8 @@ export interface CourseIdentifierDTO {
 }
 
 export interface CourseGroupingReferenceDTO {
-    id: string;
-    parentGroupId: string;
+    id?: string;
+    parentGroupId?: string;
     childGroupCommonIdentifier: string;
     groupingType: GroupingTypeEnum;
 }
