@@ -41,6 +41,7 @@ import BrowserList from "./pages/BrowserList";
 import CourseGroupingByName from "./pages/courseGrouping/CourseGroupingByName";
 import DeleteCourseGrouping from "./pages/courseGrouping/DeleteCourseGrouping";
 import DeleteCourseGroupingEdit from "./pages/courseGrouping/DeleteCourseGroupingEdit";
+import CreateCourseGrouping from "./pages/courseGrouping/CreateCourseGrouping";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -218,6 +219,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.CourseGrouping}
                         element={isLoggedIn == true ? <CourseGrouping /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.CreateCourseGrouping}
+                        element={isLoggedIn == true ? <CreateCourseGrouping /> : <Navigate to={BaseRoutes.Login} />}
                     />
 
                     {/* whenever none of the other routes match we show the not found page */}
