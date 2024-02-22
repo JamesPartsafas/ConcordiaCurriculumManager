@@ -32,4 +32,6 @@ export enum BaseRoutes {
     CourseGrouping = "/CourseGrouping/:courseGroupingId",
     myGroups = "/myGroups",
     browserList = "/browserList",
+    allGroups = "/allGroups",
+    groupDetails = "/GroupDetails",
 }
