@@ -143,6 +143,9 @@ export default function CreateCourseGrouping() {
     const onSubmit: SubmitHandler<CourseGroupingRequestDTO> = (data) => {
         data.dossierId = dossierId;
         data.courseGrouping.school = Number(data.courseGrouping.school);
+
+        //TODO: need to check which api to call based on the state.api
+
         InitiateCourseGroupingCreation(dossierId, data).then((response) => {
             console.log(response.data);
         });
