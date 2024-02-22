@@ -43,14 +43,8 @@ export function GetCourseGroupingByName(name: string): Promise<GetMultiCourseGro
     return axios.get("/CourseGrouping/SearchCourseGroupingsByName?name=" + name);
 }
 
-export function InitiateCourseGroupingCreation(
-    dossierId: string,
-    courseGroupingCreationRequest: CourseGroupingCreationRequestDTO
-): Promise<CourseGroupingCreationResponse> {
-    return axios.post(
-        `${CourseGroupingAPIEndpoints.InitiateCourseGroupingCreation}/${dossierId}`,
-        courseGroupingCreationRequest
-    );
+export function InitiateCourseGroupingCreation(dossierId: string, courseGroupingCreationRequest: CourseGroupingCreationRequestDTO): Promise<CourseGroupingCreationResponse> {
+    return axios.post(`${CourseGroupingAPIEndpoints.InitiateCourseGroupingCreation}/${dossierId}`, courseGroupingCreationRequest);
 }
 
 export function InitiateCourseGroupingModification(

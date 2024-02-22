@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useForm, useFieldArray, SubmitHandler, Controller } from "react-hook-form";
-import { CourseGroupingDTO, CourseGroupingRequestDTO, SchoolEnum } from "../../models/courseGrouping"; // Adjust the import path as needed
+import {
+    CourseGroupingCreationRequestDTO,
+    CourseGroupingDTO,
+    CourseGroupingRequestDTO,
+    SchoolEnum,
+} from "../../models/courseGrouping"; // Adjust the import path as needed
 import {
     Button,
     Center,
@@ -21,14 +26,30 @@ import {
 import AutocompleteInput from "../../components/Select";
 import { GetCourseGroupingBySchool, InitiateCourseGroupingCreation } from "../../services/courseGrouping";
 import { MinusIcon } from "@chakra-ui/icons";
+import { useLocation, useParams } from "react-router-dom";
+import { stat } from "fs";
 
 export default function CreateCourseGrouping() {
+    const location = useLocation();
+    const state: { CourseGroupingRequest: CourseGroupingCreationRequestDTO; api: string } = location.state;
+
     const {
         register,
         control,
         handleSubmit,
         formState: { errors, isSubmitting },
-    } = useForm<CourseGroupingRequestDTO>();
+    } = useForm<CourseGroupingRequestDTO>({
+        defaultValues: {
+            // dossierId: state?.CourseGroupingRequest?.dossierId,
+            // rationale: state?.CourseGroupingRequest?.rationale,
+            // resourceImplication: state?.CourseGroupingRequest?.resourceImplication,
+            // comment: state?.CourseGroupingRequest?.comment,
+            // courseGrouping: state?.CourseGroupingRequest?.courseGrouping
+
+            //this is simpler but MIGHT break with the EDIT api
+            ...state?.CourseGroupingRequest
+        },
+    });
 
     const {
         fields: subGroupFields,
@@ -51,6 +72,8 @@ export default function CreateCourseGrouping() {
     const autoCompleteOptions = ["INDI Courses", "Engineering Core Courses", "Fine Arts Core"];
     const [selectedItem, setSelectedItem] = useState(null);
     const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO[]>();
+
+    const { dossierId } = useParams();
 
     const fieldConfigurations = [
         {
@@ -118,9 +141,9 @@ export default function CreateCourseGrouping() {
         },
     ];
     const onSubmit: SubmitHandler<CourseGroupingRequestDTO> = (data) => {
-        data.dossierId = "37581d9d-713f-475c-9668-23971b0e64d0";
+        data.dossierId = dossierId;
         data.courseGrouping.school = Number(data.courseGrouping.school);
-        InitiateCourseGroupingCreation("37581d9d-713f-475c-9668-23971b0e64d0", data).then((response) => {
+        InitiateCourseGroupingCreation(dossierId, data).then((response) => {
             console.log(response.data);
         });
         // Submit your form data
@@ -132,6 +155,7 @@ export default function CreateCourseGrouping() {
         }
     };
     useEffect(() => {
+        console.log(state.CourseGroupingRequest);
         GetCourseGroupingBySchool(SchoolEnum.GinaCody).then((response) => {
             setCourseGrouping(response.data);
             console.log(response.data);

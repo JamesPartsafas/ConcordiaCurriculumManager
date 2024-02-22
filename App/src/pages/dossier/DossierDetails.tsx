@@ -888,7 +888,12 @@ export default function DossierDetails() {
                                                     dossierDetails?.state !== DossierStateEnum.Created &&
                                                     !isUserACurrentReviewer()
                                                 }
-                                                onClick={() => {}}
+                                                onClick={() => {
+                                                    navigate(BaseRoutes.CreateCourseGrouping.replace(":dossierId", dossierId),
+                                                    // changed the name to CourseGroupingRequest so that the edits can use the same page
+                                                        { state: { CourseGroupingRequest: courseGroupingCreationRequest, api: "editGroupingCreationRequest" } }
+                                                    );
+                                                }}
                                             >
                                                 Edit
                                             </Button>
@@ -920,7 +925,9 @@ export default function DossierDetails() {
                         style="secondary"
                         width="100%"
                         isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
-                        onClick={() => {}}
+                        onClick={() => {
+                            navigate(BaseRoutes.CreateCourseGrouping.replace(":dossierId", dossierId));
+                        }}
                     >
                         Add Creation Request
                     </Button>
