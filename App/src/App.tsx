@@ -32,16 +32,18 @@ import Header from "./shared/Header";
 import DossierReview from "./pages/dossier/DossierReview";
 import DossierReport from "./pages/dossier/DossierReport";
 import NoData from "./pages/NoData";
-import CourseGrouping from "./pages/courseGrouping/CourseGrouping";
+import CourseGrouping from "./pages/courseGroupings/CourseGrouping";
 import DossierBrowser from "./pages/dossier/DossierBrowser";
-import GroupingBySchool from "./pages/courseGrouping/CourseGroupingBySchool";
+import GroupingBySchool from "./pages/courseGroupings/CourseGroupingBySchool";
 import MyGroups from "./pages/groups/myGroups";
 import DossierChangeLog from "./pages/dossier/DossierChangeLog";
 import BrowserList from "./pages/BrowserList";
-import CourseGroupingByName from "./pages/courseGrouping/CourseGroupingByName";
-import DeleteCourseGrouping from "./pages/courseGrouping/DeleteCourseGrouping";
-import DeleteCourseGroupingEdit from "./pages/courseGrouping/DeleteCourseGroupingEdit";
-import CreateCourseGrouping from "./pages/courseGrouping/CreateCourseGrouping";
+import CourseGroupingByName from "./pages/courseGroupings/CourseGroupingByName";
+import DeleteCourseGrouping from "./pages/courseGroupings/DeleteCourseGrouping";
+import DeleteCourseGroupingEdit from "./pages/courseGroupings/DeleteCourseGroupingEdit";
+import AllGroups from "./pages/groups/allGroups";
+import GroupDetails from "./pages/groups/GroupDetails";
+import CreateCourseGrouping from "./pages/courseGroupings/CreateCourseGrouping";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -245,6 +247,16 @@ export function App() {
                     <Route
                         path={BaseRoutes.browserList}
                         element={isLoggedIn == true ? <BrowserList /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.allGroups}
+                        element={isLoggedIn == true ? <AllGroups /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.groupDetails}
+                        element={isLoggedIn == true ? <GroupDetails /> : <Navigate to={BaseRoutes.Login} />}
                     />
                 </Routes>
             </UserContext.Provider>

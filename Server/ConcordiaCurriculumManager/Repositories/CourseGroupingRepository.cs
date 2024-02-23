@@ -2,6 +2,7 @@
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
@@ -66,19 +67,32 @@ public class CourseGroupingRepository : ICourseGroupingRepository
         .OrderByDescending(cg => cg.Version)
         .FirstOrDefaultAsync();
 
-    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchool(SchoolEnum school) => await _dbContext.CourseGroupings
-        .Where(cg => cg.School.Equals(school) && cg.IsTopLevel)
+    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchool(SchoolEnum school)
+    {
+        var result = await _dbContext.CourseGroupings
+        .Where(cg => cg.School.Equals(school) && cg.IsTopLevel && cg.Version != null)
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
+        .GroupBy(cg => cg.CommonIdentifier)
+        .Select(group => group.OrderByDescending(cg => cg.Version).First())
         .ToListAsync();
 
-    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name) => await _dbContext.CourseGroupings
-        .OrderBy(cg => cg.Id)
-        .Where(cg => cg.Name.ToLower().Contains(name.ToLower()))
+        return result.Where(cg => cg.State.Equals(CourseGroupingStateEnum.Accepted)).ToList();
+    }
+
+    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name)
+    {
+        var result =  await _dbContext.CourseGroupings
+        .Where(cg => cg.Name.Trim().ToLower().Contains(name.Trim().ToLower()) && cg.Version != null)
         .Take(10)
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
+        .GroupBy(cg => cg.CommonIdentifier)
+        .Select(group => group.OrderByDescending(cg => cg.Version).First())
         .ToListAsync();
+
+        return result.Where(cg => cg.State.Equals(CourseGroupingStateEnum.Accepted)).ToList();
+    }
 
     public async Task<IList<CourseGrouping>> GetCourseGroupingsContainingSubgrouping(CourseGrouping grouping)
     {

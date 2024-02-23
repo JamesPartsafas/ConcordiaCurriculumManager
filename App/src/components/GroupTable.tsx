@@ -83,7 +83,12 @@ function GroupTable({
                 {myGroups.slice(startIndex - 1, endIndex).map((group) => (
                     <Tr key={group.id}>
                         <Td whiteSpace="nowrap" padding="17px" textAlign="center">
-                            {group.name}
+                            <Link
+                                to={`${BaseRoutes.groupDetails}?groupId=${group.id}`}
+                                style={{ textDecoration: "underline", color: "blue" }}
+                            >
+                                {group.name}
+                            </Link>
                         </Td>
                         <Td whiteSpace="nowrap" padding="16px" textAlign="center">
                             {group.members?.length ?? 0}
