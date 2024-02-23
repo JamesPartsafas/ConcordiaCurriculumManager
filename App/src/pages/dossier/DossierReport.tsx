@@ -54,6 +54,7 @@ export default function DossierReport() {
                     </Button>
 
                     <Button
+                        className="non-printable-content"
                         style="primary"
                         variant="outline"
                         width="fit-content"
@@ -68,6 +69,7 @@ export default function DossierReport() {
                     </Button>
 
                     <Button
+                        className="non-printable-content"
                         style="primary"
                         variant="outline"
                         width="fit-content"
@@ -82,6 +84,7 @@ export default function DossierReport() {
                     </Button>
 
                     <Button
+                        className="non-printable-content"
                         style="primary"
                         variant="outline"
                         width="fit-content"
