@@ -20,6 +20,7 @@ public interface ICourseGroupingRepository
     public Task<CourseGrouping?> GetCourseGroupingContainingCourse(Course course);
     public Task<CourseGrouping?> GetPublishedVersion(Guid commonId);
     public Task<bool> UpdateCourseGrouping(CourseGrouping courseGrouping);
+    public Task<CourseGrouping?> GetCourseGroupingByCommonIdentifierAnyState(Guid commonId);
 }
 
 public class CourseGroupingRepository : ICourseGroupingRepository
@@ -68,6 +69,13 @@ public class CourseGroupingRepository : ICourseGroupingRepository
         .Where(cg => cg.CommonIdentifier.Equals(commonId)
             && cg.State == CourseGroupingStateEnum.Accepted
             && cg.Version != null)
+        .Include(cg => cg.SubGroupingReferences)
+        .Include(cg => cg.CourseIdentifiers)
+        .OrderByDescending(cg => cg.Version)
+        .FirstOrDefaultAsync();
+
+    public async Task<CourseGrouping?> GetCourseGroupingByCommonIdentifierAnyState(Guid commonId) => await _dbContext.CourseGroupings
+        .Where(cg => cg.CommonIdentifier.Equals(commonId) && cg.Version != null)
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
         .OrderByDescending(cg => cg.Version)
