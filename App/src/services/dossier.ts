@@ -51,3 +51,7 @@ export function searchDossiers(title: string, state: DossierStateEnum, guid: str
 export function getChangesAcrossAllDossiers(): Promise<DossierReportResponse> {
     return axios.get(`/Dossier/GetChangesAcrossAllDossiers`);
 }
+
+export function changeLogPublishCourse(subject: string, catalog: string): Promise<void> {
+    return axios.put(`/Course/PublishCourse/${subject}/${catalog}`);
+}
