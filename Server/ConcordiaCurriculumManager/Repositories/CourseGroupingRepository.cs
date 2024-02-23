@@ -2,6 +2,7 @@
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
@@ -64,20 +65,22 @@ public class CourseGroupingRepository : ICourseGroupingRepository
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
         .OrderByDescending(cg => cg.Version)
-        .FirstOrDefaultAsync();
+        .FirstOrDefaultAsync();         
 
     public async Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchool(SchoolEnum school) => await _dbContext.CourseGroupings
-        .Where(cg => cg.School.Equals(school) && cg.IsTopLevel)
+        .Where(cg => cg.School.Equals(school) && cg.IsTopLevel && cg.Version != null && cg.State.Equals(CourseGroupingStateEnum.Accepted))
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
+        .OrderByDescending(cg => cg.Version)
         .ToListAsync();
 
     public async Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name) => await _dbContext.CourseGroupings
-        .OrderBy(cg => cg.Id)
-        .Where(cg => cg.Name.ToLower().Contains(name.ToLower()))
+        .Where(cg => cg.Name.Trim().ToLower().Contains(name.Trim().ToLower()) && cg.Version != null && cg.State.Equals(CourseGroupingStateEnum.Accepted))
         .Take(10)
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
+        .OrderBy(cg => cg.Id)
+        .ThenByDescending(cg => cg.Version)
         .ToListAsync();
 
     public async Task<IList<CourseGrouping>> GetCourseGroupingsContainingSubgrouping(CourseGrouping grouping)
