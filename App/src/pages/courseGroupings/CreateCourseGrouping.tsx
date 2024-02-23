@@ -33,6 +33,7 @@ import {
 import { MinusIcon } from "@chakra-ui/icons";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { BaseRoutes } from "../../constants";
+import { showToast } from "../../utils/toastUtils";
 
 export default function CreateCourseGrouping() {
     const location = useLocation();
@@ -47,10 +48,8 @@ export default function CreateCourseGrouping() {
     const [loading, setLoading] = useState<boolean>(false);
 
     const {
-        register,
         control,
         handleSubmit,
-        reset,
         formState: { errors, isDirty },
     } = useForm<CourseGroupingRequestDTO>({
         defaultValues: {
@@ -82,6 +81,12 @@ export default function CreateCourseGrouping() {
         control,
         name: "courseGrouping.courseIdentifiers",
     });
+
+    // to calm lint down for now
+    courseGrouping;
+    courseFields;
+    appendCourse;
+    removeCourse;
 
     const fieldConfigurations = [
         {
@@ -164,17 +169,17 @@ export default function CreateCourseGrouping() {
         setLoading(true);
         EditCourseGroupingCreation(dossierId, requestId, courseGroupingCreationRequest)
             .then(
-                (response) => {
+                () => {
                     showToast(toast, "Success!", "Course grouping creation request edited.", "success");
                     setLoading(false);
                     navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
                 },
-                (error) => {
+                () => {
                     showToast(toast, "Error!", "Course grouping creation request could not be edited.", "error");
                     setLoading(false);
                 }
             )
-            .catch((error) => {
+            .catch(() => {
                 showToast(toast, "Error!", "Course grouping creation request could not be edited.", "error");
                 setLoading(false);
             });
@@ -187,17 +192,17 @@ export default function CreateCourseGrouping() {
         setLoading(true);
         InitiateCourseGroupingCreation(dossierId, courseGroupingCreationRequest)
             .then(
-                (response) => {
+                () => {
                     showToast(toast, "Success!", "Course grouping creation request initiated.", "success");
                     setLoading(false);
                     navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
                 },
-                (error) => {
+                () => {
                     showToast(toast, "Error!", "Course grouping creation request could not be initiated.", "error");
                     setLoading(false);
                 }
             )
-            .catch((error) => {
+            .catch(() => {
                 showToast(toast, "Error!", "Course grouping creation request could not be initiated.", "error");
                 setLoading(false);
             });

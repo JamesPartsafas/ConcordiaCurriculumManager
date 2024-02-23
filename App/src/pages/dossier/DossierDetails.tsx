@@ -51,7 +51,6 @@ import { UserContext } from "../../App";
 import { UserRoles } from "../../models/user";
 import { CourseGroupingRequestDTO, CourseGroupingStateEnum } from "../../models/courseGrouping";
 import { DeleteCourseGroupingRequest } from "../../services/courseGrouping";
-import { set } from "react-hook-form";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
