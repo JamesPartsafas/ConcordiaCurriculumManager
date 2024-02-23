@@ -66,8 +66,6 @@ public class CourseGrouping : BaseModel
     public void MarkAsUnpublished()
     {
         Published = false;
-
-        VerifyCourseGroupingIsValidOrThrow();
     }
 
     private void VerifyCourseGroupingIsValidOrThrow()
