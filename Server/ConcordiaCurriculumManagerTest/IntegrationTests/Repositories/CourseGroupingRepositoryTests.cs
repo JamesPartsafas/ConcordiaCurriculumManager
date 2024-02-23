@@ -63,6 +63,32 @@ public class CourseGroupingRepositoryTests
     }
 
     [TestMethod]
+    public async Task GetCourseGroupingBySchool_WithDeletedCourseGrouping_ReturnsEmptyList()
+    {
+        var firstGrouping = TestData.GetSampleCourseGrouping();
+        var secondGrouping = TestData.GetSampleCourseGrouping();
+
+        secondGrouping.CommonIdentifier = firstGrouping.CommonIdentifier;
+
+        firstGrouping.School = SchoolEnum.GinaCody;
+        secondGrouping.School = SchoolEnum.GinaCody;
+
+        firstGrouping.Version = 1;
+        secondGrouping.Version = 2;
+
+        firstGrouping.State = CourseGroupingStateEnum.Accepted;
+        secondGrouping.State = CourseGroupingStateEnum.Deleted;
+
+        var groupings = new List<CourseGrouping> { firstGrouping, secondGrouping };
+
+        await dbContext.AddRangeAsync(groupings);
+        await dbContext.SaveChangesAsync();
+        var result = await courseGroupingRepository.GetCourseGroupingsBySchool(SchoolEnum.GinaCody);
+
+        Assert.AreEqual(result.Count, 0);
+    }
+
+    [TestMethod]
     public async Task GetCourseGroupingsLikeName_WithValidSchoolName_ReturnsOnlyAcceptedCourseGroupings()
     {
         var firstCourseGroupingFirstGroupingName = TestData.GetSampleCourseGrouping();

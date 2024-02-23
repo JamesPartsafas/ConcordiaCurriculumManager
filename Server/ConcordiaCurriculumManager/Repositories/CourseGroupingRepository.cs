@@ -65,24 +65,34 @@ public class CourseGroupingRepository : ICourseGroupingRepository
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
         .OrderByDescending(cg => cg.Version)
-        .FirstOrDefaultAsync();         
+        .FirstOrDefaultAsync();
 
-    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchool(SchoolEnum school) => await _dbContext.CourseGroupings
-        .Where(cg => cg.School.Equals(school) && cg.IsTopLevel && cg.Version != null && cg.State.Equals(CourseGroupingStateEnum.Accepted))
+    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchool(SchoolEnum school)
+    {
+        var result = await _dbContext.CourseGroupings
+        .Where(cg => cg.School.Equals(school) && cg.IsTopLevel && cg.Version != null)
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
         .GroupBy(cg => cg.CommonIdentifier)
         .Select(group => group.OrderByDescending(cg => cg.Version).First())
         .ToListAsync();
 
-    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name) => await _dbContext.CourseGroupings
-        .Where(cg => cg.Name.Trim().ToLower().Contains(name.Trim().ToLower()) && cg.Version != null && cg.State.Equals(CourseGroupingStateEnum.Accepted))
+        return result.Where(cg => cg.State.Equals(CourseGroupingStateEnum.Accepted)).ToList();
+    }
+
+    public async Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name)
+    {
+        var result =  await _dbContext.CourseGroupings
+        .Where(cg => cg.Name.Trim().ToLower().Contains(name.Trim().ToLower()) && cg.Version != null)
         .Take(10)
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
         .GroupBy(cg => cg.CommonIdentifier)
         .Select(group => group.OrderByDescending(cg => cg.Version).First())
         .ToListAsync();
+
+        return result.Where(cg => cg.State.Equals(CourseGroupingStateEnum.Accepted)).ToList();
+    }
 
     public async Task<IList<CourseGrouping>> GetCourseGroupingsContainingSubgrouping(CourseGrouping grouping)
     {
