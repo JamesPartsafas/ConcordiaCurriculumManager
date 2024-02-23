@@ -41,6 +41,8 @@ import BrowserList from "./pages/BrowserList";
 import CourseGroupingByName from "./pages/CourseGroupingByName";
 import DeleteCourseGrouping from "./pages/DeleteCourseGrouping";
 import DeleteCourseGroupingEdit from "./pages/DeleteCourseGroupingEdit";
+import AllGroups from "./pages/groups/allGroups";
+import GroupDetails from "./pages/groups/GroupDetails";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -231,6 +233,16 @@ export function App() {
                     <Route
                         path={BaseRoutes.browserList}
                         element={isLoggedIn == true ? <BrowserList /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.allGroups}
+                        element={isLoggedIn == true ? <AllGroups /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.groupDetails}
+                        element={isLoggedIn == true ? <GroupDetails /> : <Navigate to={BaseRoutes.Login} />}
                     />
                 </Routes>
             </UserContext.Provider>
