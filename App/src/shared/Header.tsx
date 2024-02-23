@@ -266,7 +266,7 @@ const NAV_ITEMS: Array<NavItem> = [
     },
     {
         label: "Current Change Log",
-        href: "#",
+        href: "/change-log",
     },
     {
         label: "User Settings",
