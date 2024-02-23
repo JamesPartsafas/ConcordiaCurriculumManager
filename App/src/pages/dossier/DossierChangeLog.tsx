@@ -373,7 +373,7 @@ export default function DossierChangeLog() {
                     m={14}
                     className="non-printable-content"
                 >
-                    Print Dossier Report
+                    Print Change Log
                 </Button>
             </div>
         )
