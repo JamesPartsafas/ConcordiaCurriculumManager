@@ -889,7 +889,7 @@ export default function DossierDetails() {
                                                     !isUserACurrentReviewer()
                                                 }
                                                 onClick={() => {
-                                                    navigate(BaseRoutes.CreateCourseGrouping.replace(":dossierId", dossierId),
+                                                    navigate(BaseRoutes.EditCourseGrouping.replace(":dossierId", dossierId),
                                                     // changed the name to CourseGroupingRequest so that the edits can use the same page
                                                         { state: { CourseGroupingRequest: courseGroupingCreationRequest, api: "editGroupingCreationRequest" } }
                                                     );

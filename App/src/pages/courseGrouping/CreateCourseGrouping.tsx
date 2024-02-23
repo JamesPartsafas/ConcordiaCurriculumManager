@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm, useFieldArray, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, useFieldArray, SubmitHandler, Controller, set } from "react-hook-form";
 import {
     CourseGroupingCreationRequestDTO,
     CourseGroupingDTO,
@@ -22,22 +22,38 @@ import {
     Box,
     ButtonGroup,
     IconButton,
+    useToast,
 } from "@chakra-ui/react";
 import AutocompleteInput from "../../components/Select";
-import { GetCourseGroupingBySchool, InitiateCourseGroupingCreation } from "../../services/courseGrouping";
+import {
+    EditCourseGroupingCreation,
+    GetCourseGrouping,
+    GetCourseGroupingBySchool,
+    InitiateCourseGroupingCreation,
+} from "../../services/courseGrouping";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useLocation, useParams } from "react-router-dom";
 import { stat } from "fs";
+import { showToast } from "../../utils/toastUtils";
 
 export default function CreateCourseGrouping() {
     const location = useLocation();
-    const state: { CourseGroupingRequest: CourseGroupingCreationRequestDTO; api: string } = location.state;
+    const toast = useToast(); // Use the useToast hook
+    const { dossierId } = useParams();
+    const state: { CourseGroupingRequest: CourseGroupingRequestDTO; api: string } = location.state;
+    
+    const autoCompleteOptions = ["INDI Courses", "Engineering Core Courses", "Fine Arts Core"];
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO[]>();
+    const [loading, setLoading] = useState<boolean>(false);
+    
 
     const {
         register,
         control,
         handleSubmit,
-        formState: { errors, isSubmitting },
+        reset,
+        formState: { errors, isDirty },
     } = useForm<CourseGroupingRequestDTO>({
         defaultValues: {
             // dossierId: state?.CourseGroupingRequest?.dossierId,
@@ -47,7 +63,7 @@ export default function CreateCourseGrouping() {
             // courseGrouping: state?.CourseGroupingRequest?.courseGrouping
 
             //this is simpler but MIGHT break with the EDIT api
-            ...state?.CourseGroupingRequest
+            ...state?.CourseGroupingRequest,
         },
     });
 
@@ -69,11 +85,7 @@ export default function CreateCourseGrouping() {
         name: "courseGrouping.courseIdentifiers",
     });
 
-    const autoCompleteOptions = ["INDI Courses", "Engineering Core Courses", "Fine Arts Core"];
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO[]>();
 
-    const { dossierId } = useParams();
 
     const fieldConfigurations = [
         {
@@ -140,35 +152,80 @@ export default function CreateCourseGrouping() {
             type: "textarea",
         },
     ];
-    const onSubmit: SubmitHandler<CourseGroupingRequestDTO> = (data) => {
+
+    useEffect(() => {
+        GetCourseGroupingBySchool(SchoolEnum.GinaCody).then((response) => {
+            setCourseGrouping(response.data);
+            console.log(response.data);
+        });
+    }, []);
+
+
+    function requestEditCourseGroupingCreation(dossierId: string, requestId: string, courseGroupingCreationRequest: CourseGroupingCreationRequestDTO) {
+        setLoading(true);
+        EditCourseGroupingCreation(dossierId, requestId, courseGroupingCreationRequest).then(
+                (response) => {
+                    showToast(toast, "Success!", "Course grouping creation request edited.", "success");
+                    setLoading(false);
+
+                    //reset the form
+                
+                },
+                (error) => {
+                    showToast(toast, "Error!", "Course grouping creation request could not be edited.", "error");
+                    setLoading(false);
+                }
+            )
+            .catch((error) => {
+                showToast(toast, "Error!", "Course grouping creation request could not be edited.", "error");
+                setLoading(false);
+            });
+    }
+
+    function requestInitiateCourseGroupingCreation(dossierId: string, courseGroupingCreationRequest: CourseGroupingCreationRequestDTO) {
+        setLoading(true);
+        InitiateCourseGroupingCreation(dossierId, courseGroupingCreationRequest).then(
+                (response) => {
+                    showToast(toast, "Success!", "Course grouping creation request initiated.", "success");
+                    setLoading(false);
+
+                },
+                (error) => {
+                    showToast(toast, "Error!", "Course grouping creation request could not be initiated.", "error");
+                    setLoading(false);
+                }
+            )
+            .catch((error) => {
+                showToast(toast, "Error!", "Course grouping creation request could not be initiated.", "error");
+                setLoading(false);
+            });
+    }
+
+    function onSubmit(data) {
+        
         data.dossierId = dossierId;
         data.courseGrouping.school = Number(data.courseGrouping.school);
 
         //TODO: need to check which api to call based on the state.api
-
-        InitiateCourseGroupingCreation(dossierId, data).then((response) => {
-            console.log(response.data);
-        });
-        // Submit your form data
+        if (state?.api === "editGroupingCreationRequest") {
+            requestEditCourseGroupingCreation(dossierId, state.CourseGroupingRequest.id, data);
+        } else {
+            requestInitiateCourseGroupingCreation(dossierId, data);
+        }
     };
+
     const handleAddClick = () => {
         if (selectedItem) {
             appendSubGroup({ childGroupCommonIdentifier: selectedItem, groupingType: 0 });
             setSelectedItem(null); // Reset selection after adding
         }
     };
-    useEffect(() => {
-        console.log(state.CourseGroupingRequest);
-        GetCourseGroupingBySchool(SchoolEnum.GinaCody).then((response) => {
-            setCourseGrouping(response.data);
-            console.log(response.data);
-        });
-    }, []);
+
     return (
         <>
             <Stack m={4}>
                 <Center m={4}>
-                    <Heading>Add Course Grouping</Heading>
+                    <Heading>{state?.api === "editGroupingCreationRequest" ? "Edit Course Grouping" : "Add Course Grouping"}</Heading>
                 </Center>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <HStack>
@@ -305,7 +362,7 @@ export default function CreateCourseGrouping() {
                                     </Box>
                                 ))}
                             </FormControl>
-                            <Button mt={4} isLoading={isSubmitting} type="submit">
+                            <Button mt={4} isLoading={loading} loadingText="Submit" isDisabled={!isDirty} type="submit">
                                 Submit
                             </Button>
                         </Stack>

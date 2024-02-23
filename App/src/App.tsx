@@ -178,14 +178,7 @@ export function App() {
                         path={BaseRoutes.DeleteCourse}
                         element={isLoggedIn == true ? <DeleteCourse /> : <Navigate to={BaseRoutes.Login} />}
                     />
-                    <Route
-                        path={BaseRoutes.DeleteCourseGrouping}
-                        element={isLoggedIn == true ? <DeleteCourseGrouping /> : <Navigate to={BaseRoutes.Login} />}
-                    />
-                    <Route
-                        path={BaseRoutes.DeleteCourseGroupingEdit}
-                        element={isLoggedIn == true ? <DeleteCourseGroupingEdit /> : <Navigate to={BaseRoutes.Login} />}
-                    />
+
                     <Route
                         path={BaseRoutes.CreateGroup}
                         element={isAdmin(user) == true ? <CreateGroup /> : <Navigate to={BaseRoutes.Login} />}
@@ -198,14 +191,7 @@ export function App() {
                         path={BaseRoutes.CourseDetails}
                         element={isLoggedIn == true ? <CourseDetails /> : <Navigate to={BaseRoutes.Login} />}
                     />
-                    <Route
-                        path={BaseRoutes.GroupingBySchool}
-                        element={isLoggedIn == true ? <GroupingBySchool /> : <Navigate to={BaseRoutes.Login} />}
-                    />
-                    <Route
-                        path={BaseRoutes.GroupingByName}
-                        element={isLoggedIn == true ? <CourseGroupingByName /> : <Navigate to={BaseRoutes.Login} />}
-                    />
+
                     <Route
                         path={BaseRoutes.NoData}
                         element={isLoggedIn == true ? <NoData /> : <Navigate to={BaseRoutes.Login} />}
@@ -216,6 +202,16 @@ export function App() {
                         element={isLoggedIn ? <DossierReport /> : <Navigate to={BaseRoutes.Login} />}
                     />
 
+                    {/* Course Grouping routes */}
+                    <Route
+                        path={BaseRoutes.GroupingBySchool}
+                        element={isLoggedIn == true ? <GroupingBySchool /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.GroupingByName}
+                        element={isLoggedIn == true ? <CourseGroupingByName /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
                     <Route
                         path={BaseRoutes.CourseGrouping}
                         element={isLoggedIn == true ? <CourseGrouping /> : <Navigate to={BaseRoutes.Login} />}
@@ -223,6 +219,19 @@ export function App() {
                     <Route
                         path={BaseRoutes.CreateCourseGrouping}
                         element={isLoggedIn == true ? <CreateCourseGrouping /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.EditCourseGrouping}
+                        element={isLoggedIn == true ? <CreateCourseGrouping /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                                        <Route
+                        path={BaseRoutes.DeleteCourseGrouping}
+                        element={isLoggedIn == true ? <DeleteCourseGrouping /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.DeleteCourseGroupingEdit}
+                        element={isLoggedIn == true ? <DeleteCourseGroupingEdit /> : <Navigate to={BaseRoutes.Login} />}
                     />
 
                     {/* whenever none of the other routes match we show the not found page */}
