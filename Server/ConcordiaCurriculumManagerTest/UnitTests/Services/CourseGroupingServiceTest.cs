@@ -49,7 +49,7 @@ public class CourseGroupingServiceTest
 
         courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingById(grouping.Id)).ReturnsAsync(grouping);
         courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingByCommonIdentifier(subgrouping.CommonIdentifier)).ReturnsAsync(subgrouping);
-        courseRepository.Setup(cr => cr.GetCoursesByConcordiaCourseIds(It.IsAny<IList<int>>())).ReturnsAsync(new List<Course> { { course } } );
+        courseRepository.Setup(cr => cr.GetCoursesByConcordiaCourseIds(It.IsAny<IList<int>>())).ReturnsAsync(new List<Course> { { course } });
 
         var output = await courseGroupingService.GetCourseGrouping(grouping.Id);
 
@@ -121,7 +121,7 @@ public class CourseGroupingServiceTest
     public async Task InitiateCourseGroupingCreation_FailsToSave_Throws()
     {
         var dto = TestData.GetSampleCourseGroupingCreationRequestDTO();
-;
+        ;
         dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(TestData.GetSampleDossier());
         courseGroupingRepository.Setup(cgr => cgr.SaveCourseGroupingRequest(It.IsAny<CourseGroupingRequest>())).ReturnsAsync(false);
 
@@ -465,6 +465,7 @@ public class CourseGroupingServiceTest
         foreach (var courseGroup in newCourseGrouping.SubGroupings)
         {
             courseGroup.Published = true;
+            courseGroupingRepository.Setup(repo => repo.GetCourseGroupingByCommonIdentifier(courseGroup.CommonIdentifier)).ReturnsAsync(courseGroup);
         }
 
         foreach (var course in newCourseGrouping.Courses)
@@ -472,7 +473,8 @@ public class CourseGroupingServiceTest
             course.Published = true;
         }
 
-        courseGroupingRepository.Setup(repo => repo.GetCourseGroupingByCommonIdentifier(newCourseGrouping.CommonIdentifier)).ReturnsAsync(newCourseGrouping);
+        courseRepository.Setup(repo => repo.GetCoursesByConcordiaCourseIds(It.IsAny<IList<int>>())).ReturnsAsync(newCourseGrouping.Courses.ToList());
+        courseGroupingRepository.Setup(repo => repo.GetCourseGroupingByCommonIdentifierAnyState(newCourseGrouping.CommonIdentifier)).ReturnsAsync(newCourseGrouping);
         courseGroupingRepository.Setup(repo => repo.GetPublishedVersion(oldCourseGrouping.CommonIdentifier)).ReturnsAsync(oldCourseGrouping);
         courseGroupingRepository.Setup(repo => repo.UpdateCourseGrouping(newCourseGrouping)).ReturnsAsync(true);
         courseGroupingRepository.Setup(repo => repo.UpdateCourseGrouping(oldCourseGrouping)).ReturnsAsync(true);
@@ -501,6 +503,7 @@ public class CourseGroupingServiceTest
         foreach (var courseGroup in newCourseGrouping.SubGroupings)
         {
             courseGroup.Published = false;
+            courseGroupingRepository.Setup(repo => repo.GetCourseGroupingByCommonIdentifier(courseGroup.CommonIdentifier)).ReturnsAsync(courseGroup);
         }
 
         foreach (var course in newCourseGrouping.Courses)
@@ -508,7 +511,8 @@ public class CourseGroupingServiceTest
             course.Published = true;
         }
 
-        courseGroupingRepository.Setup(repo => repo.GetCourseGroupingByCommonIdentifier(newCourseGrouping.CommonIdentifier)).ReturnsAsync(newCourseGrouping);
+        courseRepository.Setup(repo => repo.GetCoursesByConcordiaCourseIds(It.IsAny<IList<int>>())).ReturnsAsync(newCourseGrouping.Courses.ToList());
+        courseGroupingRepository.Setup(repo => repo.GetCourseGroupingByCommonIdentifierAnyState(newCourseGrouping.CommonIdentifier)).ReturnsAsync(newCourseGrouping);
         courseGroupingRepository.Setup(repo => repo.GetPublishedVersion(oldCourseGrouping.CommonIdentifier)).ReturnsAsync(oldCourseGrouping);
         courseGroupingRepository.Setup(repo => repo.UpdateCourseGrouping(newCourseGrouping)).ReturnsAsync(true);
         courseGroupingRepository.Setup(repo => repo.UpdateCourseGrouping(oldCourseGrouping)).ReturnsAsync(true);
@@ -534,6 +538,7 @@ public class CourseGroupingServiceTest
         foreach (var courseGroup in newCourseGrouping.SubGroupings)
         {
             courseGroup.Published = true;
+            courseGroupingRepository.Setup(repo => repo.GetCourseGroupingByCommonIdentifier(courseGroup.CommonIdentifier)).ReturnsAsync(courseGroup);
         }
 
         foreach (var course in newCourseGrouping.Courses)
@@ -541,7 +546,8 @@ public class CourseGroupingServiceTest
             course.Published = false;
         }
 
-        courseGroupingRepository.Setup(repo => repo.GetCourseGroupingByCommonIdentifier(newCourseGrouping.CommonIdentifier)).ReturnsAsync(newCourseGrouping);
+        courseRepository.Setup(repo => repo.GetCoursesByConcordiaCourseIds(It.IsAny<IList<int>>())).ReturnsAsync(newCourseGrouping.Courses.ToList());
+        courseGroupingRepository.Setup(repo => repo.GetCourseGroupingByCommonIdentifierAnyState(newCourseGrouping.CommonIdentifier)).ReturnsAsync(newCourseGrouping);
         courseGroupingRepository.Setup(repo => repo.GetPublishedVersion(oldCourseGrouping.CommonIdentifier)).ReturnsAsync(oldCourseGrouping);
         courseGroupingRepository.Setup(repo => repo.UpdateCourseGrouping(newCourseGrouping)).ReturnsAsync(true);
         courseGroupingRepository.Setup(repo => repo.UpdateCourseGrouping(oldCourseGrouping)).ReturnsAsync(true);
