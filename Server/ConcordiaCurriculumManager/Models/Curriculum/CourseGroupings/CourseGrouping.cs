@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.DTO.CourseGrouping;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using NpgsqlTypes;
 
@@ -51,6 +52,51 @@ public class CourseGrouping : BaseModel
             CourseIdentifiers = CourseIdentifier.CreateCourseIdentifiersFromDTO(dto.CourseIdentifiers),
             Courses = new List<Course>()
         };
+    }
+
+    public bool IsCourseGroupingStateFinalized() => State == CourseGroupingStateEnum.Accepted || State == CourseGroupingStateEnum.Deleted;
+
+    public void MarkAsPublished()
+    {
+        Published = true;
+
+        VerifyCourseGroupingIsValidOrThrow();
+    }
+
+    public void MarkAsUnpublished()
+    {
+        Published = false;
+
+        VerifyCourseGroupingIsValidOrThrow();
+    }
+
+    private void VerifyCourseGroupingIsValidOrThrow()
+    {
+        if (Published)
+        {
+            if (IsCourseGroupingStateFinalized() && Version != null)
+            {
+                foreach (var courseGrouping in SubGroupings)
+                {
+                    if (!courseGrouping.Published)
+                    {
+                        throw new ArgumentException($"Cannot publish a course grouping with unpublished sub-course grouping");
+                    }
+                }
+
+                foreach (var course in Courses)
+                {
+                    if (!course.Published)
+                    {
+                        throw new ArgumentException($"Cannot publish a course grouping with unpublished courses");
+                    }
+                }
+
+                return;
+            }
+
+            throw new ArgumentException("The course group is published but does not have an appropriate course state or version");
+        }
     }
 }
 
