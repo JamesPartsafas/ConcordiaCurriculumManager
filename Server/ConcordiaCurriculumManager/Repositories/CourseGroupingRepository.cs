@@ -71,7 +71,8 @@ public class CourseGroupingRepository : ICourseGroupingRepository
         .Where(cg => cg.School.Equals(school) && cg.IsTopLevel && cg.Version != null && cg.State.Equals(CourseGroupingStateEnum.Accepted))
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
-        .OrderByDescending(cg => cg.Version)
+        .GroupBy(cg => cg.CommonIdentifier)
+        .Select(group => group.OrderByDescending(cg => cg.Version).First())
         .ToListAsync();
 
     public async Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name) => await _dbContext.CourseGroupings
@@ -79,8 +80,8 @@ public class CourseGroupingRepository : ICourseGroupingRepository
         .Take(10)
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
-        .OrderBy(cg => cg.Id)
-        .ThenByDescending(cg => cg.Version)
+        .GroupBy(cg => cg.CommonIdentifier)
+        .Select(group => group.OrderByDescending(cg => cg.Version).First())
         .ToListAsync();
 
     public async Task<IList<CourseGrouping>> GetCourseGroupingsContainingSubgrouping(CourseGrouping grouping)
