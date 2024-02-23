@@ -14,11 +14,11 @@ import {
     IconButton,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
-import { CourseGroupingDTO, MultiCourseGroupingDTO, SchoolEnum } from "../models/courseGrouping";
-import Button from "../components/Button";
-import { GetCourseGroupingBySchool } from "../services/courseGrouping";
+import { CourseGroupingDTO, MultiCourseGroupingDTO, SchoolEnum } from "../../models/courseGrouping";
+import Button from "../../components/Button";
+import { GetCourseGroupingBySchool } from "../../services/courseGrouping";
 import { InfoIcon } from "@chakra-ui/icons";
-import { BaseRoutes } from "../constants";
+import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
 export default function GroupingBySchool() {
     const selectedSchoolRef = useRef<HTMLSelectElement>(null);

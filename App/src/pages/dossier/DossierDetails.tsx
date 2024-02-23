@@ -49,7 +49,7 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import EditApprovalStagesModal from "./EditApprovalStagesModal";
 import { UserContext } from "../../App";
 import { UserRoles } from "../../models/user";
-import { CourseGroupingRequestDTO } from "../../models/courseGrouping";
+import { CourseGroupingRequestDTO, CourseGroupingStateEnum } from "../../models/courseGrouping";
 import { DeleteCourseGroupingRequest } from "../../services/courseGrouping";
 
 export default function DossierDetails() {
@@ -64,6 +64,10 @@ export default function DossierDetails() {
         useState<CourseModificationRequest>(null);
     const [selectedCourseDeletionRequest, setSelectedCourseDeletionRequest] = useState<CourseDeletionRequest>(null);
     const [selectedCourseGroupingDeletionRequest, setSelectedCourseGroupingDeletionRequest] =
+        useState<CourseGroupingRequestDTO>(null);
+    const [selectedCourseGroupingCreationRequest, setSelectedCourseGroupingCreationRequest] =
+        useState<CourseGroupingRequestDTO>(null);
+    const [selectedCourseGroupingModificationRequest, setSelectedCourseGroupingModificationRequest] =
         useState<CourseGroupingRequestDTO>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [showApprovalStagesModal, setShowApprovalStagesModal] = useState<boolean>(false);
@@ -138,6 +142,30 @@ export default function DossierDetails() {
                     onDelete={deleteCourseGroupingRequest}
                 />
             );
+        } else if (selectedCourseGroupingCreationRequest) {
+            return (
+                <DeleteAlert
+                    isOpen={isOpen}
+                    onClose={handleOnClose}
+                    loading={loading}
+                    headerTitle="Delete Course Grouping Creation Request"
+                    title={selectedCourseGroupingCreationRequest?.courseGrouping.name}
+                    item={selectedCourseGroupingCreationRequest}
+                    onDelete={deleteCourseGroupingRequest}
+                />
+            );
+        } else if (selectedCourseGroupingModificationRequest) {
+            return (
+                <DeleteAlert
+                    isOpen={isOpen}
+                    onClose={handleOnClose}
+                    loading={loading}
+                    headerTitle="Delete Course Grouping Modification Request"
+                    title={selectedCourseGroupingModificationRequest?.courseGrouping.name}
+                    item={selectedCourseGroupingModificationRequest}
+                    onDelete={deleteCourseGroupingRequest}
+                />
+            );
         }
     }
 
@@ -148,6 +176,58 @@ export default function DossierDetails() {
         onClose();
     }
 
+    // course related functions
+
+    // creations
+    function createModificationRequest() {
+        return (
+            <EditCourseModal
+                isOpen={isEditOpen}
+                onClose={onEditClose}
+                allCourseSettings={courseSettings}
+                dossierId={dossierId}
+            ></EditCourseModal>
+        );
+    }
+
+    // edits
+    function editCourseCreationRequest(creationRequest: CourseCreationRequest) {
+        getCourseCreationRequest(creationRequest.id).then((res: CourseCreationRequestDTOResponse) => {
+            const creationRequestToEdit = {
+                ...res.data,
+                ...res.data.newCourse,
+                id: res.data.id,
+            };
+
+            navigate(
+                BaseRoutes.EditCourse.replace(":id", creationRequest.newCourse.catalog.toString()).replace(
+                    ":dossierId",
+                    dossierId
+                ),
+                { state: { ...creationRequestToEdit, api: "editCreationRequest" } }
+            );
+        });
+    }
+
+    function editCourseModificationRequest(modificationRequest: CourseModificationRequest) {
+        getCourseModificationRequest(modificationRequest.id).then((res: CourseModificationRequestDTOResponse) => {
+            const modificationRequestToEdit = {
+                ...res.data,
+                ...res.data.course,
+                id: res.data.id,
+            };
+
+            navigate(
+                BaseRoutes.EditCourse.replace(":id", modificationRequest.course.catalog.toString()).replace(
+                    ":dossierId",
+                    dossierId
+                ),
+                { state: { ...modificationRequestToEdit, api: "editModificationRequest" } }
+            );
+        });
+    }
+
+    // deletions
     function deleteCreationRequest(courseCreationRequest: CourseCreationRequest) {
         setLoading(true);
         deleteCourseCreationRequest(dossierId, courseCreationRequest.id)
@@ -238,6 +318,9 @@ export default function DossierDetails() {
             });
     }
 
+    // course grouping related functions
+
+    // deletions
     function deleteCourseGroupingRequest(courseGroupingRequest: CourseGroupingRequestDTO) {
         setLoading(true);
         DeleteCourseGroupingRequest(dossierId, courseGroupingRequest.id)
@@ -254,81 +337,27 @@ export default function DossierDetails() {
                     });
                     setLoading(false);
                     setSelectedCourseGroupingDeletionRequest(null);
+                    setSelectedCourseGroupingCreationRequest(null);
+                    setSelectedCourseGroupingModificationRequest(null);
                 },
                 () => {
                     showToast(toast, "Error!", "Course grouping request could not be deleted.", "error");
                     setLoading(false);
                     setSelectedCourseGroupingDeletionRequest(null);
+                    setSelectedCourseGroupingCreationRequest(null);
+                    setSelectedCourseGroupingModificationRequest(null);
                 }
             )
             .catch(() => {
                 showToast(toast, "Error!", "Course grouping request could not be deleted.", "error");
                 setLoading(false);
                 setSelectedCourseGroupingDeletionRequest(null);
+                setSelectedCourseGroupingCreationRequest(null);
+                setSelectedCourseGroupingModificationRequest(null);
             });
     }
 
-    function createModificationRequest() {
-        return (
-            <EditCourseModal
-                isOpen={isEditOpen}
-                onClose={onEditClose}
-                allCourseSettings={courseSettings}
-                dossierId={dossierId}
-            ></EditCourseModal>
-        );
-    }
-
-    function editCourseCreationRequest(creationRequest: CourseCreationRequest) {
-        getCourseCreationRequest(creationRequest.id).then((res: CourseCreationRequestDTOResponse) => {
-            const creationRequestToEdit = {
-                ...res.data,
-                ...res.data.newCourse,
-                id: res.data.id,
-            };
-
-            navigate(
-                BaseRoutes.EditCourse.replace(":id", creationRequest.newCourse.catalog.toString()).replace(
-                    ":dossierId",
-                    dossierId
-                ),
-                { state: { ...creationRequestToEdit, api: "editCreationRequest" } }
-            );
-        });
-    }
-
-    function editCourseModificationRequest(modificationRequest: CourseModificationRequest) {
-        getCourseModificationRequest(modificationRequest.id).then((res: CourseModificationRequestDTOResponse) => {
-            const modificationRequestToEdit = {
-                ...res.data,
-                ...res.data.course,
-                id: res.data.id,
-            };
-
-            navigate(
-                BaseRoutes.EditCourse.replace(":id", modificationRequest.course.catalog.toString()).replace(
-                    ":dossierId",
-                    dossierId
-                ),
-                { state: { ...modificationRequestToEdit, api: "editModificationRequest" } }
-            );
-        });
-    }
-
-    function dispaylayApprovalStagesModal() {
-        setShowApprovalStagesModal(true);
-    }
-    function closeApprovalStagesModal() {
-        setShowApprovalStagesModal(false);
-    }
-
-    function isUserACurrentReviewer() {
-        return dossierDetails?.approvalStages
-            ?.find((stage) => stage.isCurrentStage)
-            ?.group?.members?.find((member) => member.id === user.id);
-    }
-
-    function getSchoolName(school) {
+    function getSchoolName(school: number) {
         switch (school) {
             case 0:
                 return "GinaCody";
@@ -341,6 +370,20 @@ export default function DossierDetails() {
             default:
                 return "N/A";
         }
+    }
+
+    // approval stages related functions
+    function dispaylayApprovalStagesModal() {
+        setShowApprovalStagesModal(true);
+    }
+    function closeApprovalStagesModal() {
+        setShowApprovalStagesModal(false);
+    }
+
+    function isUserACurrentReviewer() {
+        return dossierDetails?.approvalStages
+            ?.find((stage) => stage.isCurrentStage)
+            ?.group?.members?.find((member) => member.id === user.id);
     }
 
     return (
@@ -407,6 +450,8 @@ export default function DossierDetails() {
                     <Text>created: {new Date(dossierDetails?.createdDate)?.toLocaleString()}</Text>
                     <Text>updated: {new Date(dossierDetails?.modifiedDate)?.toLocaleString()}</Text>
                 </div>
+
+                {/* course creation requests */}
                 <Box backgroundColor={"brandRed"} m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
                     <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
                         Course Creation Requests
@@ -526,6 +571,8 @@ export default function DossierDetails() {
                         Add Creation Request
                     </Button>
                 </Box>
+
+                {/* course modification requests */}
                 <Box backgroundColor="brandBlue" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
                     <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
                         Course Modification Requests
@@ -645,6 +692,8 @@ export default function DossierDetails() {
                         Add Modification Request
                     </Button>
                 </Box>
+
+                {/* course deletion requests */}
                 <Box backgroundColor="brandGray" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
                     <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
                         Course Deletion Requests
@@ -766,6 +815,252 @@ export default function DossierDetails() {
                         Add Deletion Request
                     </Button>
                 </Box>
+
+                {/* grouping creation requests */}
+                <Box backgroundColor="brandRed" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
+                    <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
+                        Course Grouping Creation Requests
+                    </Heading>
+                    <SimpleGrid
+                        templateColumns="repeat(auto-fill, minmax(200px, 400px))"
+                        spacing={4}
+                        justifyContent={"center"}
+                    >
+                        {dossierDetails?.courseGroupingRequests
+                            ?.filter(
+                                (cgr) => cgr.courseGrouping.state == CourseGroupingStateEnum.NewCourseGroupingProposal
+                            )
+                            .map((courseGroupingCreationRequest) => (
+                                <Card key={courseGroupingCreationRequest.id} boxShadow={"xl"}>
+                                    <CardBody>
+                                        <Stack spacing="4">
+                                            <Heading size="md" color={"brandBlue"}>
+                                                {courseGroupingCreationRequest.courseGrouping?.name}
+                                            </Heading>
+                                            <Stack>
+                                                <Kbd width={"fit-content"}>
+                                                    Common ID:{" "}
+                                                    {courseGroupingCreationRequest.courseGrouping.commonIdentifier}
+                                                </Kbd>
+                                                <Kbd width={"fit-content"}>
+                                                    School:{" "}
+                                                    {getSchoolName(courseGroupingCreationRequest.courseGrouping.school)}
+                                                </Kbd>
+                                                <Kbd width={"fit-content"}>
+                                                    Credits:{" "}
+                                                    {courseGroupingCreationRequest.courseGrouping.requiredCredits}
+                                                </Kbd>
+                                            </Stack>
+                                            <Textarea
+                                                isReadOnly
+                                                variant={"filled"}
+                                                value={
+                                                    courseGroupingCreationRequest?.courseGrouping.description ===
+                                                        null ||
+                                                    courseGroupingCreationRequest?.courseGrouping.description === ""
+                                                        ? "N/A"
+                                                        : courseGroupingCreationRequest?.courseGrouping.description
+                                                }
+                                            />
+                                            <Stack>
+                                                <Text>
+                                                    Rationale:{" "}
+                                                    {courseGroupingCreationRequest?.rationale === null ||
+                                                    courseGroupingCreationRequest?.rationale === ""
+                                                        ? "N/A"
+                                                        : courseGroupingCreationRequest?.rationale}
+                                                </Text>
+                                                <Text>
+                                                    Comment:{" "}
+                                                    {courseGroupingCreationRequest?.comment === null ||
+                                                    courseGroupingCreationRequest?.comment === ""
+                                                        ? "N/A"
+                                                        : courseGroupingCreationRequest?.comment}
+                                                </Text>
+                                            </Stack>
+                                        </Stack>
+                                    </CardBody>
+                                    <Divider />
+                                    <CardFooter>
+                                        <ButtonGroup spacing="2">
+                                            <Button
+                                                variant="solid"
+                                                style="primary"
+                                                isDisabled={
+                                                    dossierDetails?.state !== DossierStateEnum.Created &&
+                                                    !isUserACurrentReviewer()
+                                                }
+                                                onClick={() => {
+                                                    navigate(
+                                                        BaseRoutes.EditCourseGrouping.replace(":dossierId", dossierId),
+                                                        // changed the name to CourseGroupingRequest so that the edits can use the same page
+                                                        {
+                                                            state: {
+                                                                CourseGroupingRequest: courseGroupingCreationRequest,
+                                                                api: "editGroupingCreationRequest",
+                                                            },
+                                                        }
+                                                    );
+                                                }}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                style="primary"
+                                                isDisabled={
+                                                    dossierDetails?.state !== DossierStateEnum.Created &&
+                                                    !isUserACurrentReviewer()
+                                                }
+                                                onClick={() => {
+                                                    setSelectedCourseGroupingCreationRequest(
+                                                        courseGroupingCreationRequest
+                                                    );
+                                                    onOpen();
+                                                }}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </ButtonGroup>
+                                    </CardFooter>
+                                </Card>
+                            ))}
+                    </SimpleGrid>
+                    <Divider marginTop={10} marginBottom={2} />
+
+                    <Button
+                        backgroundColor="brandGray500"
+                        _hover={{ bg: "brandGray" }}
+                        variant="solid"
+                        style="secondary"
+                        width="100%"
+                        isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
+                        onClick={() => {
+                            navigate(BaseRoutes.CreateCourseGrouping.replace(":dossierId", dossierId));
+                        }}
+                    >
+                        Add Creation Request
+                    </Button>
+                </Box>
+
+                {/* grouping modification requests */}
+                <Box backgroundColor="brandBlue" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
+                    <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
+                        Course Grouping Modification Requests
+                    </Heading>
+                    <SimpleGrid
+                        templateColumns="repeat(auto-fill, minmax(200px, 400px))"
+                        spacing={4}
+                        justifyContent={"center"}
+                    >
+                        {dossierDetails?.courseGroupingRequests
+                            ?.filter(
+                                (cgr) =>
+                                    cgr.courseGrouping.state == CourseGroupingStateEnum.CourseGroupingChangeProposal
+                            )
+                            .map((courseGroupingModificationRequest) => (
+                                <Card key={courseGroupingModificationRequest.id} boxShadow={"xl"}>
+                                    <CardBody>
+                                        <Stack spacing="4">
+                                            <Heading size="md" color={"brandBlue"}>
+                                                {courseGroupingModificationRequest.courseGrouping?.name}
+                                            </Heading>
+                                            <Stack>
+                                                <Kbd width={"fit-content"}>
+                                                    Common ID:{" "}
+                                                    {courseGroupingModificationRequest.courseGrouping.commonIdentifier}
+                                                </Kbd>
+                                                <Kbd width={"fit-content"}>
+                                                    School:{" "}
+                                                    {getSchoolName(
+                                                        courseGroupingModificationRequest.courseGrouping.school
+                                                    )}
+                                                </Kbd>
+                                                <Kbd width={"fit-content"}>
+                                                    Credits:{" "}
+                                                    {courseGroupingModificationRequest.courseGrouping.requiredCredits}
+                                                </Kbd>
+                                            </Stack>
+                                            <Textarea
+                                                isReadOnly
+                                                variant={"filled"}
+                                                value={
+                                                    courseGroupingModificationRequest?.courseGrouping.description ===
+                                                        null ||
+                                                    courseGroupingModificationRequest?.courseGrouping.description === ""
+                                                        ? "N/A"
+                                                        : courseGroupingModificationRequest?.courseGrouping.description
+                                                }
+                                            />
+                                            <Stack>
+                                                <Text>
+                                                    Rationale:{" "}
+                                                    {courseGroupingModificationRequest?.rationale === null ||
+                                                    courseGroupingModificationRequest?.rationale === ""
+                                                        ? "N/A"
+                                                        : courseGroupingModificationRequest?.rationale}
+                                                </Text>
+                                                <Text>
+                                                    Comment:{" "}
+                                                    {courseGroupingModificationRequest?.comment === null ||
+                                                    courseGroupingModificationRequest?.comment === ""
+                                                        ? "N/A"
+                                                        : courseGroupingModificationRequest?.comment}
+                                                </Text>
+                                            </Stack>
+                                        </Stack>
+                                    </CardBody>
+                                    <Divider />
+                                    <CardFooter>
+                                        <ButtonGroup spacing="2">
+                                            <Button
+                                                variant="solid"
+                                                style="primary"
+                                                isDisabled={
+                                                    dossierDetails?.state !== DossierStateEnum.Created &&
+                                                    !isUserACurrentReviewer()
+                                                }
+                                                onClick={() => {}}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                style="primary"
+                                                isDisabled={
+                                                    dossierDetails?.state !== DossierStateEnum.Created &&
+                                                    !isUserACurrentReviewer()
+                                                }
+                                                onClick={() => {
+                                                    setSelectedCourseGroupingModificationRequest(
+                                                        courseGroupingModificationRequest
+                                                    );
+                                                    onOpen();
+                                                }}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </ButtonGroup>
+                                    </CardFooter>
+                                </Card>
+                            ))}
+                    </SimpleGrid>
+                    <Divider marginTop={10} marginBottom={2} />
+
+                    <Button
+                        backgroundColor="brandGray500"
+                        _hover={{ bg: "brandGray" }}
+                        variant="solid"
+                        style="secondary"
+                        width="100%"
+                        isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
+                        onClick={() => {}}
+                    >
+                        Add Modification Request
+                    </Button>
+                </Box>
+
+                {/* grouping deletion requests */}
                 <Box backgroundColor="brandGray" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>
                     <Heading size={"md"} color={"white"} textAlign={"center"} mb={2}>
                         Course Grouping Deletion Requests
@@ -882,6 +1177,8 @@ export default function DossierDetails() {
                         Add Deletion Request
                     </Button>
                 </Box>
+
+                {/* approval stages */}
                 <Box
                     mt={2}
                     p={2}
@@ -918,6 +1215,7 @@ export default function DossierDetails() {
                         Edit
                     </Button>
                 </Box>
+
                 {showApprovalStagesModal && (
                     <EditApprovalStagesModal
                         open={showApprovalStagesModal}
