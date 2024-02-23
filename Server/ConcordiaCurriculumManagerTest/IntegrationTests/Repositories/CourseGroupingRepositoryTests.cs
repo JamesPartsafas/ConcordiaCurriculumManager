@@ -65,41 +65,41 @@ public class CourseGroupingRepositoryTests
     [TestMethod]
     public async Task GetCourseGroupingsLikeName_WithValidSchoolName_ReturnsOnlyAcceptedCourseGroupings()
     {
-        var firstCourseFirstGrouping = TestData.GetSampleCourseGrouping();
-        var secondCourseFirstGrouping = TestData.GetSampleCourseGrouping();
+        var firstCourseGroupingFirstGroupingName = TestData.GetSampleCourseGrouping();
+        var secondCourseGroupingFirstGroupingName = TestData.GetSampleCourseGrouping();
 
-        var firstCourseSecondGrouping = TestData.GetSampleCourseGrouping();
-        var secondCourseSecondGrouping = TestData.GetSampleCourseGrouping();
+        var firstCourseGroupingSecondGroupingName = TestData.GetSampleCourseGrouping();
+        var secondCourseGroupingSecondGroupingName = TestData.GetSampleCourseGrouping();
 
-        firstCourseFirstGrouping.CommonIdentifier = secondCourseFirstGrouping.CommonIdentifier;
-        firstCourseSecondGrouping.CommonIdentifier = secondCourseSecondGrouping.CommonIdentifier;
+        firstCourseGroupingFirstGroupingName.CommonIdentifier = secondCourseGroupingFirstGroupingName.CommonIdentifier;
+        firstCourseGroupingSecondGroupingName.CommonIdentifier = secondCourseGroupingSecondGroupingName.CommonIdentifier;
 
-        firstCourseFirstGrouping.Name = "This is a name1";
-        secondCourseFirstGrouping.Name = "This is a name1";
-        firstCourseSecondGrouping.Name = "This is a name2";
-        secondCourseSecondGrouping.Name = "This is a name2";
+        firstCourseGroupingFirstGroupingName.Name = "This is a name1";
+        secondCourseGroupingFirstGroupingName.Name = "This is a name1";
+        firstCourseGroupingSecondGroupingName.Name = "This is a name2";
+        secondCourseGroupingSecondGroupingName.Name = "This is a name2";
 
-        firstCourseFirstGrouping.School = SchoolEnum.GinaCody;
-        secondCourseFirstGrouping.School = SchoolEnum.GinaCody;
-        firstCourseSecondGrouping.School = SchoolEnum.GinaCody;
-        secondCourseSecondGrouping.School = SchoolEnum.GinaCody;
+        firstCourseGroupingFirstGroupingName.School = SchoolEnum.GinaCody;
+        secondCourseGroupingFirstGroupingName.School = SchoolEnum.GinaCody;
+        firstCourseGroupingSecondGroupingName.School = SchoolEnum.GinaCody;
+        secondCourseGroupingSecondGroupingName.School = SchoolEnum.GinaCody;
 
-        firstCourseFirstGrouping.Version = 1;
-        secondCourseFirstGrouping.Version = 2;
-        firstCourseSecondGrouping.Version = 1;
-        secondCourseSecondGrouping.Version = null;
+        firstCourseGroupingFirstGroupingName.Version = 1;
+        secondCourseGroupingFirstGroupingName.Version = 2;
+        firstCourseGroupingSecondGroupingName.Version = 1;
+        secondCourseGroupingSecondGroupingName.Version = null;
 
-        firstCourseFirstGrouping.State = CourseGroupingStateEnum.Accepted;
-        secondCourseFirstGrouping.State = CourseGroupingStateEnum.Accepted;
-        firstCourseSecondGrouping.State = CourseGroupingStateEnum.Accepted;
-        secondCourseSecondGrouping.State = CourseGroupingStateEnum.Accepted;
+        firstCourseGroupingFirstGroupingName.State = CourseGroupingStateEnum.Accepted;
+        secondCourseGroupingFirstGroupingName.State = CourseGroupingStateEnum.Accepted;
+        firstCourseGroupingSecondGroupingName.State = CourseGroupingStateEnum.Accepted;
+        secondCourseGroupingSecondGroupingName.State = CourseGroupingStateEnum.Accepted;
 
-        firstCourseFirstGrouping.Published = false;
-        secondCourseFirstGrouping.Published = true;
-        firstCourseSecondGrouping.Published = true;
-        secondCourseSecondGrouping.Published = false;
+        firstCourseGroupingFirstGroupingName.Published = false;
+        secondCourseGroupingFirstGroupingName.Published = true;
+        firstCourseGroupingSecondGroupingName.Published = true;
+        secondCourseGroupingSecondGroupingName.Published = false;
 
-        var groupings = new List<CourseGrouping> { firstCourseFirstGrouping, secondCourseFirstGrouping, firstCourseSecondGrouping, secondCourseSecondGrouping };
+        var groupings = new List<CourseGrouping> { firstCourseGroupingFirstGroupingName, secondCourseGroupingFirstGroupingName, firstCourseGroupingSecondGroupingName, secondCourseGroupingSecondGroupingName };
 
         await dbContext.AddRangeAsync(groupings);
         await dbContext.SaveChangesAsync();
@@ -109,13 +109,13 @@ public class CourseGroupingRepositoryTests
 
         foreach (var courseGrouping in result)
         {
-            if (courseGrouping.CommonIdentifier.Equals(firstCourseSecondGrouping.CommonIdentifier))
+            if (courseGrouping.CommonIdentifier.Equals(firstCourseGroupingSecondGroupingName.CommonIdentifier))
             {
-                Assert.AreEqual(firstCourseSecondGrouping.Id, courseGrouping.Id);
+                Assert.AreEqual(firstCourseGroupingSecondGroupingName.Id, courseGrouping.Id);
             }
             else
             {
-                Assert.AreEqual(secondCourseFirstGrouping.Id, courseGrouping.Id);
+                Assert.AreEqual(secondCourseGroupingFirstGroupingName.Id, courseGrouping.Id);
             }
         }
     }
