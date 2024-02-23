@@ -226,7 +226,7 @@ public class CourseGroupingService : ICourseGroupingService
 
     public async Task<CourseGrouping> PublishCourseGrouping(Guid commonIdentifier)
     {
-        var newCourseGrouping = await _courseGroupingRepository.GetCourseGroupingByCommonIdentifier(commonIdentifier) ?? throw new NotFoundException($"The course grouping with common ID {commonIdentifier} was not found.");
+        var newCourseGrouping = await _courseGroupingRepository.GetCourseGroupingByCommonIdentifierAnyState(commonIdentifier) ?? throw new NotFoundException($"The course grouping with common ID {commonIdentifier} was not found.");
         var oldCourseGrouping = await _courseGroupingRepository.GetPublishedVersion(commonIdentifier);
 
         if (newCourseGrouping.Published)
@@ -234,16 +234,21 @@ public class CourseGroupingService : ICourseGroupingService
             return newCourseGrouping;
         }
 
+        await QueryRelatedCourseGroupingData(newCourseGrouping);
         newCourseGrouping.MarkAsPublished();
 
         if (oldCourseGrouping is not null)
         {
-            _logger.LogInformation($"The course grouping with common ID {commonIdentifier} does not have an old published course grouping. This could be the first time it is published");
             oldCourseGrouping.MarkAsUnpublished();
             await _courseGroupingRepository.UpdateCourseGrouping(oldCourseGrouping);
         }
+        else
+        {
+            _logger.LogInformation($"The course grouping with common ID {commonIdentifier} does not have an old published course grouping. This could be the first time it is published");
+        }
 
         await _courseGroupingRepository.UpdateCourseGrouping(newCourseGrouping);
+        _logger.LogInformation($"A new course grouping version {newCourseGrouping.Version} with common ID {commonIdentifier} was published.");
 
         return newCourseGrouping;
     }
