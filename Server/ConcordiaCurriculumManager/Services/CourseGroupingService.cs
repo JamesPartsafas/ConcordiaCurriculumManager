@@ -23,6 +23,7 @@ public interface ICourseGroupingService
     public Task<CourseGroupingRequest> EditCourseGroupingModification(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
     public Task<CourseGroupingRequest> EditCourseGroupingDeletion(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
     public Task DeleteCourseGroupingRequest(Guid dossierId, Guid requestId);
+    public Task<CourseGrouping> PublishCourseGrouping(Guid commonIdentifier);
 }
 
 public class CourseGroupingService : ICourseGroupingService
@@ -221,5 +222,34 @@ public class CourseGroupingService : ICourseGroupingService
             _logger.LogError($"Course grouping {requestId} for dossier {dossier.Id} failed to be deleted");
             throw new ServiceUnavailableException("The course grouping could not be deleted");
         }
+    }
+
+    public async Task<CourseGrouping> PublishCourseGrouping(Guid commonIdentifier)
+    {
+        var newCourseGrouping = await _courseGroupingRepository.GetCourseGroupingByCommonIdentifierAnyState(commonIdentifier) ?? throw new NotFoundException($"The course grouping with common ID {commonIdentifier} was not found.");
+        var oldCourseGrouping = await _courseGroupingRepository.GetPublishedVersion(commonIdentifier);
+
+        if (newCourseGrouping.Published)
+        {
+            return newCourseGrouping;
+        }
+
+        await QueryRelatedCourseGroupingData(newCourseGrouping);
+        newCourseGrouping.MarkAsPublished();
+
+        if (oldCourseGrouping is not null)
+        {
+            oldCourseGrouping.MarkAsUnpublished();
+            await _courseGroupingRepository.UpdateCourseGrouping(oldCourseGrouping);
+        }
+        else
+        {
+            _logger.LogInformation($"The course grouping with common ID {commonIdentifier} does not have an old published course grouping. This could be the first time it is published");
+        }
+
+        await _courseGroupingRepository.UpdateCourseGrouping(newCourseGrouping);
+        _logger.LogInformation($"A new course grouping version {newCourseGrouping.Version} with common ID {commonIdentifier} was published.");
+
+        return newCourseGrouping;
     }
 }

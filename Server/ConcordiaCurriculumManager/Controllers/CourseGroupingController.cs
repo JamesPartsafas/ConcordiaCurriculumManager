@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO;
 using ConcordiaCurriculumManager.DTO.CourseGrouping;
+using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingRequests;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
@@ -155,5 +156,18 @@ public class CourseGroupingController : Controller
         await _courseGroupingService.DeleteCourseGroupingRequest(dossierId, requestId);
 
         return NoContent();
+    }
+
+    [HttpPut(nameof(PublishCourseGrouping) + "/{commonIdentifier}")]
+    [Authorize(Policies.IsGroupMasterOrAdmin)]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is unauthorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course Grouping has been published successfully", typeof(CourseGroupingDTO))]
+    public async Task<ActionResult> PublishCourseGrouping([FromRoute, Required] Guid commonIdentifier)
+    {
+        var editedCourseGrouping = await _courseGroupingService.PublishCourseGrouping(commonIdentifier);
+        var editedCourseGroupingDTO = _mapper.Map<CourseGroupingDTO>(editedCourseGrouping);
+
+        return Ok(editedCourseGroupingDTO);
     }
 }

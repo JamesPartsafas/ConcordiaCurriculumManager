@@ -2,9 +2,7 @@
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace ConcordiaCurriculumManager.Repositories;
 
@@ -20,7 +18,9 @@ public interface ICourseGroupingRepository
     public Task<IList<CourseGrouping>> GetCourseGroupingsContainingSubgrouping(CourseGrouping grouping);
     public Task<IList<CourseGrouping>> GetCourseGroupingsContainingCourse(Course course);
     public Task<CourseGrouping?> GetCourseGroupingContainingCourse(Course course);
-
+    public Task<CourseGrouping?> GetPublishedVersion(Guid commonId);
+    public Task<bool> UpdateCourseGrouping(CourseGrouping courseGrouping);
+    public Task<CourseGrouping?> GetCourseGroupingByCommonIdentifierAnyState(Guid commonId);
 }
 
 public class CourseGroupingRepository : ICourseGroupingRepository
@@ -35,6 +35,13 @@ public class CourseGroupingRepository : ICourseGroupingRepository
     public async Task<bool> SaveCourseGroupingRequest(CourseGroupingRequest courseGroupingRequest)
     {
         await _dbContext.CourseGroupingRequest.AddAsync(courseGroupingRequest);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> UpdateCourseGrouping(CourseGrouping courseGrouping)
+    {
+        _dbContext.CourseGroupings.Update(courseGrouping);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
@@ -65,6 +72,19 @@ public class CourseGroupingRepository : ICourseGroupingRepository
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
         .OrderByDescending(cg => cg.Version)
+        .FirstOrDefaultAsync();
+
+    public async Task<CourseGrouping?> GetCourseGroupingByCommonIdentifierAnyState(Guid commonId) => await _dbContext.CourseGroupings
+        .Where(cg => cg.CommonIdentifier.Equals(commonId) && cg.Version != null)
+        .Include(cg => cg.SubGroupingReferences)
+        .Include(cg => cg.CourseIdentifiers)
+        .OrderByDescending(cg => cg.Version)
+        .FirstOrDefaultAsync();
+
+    public async Task<CourseGrouping?> GetPublishedVersion(Guid commonId) => await _dbContext.CourseGroupings
+        .Where(cg => cg.CommonIdentifier.Equals(commonId) && cg.Published)
+        .Include(cg => cg.SubGroupingReferences)
+        .Include(cg => cg.CourseIdentifiers)
         .FirstOrDefaultAsync();
 
     public async Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchool(SchoolEnum school)
