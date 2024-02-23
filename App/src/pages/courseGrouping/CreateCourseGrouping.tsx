@@ -32,21 +32,22 @@ import {
     InitiateCourseGroupingCreation,
 } from "../../services/courseGrouping";
 import { MinusIcon } from "@chakra-ui/icons";
-import { useLocation, useParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { stat } from "fs";
 import { showToast } from "../../utils/toastUtils";
+import { BaseRoutes } from "../../constants";
 
 export default function CreateCourseGrouping() {
     const location = useLocation();
     const toast = useToast(); // Use the useToast hook
     const { dossierId } = useParams();
+    const navigate = useNavigate();
     const state: { CourseGroupingRequest: CourseGroupingRequestDTO; api: string } = location.state;
-    
+
     const autoCompleteOptions = ["INDI Courses", "Engineering Core Courses", "Fine Arts Core"];
     const [selectedItem, setSelectedItem] = useState(null);
     const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO[]>();
     const [loading, setLoading] = useState<boolean>(false);
-    
 
     const {
         register,
@@ -84,8 +85,6 @@ export default function CreateCourseGrouping() {
         control,
         name: "courseGrouping.courseIdentifiers",
     });
-
-
 
     const fieldConfigurations = [
         {
@@ -160,16 +159,18 @@ export default function CreateCourseGrouping() {
         });
     }, []);
 
-
-    function requestEditCourseGroupingCreation(dossierId: string, requestId: string, courseGroupingCreationRequest: CourseGroupingCreationRequestDTO) {
+    function requestEditCourseGroupingCreation(
+        dossierId: string,
+        requestId: string,
+        courseGroupingCreationRequest: CourseGroupingCreationRequestDTO
+    ) {
         setLoading(true);
-        EditCourseGroupingCreation(dossierId, requestId, courseGroupingCreationRequest).then(
+        EditCourseGroupingCreation(dossierId, requestId, courseGroupingCreationRequest)
+            .then(
                 (response) => {
                     showToast(toast, "Success!", "Course grouping creation request edited.", "success");
                     setLoading(false);
-
-                    //reset the form
-                
+                    navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
                 },
                 (error) => {
                     showToast(toast, "Error!", "Course grouping creation request could not be edited.", "error");
@@ -182,13 +183,17 @@ export default function CreateCourseGrouping() {
             });
     }
 
-    function requestInitiateCourseGroupingCreation(dossierId: string, courseGroupingCreationRequest: CourseGroupingCreationRequestDTO) {
+    function requestInitiateCourseGroupingCreation(
+        dossierId: string,
+        courseGroupingCreationRequest: CourseGroupingCreationRequestDTO
+    ) {
         setLoading(true);
-        InitiateCourseGroupingCreation(dossierId, courseGroupingCreationRequest).then(
+        InitiateCourseGroupingCreation(dossierId, courseGroupingCreationRequest)
+            .then(
                 (response) => {
                     showToast(toast, "Success!", "Course grouping creation request initiated.", "success");
                     setLoading(false);
-
+                    navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
                 },
                 (error) => {
                     showToast(toast, "Error!", "Course grouping creation request could not be initiated.", "error");
@@ -202,7 +207,6 @@ export default function CreateCourseGrouping() {
     }
 
     function onSubmit(data) {
-        
         data.dossierId = dossierId;
         data.courseGrouping.school = Number(data.courseGrouping.school);
 
@@ -212,7 +216,7 @@ export default function CreateCourseGrouping() {
         } else {
             requestInitiateCourseGroupingCreation(dossierId, data);
         }
-    };
+    }
 
     const handleAddClick = () => {
         if (selectedItem) {
@@ -225,7 +229,9 @@ export default function CreateCourseGrouping() {
         <>
             <Stack m={4}>
                 <Center m={4}>
-                    <Heading>{state?.api === "editGroupingCreationRequest" ? "Edit Course Grouping" : "Add Course Grouping"}</Heading>
+                    <Heading>
+                        {state?.api === "editGroupingCreationRequest" ? "Edit Course Grouping" : "Add Course Grouping"}
+                    </Heading>
                 </Center>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <HStack>
