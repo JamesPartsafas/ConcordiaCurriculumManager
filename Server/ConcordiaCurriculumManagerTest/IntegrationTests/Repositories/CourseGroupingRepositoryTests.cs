@@ -145,4 +145,46 @@ public class CourseGroupingRepositoryTests
             }
         }
     }
+
+    [TestMethod]
+    public async Task UpdateCourseGrouping_ReturnsTrue()
+    {
+        var courseGrouping = TestData.GetSampleCourseGrouping();
+        dbContext.CourseGroupings.Add(courseGrouping);
+        await dbContext.SaveChangesAsync();
+
+        courseGrouping.Name = "New name";
+        var result = await courseGroupingRepository.UpdateCourseGrouping(courseGrouping);
+
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public async Task GetPublishedVersion_WithNoPublishedVersion_ReturnsNull()
+    {
+        var courseGrouping = TestData.GetSampleCourseGrouping();
+        courseGrouping.Published = false;
+        dbContext.CourseGroupings.Add(courseGrouping);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseGroupingRepository.GetPublishedVersion(courseGrouping.CommonIdentifier);
+
+        Assert.IsNull(result);
+    }
+
+    [TestMethod]
+    public async Task GetPublishedVersion_WithPublishedVersion_ReturnsCourseGrouping()
+    {
+        var courseGrouping = TestData.GetSampleCourseGrouping();
+        courseGrouping.Version = 1;
+        courseGrouping.Published = true;
+
+        dbContext.CourseGroupings.Add(courseGrouping);
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseGroupingRepository.GetPublishedVersion(courseGrouping.CommonIdentifier);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(result.Id, courseGrouping.Id);
+    }
 }

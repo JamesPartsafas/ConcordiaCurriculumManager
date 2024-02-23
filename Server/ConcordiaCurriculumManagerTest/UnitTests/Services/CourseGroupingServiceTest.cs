@@ -6,14 +6,8 @@ using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
 
@@ -452,5 +446,106 @@ public class CourseGroupingServiceTest
         await courseGroupingService.DeleteCourseGroupingRequest(dossier.Id, request.Id);
 
         courseGroupingRepository.Verify(mock => mock.DeleteCourseGroupingRequest(request), Times.Once());
+    }
+
+    [TestMethod]
+    public async Task PublishCourseGrouping_ValidInput_ReturnsPublishedCourseGrouping()
+    {
+        var newCourseGrouping = TestData.GetSampleCourseGrouping();
+        var oldCourseGrouping = TestData.GetSampleCourseGrouping();
+
+        oldCourseGrouping.Version = 1;
+        oldCourseGrouping.State = CourseGroupingStateEnum.Accepted;
+        oldCourseGrouping.Published = true;
+
+        newCourseGrouping.Version = 2;
+        newCourseGrouping.State = CourseGroupingStateEnum.Accepted;
+        newCourseGrouping.Published = false;
+
+        foreach (var courseGroup in newCourseGrouping.SubGroupings)
+        {
+            courseGroup.Published = true;
+        }
+
+        foreach (var course in newCourseGrouping.Courses)
+        {
+            course.Published = true;
+        }
+
+        courseGroupingRepository.Setup(repo => repo.GetCourseGroupingByCommonIdentifier(newCourseGrouping.CommonIdentifier)).ReturnsAsync(newCourseGrouping);
+        courseGroupingRepository.Setup(repo => repo.GetPublishedVersion(oldCourseGrouping.CommonIdentifier)).ReturnsAsync(oldCourseGrouping);
+        courseGroupingRepository.Setup(repo => repo.UpdateCourseGrouping(newCourseGrouping)).ReturnsAsync(true);
+        courseGroupingRepository.Setup(repo => repo.UpdateCourseGrouping(oldCourseGrouping)).ReturnsAsync(true);
+
+        var result = await courseGroupingService.PublishCourseGrouping(newCourseGrouping.CommonIdentifier);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(true, result.Published);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public async Task PublishCourseGrouping_UnpublishedSubGroup_ThrowsArgumentException()
+    {
+        var newCourseGrouping = TestData.GetSampleCourseGrouping();
+        var oldCourseGrouping = TestData.GetSampleCourseGrouping();
+
+        oldCourseGrouping.Version = 1;
+        oldCourseGrouping.State = CourseGroupingStateEnum.Accepted;
+        oldCourseGrouping.Published = true;
+
+        newCourseGrouping.Version = 2;
+        newCourseGrouping.State = CourseGroupingStateEnum.Accepted;
+        newCourseGrouping.Published = false;
+
+        foreach (var courseGroup in newCourseGrouping.SubGroupings)
+        {
+            courseGroup.Published = false;
+        }
+
+        foreach (var course in newCourseGrouping.Courses)
+        {
+            course.Published = true;
+        }
+
+        courseGroupingRepository.Setup(repo => repo.GetCourseGroupingByCommonIdentifier(newCourseGrouping.CommonIdentifier)).ReturnsAsync(newCourseGrouping);
+        courseGroupingRepository.Setup(repo => repo.GetPublishedVersion(oldCourseGrouping.CommonIdentifier)).ReturnsAsync(oldCourseGrouping);
+        courseGroupingRepository.Setup(repo => repo.UpdateCourseGrouping(newCourseGrouping)).ReturnsAsync(true);
+        courseGroupingRepository.Setup(repo => repo.UpdateCourseGrouping(oldCourseGrouping)).ReturnsAsync(true);
+
+        await courseGroupingService.PublishCourseGrouping(newCourseGrouping.CommonIdentifier);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public async Task PublishCourseGrouping_UnpublishedCourse_ThrowsArgumentException()
+    {
+        var newCourseGrouping = TestData.GetSampleCourseGrouping();
+        var oldCourseGrouping = TestData.GetSampleCourseGrouping();
+
+        oldCourseGrouping.Version = 1;
+        oldCourseGrouping.State = CourseGroupingStateEnum.Accepted;
+        oldCourseGrouping.Published = true;
+
+        newCourseGrouping.Version = 2;
+        newCourseGrouping.State = CourseGroupingStateEnum.Accepted;
+        newCourseGrouping.Published = false;
+
+        foreach (var courseGroup in newCourseGrouping.SubGroupings)
+        {
+            courseGroup.Published = true;
+        }
+
+        foreach (var course in newCourseGrouping.Courses)
+        {
+            course.Published = false;
+        }
+
+        courseGroupingRepository.Setup(repo => repo.GetCourseGroupingByCommonIdentifier(newCourseGrouping.CommonIdentifier)).ReturnsAsync(newCourseGrouping);
+        courseGroupingRepository.Setup(repo => repo.GetPublishedVersion(oldCourseGrouping.CommonIdentifier)).ReturnsAsync(oldCourseGrouping);
+        courseGroupingRepository.Setup(repo => repo.UpdateCourseGrouping(newCourseGrouping)).ReturnsAsync(true);
+        courseGroupingRepository.Setup(repo => repo.UpdateCourseGrouping(oldCourseGrouping)).ReturnsAsync(true);
+
+        await courseGroupingService.PublishCourseGrouping(newCourseGrouping.CommonIdentifier);
     }
 }
