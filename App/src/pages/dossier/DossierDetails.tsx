@@ -66,8 +66,10 @@ export default function DossierDetails() {
     const [selectedCourseDeletionRequest, setSelectedCourseDeletionRequest] = useState<CourseDeletionRequest>(null);
     const [selectedCourseGroupingDeletionRequest, setSelectedCourseGroupingDeletionRequest] =
         useState<CourseGroupingRequestDTO>(null);
-    const [selectedCourseGroupingCreationRequest, setSelectedCourseGroupingCreationRequest] = useState<CourseGroupingRequestDTO>(null);
-    const [selectedCourseGroupingModificationRequest, setSelectedCourseGroupingModificationRequest] = useState<CourseGroupingRequestDTO>(null);
+    const [selectedCourseGroupingCreationRequest, setSelectedCourseGroupingCreationRequest] =
+        useState<CourseGroupingRequestDTO>(null);
+    const [selectedCourseGroupingModificationRequest, setSelectedCourseGroupingModificationRequest] =
+        useState<CourseGroupingRequestDTO>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [showApprovalStagesModal, setShowApprovalStagesModal] = useState<boolean>(false);
 
@@ -165,9 +167,7 @@ export default function DossierDetails() {
                     onDelete={deleteCourseGroupingRequest}
                 />
             );
-        
         }
-
     }
 
     function handleOnClose() {
@@ -319,7 +319,6 @@ export default function DossierDetails() {
             });
     }
 
-
     // course grouping related functions
 
     // deletions
@@ -387,8 +386,6 @@ export default function DossierDetails() {
             ?.find((stage) => stage.isCurrentStage)
             ?.group?.members?.find((member) => member.id === user.id);
     }
-
-
 
     return (
         <>
@@ -831,7 +828,9 @@ export default function DossierDetails() {
                         justifyContent={"center"}
                     >
                         {dossierDetails?.courseGroupingRequests
-                            ?.filter((cgr) => cgr.courseGrouping.state == CourseGroupingStateEnum.NewCourseGroupingProposal)
+                            ?.filter(
+                                (cgr) => cgr.courseGrouping.state == CourseGroupingStateEnum.NewCourseGroupingProposal
+                            )
                             .map((courseGroupingCreationRequest) => (
                                 <Card key={courseGroupingCreationRequest.id} boxShadow={"xl"}>
                                     <CardBody>
@@ -841,20 +840,24 @@ export default function DossierDetails() {
                                             </Heading>
                                             <Stack>
                                                 <Kbd width={"fit-content"}>
-                                                    Common ID: {courseGroupingCreationRequest.courseGrouping.commonIdentifier}
+                                                    Common ID:{" "}
+                                                    {courseGroupingCreationRequest.courseGrouping.commonIdentifier}
                                                 </Kbd>
                                                 <Kbd width={"fit-content"}>
-                                                    School: {getSchoolName(courseGroupingCreationRequest.courseGrouping.school)}
+                                                    School:{" "}
+                                                    {getSchoolName(courseGroupingCreationRequest.courseGrouping.school)}
                                                 </Kbd>
                                                 <Kbd width={"fit-content"}>
-                                                    Credits: {courseGroupingCreationRequest.courseGrouping.requiredCredits}
+                                                    Credits:{" "}
+                                                    {courseGroupingCreationRequest.courseGrouping.requiredCredits}
                                                 </Kbd>
                                             </Stack>
                                             <Textarea
                                                 isReadOnly
                                                 variant={"filled"}
                                                 value={
-                                                    courseGroupingCreationRequest?.courseGrouping.description === null ||
+                                                    courseGroupingCreationRequest?.courseGrouping.description ===
+                                                        null ||
                                                     courseGroupingCreationRequest?.courseGrouping.description === ""
                                                         ? "N/A"
                                                         : courseGroupingCreationRequest?.courseGrouping.description
@@ -889,9 +892,15 @@ export default function DossierDetails() {
                                                     !isUserACurrentReviewer()
                                                 }
                                                 onClick={() => {
-                                                    navigate(BaseRoutes.EditCourseGrouping.replace(":dossierId", dossierId),
-                                                    // changed the name to CourseGroupingRequest so that the edits can use the same page
-                                                        { state: { CourseGroupingRequest: courseGroupingCreationRequest, api: "editGroupingCreationRequest" } }
+                                                    navigate(
+                                                        BaseRoutes.EditCourseGrouping.replace(":dossierId", dossierId),
+                                                        // changed the name to CourseGroupingRequest so that the edits can use the same page
+                                                        {
+                                                            state: {
+                                                                CourseGroupingRequest: courseGroupingCreationRequest,
+                                                                api: "editGroupingCreationRequest",
+                                                            },
+                                                        }
                                                     );
                                                 }}
                                             >
@@ -905,7 +914,9 @@ export default function DossierDetails() {
                                                     !isUserACurrentReviewer()
                                                 }
                                                 onClick={() => {
-                                                    setSelectedCourseGroupingCreationRequest(courseGroupingCreationRequest);
+                                                    setSelectedCourseGroupingCreationRequest(
+                                                        courseGroupingCreationRequest
+                                                    );
                                                     onOpen();
                                                 }}
                                             >
@@ -944,7 +955,10 @@ export default function DossierDetails() {
                         justifyContent={"center"}
                     >
                         {dossierDetails?.courseGroupingRequests
-                            ?.filter((cgr) => cgr.courseGrouping.state == CourseGroupingStateEnum.CourseGroupingChangeProposal)
+                            ?.filter(
+                                (cgr) =>
+                                    cgr.courseGrouping.state == CourseGroupingStateEnum.CourseGroupingChangeProposal
+                            )
                             .map((courseGroupingModificationRequest) => (
                                 <Card key={courseGroupingModificationRequest.id} boxShadow={"xl"}>
                                     <CardBody>
@@ -954,20 +968,26 @@ export default function DossierDetails() {
                                             </Heading>
                                             <Stack>
                                                 <Kbd width={"fit-content"}>
-                                                    Common ID: {courseGroupingModificationRequest.courseGrouping.commonIdentifier}
+                                                    Common ID:{" "}
+                                                    {courseGroupingModificationRequest.courseGrouping.commonIdentifier}
                                                 </Kbd>
                                                 <Kbd width={"fit-content"}>
-                                                    School: {getSchoolName(courseGroupingModificationRequest.courseGrouping.school)}
+                                                    School:{" "}
+                                                    {getSchoolName(
+                                                        courseGroupingModificationRequest.courseGrouping.school
+                                                    )}
                                                 </Kbd>
                                                 <Kbd width={"fit-content"}>
-                                                    Credits: {courseGroupingModificationRequest.courseGrouping.requiredCredits}
+                                                    Credits:{" "}
+                                                    {courseGroupingModificationRequest.courseGrouping.requiredCredits}
                                                 </Kbd>
                                             </Stack>
                                             <Textarea
                                                 isReadOnly
                                                 variant={"filled"}
                                                 value={
-                                                    courseGroupingModificationRequest?.courseGrouping.description === null ||
+                                                    courseGroupingModificationRequest?.courseGrouping.description ===
+                                                        null ||
                                                     courseGroupingModificationRequest?.courseGrouping.description === ""
                                                         ? "N/A"
                                                         : courseGroupingModificationRequest?.courseGrouping.description
@@ -1013,7 +1033,9 @@ export default function DossierDetails() {
                                                     !isUserACurrentReviewer()
                                                 }
                                                 onClick={() => {
-                                                    setSelectedCourseGroupingModificationRequest(courseGroupingModificationRequest);
+                                                    setSelectedCourseGroupingModificationRequest(
+                                                        courseGroupingModificationRequest
+                                                    );
                                                     onOpen();
                                                 }}
                                             >
@@ -1038,7 +1060,6 @@ export default function DossierDetails() {
                         Add Modification Request
                     </Button>
                 </Box>
-
 
                 {/* grouping deletion requests */}
                 <Box backgroundColor="brandGray" m={"auto"} mt={5} p="3" borderRadius={"lg"} minH={"400px"}>

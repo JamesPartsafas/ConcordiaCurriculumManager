@@ -225,7 +225,7 @@ export function App() {
                         path={BaseRoutes.EditCourseGrouping}
                         element={isLoggedIn == true ? <CreateCourseGrouping /> : <Navigate to={BaseRoutes.Login} />}
                     />
-                                        <Route
+                    <Route
                         path={BaseRoutes.DeleteCourseGrouping}
                         element={isLoggedIn == true ? <DeleteCourseGrouping /> : <Navigate to={BaseRoutes.Login} />}
                     />

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useForm, useFieldArray, SubmitHandler, Controller, set } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import {
     CourseGroupingCreationRequestDTO,
     CourseGroupingDTO,
@@ -27,14 +27,11 @@ import {
 import AutocompleteInput from "../../components/Select";
 import {
     EditCourseGroupingCreation,
-    GetCourseGrouping,
     GetCourseGroupingBySchool,
     InitiateCourseGroupingCreation,
 } from "../../services/courseGrouping";
 import { MinusIcon } from "@chakra-ui/icons";
-import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
-import { stat } from "fs";
-import { showToast } from "../../utils/toastUtils";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { BaseRoutes } from "../../constants";
 
 export default function CreateCourseGrouping() {
