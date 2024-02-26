@@ -158,6 +158,18 @@ public class CourseGroupingController : Controller
         return NoContent();
     }
 
+    [HttpGet(nameof(GetCourseGroupingRequest) + "/{groupingRequestId}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course grouping request retrieved")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetCourseGroupingRequest([FromRoute, Required] Guid groupingRequestId)
+    {
+        var groupingRequest = await _courseGroupingService.GetCourseGroupingRequest(groupingRequestId);
+        var groupingRequestDTO = _mapper.Map<CourseGroupingRequestDTO>(groupingRequest);
+
+        return Ok(groupingRequestDTO);
+    }
+
     [HttpPut(nameof(PublishCourseGrouping) + "/{commonIdentifier}")]
     [Authorize(Policies.IsGroupMasterOrAdmin)]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is unauthorized")]
