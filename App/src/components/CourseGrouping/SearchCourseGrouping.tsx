@@ -20,13 +20,16 @@ import {
     ModalHeader,
     ModalCloseButton,
     ModalBody,
-    Select,
 } from "@chakra-ui/react";
 import Button from "../Button";
 import { showToast } from "../../utils/toastUtils";
 import { GetCourseGroupingByName } from "../../services/courseGrouping";
 import { useState } from "react";
-import { CourseGroupingDTO, MultiCourseGroupingDTO } from "../../models/courseGrouping";
+import {
+    CourseGroupingDTO,
+    CourseGroupingModificationInputDTO,
+    MultiCourseGroupingDTO,
+} from "../../models/courseGrouping";
 
 export default function SearchCourseGrouping(props: {
     isOpen;
@@ -38,7 +41,7 @@ export default function SearchCourseGrouping(props: {
     const [courseGroupingError, setCourseGroupingError] = useState(true);
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [searchInput, setSearchInput] = useState<string>("");
-    const [groupingType, setGroupingType] = useState<number>(0);
+
     const [courseGroupings, setCourseGroupings] = useState<CourseGroupingDTO[]>([]);
     const [selectedCourseGrouping, setSelectedCourseGrouping] = useState<CourseGroupingDTO>(null);
 
@@ -77,7 +80,7 @@ export default function SearchCourseGrouping(props: {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             ({ id, parentGroupId, ...rest }) => rest
         );
-        const courseGroupingRequestDTO = {
+        const courseGroupingRequestDTO: CourseGroupingModificationInputDTO = {
             name: selectedCourseGrouping.name,
             requiredCredits: selectedCourseGrouping.requiredCredits,
             isTopLevel: selectedCourseGrouping.isTopLevel,
@@ -87,7 +90,6 @@ export default function SearchCourseGrouping(props: {
             subGroupingReferences: subGroupingReferences ? subGroupingReferences : [],
             courseIdentifiers: selectedCourseGrouping.courseIdentifiers,
             commonIdentifier: selectedCourseGrouping.commonIdentifier,
-            groupingType: groupingType,
         };
 
         console.log(courseGroupingRequestDTO);
@@ -170,11 +172,6 @@ export default function SearchCourseGrouping(props: {
                             </TableContainer>
                         </Stack>
                         <Stack>
-                            {/* Add Select to chose Grouping type subgrouping or optional grouping */}
-                            <Select placeholder="Grouping Type" onChange={(e) => setGroupingType(e.target.value)}>
-                                <option value="0">Sub-Grouping</option>
-                                <option value="1">Optional Grouping</option>
-                            </Select>
                             <Button
                                 style="primary"
                                 width="auto"
