@@ -3,6 +3,7 @@ import { useForm, useFieldArray, Controller } from "react-hook-form";
 import {
     CourseGroupingCreationRequestDTO,
     CourseGroupingDTO,
+    CourseGroupingModificationRequestDTO,
     CourseGroupingRequestDTO,
     CourseIdentifierDTO,
     SchoolEnum,
@@ -30,12 +31,13 @@ import {
     EditCourseGroupingCreation,
     GetCourseGrouping,
     InitiateCourseGroupingCreation,
+    InitiateCourseGroupingModification,
 } from "../../services/courseGrouping";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { BaseRoutes } from "../../constants";
 import { showToast } from "../../utils/toastUtils";
-import EditCourseModal from "../dossier/SelectCourseModal";
+import SelectCourseModal from "../dossier/SelectCourseModal";
 import { getAllCourseSettings } from "../../services/course";
 import { AllCourseSettings, CourseDataResponse } from "../../models/course";
 import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
@@ -173,7 +175,7 @@ export default function CreateCourseGrouping() {
     ];
 
     useEffect(() => {
-        if (state?.api === "editGroupingCreationRequest") {
+        if (state?.api === "editGroupingCreationRequest" || state?.api === "addGroupingModificationRequest") {
             requestCourseGroupingById(courseGroupingId);
         }
         requestCourseSettings();
@@ -258,6 +260,28 @@ export default function CreateCourseGrouping() {
             });
     }
 
+    function requestInitiateCourseGroupingModification(
+        dossierId: string,
+        courseModificationRequest: CourseGroupingModificationRequestDTO
+    ) {
+        InitiateCourseGroupingModification(dossierId, courseModificationRequest)
+            .then(
+                () => {
+                    showToast(toast, "Success!", "Course grouping modification request initiated.", "success");
+                    setLoading(false);
+                    navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
+                },
+                () => {
+                    showToast(toast, "Error!", "Course grouping modification request could not be initiated.", "error");
+                    setLoading(false);
+                }
+            )
+            .catch(() => {
+                showToast(toast, "Error!", "Course grouping modification request could not be initiated.", "error");
+                setLoading(false);
+            });
+    }
+
     function onSubmit(data) {
         data.dossierId = dossierId;
         data.courseGrouping.school = Number(data.courseGrouping.school);
@@ -265,6 +289,8 @@ export default function CreateCourseGrouping() {
         //TODO: need to check which api to call based on the state.api
         if (state?.api === "editGroupingCreationRequest") {
             requestEditCourseGroupingCreation(dossierId, state.CourseGroupingRequest.id, data);
+        } else if (state?.api === "addGroupingModificationRequest") {
+            requestInitiateCourseGroupingModification(dossierId, data);
         } else {
             requestInitiateCourseGroupingCreation(dossierId, data);
         }
@@ -272,13 +298,13 @@ export default function CreateCourseGrouping() {
 
     function displaySelectCourseModal() {
         return (
-            <EditCourseModal
+            <SelectCourseModal
                 isOpen={isCourseSelectionOpen}
                 onClose={onCourseSelectionClose}
                 allCourseSettings={courseSettings}
                 dossierId={dossierId}
                 onCourseSelect={handleCourseSelect}
-            ></EditCourseModal>
+            ></SelectCourseModal>
         );
     }
 
@@ -316,7 +342,9 @@ export default function CreateCourseGrouping() {
             <Stack m={4}>
                 <Center m={4}>
                     <Heading>
-                        {state?.api === "editGroupingCreationRequest" ? "Edit Course Grouping" : "Add Course Grouping"}
+                        {state?.api === "editGroupingCreationRequest" || state?.api === "addGroupingModificationRequest"
+                            ? "Edit Course Grouping"
+                            : "Add Course Grouping"}
                     </Heading>
                 </Center>
                 <form onSubmit={handleSubmit(onSubmit)}>

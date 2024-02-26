@@ -79,6 +79,7 @@ export default function SearchCourseGrouping(props: {
             ({ id, parentGroupId, ...rest }) => rest
         );
         const courseGroupingRequestDTO = {
+            id: selectedCourseGrouping.id,
             name: selectedCourseGrouping.name,
             requiredCredits: selectedCourseGrouping.requiredCredits,
             isTopLevel: selectedCourseGrouping.isTopLevel,

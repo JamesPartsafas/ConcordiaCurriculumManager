@@ -45,13 +45,14 @@ import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { showToast } from "../../utils/toastUtils";
 import DeleteAlert from "../../shared/DeleteAlert";
-import EditCourseModal from "./SelectCourseModal";
+import SelectCourseModal from "./SelectCourseModal";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import EditApprovalStagesModal from "./EditApprovalStagesModal";
 import { UserContext } from "../../App";
 import { UserRoles } from "../../models/user";
 import { CourseGroupingRequestDTO, CourseGroupingStateEnum } from "../../models/courseGrouping";
 import { DeleteCourseGroupingRequest } from "../../services/courseGrouping";
+import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
 
 export default function DossierDetails() {
     const { dossierId } = useParams();
@@ -60,6 +61,11 @@ export default function DossierDetails() {
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
+    const {
+        isOpen: isSearchCourseGroupingOpen,
+        onOpen: onSearchCourseGroupingOpen,
+        onClose: onSearchCourseGroupingClose,
+    } = useDisclosure();
     const [selectedCourseCreationRequest, setSelectedCourseCreationRequest] = useState<CourseCreationRequest>(null);
     const [selectedCourseModificationRequest, setSelectedCourseModificationRequest] =
         useState<CourseModificationRequest>(null);
@@ -179,25 +185,21 @@ export default function DossierDetails() {
 
     // course related functions
     function handleCourseSelect(res: CourseDataResponse) {
-        navigate(
-            BaseRoutes.EditCourse.replace(":id", res.data.catalog.toString()).replace(
-                ":dossierId",
-                dossierId
-            ),
-            { state: res.data }
-        );
+        navigate(BaseRoutes.EditCourse.replace(":id", res.data.catalog.toString()).replace(":dossierId", dossierId), {
+            state: res.data,
+        });
     }
 
     // creations
     function createModificationRequest() {
         return (
-            <EditCourseModal
+            <SelectCourseModal
                 isOpen={isEditOpen}
                 onClose={onEditClose}
                 allCourseSettings={courseSettings}
                 dossierId={dossierId}
-                onCourseSelect= {handleCourseSelect}
-            ></EditCourseModal>
+                onCourseSelect={handleCourseSelect}
+            ></SelectCourseModal>
         );
     }
 
@@ -331,6 +333,32 @@ export default function DossierDetails() {
 
     // course grouping related functions
 
+    // edits
+    function displaySearchCourseGroupModal() {
+        return (
+            <SearchCourseGrouping
+                isOpen={isSearchCourseGroupingOpen}
+                onClose={onSearchCourseGroupingClose}
+                onSelectCourseGrouping={handleCourseGroupingSelect}
+            />
+        );
+    }
+
+    function handleCourseGroupingSelect(courseGrouping) {
+        navigate(
+            BaseRoutes.EditCourseGrouping.replace(":dossierId", dossierId).replace(
+                ":courseGroupingId",
+                courseGrouping.id
+            ),
+            {
+                state: {
+                    CourseGroupingRequest: { courseGrouping: courseGrouping },
+                    api: "addGroupingModificationRequest",
+                },
+            }
+        );
+    }
+
     // deletions
     function deleteCourseGroupingRequest(courseGroupingRequest: CourseGroupingRequestDTO) {
         setLoading(true);
@@ -401,6 +429,7 @@ export default function DossierDetails() {
         <>
             {deleteRequestAlert()}
             {createModificationRequest()}
+            {displaySearchCourseGroupModal()}
             <Container maxW={"70%"} mt={5} mb={2}>
                 <Box mb={5}>
                     <Button
@@ -903,7 +932,13 @@ export default function DossierDetails() {
                                                 }
                                                 onClick={() => {
                                                     navigate(
-                                                        BaseRoutes.EditCourseGrouping.replace(":dossierId", dossierId).replace(":courseGroupingId", courseGroupingCreationRequest.courseGrouping.id),
+                                                        BaseRoutes.EditCourseGrouping.replace(
+                                                            ":dossierId",
+                                                            dossierId
+                                                        ).replace(
+                                                            ":courseGroupingId",
+                                                            courseGroupingCreationRequest.courseGrouping.id
+                                                        ),
                                                         // changed the name to CourseGroupingRequest so that the edits can use the same page
                                                         {
                                                             state: {
@@ -1065,7 +1100,9 @@ export default function DossierDetails() {
                         style="secondary"
                         width="100%"
                         isDisabled={dossierDetails?.state !== DossierStateEnum.Created && !isUserACurrentReviewer()}
-                        onClick={() => {}}
+                        onClick={() => {
+                            onSearchCourseGroupingOpen();
+                        }}
                     >
                         Add Modification Request
                     </Button>

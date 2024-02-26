@@ -35,7 +35,7 @@ interface EditCourseModalForm {
     catalog: number;
 }
 
-export default function EditCourseModal(props: EditCourseModalProps) {
+export default function SelectCourseModal(props: EditCourseModalProps) {
     const {
         register,
         handleSubmit,
