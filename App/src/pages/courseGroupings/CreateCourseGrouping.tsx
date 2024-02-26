@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useForm, useFieldArray, Controller, set } from "react-hook-form";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import {
     CourseGroupingCreationRequestDTO,
     CourseGroupingDTO,
     CourseGroupingRequestDTO,
+    CourseIdentifierDTO,
     SchoolEnum,
 } from "../../models/courseGrouping"; // Adjust the import path as needed
 import {
@@ -25,11 +26,9 @@ import {
     useToast,
     useDisclosure,
 } from "@chakra-ui/react";
-import AutocompleteInput from "../../components/Select";
 import {
     EditCourseGroupingCreation,
     GetCourseGrouping,
-    GetCourseGroupingBySchool,
     InitiateCourseGroupingCreation,
 } from "../../services/courseGrouping";
 import { MinusIcon } from "@chakra-ui/icons";
@@ -48,11 +47,12 @@ export default function CreateCourseGrouping() {
     const navigate = useNavigate();
     const state: { CourseGroupingRequest: CourseGroupingRequestDTO; api: string } = location.state;
 
-    const autoCompleteOptions = ["INDI Courses", "Engineering Core Courses", "Fine Arts Core"];
     const [selectedItem, setSelectedItem] = useState(null);
     const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO>();
     const [loading, setLoading] = useState<boolean>(false);
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
+    const [courseIdentifiers, setCourseIdentifiers] = useState<CourseIdentifierDTO[]>([]);
+
     const {
         isOpen: isCourseSelectionOpen,
         onOpen: onCourseSelectionOpen,
@@ -63,11 +63,9 @@ export default function CreateCourseGrouping() {
         control,
         handleSubmit,
         formState: { errors, isDirty },
-        setValue,
     } = useForm<CourseGroupingRequestDTO>({
         defaultValues: {
-            // dossierId: state?.CourseGroupingRequest?.dossierId,
-            // rationale: state?.CourseGroupingRequest?.rationale,
+            ...state.CourseGroupingRequest,
         },
     });
 
@@ -160,21 +158,22 @@ export default function CreateCourseGrouping() {
     ];
 
     useEffect(() => {
-        console.log(state?.CourseGroupingRequest?.id);
         requestCourseGroupingById(courseGroupingId);
         requestCourseSettings();
-    }, []);
+    }, [dossierId, courseGroupingId]);
 
     function requestCourseGroupingById(Id: string) {
         GetCourseGrouping(Id).then((response) => {
             setCourseGrouping(response.data);
-            setValue("courseGrouping", response.data);
+
             response.data.courses.forEach((course) => {
-                appendCourse({
+                const courseIdentifier = {
                     concordiaCourseId: course.courseID,
                     subject: course.subject,
                     catalog: parseInt(course.catalog),
-                });
+                };
+
+                setCourseIdentifiers((prev) => [...prev, courseIdentifier]);
             });
         });
     }
@@ -238,7 +237,7 @@ export default function CreateCourseGrouping() {
 
         //TODO: need to check which api to call based on the state.api
         if (state?.api === "editGroupingCreationRequest") {
-            requestEditCourseGroupingCreation(dossierId, courseGroupingId, data);
+            requestEditCourseGroupingCreation(dossierId, state.CourseGroupingRequest.id, data);
         } else {
             requestInitiateCourseGroupingCreation(dossierId, data);
         }
@@ -264,7 +263,11 @@ export default function CreateCourseGrouping() {
     }
 
     function handleCourseSelect(res: CourseDataResponse) {
-        appendCourse({ concordiaCourseId: res.data.courseID, subject: res.data.subject, catalog: parseInt(res.data.catalog) });
+        appendCourse({
+            concordiaCourseId: res.data.courseID,
+            subject: res.data.subject,
+            catalog: parseInt(res.data.catalog),
+        });
     }
 
     return (
@@ -387,7 +390,15 @@ export default function CreateCourseGrouping() {
                                         >
                                             <div>
                                                 {index + 1 + ". "}
-                                                {field.subject} {field.catalog} -{" " + field.concordiaCourseId}
+                                                {field.subject ||
+                                                    courseIdentifiers.find(
+                                                        (c) => c.concordiaCourseId === field.concordiaCourseId
+                                                    )?.subject}{" "}
+                                                {field.catalog ||
+                                                    courseIdentifiers.find(
+                                                        (c) => c.concordiaCourseId === field.concordiaCourseId
+                                                    )?.catalog}{" "}
+                                                -{" " + field.concordiaCourseId}
                                             </div>
                                             <ButtonGroup
                                                 size="sm"
