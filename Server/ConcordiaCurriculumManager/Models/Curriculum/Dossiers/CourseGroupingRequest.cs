@@ -1,5 +1,6 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingRequests;
+using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using NpgsqlTypes;
 
@@ -12,6 +13,8 @@ public class CourseGroupingRequest : CourseRequest
     public CourseGrouping? CourseGrouping { get; set; }
 
     public required RequestType RequestType { get; set; }
+
+    public bool IsModificationRequest() => RequestType.Equals(RequestType.ModificationRequest);
 
     public static CourseGroupingRequest CreateCourseGroupingCreationRequestFromDTO(CourseGroupingCreationRequestDTO dto) =>
         CreateCourseGroupingRequestFromDTO(
@@ -33,6 +36,28 @@ public class CourseGroupingRequest : CourseRequest
             CourseGrouping.CreateCourseGroupingDeletionFromModificationDTO(Guid.NewGuid(), dto.CourseGrouping),
             RequestType.DeletionRequest
          );
+
+    public void MarkAsAccepted(IDictionary<Guid, int> currentVersions)
+    {
+        if (CourseGrouping == null) throw new NotFoundException($"The grouping request for {CourseGroupingId} is not correctly loaded");
+
+        var nextVersion = GetNextVersion(currentVersions);
+
+        if (RequestType.Equals(RequestType.DeletionRequest))
+            CourseGrouping.MarkAsDeleted(nextVersion);
+        else
+            CourseGrouping.MarkAsAccepted(nextVersion);
+    }
+
+    private int GetNextVersion(IDictionary<Guid, int> currentVersions)
+    {
+        if (!currentVersions.ContainsKey(CourseGrouping!.CommonIdentifier))
+            return 1;
+
+        var currentVersion = currentVersions[CourseGrouping.CommonIdentifier];
+
+        return currentVersion + 1;
+    }
 
     private static CourseGroupingRequest CreateCourseGroupingRequestFromDTO(CourseInitiationDTO dto, CourseGrouping courseGrouping, RequestType requestType)
     {

@@ -34,4 +34,8 @@ export enum BaseRoutes {
     profile ="/profile",
     editProfileInfo ="/editProfileInfo",
     browserList = "/browserList",
+    CreateCourseGrouping = "/add/CourseGrouping/:dossierId",
+    EditCourseGrouping = "/edit/CourseGrouping/:dossierId",
+    allGroups = "/allGroups",
+    groupDetails = "/GroupDetails",
 }

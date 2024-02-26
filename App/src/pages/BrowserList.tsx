@@ -93,7 +93,7 @@ export default function BrowserList() {
                         width="240px"
                         height="40px"
                         margin="0px"
-                        //onClick={() => navigate(BaseRoutes.GroupingBySchool)}
+                        onClick={() => navigate(BaseRoutes.allGroups)}
                     >
                         View Groups
                     </Button>

@@ -254,7 +254,7 @@ export default function AddCourse() {
                 comment: comment,
             };
             if (pathname.includes("add-course")) {
-                addCourse(course)
+                addCourse(dossierId, course)
                     .then(() => {
                         showToast(toast, "Success!", "Course added successfully.", "success");
                         toggleLoading(false);
@@ -385,7 +385,7 @@ export default function AddCourse() {
                 });
         } else {
             //create a new modification request
-            modifyCourse(course)
+            modifyCourse(dossierId, course)
                 .then(() => {
                     showToast(toast, "Success!", "Course modified successfully.", "success");
                     toggleLoading(false);

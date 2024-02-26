@@ -1,18 +1,24 @@
-import { Box, Center, Container, Flex, Heading, ListItem, OrderedList, Spacer, Text } from "@chakra-ui/react";
+import { Box, Center, Container, Flex, Heading, ListItem, OrderedList, Spacer, Text, useToast } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { DossierReportDTO } from "../../models/dossier";
-import { getChangesAcrossAllDossiers } from "../../services/dossier";
+import { changeLogPublishCourse, getChangesAcrossAllDossiers } from "../../services/dossier";
 import { AllCourseSettings, componentMappings } from "../../models/course";
 import { getAllCourseSettings } from "../../services/course";
 import CourseDiffViewer from "../../components/CourseDifference/CourseDiffViewer";
 import { Divider } from "@chakra-ui/react";
 import "../../assets/styles/print.css";
 import { Link } from "react-router-dom";
+import { showToast } from "../../utils/toastUtils";
+import { useContext } from "react";
+import { isAdminOrGroupMaster } from "../../services/auth";
+import { UserContext } from "../../App";
 
 export default function DossierChangeLog() {
+    const toast = useToast();
+    const user = useContext(UserContext);
     const navigate = useNavigate();
     const [dossierReport, setDossierReport] = useState<DossierReportDTO | null>(null);
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
@@ -35,6 +41,23 @@ export default function DossierChangeLog() {
     function handlePrint() {
         window.print();
     }
+
+    const publishCourse = (subject: string, catalog: string) => {
+        changeLogPublishCourse(subject, catalog)
+            .then(() => {
+                showToast(toast, "Success!", "Course has been published.", "success");
+                getChangesAcrossAllDossiers()
+                    .then((response) => {
+                        setDossierReport(response.data);
+                    })
+                    .catch((error) => {
+                        showToast(toast, "Error!", error.message, "error");
+                    });
+            })
+            .catch((error) => {
+                showToast(toast, "Error!", error.response.data, "error");
+            });
+    };
 
     return (
         dossierReport && (
@@ -71,7 +94,14 @@ export default function DossierChangeLog() {
                         )}
 
                         {dossierReport?.courseCreationRequests?.map((courseCreationRequest, index) => (
-                            <ListItem key={index} backgroundColor={"brandRed600"} p={5} borderRadius={"xl"} mb={2}>
+                            <ListItem
+                                className="pageBreak"
+                                key={index}
+                                backgroundColor={"brandRed600"}
+                                p={5}
+                                borderRadius={"xl"}
+                                mb={2}
+                            >
                                 <div>
                                     <Link
                                         to={BaseRoutes.DossierDetails.replace(
@@ -79,7 +109,12 @@ export default function DossierChangeLog() {
                                             courseCreationRequest.dossierId
                                         )}
                                     >
-                                        <Text _hover={{ textDecoration: "underline" }} color="brandRed" fontSize="xl">
+                                        <Text
+                                            _hover={{ textDecoration: "underline" }}
+                                            color="brandRed"
+                                            fontSize="xl"
+                                            className="non-printable-content"
+                                        >
                                             Visit Related Dossier
                                         </Text>
                                     </Link>
@@ -176,6 +211,23 @@ export default function DossierChangeLog() {
                                             : courseCreationRequest.newCourse.courseNotes}
                                     </Text>
                                 </div>
+                                {isAdminOrGroupMaster(user) && (
+                                    <Button
+                                        style="primary"
+                                        variant="outline"
+                                        height="40px"
+                                        width="fit-content"
+                                        onClick={() =>
+                                            publishCourse(
+                                                courseCreationRequest.newCourse.subject,
+                                                courseCreationRequest.newCourse.catalog
+                                            )
+                                        }
+                                        className="non-printable-content"
+                                    >
+                                        Publish
+                                    </Button>
+                                )}
                             </ListItem>
                         ))}
                     </OrderedList>
@@ -190,7 +242,14 @@ export default function DossierChangeLog() {
                         )}
 
                         {dossierReport?.courseDeletionRequests.map((courseCreationRequest, index) => (
-                            <ListItem key={index} backgroundColor={"brandGray200"} p={5} borderRadius={"xl"} mb={2}>
+                            <ListItem
+                                className="pageBreak"
+                                key={index}
+                                backgroundColor={"brandGray200"}
+                                p={5}
+                                borderRadius={"xl"}
+                                mb={2}
+                            >
                                 <div>
                                     <Link
                                         to={BaseRoutes.DossierDetails.replace(
@@ -198,7 +257,12 @@ export default function DossierChangeLog() {
                                             courseCreationRequest.dossierId
                                         )}
                                     >
-                                        <Text _hover={{ textDecoration: "underline" }} color="brandRed" fontSize="xl">
+                                        <Text
+                                            _hover={{ textDecoration: "underline" }}
+                                            color="brandRed"
+                                            fontSize="xl"
+                                            className="non-printable-content"
+                                        >
                                             Visit Related Dossier
                                         </Text>
                                     </Link>
@@ -293,6 +357,23 @@ export default function DossierChangeLog() {
                                             : courseCreationRequest.course.courseNotes}
                                     </Text>
                                 </div>
+                                {isAdminOrGroupMaster(user) && (
+                                    <Button
+                                        style="primary"
+                                        variant="outline"
+                                        height="40px"
+                                        width="fit-content"
+                                        onClick={() =>
+                                            publishCourse(
+                                                courseCreationRequest.course.subject,
+                                                courseCreationRequest.course.catalog
+                                            )
+                                        }
+                                        className="non-printable-content"
+                                    >
+                                        Publish
+                                    </Button>
+                                )}
                             </ListItem>
                         ))}
                     </OrderedList>
@@ -309,7 +390,14 @@ export default function DossierChangeLog() {
                         )}
 
                         {dossierReport?.courseModificationRequests?.map((courseModificationRequest, index) => (
-                            <ListItem key={index} backgroundColor={"brandBlue600"} p={5} borderRadius={"xl"} mb={2}>
+                            <ListItem
+                                className="pageBreak"
+                                key={index}
+                                backgroundColor={"brandBlue600"}
+                                p={5}
+                                borderRadius={"xl"}
+                                mb={2}
+                            >
                                 <>
                                     <Link
                                         to={BaseRoutes.DossierDetails.replace(
@@ -317,7 +405,12 @@ export default function DossierChangeLog() {
                                             courseModificationRequest.dossierId
                                         )}
                                     >
-                                        <Text _hover={{ textDecoration: "underline" }} color="brandRed" fontSize="xl">
+                                        <Text
+                                            _hover={{ textDecoration: "underline" }}
+                                            color="brandRed"
+                                            fontSize="xl"
+                                            className="non-printable-content"
+                                        >
                                             Visit Related Dossier
                                         </Text>
                                     </Link>
@@ -359,6 +452,23 @@ export default function DossierChangeLog() {
                                     ></CourseDiffViewer>
                                     <Divider />
                                 </>
+                                {isAdminOrGroupMaster(user) && (
+                                    <Button
+                                        style="primary"
+                                        variant="outline"
+                                        height="40px"
+                                        width="fit-content"
+                                        onClick={() =>
+                                            publishCourse(
+                                                courseModificationRequest.course.subject,
+                                                courseModificationRequest.course.catalog
+                                            )
+                                        }
+                                        className="non-printable-content"
+                                    >
+                                        Publish
+                                    </Button>
+                                )}
                             </ListItem>
                         ))}
                     </OrderedList>
@@ -373,8 +483,9 @@ export default function DossierChangeLog() {
                     m={14}
                     className="non-printable-content"
                 >
-                    Print Dossier Report
+                    Print Change Log
                 </Button>
+                <div className="divFooter">Date Printed: {Date()}</div>
             </div>
         )
     );

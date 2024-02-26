@@ -40,7 +40,7 @@ export default function DossierReport() {
 
     return (
         <div>
-            <Container maxW={"90%"} mt={5} mb={2} className="printable-content">
+            <Container maxW={"90%"} mt={12} mb={2} className="printable-content">
                 <Box mb={5}>
                     <Button
                         style="primary"
@@ -59,6 +59,7 @@ export default function DossierReport() {
                         width="fit-content"
                         height="40px"
                         ml={2}
+                        className="non-printable-content"
                         isDisabled={!user.roles.includes(UserRoles.Initiator)}
                         onClick={() => {
                             navigate(BaseRoutes.DossiersToReview);
@@ -72,6 +73,7 @@ export default function DossierReport() {
                         variant="outline"
                         width="fit-content"
                         height="40px"
+                        className="non-printable-content"
                         ml={2}
                         isDisabled={!user.roles.includes(UserRoles.Initiator)}
                         onClick={() => {
@@ -86,6 +88,7 @@ export default function DossierReport() {
                         variant="outline"
                         width="fit-content"
                         height="40px"
+                        className="non-printable-content"
                         ml={2}
                         isDisabled={dossierReport?.state !== DossierStateEnum.InReview}
                         onClick={() => {
@@ -170,7 +173,14 @@ export default function DossierReport() {
                     )}
 
                     {dossierReport?.courseCreationRequests?.map((courseCreationRequest, index) => (
-                        <ListItem key={index} backgroundColor={"brandRed600"} p={5} borderRadius={"xl"} mb={2}>
+                        <ListItem
+                            className="pageBreak"
+                            key={index}
+                            backgroundColor={"brandRed600"}
+                            p={5}
+                            borderRadius={"xl"}
+                            mb={2}
+                        >
                             <div>
                                 <Flex mb={6} gap={12} flexWrap={"wrap"}>
                                     <Box>
@@ -276,7 +286,14 @@ export default function DossierReport() {
                     )}
 
                     {dossierReport?.courseDeletionRequests.map((courseCreationRequest, index) => (
-                        <ListItem key={index} backgroundColor={"brandGray200"} p={5} borderRadius={"xl"} mb={2}>
+                        <ListItem
+                            className="pageBreak"
+                            key={index}
+                            backgroundColor={"brandGray200"}
+                            p={5}
+                            borderRadius={"xl"}
+                            mb={2}
+                        >
                             <div>
                                 <Flex mb={6} gap={12} flexWrap={"wrap"}>
                                     <Box>
@@ -384,7 +401,14 @@ export default function DossierReport() {
                     )}
 
                     {dossierReport?.courseModificationRequests?.map((courseModificationRequest, index) => (
-                        <ListItem key={index} backgroundColor={"brandBlue600"} p={5} borderRadius={"xl"} mb={2}>
+                        <ListItem
+                            className="pageBreak"
+                            key={index}
+                            backgroundColor={"brandBlue600"}
+                            p={5}
+                            borderRadius={"xl"}
+                            mb={2}
+                        >
                             <>
                                 <Heading size={"md"} mb={2}>
                                     {courseModificationRequest.course.subject}{" "}
@@ -439,6 +463,7 @@ export default function DossierReport() {
             >
                 Print Dossier Report
             </Button>
+            <div className="divFooter">Date Printed: {Date()}</div>
         </div>
     );
 }

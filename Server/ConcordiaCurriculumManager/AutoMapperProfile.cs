@@ -52,6 +52,7 @@ public class AutoMapper : Profile
             .ForMember(dest => dest.CourseCreationRequests, opt => opt.MapFrom(d => d.Dossier.CourseCreationRequests))
             .ForMember(dest => dest.CourseModificationRequests, opt => opt.MapFrom(d => d.Dossier.CourseModificationRequests))
             .ForMember(dest => dest.CourseDeletionRequests, opt => opt.MapFrom(d => d.Dossier.CourseDeletionRequests))
+            .ForMember(dest => dest.CourseGroupingRequests, opt => opt.MapFrom(d => d.Dossier.CourseGroupingRequests))
             .ForMember(dest => dest.ApprovalStages, opt => opt.MapFrom(d => d.Dossier.ApprovalStages));
         CreateMap<CourseGroupingReference, CourseGroupingReferenceDTO>();
         CreateMap<CourseGrouping, CourseGroupingDTO>();

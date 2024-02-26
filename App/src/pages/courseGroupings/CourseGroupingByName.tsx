@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { BaseRoutes } from "../constants";
-import { CourseGroupingDTO, MultiCourseGroupingDTO } from "../models/courseGrouping";
+import { BaseRoutes } from "../../constants";
+import { CourseGroupingDTO, MultiCourseGroupingDTO } from "../../models/courseGrouping";
 import { useNavigate } from "react-router-dom";
 import {
     Box,
@@ -20,8 +20,8 @@ import {
     IconButton,
 } from "@chakra-ui/react";
 import { InfoIcon } from "@chakra-ui/icons";
-import Button from "../components/Button";
-import { GetCourseGroupingByName } from "../services/courseGrouping";
+import Button from "../../components/Button";
+import { GetCourseGroupingByName } from "../../services/courseGrouping";
 
 export default function CourseGroupingByName() {
     const [courseGroupings, setCourseGroupings] = useState<CourseGroupingDTO[]>([]);
