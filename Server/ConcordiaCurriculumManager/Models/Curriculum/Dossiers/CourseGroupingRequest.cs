@@ -14,6 +14,8 @@ public class CourseGroupingRequest : CourseRequest
 
     public required RequestType RequestType { get; set; }
 
+    public bool IsModificationRequest() => RequestType.Equals(RequestType.ModificationRequest);
+
     public static CourseGroupingRequest CreateCourseGroupingCreationRequestFromDTO(CourseGroupingCreationRequestDTO dto) =>
         CreateCourseGroupingRequestFromDTO(
             dto,

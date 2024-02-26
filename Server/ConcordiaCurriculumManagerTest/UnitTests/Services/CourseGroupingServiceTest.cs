@@ -17,7 +17,7 @@ public class CourseGroupingServiceTest
     private Mock<ILogger<CourseGroupingService>> logger = null!;
     private Mock<ICourseRepository> courseRepository = null!;
     private Mock<ICourseGroupingRepository> courseGroupingRepository = null!;
-    private Mock<IDossierService> dossierService = null!;
+    private Mock<IDossierRepository> dossierRepository = null!;
 
     private CourseGroupingService courseGroupingService = null!;
 
@@ -27,13 +27,13 @@ public class CourseGroupingServiceTest
         logger = new Mock<ILogger<CourseGroupingService>>();
         courseRepository = new Mock<ICourseRepository>();
         courseGroupingRepository = new Mock<ICourseGroupingRepository>();
-        dossierService = new Mock<IDossierService>();
+        dossierRepository = new Mock<IDossierRepository>();
 
         courseGroupingService = new CourseGroupingService(
             logger.Object,
             courseRepository.Object,
             courseGroupingRepository.Object,
-            dossierService.Object
+            dossierRepository.Object
         );
     }
 
@@ -122,7 +122,7 @@ public class CourseGroupingServiceTest
     {
         var dto = TestData.GetSampleCourseGroupingCreationRequestDTO();
         ;
-        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(TestData.GetSampleDossier());
+        dossierRepository.Setup(ds => ds.GetDossierByDossierId(dto.DossierId)).ReturnsAsync(TestData.GetSampleDossier());
         courseGroupingRepository.Setup(cgr => cgr.SaveCourseGroupingRequest(It.IsAny<CourseGroupingRequest>())).ReturnsAsync(false);
 
         await courseGroupingService.InitiateCourseGroupingCreation(dto);
@@ -136,7 +136,7 @@ public class CourseGroupingServiceTest
 
         var requestsInDossier = dossier.CourseGroupingRequests.Count();
 
-        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(dossier);
+        dossierRepository.Setup(ds => ds.GetDossierByDossierId(dto.DossierId)).ReturnsAsync(dossier);
         courseGroupingRepository.Setup(cgr => cgr.SaveCourseGroupingRequest(It.IsAny<CourseGroupingRequest>())).ReturnsAsync(true);
 
         var request = await courseGroupingService.InitiateCourseGroupingCreation(dto);
@@ -165,7 +165,7 @@ public class CourseGroupingServiceTest
 
         courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingByCommonIdentifier(dto.CourseGrouping.CommonIdentifier))
             .ReturnsAsync(TestData.GetSampleCourseGrouping());
-        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(TestData.GetSampleDossier());
+        dossierRepository.Setup(ds => ds.GetDossierByDossierId(dto.DossierId)).ReturnsAsync(TestData.GetSampleDossier());
         courseGroupingRepository.Setup(cgr => cgr.SaveCourseGroupingRequest(It.IsAny<CourseGroupingRequest>())).ReturnsAsync(false);
 
         await courseGroupingService.InitiateCourseGroupingModification(dto);
@@ -184,7 +184,7 @@ public class CourseGroupingServiceTest
 
         courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingByCommonIdentifier(dto.CourseGrouping.CommonIdentifier))
             .ReturnsAsync(TestData.GetSampleCourseGrouping());
-        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(dossier);
+        dossierRepository.Setup(ds => ds.GetDossierByDossierId(dto.DossierId)).ReturnsAsync(dossier);
 
         await courseGroupingService.InitiateCourseGroupingModification(dto);
     }
@@ -199,7 +199,7 @@ public class CourseGroupingServiceTest
 
         courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingByCommonIdentifier(dto.CourseGrouping.CommonIdentifier))
             .ReturnsAsync(TestData.GetSampleCourseGrouping());
-        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(dossier);
+        dossierRepository.Setup(ds => ds.GetDossierByDossierId(dto.DossierId)).ReturnsAsync(dossier);
         courseGroupingRepository.Setup(cgr => cgr.SaveCourseGroupingRequest(It.IsAny<CourseGroupingRequest>())).ReturnsAsync(true);
 
         var request = await courseGroupingService.InitiateCourseGroupingModification(dto);
@@ -228,7 +228,7 @@ public class CourseGroupingServiceTest
 
         courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingByCommonIdentifier(dto.CourseGrouping.CommonIdentifier))
             .ReturnsAsync(TestData.GetSampleCourseGrouping());
-        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(TestData.GetSampleDossier());
+        dossierRepository.Setup(ds => ds.GetDossierByDossierId(dto.DossierId)).ReturnsAsync(TestData.GetSampleDossier());
         courseGroupingRepository.Setup(cgr => cgr.SaveCourseGroupingRequest(It.IsAny<CourseGroupingRequest>())).ReturnsAsync(false);
 
         await courseGroupingService.InitiateCourseGroupingDeletion(dto);
@@ -247,7 +247,7 @@ public class CourseGroupingServiceTest
 
         courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingByCommonIdentifier(dto.CourseGrouping.CommonIdentifier))
             .ReturnsAsync(TestData.GetSampleCourseGrouping());
-        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(dossier);
+        dossierRepository.Setup(ds => ds.GetDossierByDossierId(dto.DossierId)).ReturnsAsync(dossier);
 
         await courseGroupingService.InitiateCourseGroupingDeletion(dto);
     }
@@ -262,7 +262,7 @@ public class CourseGroupingServiceTest
 
         courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingByCommonIdentifier(dto.CourseGrouping.CommonIdentifier))
             .ReturnsAsync(TestData.GetSampleCourseGrouping());
-        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dto.DossierId)).ReturnsAsync(dossier);
+        dossierRepository.Setup(ds => ds.GetDossierByDossierId(dto.DossierId)).ReturnsAsync(dossier);
         courseGroupingRepository.Setup(cgr => cgr.SaveCourseGroupingRequest(It.IsAny<CourseGroupingRequest>())).ReturnsAsync(true);
 
         var request = await courseGroupingService.InitiateCourseGroupingDeletion(dto);
@@ -414,7 +414,7 @@ public class CourseGroupingServiceTest
         var dossier = TestData.GetSampleDossier();
         dossier.CourseGroupingRequests = new List<CourseGroupingRequest>();
 
-        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(It.IsAny<Guid>())).ReturnsAsync(dossier);
+        dossierRepository.Setup(ds => ds.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
 
         await courseGroupingService.DeleteCourseGroupingRequest(Guid.NewGuid(), Guid.NewGuid());
     }
@@ -427,7 +427,7 @@ public class CourseGroupingServiceTest
         var request = TestData.GetSampleCourseGroupingRequest();
         dossier.CourseGroupingRequests.Add(request);
 
-        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
+        dossierRepository.Setup(ds => ds.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
         courseGroupingRepository.Setup(cgr => cgr.DeleteCourseGroupingRequest(request)).ReturnsAsync(false);
 
         await courseGroupingService.DeleteCourseGroupingRequest(dossier.Id, request.Id);
@@ -440,7 +440,7 @@ public class CourseGroupingServiceTest
         var request = TestData.GetSampleCourseGroupingRequest();
         dossier.CourseGroupingRequests.Add(request);
 
-        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
+        dossierRepository.Setup(ds => ds.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
         courseGroupingRepository.Setup(cgr => cgr.DeleteCourseGroupingRequest(request)).ReturnsAsync(true);
 
         await courseGroupingService.DeleteCourseGroupingRequest(dossier.Id, request.Id);

@@ -19,6 +19,7 @@ public class DossierServiceTest
     private Mock<ILogger<DossierService>> logger = null!;
     private Mock<ICourseRepository> courseRepository = null!;
     private Mock<ICourseGroupingRepository> courseGroupingRepository = null!;
+    private Mock<ICourseGroupingService> courseGroupingService = null!;
     private DossierService dossierService = null!;
 
     [TestInitialize]
@@ -28,8 +29,9 @@ public class DossierServiceTest
         dossierRepository = new Mock<IDossierRepository>();
         courseRepository = new Mock<ICourseRepository>();
         courseGroupingRepository = new Mock<ICourseGroupingRepository>();
+        courseGroupingService = new Mock<ICourseGroupingService>();
 
-        dossierService = new DossierService(logger.Object, dossierRepository.Object, courseRepository.Object, courseGroupingRepository.Object);
+        dossierService = new DossierService(logger.Object, dossierRepository.Object, courseRepository.Object, courseGroupingRepository.Object, courseGroupingService.Object);
     }
 
     [TestMethod]
