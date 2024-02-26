@@ -596,8 +596,10 @@ public static class TestData
     public static DossierReport GetSampleDossierReport()
     {
         return new DossierReport
-        { Dossier = GetSampleDossier(),
-           OldCourses = new List<Course> { GetSampleCourse() }
+        {
+           Dossier = GetSampleDossier(),
+           OldCourses = new List<Course> { GetSampleCourse() },
+           OldGroupings = new List<CourseGrouping> { GetSampleCourseGrouping() }
         };
     }
 
