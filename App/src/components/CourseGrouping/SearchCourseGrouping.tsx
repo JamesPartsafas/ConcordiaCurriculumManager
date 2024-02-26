@@ -99,11 +99,12 @@ export default function SearchCourseGrouping(props: {
     function handleClose() {
         props.onClose();
     }
+
     return (
         <>
             <Modal isOpen={props.isOpen} onClose={handleClose}>
                 <ModalOverlay />
-                <ModalContent minW="1000px">
+                <ModalContent maxWidth="80%">
                     <ModalHeader>Seach Course Grouping By Name</ModalHeader>
                     <ModalCloseButton />
 
@@ -139,7 +140,7 @@ export default function SearchCourseGrouping(props: {
                                     <Thead backgroundColor={"#e2e8f0"}>
                                         <Tr display={"flex"}>
                                             <Th width={"65%"}>Name</Th>
-                                            <Th width={"15%"}>Credits Required</Th>
+                                            <Th width={"20%"}>Credits Required</Th>
                                             <Th width={"15%"}>State</Th>
                                         </Tr>
                                     </Thead>
@@ -159,7 +160,7 @@ export default function SearchCourseGrouping(props: {
                                                 <Td width={"65%"} style={{ whiteSpace: "normal" }}>
                                                     {grouping.name}
                                                 </Td>
-                                                <Td width={"15%"}>
+                                                <Td width={"20%"}>
                                                     <Text overflow="hidden" textOverflow="ellipsis" maxW={"500px"}>
                                                         {grouping.requiredCredits}
                                                     </Text>
@@ -172,6 +173,11 @@ export default function SearchCourseGrouping(props: {
                             </TableContainer>
                         </Stack>
                         <Stack>
+                            {/* Add Select to chose Grouping type subgrouping or optional grouping */}
+                            <Select onChange={(e) => setGroupingType(parseInt(e.target.value))}>
+                                <option value="0">Sub-Grouping</option>
+                                <option value="1">Optional Grouping</option>
+                            </Select>
                             <Button
                                 style="primary"
                                 width="auto"
