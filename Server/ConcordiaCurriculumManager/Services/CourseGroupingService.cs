@@ -13,7 +13,8 @@ namespace ConcordiaCurriculumManager.Services;
 public interface ICourseGroupingService
 {
     public Task<CourseGrouping> GetCourseGrouping(Guid groupingId);
-    public Task<CourseGrouping> GetCourseGroupingByCommonIdentifier(Guid commonId);
+    public Task<CourseGrouping> GetCourseGroupingByCommonIdentifier(Guid commonId, bool recursiveSearch = true);
+    public Task QueryRelatedCourseGroupingData(CourseGrouping grouping, bool recursiveSearch = true);
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsBySchoolNonRecursive(SchoolEnum school);
     public Task<ICollection<CourseGrouping>> GetCourseGroupingsLikeName(string name);
     public Task<CourseGroupingRequest> InitiateCourseGroupingCreation(CourseGroupingCreationRequestDTO dto);
@@ -22,8 +23,10 @@ public interface ICourseGroupingService
     public Task<CourseGroupingRequest> EditCourseGroupingCreation(Guid originalRequestId, CourseGroupingCreationRequestDTO dto);
     public Task<CourseGroupingRequest> EditCourseGroupingModification(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
     public Task<CourseGroupingRequest> EditCourseGroupingDeletion(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
+    public Task<CourseGroupingRequest> GetCourseGroupingRequest(Guid groupingRequestId);
     public Task DeleteCourseGroupingRequest(Guid dossierId, Guid requestId);
     public Task<CourseGrouping> PublishCourseGrouping(Guid commonIdentifier);
+    public Task<IDictionary<Guid, int>> GetGroupingVersions(Dossier dossier);
 }
 
 public class CourseGroupingService : ICourseGroupingService
@@ -31,18 +34,18 @@ public class CourseGroupingService : ICourseGroupingService
     private readonly ILogger<CourseGroupingService> _logger;
     private readonly ICourseRepository _courseRepository;
     private readonly ICourseGroupingRepository _courseGroupingRepository;
-    private readonly IDossierService _dossierService;
+    private readonly IDossierRepository _dossierRepository;
 
     public CourseGroupingService(
         ILogger<CourseGroupingService> logger,
         ICourseRepository courseRepository,
         ICourseGroupingRepository courseGroupingRepository,
-        IDossierService dossierService)
+        IDossierRepository dossierRepository)
     {
         _logger = logger;
         _courseRepository = courseRepository;
         _courseGroupingRepository = courseGroupingRepository;
-        _dossierService = dossierService;
+        _dossierRepository = dossierRepository;
     }
 
     public async Task<CourseGrouping> GetCourseGrouping(Guid groupingId)
@@ -55,12 +58,12 @@ public class CourseGroupingService : ICourseGroupingService
         return grouping;
     }
 
-    public async Task<CourseGrouping> GetCourseGroupingByCommonIdentifier(Guid commonId)
+    public async Task<CourseGrouping> GetCourseGroupingByCommonIdentifier(Guid commonId, bool recursiveSearch = true)
     {
         CourseGrouping grouping = await _courseGroupingRepository.GetCourseGroupingByCommonIdentifier(commonId)
             ?? throw new NotFoundException($"The course grouping with common ID {commonId} was not found.");
 
-        await QueryRelatedCourseGroupingData(grouping);
+        await QueryRelatedCourseGroupingData(grouping, recursiveSearch);
 
         return grouping;
     }
@@ -78,13 +81,23 @@ public class CourseGroupingService : ICourseGroupingService
         return await _courseGroupingRepository.GetCourseGroupingsLikeName(name);
     }
 
-    private async Task QueryRelatedCourseGroupingData(CourseGrouping grouping)
+    public async Task QueryRelatedCourseGroupingData(CourseGrouping grouping, bool recursiveSearch = true)
     {
         grouping.Courses = await GetCoursesFromIdentifiers(grouping.CourseIdentifiers);
 
         foreach (var subGroupingReference in grouping.SubGroupingReferences)
         {
-            var subGrouping = await GetCourseGroupingByCommonIdentifier(subGroupingReference.ChildGroupCommonIdentifier);
+            CourseGrouping subGrouping;
+            if (recursiveSearch)
+            {
+                subGrouping = await GetCourseGroupingByCommonIdentifier(subGroupingReference.ChildGroupCommonIdentifier);
+            }
+            else
+            {
+                var queryData = await _courseGroupingRepository.GetCourseGroupingByCommonIdentifier(subGroupingReference.ChildGroupCommonIdentifier);
+                if (queryData == null) continue;
+                subGrouping = queryData;
+            }
             grouping.SubGroupings.Add(subGrouping);
         }
     }
@@ -99,7 +112,7 @@ public class CourseGroupingService : ICourseGroupingService
 
     public async Task<CourseGroupingRequest> InitiateCourseGroupingCreation(CourseGroupingCreationRequestDTO dto)
     {
-        var dossier = await _dossierService.GetDossierDetailsByIdOrThrow(dto.DossierId);
+        var dossier = await GetDossierDetailsByIdOrThrow(dto.DossierId);
 
         var grouping = dossier.CreateCourseGroupingCreationRequest(dto);
 
@@ -120,7 +133,7 @@ public class CourseGroupingService : ICourseGroupingService
     {
         await VerifyCourseGroupingExists(dto.CourseGrouping);
 
-        var dossier = await _dossierService.GetDossierDetailsByIdOrThrow(dto.DossierId);
+        var dossier = await GetDossierDetailsByIdOrThrow(dto.DossierId);
 
         var grouping = dossier.CreateCourseGroupingModificationRequest(dto);
 
@@ -141,7 +154,7 @@ public class CourseGroupingService : ICourseGroupingService
     {
         await VerifyCourseGroupingExists(dto.CourseGrouping);
 
-        var dossier = await _dossierService.GetDossierDetailsByIdOrThrow(dto.DossierId);
+        var dossier = await GetDossierDetailsByIdOrThrow(dto.DossierId);
 
         var grouping = dossier.CreateCourseGroupingDeletionRequest(dto);
 
@@ -194,6 +207,16 @@ public class CourseGroupingService : ICourseGroupingService
         return await InitiateCourseGroupingDeletion(dto);
     }
 
+    public async Task<CourseGroupingRequest> GetCourseGroupingRequest(Guid groupingRequestId)
+    {
+        var request = await _courseGroupingRepository.GetCourseGroupingRequestById(groupingRequestId)
+            ?? throw new NotFoundException($"No grouping request was found for Id {groupingRequestId}");
+
+        await QueryRelatedCourseGroupingData(request.CourseGrouping!, false);
+
+        return request;
+    }
+
     private async Task VerifyEditRequestsMatchOrThrow(Guid originalRequestId, CourseGroupingModificationRequestDTO dto)
     {
         var request = await _courseGroupingRepository.GetCourseGroupingRequestById(originalRequestId);
@@ -209,7 +232,7 @@ public class CourseGroupingService : ICourseGroupingService
 
     public async Task DeleteCourseGroupingRequest(Guid dossierId, Guid requestId)
     {
-        var dossier = await _dossierService.GetDossierDetailsByIdOrThrow(dossierId);
+        var dossier = await GetDossierDetailsByIdOrThrow(dossierId);
 
         var request = dossier.GetGroupingRequestForDeletion(requestId);
 
@@ -252,4 +275,28 @@ public class CourseGroupingService : ICourseGroupingService
 
         return newCourseGrouping;
     }
+
+    public async Task<IDictionary<Guid, int>> GetGroupingVersions(Dossier dossier)
+    {
+        var currentVersions = new Dictionary<Guid, int>();
+        foreach (var groupingRequest in dossier.CourseGroupingRequests)
+        {
+            if (groupingRequest == null) continue;
+            var grouping = groupingRequest.CourseGrouping;
+            if (grouping == null) continue;
+
+            int version = 0;
+
+            var currentGrouping = await _courseGroupingRepository.GetCourseGroupingByCommonIdentifierAnyState(grouping.CommonIdentifier);
+            if (currentGrouping != null && currentGrouping.Version != null)
+                version = (int)currentGrouping.Version;
+
+            currentVersions.Add(grouping.CommonIdentifier, version);
+        }
+
+        return currentVersions;
+    }
+
+    private async Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id) => await _dossierRepository.GetDossierByDossierId(id)
+        ?? throw new NotFoundException("The dossier does not exist.");
 }

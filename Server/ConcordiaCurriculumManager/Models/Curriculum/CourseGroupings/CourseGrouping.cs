@@ -54,6 +54,18 @@ public class CourseGrouping : BaseModel
         };
     }
 
+    public void MarkAsAccepted(int version) => MarkAsFinalized(version, CourseGroupingStateEnum.Accepted);
+
+    public void MarkAsDeleted(int version) => MarkAsFinalized(version, CourseGroupingStateEnum.Deleted);
+
+    private void MarkAsFinalized(int version, CourseGroupingStateEnum state)
+    {
+        Version = version;
+        State = state;
+
+        VerifyCourseGroupingIsValidOrThrow();
+    }
+
     public bool IsCourseGroupingStateFinalized() => State == CourseGroupingStateEnum.Accepted || State == CourseGroupingStateEnum.Deleted;
 
     public void MarkAsPublished()

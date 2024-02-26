@@ -19,6 +19,7 @@ public class DossierServiceTest
     private Mock<ILogger<DossierService>> logger = null!;
     private Mock<ICourseRepository> courseRepository = null!;
     private Mock<ICourseGroupingRepository> courseGroupingRepository = null!;
+    private Mock<ICourseGroupingService> courseGroupingService = null!;
     private DossierService dossierService = null!;
 
     [TestInitialize]
@@ -28,8 +29,9 @@ public class DossierServiceTest
         dossierRepository = new Mock<IDossierRepository>();
         courseRepository = new Mock<ICourseRepository>();
         courseGroupingRepository = new Mock<ICourseGroupingRepository>();
+        courseGroupingService = new Mock<ICourseGroupingService>();
 
-        dossierService = new DossierService(logger.Object, dossierRepository.Object, courseRepository.Object, courseGroupingRepository.Object);
+        dossierService = new DossierService(logger.Object, dossierRepository.Object, courseRepository.Object, courseGroupingRepository.Object, courseGroupingService.Object);
     }
 
     [TestMethod]
@@ -204,41 +206,6 @@ public class DossierServiceTest
         await dossierService.DeleteDossier(deletedDossier);
 
         dossierRepository.Verify(r => r.DeleteDossier(dossier));
-    }
-
-    [TestMethod]
-    public async Task GetDossierForUserOrThrow_ValidInput_ReturnsDossier()
-    {
-        var user = TestData.GetSampleUser();
-        var dossier = TestData.GetSampleDossier(user);
-
-        dossierRepository.Setup(d => d.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
-
-        var returnedDossier = await dossierService.GetDossierForUserOrThrow(dossier.Id, user.Id);
-
-        Assert.AreEqual(dossier.Id, returnedDossier.Id);
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public async Task GetDossierForUserOrThrow_DossierNotFound_Throws()
-    {
-        dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync((Dossier)null!);
-
-        await dossierService.GetDossierForUserOrThrow(Guid.NewGuid(), Guid.NewGuid());
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(BadRequestException))]
-    public async Task GetDossierForUserOrThrow_DossierDoesNotBelongToUser_Throws()
-    {
-        var user = TestData.GetSampleUser();
-        var dossier = TestData.GetSampleDossier();
-        dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
-
-        await dossierService.GetDossierForUserOrThrow(Guid.NewGuid(), Guid.NewGuid());
-
-        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
     }
 
     [TestMethod]

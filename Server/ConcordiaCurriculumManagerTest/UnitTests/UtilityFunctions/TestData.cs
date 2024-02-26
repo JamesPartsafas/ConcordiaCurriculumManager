@@ -467,6 +467,19 @@ public static class TestData
         };
     }
 
+    public static IDictionary<Guid, int> GetSampleGroupingVersions()
+    {
+        return new Dictionary<Guid, int>
+        {
+            {
+                Guid.NewGuid(), 3
+            },
+            {
+                Guid.NewGuid(), 5
+            }
+        };
+    }
+
     public static ApprovalStage GetSampleApprovalStage()
     {
         return new ApprovalStage
@@ -583,8 +596,10 @@ public static class TestData
     public static DossierReport GetSampleDossierReport()
     {
         return new DossierReport
-        { Dossier = GetSampleDossier(),
-           OldCourses = new List<Course> { GetSampleCourse() }
+        {
+           Dossier = GetSampleDossier(),
+           OldCourses = new List<Course> { GetSampleCourse() },
+           OldGroupings = new List<CourseGrouping> { GetSampleCourseGrouping() }
         };
     }
 

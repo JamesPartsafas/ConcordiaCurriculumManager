@@ -112,7 +112,7 @@ public class DossierTest
         var dossier = TestData.GetSampleDossierInFinalStage();
         var user = TestData.GetSampleUser();
 
-        dossier.MarkAsAccepted(TestData.GetSampleCourseVersionCollection(), user);
+        dossier.MarkAsAccepted(TestData.GetSampleCourseVersionCollection(), TestData.GetSampleGroupingVersions(), user);
 
         var finalStage = dossier.ApprovalStages.Where(stage => stage.StageIndex == 1).First();
 
@@ -128,7 +128,7 @@ public class DossierTest
         var user = TestData.GetSampleUser();
 
 
-        dossier.MarkAsAccepted(TestData.GetSampleCourseVersionCollection(), user);
+        dossier.MarkAsAccepted(TestData.GetSampleCourseVersionCollection(), TestData.GetSampleGroupingVersions(), user);
     }
 
     [TestMethod]

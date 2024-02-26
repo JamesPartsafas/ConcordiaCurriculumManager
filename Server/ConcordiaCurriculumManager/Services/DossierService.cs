@@ -20,7 +20,6 @@ public interface IDossierService
     public Task DeleteDossier(Guid dossierId);
     public Task<Dossier?> GetDossierDetailsById(Guid id);
     public Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id);
-    public Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId);
     public Task SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
     public Task SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
@@ -41,17 +40,20 @@ public class DossierService : IDossierService
     private readonly IDossierRepository _dossierRepository;
     private readonly ICourseRepository _courseRepository;
     private readonly ICourseGroupingRepository _courseGroupingRepository;
+    private readonly ICourseGroupingService _courseGroupingService;
 
     public DossierService(
         ILogger<DossierService> logger,
         IDossierRepository dossierRepository,
         ICourseRepository courseRepository,
-        ICourseGroupingRepository courseGroupingRepository)
+        ICourseGroupingRepository courseGroupingRepository,
+        ICourseGroupingService courseGroupingService)
     {
         _logger = logger;
         _dossierRepository = dossierRepository;
         _courseRepository = courseRepository;
         _courseGroupingRepository = courseGroupingRepository;
+        _courseGroupingService = courseGroupingService;
     }
 
     public async Task<List<Dossier>> GetDossiersByID(Guid ID)
@@ -126,17 +128,6 @@ public class DossierService : IDossierService
     public async Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id) => await _dossierRepository.GetDossierByDossierId(id)
         ?? throw new NotFoundException("The dossier does not exist.");
 
-    public async Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId)
-    {
-        var dossier = await GetDossierDetailsById(dossierId) ?? throw new ArgumentException("The dossier does not exist.");
-        if (dossier.InitiatorId != userId)
-        {
-            throw new BadRequestException($"Error retrieving the dossier {typeof(Dossier)} {dossier.Id}: does not belong to the user");
-        }
-
-        return dossier;
-    }
-
     public async Task SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest)
     {
         bool requestCreated = await _dossierRepository.SaveCourseCreationRequest(courseCreationRequest);
@@ -197,6 +188,7 @@ public class DossierService : IDossierService
     {
         var dossier = await _dossierRepository.GetDossierReportByDossierId(dossierId) ?? throw new NotFoundException("The dossier does not exist.");
         var oldCourses = new List<Course>();
+        var oldGroupings = new List<CourseGrouping>();
 
         foreach (var request in dossier.CourseModificationRequests)
         {
@@ -205,7 +197,28 @@ public class DossierService : IDossierService
             oldCourses.Add(course);
         }
 
-        return new DossierReport { Dossier = dossier, OldCourses = oldCourses };
+        foreach (var request in dossier.CourseGroupingRequests)
+        {
+            await _courseGroupingService.QueryRelatedCourseGroupingData(request.CourseGrouping!, false);
+
+            if (!request.IsModificationRequest()) continue;
+
+            CourseGrouping grouping;
+            Guid commonId = request.CourseGrouping!.CommonIdentifier;
+            try
+            {
+                grouping = await _courseGroupingService.GetCourseGroupingByCommonIdentifier(commonId, false);
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogWarning($"Course grouping with common ID {commonId} not found in dossier report: {e.ToString()}");
+                continue;
+            }
+
+            oldGroupings.Add(grouping);
+        }
+
+        return new DossierReport { Dossier = dossier, OldCourses = oldCourses, OldGroupings = oldGroupings };
     }
 
     public async Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId)

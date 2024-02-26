@@ -94,7 +94,14 @@ export default function DossierChangeLog() {
                         )}
 
                         {dossierReport?.courseCreationRequests?.map((courseCreationRequest, index) => (
-                            <ListItem key={index} backgroundColor={"brandRed600"} p={5} borderRadius={"xl"} mb={2}>
+                            <ListItem
+                                className="pageBreak"
+                                key={index}
+                                backgroundColor={"brandRed600"}
+                                p={5}
+                                borderRadius={"xl"}
+                                mb={2}
+                            >
                                 <div>
                                     <Link
                                         to={BaseRoutes.DossierDetails.replace(
@@ -102,7 +109,12 @@ export default function DossierChangeLog() {
                                             courseCreationRequest.dossierId
                                         )}
                                     >
-                                        <Text _hover={{ textDecoration: "underline" }} color="brandRed" fontSize="xl">
+                                        <Text
+                                            _hover={{ textDecoration: "underline" }}
+                                            color="brandRed"
+                                            fontSize="xl"
+                                            className="non-printable-content"
+                                        >
                                             Visit Related Dossier
                                         </Text>
                                     </Link>
@@ -230,7 +242,14 @@ export default function DossierChangeLog() {
                         )}
 
                         {dossierReport?.courseDeletionRequests.map((courseCreationRequest, index) => (
-                            <ListItem key={index} backgroundColor={"brandGray200"} p={5} borderRadius={"xl"} mb={2}>
+                            <ListItem
+                                className="pageBreak"
+                                key={index}
+                                backgroundColor={"brandGray200"}
+                                p={5}
+                                borderRadius={"xl"}
+                                mb={2}
+                            >
                                 <div>
                                     <Link
                                         to={BaseRoutes.DossierDetails.replace(
@@ -238,7 +257,12 @@ export default function DossierChangeLog() {
                                             courseCreationRequest.dossierId
                                         )}
                                     >
-                                        <Text _hover={{ textDecoration: "underline" }} color="brandRed" fontSize="xl">
+                                        <Text
+                                            _hover={{ textDecoration: "underline" }}
+                                            color="brandRed"
+                                            fontSize="xl"
+                                            className="non-printable-content"
+                                        >
                                             Visit Related Dossier
                                         </Text>
                                     </Link>
@@ -366,7 +390,14 @@ export default function DossierChangeLog() {
                         )}
 
                         {dossierReport?.courseModificationRequests?.map((courseModificationRequest, index) => (
-                            <ListItem key={index} backgroundColor={"brandBlue600"} p={5} borderRadius={"xl"} mb={2}>
+                            <ListItem
+                                className="pageBreak"
+                                key={index}
+                                backgroundColor={"brandBlue600"}
+                                p={5}
+                                borderRadius={"xl"}
+                                mb={2}
+                            >
                                 <>
                                     <Link
                                         to={BaseRoutes.DossierDetails.replace(
@@ -374,7 +405,12 @@ export default function DossierChangeLog() {
                                             courseModificationRequest.dossierId
                                         )}
                                     >
-                                        <Text _hover={{ textDecoration: "underline" }} color="brandRed" fontSize="xl">
+                                        <Text
+                                            _hover={{ textDecoration: "underline" }}
+                                            color="brandRed"
+                                            fontSize="xl"
+                                            className="non-printable-content"
+                                        >
                                             Visit Related Dossier
                                         </Text>
                                     </Link>
@@ -449,6 +485,7 @@ export default function DossierChangeLog() {
                 >
                     Print Change Log
                 </Button>
+                <div className="divFooter">Date Printed: {Date()}</div>
             </div>
         )
     );
