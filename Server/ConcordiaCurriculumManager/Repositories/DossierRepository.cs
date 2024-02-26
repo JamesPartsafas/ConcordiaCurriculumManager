@@ -228,6 +228,12 @@ public class DossierRepository : IDossierRepository
             .Include(d => d.CourseModificationRequests)
                 .ThenInclude(cmr => cmr.Course)
                     .ThenInclude(cr => cr!.CourseCourseComponents)
+        .Include(d => d.CourseGroupingRequests)
+            .ThenInclude(cgr => cgr.CourseGrouping)
+                .ThenInclude(cg => cg!.SubGroupingReferences)
+        .Include(d => d.CourseGroupingRequests)
+            .ThenInclude(cgr => cgr.CourseGrouping)
+                .ThenInclude(cg => cg!.CourseIdentifiers)
         .Include(d => d.ApprovalStages)
             .ThenInclude(a => a.Group)
         .FirstOrDefaultAsync();
