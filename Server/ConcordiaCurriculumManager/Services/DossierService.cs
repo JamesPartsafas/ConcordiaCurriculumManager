@@ -20,7 +20,6 @@ public interface IDossierService
     public Task DeleteDossier(Guid dossierId);
     public Task<Dossier?> GetDossierDetailsById(Guid id);
     public Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id);
-    public Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId);
     public Task SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
     public Task SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
@@ -125,17 +124,6 @@ public class DossierService : IDossierService
 
     public async Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id) => await _dossierRepository.GetDossierByDossierId(id)
         ?? throw new NotFoundException("The dossier does not exist.");
-
-    public async Task<Dossier> GetDossierForUserOrThrow(Guid dossierId, Guid userId)
-    {
-        var dossier = await GetDossierDetailsById(dossierId) ?? throw new ArgumentException("The dossier does not exist.");
-        if (dossier.InitiatorId != userId)
-        {
-            throw new BadRequestException($"Error retrieving the dossier {typeof(Dossier)} {dossier.Id}: does not belong to the user");
-        }
-
-        return dossier;
-    }
 
     public async Task SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest)
     {
