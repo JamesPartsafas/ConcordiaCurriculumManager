@@ -12,6 +12,7 @@ import { Divider } from "@chakra-ui/react";
 import "../../assets/styles/print.css";
 import { UserContext } from "../../App";
 import { UserRoles } from "../../models/user";
+import DossierReportCourseGrouping from "../../components/Dossiers/DossierReportCourseGrouping";
 
 export default function DossierReport() {
     const navigate = useNavigate();
@@ -458,10 +459,13 @@ export default function DossierReport() {
                     ))}
                 </OrderedList>
                 <Center>
-                    <Heading fontSize="3xl" mb={4} mt={4} color="brandRed">
+                    <Heading fontSize="3xl" mb={4} mt={4} color="brandRed" className="breakBefore">
                         Course Grouping Requests
                     </Heading>
                 </Center>
+                <DossierReportCourseGrouping
+                    courseGrouping={dossierReport?.courseGroupingRequests}
+                ></DossierReportCourseGrouping>
             </Container>
 
             <Button

@@ -64,6 +64,7 @@ export interface CourseGroupingRequestDTO {
     comment: string;
     conflict: string;
     courseGrouping: CourseGroupingDTO;
+    requestType?: number;
 }
 
 export interface CourseGroupingModificationInputDTO {
