@@ -3,6 +3,7 @@ import { useForm, useFieldArray, Controller } from "react-hook-form";
 import {
     CourseGroupingCreationRequestDTO,
     CourseGroupingDTO,
+    CourseGroupingModificationInputDTO,
     CourseGroupingRequestDTO,
     CourseIdentifierDTO,
     SchoolEnum,
@@ -38,6 +39,7 @@ import { showToast } from "../../utils/toastUtils";
 import EditCourseModal from "../dossier/SelectCourseModal";
 import { getAllCourseSettings } from "../../services/course";
 import { AllCourseSettings, CourseDataResponse } from "../../models/course";
+import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
 
 export default function CreateCourseGrouping() {
     const location = useLocation();
@@ -47,7 +49,6 @@ export default function CreateCourseGrouping() {
     const navigate = useNavigate();
     const state: { CourseGroupingRequest: CourseGroupingRequestDTO; api: string } = location.state;
 
-    const [selectedItem, setSelectedItem] = useState(null);
     const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO>();
     const [loading, setLoading] = useState<boolean>(false);
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
@@ -57,6 +58,12 @@ export default function CreateCourseGrouping() {
         isOpen: isCourseSelectionOpen,
         onOpen: onCourseSelectionOpen,
         onClose: onCourseSelectionClose,
+    } = useDisclosure();
+
+    const {
+        isOpen: isSearchCourseGroupingOpen,
+        onOpen: onSearchCourseGroupingOpen,
+        onClose: onSearchCourseGroupingClose,
     } = useDisclosure();
 
     const {
@@ -158,6 +165,7 @@ export default function CreateCourseGrouping() {
     ];
 
     useEffect(() => {
+        console.log("state", state.CourseGroupingRequest);
         requestCourseGroupingById(courseGroupingId);
         requestCourseSettings();
     }, [dossierId, courseGroupingId]);
@@ -243,13 +251,6 @@ export default function CreateCourseGrouping() {
         }
     }
 
-    const handleAddClick = () => {
-        if (selectedItem) {
-            appendSubGroup({ childGroupCommonIdentifier: selectedItem, groupingType: 0 });
-            setSelectedItem(null); // Reset selection after adding
-        }
-    };
-
     function displaySelectCourseModal() {
         return (
             <EditCourseModal
@@ -262,6 +263,16 @@ export default function CreateCourseGrouping() {
         );
     }
 
+    function displaySearchCourseGroupModal() {
+        return (
+            <SearchCourseGrouping
+                isOpen={isSearchCourseGroupingOpen}
+                onClose={onSearchCourseGroupingClose}
+                onSelectCourseGrouping={handleCourseGroupingSelect}
+            />
+        );
+    }
+
     function handleCourseSelect(res: CourseDataResponse) {
         appendCourse({
             concordiaCourseId: res.data.courseID,
@@ -270,9 +281,17 @@ export default function CreateCourseGrouping() {
         });
     }
 
+    function handleCourseGroupingSelect(res) {
+        appendSubGroup({
+            childGroupCommonIdentifier: res.commonIdentifier,
+            groupingType: res.groupingType,
+        });
+    }
+
     return (
         <>
             {displaySelectCourseModal()}
+            {displaySearchCourseGroupModal()}
 
             <Stack m={4}>
                 <Center m={4}>
@@ -336,7 +355,7 @@ export default function CreateCourseGrouping() {
                             <FormControl border="1px solid" borderRadius={5} p={2} borderColor={"gray.200"}>
                                 <FormLabel htmlFor="subGroupingReferences">Select the Sub Course Grouping:</FormLabel>
                                 <HStack>
-                                    <Button onClick={handleAddClick}>Add</Button>
+                                    <Button onClick={onSearchCourseGroupingOpen}>Add</Button>
                                 </HStack>
                                 {subGroupFields.map((field, index) => (
                                     <Box key={field.id} mt={2}>
