@@ -77,7 +77,7 @@ export default function DeleteCourse() {
                 catalog: catalog,
                 comment: comment,
             };
-            deleteCourse(courseDeletionRequest)
+            deleteCourse(dossierId, courseDeletionRequest)
                 .then(() => {
                     showToast(toast, "Success!", "Course deletion request successfully added.", "success");
                     toggleLoading(false);

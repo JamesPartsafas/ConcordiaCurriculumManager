@@ -51,8 +51,8 @@ export function modifyCourse(course: Course): Promise<unknown> {
     return axios.post(CourseAPIEndpoints.ModifyCourse, course);
 }
 
-export function deleteCourse(courseDeletionRequest: CourseDeletionRequestDTO): Promise<unknown> {
-    return axios.post(CourseAPIEndpoints.DeleteCourse, courseDeletionRequest);
+export function deleteCourse(dossierId: string, courseDeletionRequest: CourseDeletionRequestDTO): Promise<unknown> {
+    return axios.post(`${CourseAPIEndpoints.DeleteCourse}/${dossierId}`, courseDeletionRequest);
 }
 
 export function deleteCourseCreationRequest(dossierId: string, courseRequestId: string): Promise<unknown> {
