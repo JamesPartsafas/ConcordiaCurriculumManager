@@ -207,41 +207,6 @@ public class DossierServiceTest
     }
 
     [TestMethod]
-    public async Task GetDossierForUserOrThrow_ValidInput_ReturnsDossier()
-    {
-        var user = TestData.GetSampleUser();
-        var dossier = TestData.GetSampleDossier(user);
-
-        dossierRepository.Setup(d => d.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
-
-        var returnedDossier = await dossierService.GetDossierForUserOrThrow(dossier.Id, user.Id);
-
-        Assert.AreEqual(dossier.Id, returnedDossier.Id);
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public async Task GetDossierForUserOrThrow_DossierNotFound_Throws()
-    {
-        dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync((Dossier)null!);
-
-        await dossierService.GetDossierForUserOrThrow(Guid.NewGuid(), Guid.NewGuid());
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(BadRequestException))]
-    public async Task GetDossierForUserOrThrow_DossierDoesNotBelongToUser_Throws()
-    {
-        var user = TestData.GetSampleUser();
-        var dossier = TestData.GetSampleDossier();
-        dossierRepository.Setup(d => d.GetDossierByDossierId(It.IsAny<Guid>())).ReturnsAsync(dossier);
-
-        await dossierService.GetDossierForUserOrThrow(Guid.NewGuid(), Guid.NewGuid());
-
-        logger.Verify(logger => logger.LogWarning(It.IsAny<string>()));
-    }
-
-    [TestMethod]
     public async Task SaveCourseCreationRequest_ValidInput_Saves()
     {
         dossierRepository.Setup(d => d.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>())).ReturnsAsync(true);

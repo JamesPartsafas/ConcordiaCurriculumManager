@@ -75,7 +75,7 @@ public class CourseServiceTest
         var user = TestData.GetSampleUser();
         var dossier = TestData.GetSampleDossier(user);
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
-        dossierService.Setup(cr => cr.GetDossierForUserOrThrow(It.IsAny<Guid>(), user.Id)).ReturnsAsync(TestData.GetSampleDossier(user));
+        dossierService.Setup(cr => cr.GetDossierDetailsByIdOrThrow(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
 
         await courseService.InitiateCourseCreation(TestData.GetSampleCourseCreationInitiationDTO(dossier), Guid.NewGuid());
 
@@ -107,7 +107,7 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((Course?)null);
         courseRepository.Setup(cr => cr.GetMaxCourseId()).ReturnsAsync(5);
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
-        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
         dossierService.Setup(cr => cr.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>()))
             .ThrowsAsync(new Exception());
 
@@ -124,7 +124,7 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
         dossierService.Setup(cr => cr.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>()))
             .Returns(Task.CompletedTask);
-        dossierService.Setup(cr => cr.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(cr => cr.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
 
         var courseCreationRequest = await courseService.InitiateCourseCreation(TestData.GetSampleCourseCreationInitiationDTO(dossier), user.Id);
 
@@ -141,7 +141,7 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
         dossierService.Setup(cr => cr.SaveCourseCreationRequest(It.IsAny<CourseCreationRequest>()))
             .Returns(Task.CompletedTask);
-        dossierService.Setup(cr => cr.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(cr => cr.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
 
         var courseCreationRequest = await courseService.InitiateCourseCreation(TestData.GetSampleCourseCreationInitiationDTO(dossier), user.Id);
 
@@ -210,7 +210,7 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
-        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
         dossierService.Setup(cr => cr.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).ThrowsAsync(new Exception());
 
         await courseService.InitiateCourseModification(TestData.GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
@@ -225,7 +225,7 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
-        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
         dossierService.Setup(cr => cr.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).Returns(Task.CompletedTask);
 
         var courseModificationRequest = await courseService.InitiateCourseModification(TestData.GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
@@ -270,7 +270,7 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
-        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
         dossierService.Setup(cr => cr.SaveCourseModificationRequest(It.IsAny<CourseModificationRequest>())).Returns(Task.CompletedTask);
 
         var courseModificationRequest = await courseService.InitiateCourseModification(TestData.GetSampleCourseCreationModificationDTO(course, dossier), user.Id);
@@ -399,7 +399,7 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
-        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
         dossierService.Setup(cr => cr.SaveCourseDeletionRequest(It.IsAny<CourseDeletionRequest>())).ThrowsAsync(new Exception());
 
         await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
@@ -414,7 +414,7 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
-        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
         dossierService.Setup(cr => cr.SaveCourseDeletionRequest(It.IsAny<CourseDeletionRequest>())).Returns(Task.CompletedTask);
 
         var courseDeletionRequest = await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
@@ -473,7 +473,7 @@ public class CourseServiceTest
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseRepository.Setup(cr => cr.SaveCourse(It.IsAny<Course>())).ReturnsAsync(true);
-        dossierService.Setup(ds => ds.GetDossierForUserOrThrow(dossier.Id, user.Id)).ReturnsAsync(dossier);
+        dossierService.Setup(ds => ds.GetDossierDetailsByIdOrThrow(dossier.Id)).ReturnsAsync(dossier);
         dossierService.Setup(cr => cr.SaveCourseDeletionRequest(It.IsAny<CourseDeletionRequest>())).Returns(Task.CompletedTask);
 
         var courseDeletionRequest = await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
