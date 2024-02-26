@@ -52,6 +52,15 @@ public class DossierReviewRepository : IDossierReviewRepository
             .ThenInclude(modificationRequests => modificationRequests.Course)
             .Include(dossier => dossier.CourseDeletionRequests)
             .ThenInclude(deletionRequests => deletionRequests.Course)
+            .Include(dossier => dossier.CourseGroupingRequests)
+            .ThenInclude(cgr => cgr.CourseGrouping)
+            .ThenInclude(cg => cg!.CourseIdentifiers)
+            .Include(dossier => dossier.CourseGroupingRequests)
+            .ThenInclude(cgr => cgr.CourseGrouping)
+            .ThenInclude(cg => cg!.SubGroupings)
+            .Include(dossier => dossier.CourseGroupingRequests)
+            .ThenInclude(cgr => cgr.CourseGrouping)
+            .ThenInclude(cg => cg!.SubGroupingReferences)
             .FirstOrDefaultAsync();
     }
 
@@ -67,6 +76,15 @@ public class DossierReviewRepository : IDossierReviewRepository
             .ThenInclude(modificationRequests => modificationRequests.Course)
             .Include(dossier => dossier.CourseDeletionRequests)
             .ThenInclude(deletionRequests => deletionRequests.Course)
+            .Include(dossier => dossier.CourseGroupingRequests)
+            .ThenInclude(cgr => cgr.CourseGrouping)
+            .ThenInclude(cg => cg!.CourseIdentifiers)
+            .Include(dossier => dossier.CourseGroupingRequests)
+            .ThenInclude(cgr => cgr.CourseGrouping)
+            .ThenInclude(cg => cg!.SubGroupings)
+            .Include(dossier => dossier.CourseGroupingRequests)
+            .ThenInclude(cgr => cgr.CourseGrouping)
+            .ThenInclude(cg => cg!.SubGroupingReferences)
             .Include(dossier => dossier.Discussion)
             .ThenInclude(discussion => discussion == null ? null : discussion.Messages)
             .FirstOrDefaultAsync();
