@@ -28,6 +28,7 @@ import {
     AllCourseSettings,
     CourseCreationRequest,
     CourseCreationRequestDTOResponse,
+    CourseDataResponse,
     CourseDeletionRequest,
     CourseModificationRequest,
     CourseModificationRequestDTOResponse,
@@ -44,7 +45,7 @@ import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { showToast } from "../../utils/toastUtils";
 import DeleteAlert from "../../shared/DeleteAlert";
-import EditCourseModal from "./EditCourseModal";
+import EditCourseModal from "./SelectCourseModal";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import EditApprovalStagesModal from "./EditApprovalStagesModal";
 import { UserContext } from "../../App";
@@ -177,6 +178,15 @@ export default function DossierDetails() {
     }
 
     // course related functions
+    function handleCourseSelect(res: CourseDataResponse) {
+        navigate(
+            BaseRoutes.EditCourse.replace(":id", res.data.catalog.toString()).replace(
+                ":dossierId",
+                dossierId
+            ),
+            { state: res.data }
+        );
+    }
 
     // creations
     function createModificationRequest() {
@@ -186,6 +196,7 @@ export default function DossierDetails() {
                 onClose={onEditClose}
                 allCourseSettings={courseSettings}
                 dossierId={dossierId}
+                onCourseSelect= {handleCourseSelect}
             ></EditCourseModal>
         );
     }
@@ -892,7 +903,7 @@ export default function DossierDetails() {
                                                 }
                                                 onClick={() => {
                                                     navigate(
-                                                        BaseRoutes.EditCourseGrouping.replace(":dossierId", dossierId),
+                                                        BaseRoutes.EditCourseGrouping.replace(":dossierId", dossierId).replace(":courseGroupingId", courseGroupingCreationRequest.courseGrouping.id),
                                                         // changed the name to CourseGroupingRequest so that the edits can use the same page
                                                         {
                                                             state: {

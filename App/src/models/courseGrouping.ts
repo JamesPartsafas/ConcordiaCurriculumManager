@@ -21,6 +21,8 @@ export enum GroupingTypeEnum {
 }
 
 export interface CourseIdentifierDTO {
+    subject?: string | null;
+    catalog?: number | null;
     concordiaCourseId: number;
 }
 

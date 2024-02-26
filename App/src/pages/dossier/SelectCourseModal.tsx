@@ -27,6 +27,7 @@ interface EditCourseModalProps {
     onClose: () => void;
     allCourseSettings: AllCourseSettings | null;
     dossierId: string;
+    onCourseSelect: (course: CourseDataResponse) => void;
 }
 
 interface EditCourseModalForm {
@@ -65,13 +66,8 @@ export default function EditCourseModal(props: EditCourseModalProps) {
             .then(
                 (res: CourseDataResponse) => {
                     setLoading(false);
-                    navigate(
-                        BaseRoutes.EditCourse.replace(":id", data.catalog.toString()).replace(
-                            ":dossierId",
-                            props.dossierId
-                        ),
-                        { state: res.data }
-                    );
+                    props.onCourseSelect(res);
+                    handleClose();
                 },
                 (rej) => {
                     setLoading(false);
