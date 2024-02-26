@@ -217,7 +217,7 @@ public class CourseService : ICourseService
 
         await VerifyCourseIsNotInCourseGroupingOrThrow(oldCourse);
 
-        Dossier dossier = await _dossierService.GetDossierForUserOrThrow(deletion.DossierId, userId);
+        Dossier dossier = await _dossierService.GetDossierDetailsByIdOrThrow(deletion.DossierId);
 
         var newDeletedCourse = Course.CloneCourseForDeletionRequest(oldCourse);
 

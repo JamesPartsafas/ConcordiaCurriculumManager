@@ -57,6 +57,18 @@ public class CourseController : Controller
         return Ok(response);
     }
 
+    [HttpGet(nameof(GetCourseData) + "/{subject}" + "/{catalog}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course data retrieved")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetCourseData([FromRoute, Required] string subject, string catalog)
+    {
+        var courseData = await _courseService.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog);
+        var courseDataDTOs = _mapper.Map<CourseDataDTO>(courseData);
+        _logger.LogInformation(string.Join(",", courseDataDTOs));
+        return Ok(courseDataDTOs);
+    }
+
     [HttpPost(nameof(InitiateCourseCreation))]
     [Consumes(typeof(CourseCreationInitiationDTO), MediaTypeNames.Application.Json)]
     [Authorize(Roles = RoleNames.Initiator)]
@@ -88,21 +100,9 @@ public class CourseController : Controller
         return Created($"/{nameof(InitiateCourseModification)}", courseModificationRequestDTO);
     }
 
-    [HttpGet(nameof(GetCourseData) + "/{subject}" + "/{catalog}")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Course data retrieved")]
-    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
-    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
-    public async Task<ActionResult> GetCourseData([FromRoute, Required] string subject, string catalog)
-    {
-        var courseData = await _courseService.GetCourseDataWithSupportingFilesOrThrowOnDeleted(subject, catalog);
-        var courseDataDTOs = _mapper.Map<CourseDataDTO>(courseData);
-        _logger.LogInformation(string.Join(",", courseDataDTOs));
-        return Ok(courseDataDTOs);
-    }
-
-    [HttpPost(nameof(InitiateCourseDeletion))]
+    [HttpPost(nameof(InitiateCourseDeletion) + "/{dossierId}")]
     [Consumes(typeof(CourseDeletionInitiationDTO), MediaTypeNames.Application.Json)]
-    [Authorize(Roles = RoleNames.Initiator)]
+    [Authorize(Policies.IsOwnerOfDossier)]
     [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status201Created, "Course deletion created successfully", typeof(CourseDeletionRequestDTO))]
