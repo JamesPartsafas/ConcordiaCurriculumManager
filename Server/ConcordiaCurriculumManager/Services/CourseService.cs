@@ -182,7 +182,7 @@ public class CourseService : ICourseService
 
         var oldCourse = await GetCourseDataOrThrowOnDeleted(modification.Subject, modification.Catalog);
 
-        Dossier dossier = await _dossierService.GetDossierForUserOrThrow(modification.DossierId, userId);
+        Dossier dossier = await _dossierService.GetDossierDetailsByIdOrThrow(modification.DossierId);
 
         var newModifiedCourse = Course.CreateCourseFromDTOData(modification, oldCourse.CourseID, null);
 
