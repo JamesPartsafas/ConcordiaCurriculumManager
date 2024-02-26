@@ -40,6 +40,11 @@ import { getAllCourseSettings } from "../../services/course";
 import { AllCourseSettings, CourseDataResponse } from "../../models/course";
 import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
 
+interface CourseGroupingSubreference {
+    name: string;
+    childGroupCommonIdentifier: string;
+}
+
 export default function CreateCourseGrouping() {
     const location = useLocation();
     const toast = useToast(); // Use the useToast hook
@@ -52,6 +57,7 @@ export default function CreateCourseGrouping() {
     const [loading, setLoading] = useState<boolean>(false);
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
     const [courseIdentifiers, setCourseIdentifiers] = useState<CourseIdentifierDTO[]>([]);
+    const [courseGroupingSubreferences, setCourseGroupingSubreferences] = useState<CourseGroupingSubreference[]>([]);
 
     const {
         isOpen: isCourseSelectionOpen,
@@ -182,6 +188,16 @@ export default function CreateCourseGrouping() {
 
                 setCourseIdentifiers((prev) => [...prev, courseIdentifier]);
             });
+
+            response.data.subGroupings.forEach((subGroup) => {
+                const subGroupReference = {
+                    name: subGroup.name,
+                    childGroupCommonIdentifier: subGroup.commonIdentifier,
+                };
+
+                //add the subGroupReference to the state
+                setCourseGroupingSubreferences((prev) => [...prev, subGroupReference]);
+            });
         });
     }
 
@@ -282,6 +298,7 @@ export default function CreateCourseGrouping() {
 
     function handleCourseGroupingSelect(res) {
         appendSubGroup({
+            name: res.name,
             childGroupCommonIdentifier: res.commonIdentifier,
             groupingType: res.groupingType,
         });
@@ -367,6 +384,13 @@ export default function CreateCourseGrouping() {
                                         >
                                             <div>
                                                 {index + 1 + ". "}
+                                                {field.name ||
+                                                    courseGroupingSubreferences?.find(
+                                                        (c) =>
+                                                            c.childGroupCommonIdentifier ===
+                                                            field.childGroupCommonIdentifier
+                                                    )?.name}
+                                                {" - "}
                                                 {field.childGroupCommonIdentifier}
                                             </div>
                                             <ButtonGroup

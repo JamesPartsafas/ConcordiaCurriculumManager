@@ -20,16 +20,13 @@ import {
     ModalHeader,
     ModalCloseButton,
     ModalBody,
+    Select,
 } from "@chakra-ui/react";
 import Button from "../Button";
 import { showToast } from "../../utils/toastUtils";
 import { GetCourseGroupingByName } from "../../services/courseGrouping";
 import { useState } from "react";
-import {
-    CourseGroupingDTO,
-    CourseGroupingModificationInputDTO,
-    MultiCourseGroupingDTO,
-} from "../../models/courseGrouping";
+import { CourseGroupingDTO, MultiCourseGroupingDTO } from "../../models/courseGrouping";
 
 export default function SearchCourseGrouping(props: {
     isOpen;
@@ -44,6 +41,7 @@ export default function SearchCourseGrouping(props: {
 
     const [courseGroupings, setCourseGroupings] = useState<CourseGroupingDTO[]>([]);
     const [selectedCourseGrouping, setSelectedCourseGrouping] = useState<CourseGroupingDTO>(null);
+    const [groupingType, setGroupingType] = useState(0);
 
     const searchByName = (name: string) => {
         GetCourseGroupingByName(name)
@@ -80,7 +78,7 @@ export default function SearchCourseGrouping(props: {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             ({ id, parentGroupId, ...rest }) => rest
         );
-        const courseGroupingRequestDTO: CourseGroupingModificationInputDTO = {
+        const courseGroupingRequestDTO = {
             name: selectedCourseGrouping.name,
             requiredCredits: selectedCourseGrouping.requiredCredits,
             isTopLevel: selectedCourseGrouping.isTopLevel,
@@ -90,6 +88,7 @@ export default function SearchCourseGrouping(props: {
             subGroupingReferences: subGroupingReferences ? subGroupingReferences : [],
             courseIdentifiers: selectedCourseGrouping.courseIdentifiers,
             commonIdentifier: selectedCourseGrouping.commonIdentifier,
+            groupingType: groupingType,
         };
 
         console.log(courseGroupingRequestDTO);
