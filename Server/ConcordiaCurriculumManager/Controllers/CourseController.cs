@@ -69,9 +69,9 @@ public class CourseController : Controller
         return Ok(courseDataDTOs);
     }
 
-    [HttpPost(nameof(InitiateCourseCreation))]
+    [HttpPost(nameof(InitiateCourseCreation) + "/{dossierId}")]
     [Consumes(typeof(CourseCreationInitiationDTO), MediaTypeNames.Application.Json)]
-    [Authorize(Roles = RoleNames.Initiator)]
+    [Authorize(Policies.IsOwnerOfDossier)]
     [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     [SwaggerResponse(StatusCodes.Status201Created, "Course creation dossier created successfully", typeof(CourseCreationRequestDTO))]

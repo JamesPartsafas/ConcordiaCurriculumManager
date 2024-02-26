@@ -132,7 +132,7 @@ public class CourseService : ICourseService
             throw new BadRequestException("A course request for " + initiation.Subject + " " + initiation.Catalog + " already exists in this dossier.");
         }
 
-        Dossier dossier = await _dossierService.GetDossierForUserOrThrow(initiation.DossierId, userId);
+        Dossier dossier = await _dossierService.GetDossierDetailsByIdOrThrow(initiation.DossierId);
 
         var courseInProposal = await _courseRepository.GetCourseInProposalBySubjectAndCatalog(initiation.Subject, initiation.Catalog);
 
