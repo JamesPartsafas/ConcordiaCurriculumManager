@@ -47,8 +47,8 @@ export function addCourse(course: Course): Promise<unknown> {
     return axios.post(CourseAPIEndpoints.AddCourse, course);
 }
 
-export function modifyCourse(course: Course): Promise<unknown> {
-    return axios.post(CourseAPIEndpoints.ModifyCourse, course);
+export function modifyCourse(dossierId: string, course: Course): Promise<unknown> {
+    return axios.post(`${CourseAPIEndpoints.ModifyCourse}/${dossierId}`, course);
 }
 
 export function deleteCourse(dossierId: string, courseDeletionRequest: CourseDeletionRequestDTO): Promise<unknown> {
