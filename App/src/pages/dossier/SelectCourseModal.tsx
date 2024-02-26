@@ -18,7 +18,6 @@ import AutocompleteInput from "../../components/Select";
 import { AllCourseSettings, CourseDataResponse } from "../../models/course";
 import { getCourseData } from "../../services/course";
 import { showToast } from "../../utils/toastUtils";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 interface EditCourseModalProps {
