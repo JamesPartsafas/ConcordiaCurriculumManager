@@ -57,6 +57,9 @@ public class CourseGroupingRepository : ICourseGroupingRepository
     public async Task<CourseGroupingRequest?> GetCourseGroupingRequestById(Guid requestId) => await _dbContext.CourseGroupingRequest
         .Where(x => x.Id.Equals(requestId))
         .Include(r => r.CourseGrouping)
+        .ThenInclude(cg => cg!.CourseIdentifiers)
+        .Include(r => r.CourseGrouping)
+        .ThenInclude(cg => cg!.SubGroupingReferences)
         .FirstOrDefaultAsync();
 
     public async Task<CourseGrouping?> GetCourseGroupingById(Guid groupingId) => await _dbContext.CourseGroupings

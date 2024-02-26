@@ -23,6 +23,7 @@ public interface ICourseGroupingService
     public Task<CourseGroupingRequest> EditCourseGroupingCreation(Guid originalRequestId, CourseGroupingCreationRequestDTO dto);
     public Task<CourseGroupingRequest> EditCourseGroupingModification(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
     public Task<CourseGroupingRequest> EditCourseGroupingDeletion(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
+    public Task<CourseGroupingRequest> GetCourseGroupingRequest(Guid groupingRequestId);
     public Task DeleteCourseGroupingRequest(Guid dossierId, Guid requestId);
     public Task<CourseGrouping> PublishCourseGrouping(Guid commonIdentifier);
     public Task<IDictionary<Guid, int>> GetGroupingVersions(Dossier dossier);
@@ -204,6 +205,16 @@ public class CourseGroupingService : ICourseGroupingService
         await DeleteCourseGroupingRequest(dto.DossierId, originalRequestId);
 
         return await InitiateCourseGroupingDeletion(dto);
+    }
+
+    public async Task<CourseGroupingRequest> GetCourseGroupingRequest(Guid groupingRequestId)
+    {
+        var request = await _courseGroupingRepository.GetCourseGroupingRequestById(groupingRequestId)
+            ?? throw new NotFoundException($"No grouping request was found for Id {groupingRequestId}");
+
+        await QueryRelatedCourseGroupingData(request.CourseGrouping!, false);
+
+        return request;
     }
 
     private async Task VerifyEditRequestsMatchOrThrow(Guid originalRequestId, CourseGroupingModificationRequestDTO dto)
