@@ -714,8 +714,8 @@ export default function DossierReview() {
                                     </Heading>
                                 </Center>
                                 <Stack>
-                                    <Tabs defaultIndex={currentGroup?.stageIndex}>
-                                        <TabList>
+                                    <Tabs defaultIndex={currentGroup?.stageIndex} isFitted variant="enclosed">
+                                        <TabList overflowX="scroll" overflowY="hidden">
                                             <Tab>All Groups</Tab>
                                             {dossierDetails?.approvalStages
                                                 ?.sort((a, b) => a.stageIndex - b.stageIndex)
