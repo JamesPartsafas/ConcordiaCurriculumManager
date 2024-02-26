@@ -77,7 +77,10 @@ export default function CreateCourseGrouping() {
         formState: { errors, isDirty },
     } = useForm<CourseGroupingRequestDTO>({
         defaultValues: {
-            ...state.CourseGroupingRequest,
+            courseGrouping: {
+                isTopLevel: false,
+            },
+            ...state?.CourseGroupingRequest,
         },
     });
 
@@ -170,8 +173,9 @@ export default function CreateCourseGrouping() {
     ];
 
     useEffect(() => {
-        console.log("state", state.CourseGroupingRequest);
-        requestCourseGroupingById(courseGroupingId);
+        if (state?.api === "editGroupingCreationRequest") {
+            requestCourseGroupingById(courseGroupingId);
+        }
         requestCourseSettings();
     }, [dossierId, courseGroupingId]);
 
