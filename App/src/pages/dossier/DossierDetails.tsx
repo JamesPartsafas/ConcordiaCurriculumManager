@@ -340,6 +340,7 @@ export default function DossierDetails() {
                 isOpen={isSearchCourseGroupingOpen}
                 onClose={onSearchCourseGroupingClose}
                 onSelectCourseGrouping={handleCourseGroupingSelect}
+                isEdit={true}
             />
         );
     }

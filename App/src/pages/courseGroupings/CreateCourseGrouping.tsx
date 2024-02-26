@@ -344,6 +344,7 @@ export default function CreateCourseGrouping() {
                 isOpen={isSearchCourseGroupingOpen}
                 onClose={onSearchCourseGroupingClose}
                 onSelectCourseGrouping={handleCourseGroupingSelect}
+                isEdit={false}
             />
         );
     }

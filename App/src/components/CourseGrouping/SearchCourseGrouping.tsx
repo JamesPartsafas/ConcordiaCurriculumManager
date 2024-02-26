@@ -32,6 +32,7 @@ export default function SearchCourseGrouping(props: {
     isOpen;
     onClose: () => void;
     onSelectCourseGrouping: (courseGrouping) => void;
+    isEdit?: boolean;
 }) {
     const toast = useToast();
 
@@ -173,11 +174,13 @@ export default function SearchCourseGrouping(props: {
                             </TableContainer>
                         </Stack>
                         <Stack>
-                            {/* Add Select to chose Grouping type subgrouping or optional grouping */}
-                            <Select onChange={(e) => setGroupingType(parseInt(e.target.value))}>
-                                <option value="0">Sub-Grouping</option>
-                                <option value="1">Optional Grouping</option>
-                            </Select>
+                            {!props.isEdit && (
+                                <Select onChange={(e) => setGroupingType(parseInt(e.target.value))}>
+                                    <option value="0">Sub-Grouping</option>
+                                    <option value="1">Optional Grouping</option>
+                                </Select>
+                            )}
+
                             <Button
                                 style="primary"
                                 width="auto"

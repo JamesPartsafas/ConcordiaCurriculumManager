@@ -18,7 +18,6 @@ import AutocompleteInput from "../../components/Select";
 import { AllCourseSettings, CourseDataResponse } from "../../models/course";
 import { getCourseData } from "../../services/course";
 import { showToast } from "../../utils/toastUtils";
-import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -46,7 +45,6 @@ export default function SelectCourseModal(props: EditCourseModalProps) {
     } = useForm<EditCourseModalForm>();
 
     const toast = useToast();
-    const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
 
     function handleClose() {
