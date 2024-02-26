@@ -43,8 +43,8 @@ export function getAllCourseSettings(): Promise<GetAllCourseSettingsResponse> {
     return axios.get(CourseAPIEndpoints.GetAllCourseSettings);
 }
 
-export function addCourse(course: Course): Promise<unknown> {
-    return axios.post(CourseAPIEndpoints.AddCourse, course);
+export function addCourse(dossierId: string, course: Course): Promise<unknown> {
+    return axios.post(`${CourseAPIEndpoints.AddCourse}/${dossierId}`, course);
 }
 
 export function modifyCourse(dossierId: string, course: Course): Promise<unknown> {

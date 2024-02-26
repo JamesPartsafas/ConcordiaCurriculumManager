@@ -254,7 +254,7 @@ export default function AddCourse() {
                 comment: comment,
             };
             if (pathname.includes("add-course")) {
-                addCourse(course)
+                addCourse(dossierId, course)
                     .then(() => {
                         showToast(toast, "Success!", "Course added successfully.", "success");
                         toggleLoading(false);
