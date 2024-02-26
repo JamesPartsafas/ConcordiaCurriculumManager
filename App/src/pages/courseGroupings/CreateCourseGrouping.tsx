@@ -391,7 +391,7 @@ export default function CreateCourseGrouping() {
                                                             field.childGroupCommonIdentifier
                                                     )?.name}
                                                 {" - "}
-                                                {field.childGroupCommonIdentifier}
+                                                {field.groupingType === 0 ? " (Sub Grouping)" : " (Optional Grouping)"}
                                             </div>
                                             <ButtonGroup
                                                 size="sm"
