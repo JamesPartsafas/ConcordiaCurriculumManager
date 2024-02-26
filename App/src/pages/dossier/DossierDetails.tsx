@@ -1066,7 +1066,25 @@ export default function DossierDetails() {
                                                     dossierDetails?.state !== DossierStateEnum.Created &&
                                                     !isUserACurrentReviewer()
                                                 }
-                                                onClick={() => {}}
+                                                onClick={() => {
+                                                    navigate(
+                                                        BaseRoutes.EditCourseGrouping.replace(
+                                                            ":dossierId",
+                                                            dossierId
+                                                        ).replace(
+                                                            ":courseGroupingId",
+                                                            courseGroupingModificationRequest.courseGrouping.id
+                                                        ),
+                                                        // changed the name to CourseGroupingRequest so that the edits can use the same page
+                                                        {
+                                                            state: {
+                                                                CourseGroupingRequest:
+                                                                    courseGroupingModificationRequest,
+                                                                api: "editGroupingModificationRequest",
+                                                            },
+                                                        }
+                                                    );
+                                                }}
                                             >
                                                 Edit
                                             </Button>

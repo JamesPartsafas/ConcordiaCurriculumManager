@@ -29,6 +29,7 @@ import {
 } from "@chakra-ui/react";
 import {
     EditCourseGroupingCreation,
+    EditCourseGroupingModification,
     GetCourseGrouping,
     InitiateCourseGroupingCreation,
     InitiateCourseGroupingModification,
@@ -175,7 +176,11 @@ export default function CreateCourseGrouping() {
     ];
 
     useEffect(() => {
-        if (state?.api === "editGroupingCreationRequest" || state?.api === "addGroupingModificationRequest") {
+        if (
+            state?.api === "editGroupingCreationRequest" ||
+            state?.api === "addGroupingModificationRequest" ||
+            state?.api === "editGroupingModificationRequest"
+        ) {
             requestCourseGroupingById(courseGroupingId);
         }
         requestCourseSettings();
@@ -282,6 +287,29 @@ export default function CreateCourseGrouping() {
             });
     }
 
+    function requestEditCourseGroupingModification(
+        dossierId: string,
+        courseGroupingId: string,
+        courseGroupingModificationRequest: CourseGroupingModificationRequestDTO
+    ) {
+        EditCourseGroupingModification(dossierId, courseGroupingId, courseGroupingModificationRequest)
+            .then(
+                () => {
+                    showToast(toast, "Success!", "Course grouping modification request edited.", "success");
+                    setLoading(false);
+                    navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
+                },
+                () => {
+                    showToast(toast, "Error!", "Course grouping modification request could not be edited.", "error");
+                    setLoading(false);
+                }
+            )
+            .catch(() => {
+                showToast(toast, "Error!", "Course grouping modification request could not be edited.", "error");
+                setLoading(false);
+            });
+    }
+
     function onSubmit(data) {
         data.dossierId = dossierId;
         data.courseGrouping.school = Number(data.courseGrouping.school);
@@ -291,6 +319,8 @@ export default function CreateCourseGrouping() {
             requestEditCourseGroupingCreation(dossierId, state.CourseGroupingRequest.id, data);
         } else if (state?.api === "addGroupingModificationRequest") {
             requestInitiateCourseGroupingModification(dossierId, data);
+        } else if (state?.api === "editGroupingModificationRequest") {
+            requestEditCourseGroupingModification(dossierId, state.CourseGroupingRequest.id, data);
         } else {
             requestInitiateCourseGroupingCreation(dossierId, data);
         }
@@ -342,7 +372,9 @@ export default function CreateCourseGrouping() {
             <Stack m={4}>
                 <Center m={4}>
                     <Heading>
-                        {state?.api === "editGroupingCreationRequest" || state?.api === "addGroupingModificationRequest"
+                        {state?.api === "editGroupingCreationRequest" ||
+                        state?.api === "addGroupingModificationRequest" ||
+                        state?.api === "editGroupingModificationRequest"
                             ? "Edit Course Grouping"
                             : "Add Course Grouping"}
                     </Heading>
