@@ -24,6 +24,7 @@ public interface ICourseGroupingService
     public Task<CourseGroupingRequest> EditCourseGroupingDeletion(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
     public Task DeleteCourseGroupingRequest(Guid dossierId, Guid requestId);
     public Task<CourseGrouping> PublishCourseGrouping(Guid commonIdentifier);
+    public Task<IDictionary<Guid, int>> GetGroupingVersions(Dossier dossier);
 }
 
 public class CourseGroupingService : ICourseGroupingService
@@ -251,5 +252,26 @@ public class CourseGroupingService : ICourseGroupingService
         _logger.LogInformation($"A new course grouping version {newCourseGrouping.Version} with common ID {commonIdentifier} was published.");
 
         return newCourseGrouping;
+    }
+
+    public async Task<IDictionary<Guid, int>> GetGroupingVersions(Dossier dossier)
+    {
+        var currentVersions = new Dictionary<Guid, int>();
+        foreach (var groupingRequest in dossier.CourseGroupingRequests)
+        {
+            if (groupingRequest == null) continue;
+            var grouping = groupingRequest.CourseGrouping;
+            if (grouping == null) continue;
+
+            int version = 0;
+
+            var currentGrouping = await _courseGroupingRepository.GetCourseGroupingByCommonIdentifierAnyState(grouping.CommonIdentifier);
+            if (currentGrouping != null && currentGrouping.Version != null)
+                version = (int)currentGrouping.Version;
+
+            currentVersions.Add(grouping.CommonIdentifier, version);
+        }
+
+        return currentVersions;
     }
 }

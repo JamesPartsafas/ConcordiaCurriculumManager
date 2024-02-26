@@ -107,7 +107,7 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
             });
         }
 
-        public void MarkAsAccepted(ICollection<CourseVersion> currentVersions, User user)
+        public void MarkAsAccepted(ICollection<CourseVersion> currentCourseVersions, IDictionary<Guid, int> currentGroupingVersions, User user)
         {
             if (!IsInFinalStageOfReviewPipeline())
                 throw new BadRequestException("The dossier cannot be accepted as it is not in the final stage of its approval pipeline");
@@ -119,13 +119,16 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
             State = DossierStateEnum.Approved;
 
             foreach (var creationRequest in CourseCreationRequests)
-                creationRequest.MarkAsAccepted(currentVersions);
+                creationRequest.MarkAsAccepted(currentCourseVersions);
 
             foreach (var modificationRequest in CourseModificationRequests)
-                modificationRequest.MarkAsAccepted(currentVersions);
+                modificationRequest.MarkAsAccepted(currentCourseVersions);
 
             foreach (var deletionRequest in CourseDeletionRequests)
-                deletionRequest.MarkAsDeleted(currentVersions);
+                deletionRequest.MarkAsDeleted(currentCourseVersions);
+
+            foreach (var groupingRequest in CourseGroupingRequests)
+                groupingRequest.MarkAsAccepted(currentGroupingVersions);
 
             var currentOrderIndex = (ApprovalHistories.Max(h => (int?)h.OrderIndex)) ?? 0;
 

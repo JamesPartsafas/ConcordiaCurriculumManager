@@ -32,6 +32,7 @@ public class DossierReviewService : IDossierReviewService
     private readonly IUserAuthenticationService _userAuthenticationService;
     private readonly IEmailService _emailService;
     private readonly ICourseRepository _courseRepository;
+    private readonly ICourseGroupingService _courseGroupingService;
 
     public DossierReviewService(
         ILogger<DossierReviewService> logger,
@@ -42,7 +43,8 @@ public class DossierReviewService : IDossierReviewService
         IDossierReviewRepository dossierReviewRepository,
         IUserAuthenticationService userAuthenticationService,
         IEmailService emailService,
-        ICourseRepository courseRepository)
+        ICourseRepository courseRepository,
+        ICourseGroupingService courseGroupingService)
     {
         _logger = logger;
         _dossierService = dossierService;
@@ -53,6 +55,7 @@ public class DossierReviewService : IDossierReviewService
         _userAuthenticationService = userAuthenticationService;
         _emailService = emailService;
         _courseRepository = courseRepository;
+        _courseGroupingService = courseGroupingService;
     }
 
     public async Task SubmitDossierForReview(DossierSubmissionDTO dto)
@@ -169,8 +172,11 @@ public class DossierReviewService : IDossierReviewService
     private async Task AcceptDossierChanges(Dossier dossier, User user)
     {
         var courseVersions = await _courseService.GetCourseVersions(dossier);
+        var groupingVersions = await _courseGroupingService.GetGroupingVersions(dossier);
 
-        dossier.MarkAsAccepted(courseVersions, user);
+        dossier.MarkAsAccepted(courseVersions, groupingVersions, user);
+
+        await _dossierService.VerifyDossierStateIsValid(dossier);
 
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
         var emailAddress = dossier.Initiator?.Email;

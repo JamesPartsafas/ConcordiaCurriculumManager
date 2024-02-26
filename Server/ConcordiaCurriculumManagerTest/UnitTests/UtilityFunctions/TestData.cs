@@ -467,6 +467,19 @@ public static class TestData
         };
     }
 
+    public static IDictionary<Guid, int> GetSampleGroupingVersions()
+    {
+        return new Dictionary<Guid, int>
+        {
+            {
+                Guid.NewGuid(), 3
+            },
+            {
+                Guid.NewGuid(), 5
+            }
+        };
+    }
+
     public static ApprovalStage GetSampleApprovalStage()
     {
         return new ApprovalStage
