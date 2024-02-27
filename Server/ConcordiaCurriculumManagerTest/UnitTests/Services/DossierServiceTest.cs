@@ -1,6 +1,7 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
@@ -341,7 +342,7 @@ public class DossierServiceTest
     [TestMethod]
     public async Task GetChangesAcrossAllDossiers_ValidCall_ReturnsCourseChanges()
     {
-        dossierRepository.Setup(d => d.GetChangesAcrossAllDossiers()).ReturnsAsync(new List<Course> { TestData.GetSampleAcceptedCourse() });
+        dossierRepository.Setup(d => d.GetChangesAcrossAllDossiers()).ReturnsAsync((new List<Course> { TestData.GetSampleAcceptedCourse() }, new List<CourseGrouping> { TestData.GetSampleAcceptedCourseGrouping() }));
 
         var courseChanges = await dossierService.GetChangesAcrossAllDossiers();
 
