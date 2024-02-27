@@ -531,9 +531,17 @@ public static class TestData
             {
                 GetSampleCourseDeletionRequest()
             },
+            CourseGroupingRequests = new List<CourseGroupingRequest>
+            {
+                GetSampleCourseGroupingRequest()
+            },
             OldCourses = new List<Course>
             {
                 GetSampleCourse()
+            },
+            OldCourseGroupings = new List<CourseGrouping>
+            { 
+                GetSampleCourseGrouping()
             }
         };
     }
@@ -656,6 +664,63 @@ public static class TestData
                         School = SchoolEnum.GinaCody,
                         State = CourseGroupingStateEnum.Accepted,
                         Published = true,
+                        SubGroupingReferences = new List<CourseGroupingReference>(),
+                        SubGroupings = new List<CourseGrouping>(),
+                        CourseIdentifiers = new List<CourseIdentifier>() { { new CourseIdentifier { ConcordiaCourseId = course.CourseID } } },
+                        Courses = new List<Course>() { { course } }
+                    }
+                }
+            },
+            CourseIdentifiers = new List<CourseIdentifier>() { { new CourseIdentifier { ConcordiaCourseId = course.CourseID } } },
+            Courses = new List<Course>() { { course } }
+        };
+    }
+
+    public static CourseGrouping GetSampleAcceptedCourseGrouping()
+    {
+        var id1 = Guid.NewGuid();
+        var id2 = Guid.NewGuid();
+        var common1 = Guid.NewGuid();
+        var common2 = Guid.NewGuid();
+        var course = GetSampleAcceptedCourse();
+
+        return new CourseGrouping
+        {
+            Id = id1,
+            CommonIdentifier = common1,
+            Name = "Top level",
+            RequiredCredits = "30.00",
+            IsTopLevel = true,
+            School = SchoolEnum.GinaCody,
+            State = CourseGroupingStateEnum.Accepted,
+            Published = false,
+            Version = 2,
+            CourseGroupingRequest = GetSampleCourseGroupingRequest(),
+            SubGroupingReferences = new List<CourseGroupingReference>
+            {
+                {
+                    new CourseGroupingReference
+                    {
+                        ParentGroupId = id1,
+                        ChildGroupCommonIdentifier = common2,
+                        GroupingType = GroupingTypeEnum.SubGrouping
+                    }
+                }
+            },
+            SubGroupings = new List<CourseGrouping>
+            {
+                {
+                    new CourseGrouping
+                    {
+                        Id = id2,
+                        CommonIdentifier = common2,
+                        Name = "subgroup",
+                        RequiredCredits = "10.00",
+                        IsTopLevel = false,
+                        School = SchoolEnum.GinaCody,
+                        State = CourseGroupingStateEnum.Accepted,
+                        Published = false,
+                        Version = 2,
                         SubGroupingReferences = new List<CourseGroupingReference>(),
                         SubGroupings = new List<CourseGrouping>(),
                         CourseIdentifiers = new List<CourseIdentifier>() { { new CourseIdentifier { ConcordiaCourseId = course.CourseID } } },
