@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
     ApprovalStage,
     DossierDetailsDTO,
@@ -44,6 +44,7 @@ import { showToast } from "../../utils/toastUtils";
 import { UserContext } from "../../App";
 import { UserRoles } from "../../models/user";
 import DossierHistoryModal from "./DossierHistoryModal";
+import { SignalRManager } from "../../utils/SignalRManager";
 
 export default function DossierReview() {
     const { dossierId } = useParams();
@@ -61,12 +62,32 @@ export default function DossierReview() {
     const [isGroupMaster, setIsGroupMaster] = useState(false);
     const [isPartOfCurrentStageGroup, setIsPartOfCurrentStageGroup] = useState(false);
     const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
+    const signalRConnectionRef = useRef<SignalRManager | null>(null);
     const user = useContext(UserContext);
 
     const navigate = useNavigate();
+    const useWebSocket = true;
 
     useEffect(() => {
         requestDossierDetails(dossierId);
+
+        if (useWebSocket) {
+            const connection = new SignalRManager(dossierId, {
+                handleMessageReceived: handleWebSocketMessageReceived,
+                handleError: (error: string) => {
+                    showToast(toast, "Error!", error, "error");
+                },
+            });
+
+            connection.startConnection();
+            signalRConnectionRef.current = connection;
+        }
+
+        return () => {
+            if (useWebSocket) {
+                signalRConnectionRef.current?.endConnection();
+            }
+        };
     }, [dossierId]);
 
     async function requestDossierDetails(dossierId: string) {
@@ -309,23 +330,27 @@ export default function DossierReview() {
                 groupId: currentGroup?.groupId,
             };
 
-            reviewDossier(dossierId, dossierForReviewDTO)
-                .then(() => {
-                    showToast(toast, "Success!", "Message successfully sent.", "success");
-                    requestDossierDetails(dossierId);
-                })
-                .catch((e) => {
-                    if (e.response.status == 403) {
-                        showToast(
-                            toast,
-                            "Error!",
-                            "You need to be part of the current stage group in order to submit a message.",
-                            "error"
-                        );
-                    } else {
-                        showToast(toast, "Error!", "One or more validation errors occurred", "error");
-                    }
-                });
+            if (useWebSocket) {
+                signalRConnectionRef.current?.sendMessage(dossierForReviewDTO);
+            } else {
+                reviewDossier(dossierId, dossierForReviewDTO)
+                    .then(() => {
+                        showToast(toast, "Success!", "Message successfully sent.", "success");
+                        requestDossierDetails(dossierId);
+                    })
+                    .catch((e) => {
+                        if (e.response.status == 403) {
+                            showToast(
+                                toast,
+                                "Error!",
+                                "You need to be part of the current stage group in order to submit a message.",
+                                "error"
+                            );
+                        } else {
+                            showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                        }
+                    });
+            }
         }
     };
 
@@ -336,23 +361,41 @@ export default function DossierReview() {
             parentDiscussionMessageId: messageId,
         };
 
-        reviewDossier(dossierId, dossierForReviewDTO)
-            .then(() => {
-                showToast(toast, "Success!", "Reply successfully sent.", "success");
-                requestDossierDetails(dossierId);
-            })
-            .catch((e) => {
-                if (e.response.status == 403) {
-                    showToast(
-                        toast,
-                        "Error!",
-                        "You need to be part of the current stage group to reply to the message.",
-                        "error"
-                    );
-                } else {
-                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
-                }
-            });
+        if (useWebSocket) {
+            signalRConnectionRef.current?.sendMessage(dossierForReviewDTO);
+        } else {
+            reviewDossier(dossierId, dossierForReviewDTO)
+                .then(() => {
+                    showToast(toast, "Success!", "Reply successfully sent.", "success");
+                    requestDossierDetails(dossierId);
+                })
+                .catch((e) => {
+                    if (e.response.status == 403) {
+                        showToast(
+                            toast,
+                            "Error!",
+                            "You need to be part of the current stage group to reply to the message.",
+                            "error"
+                        );
+                    } else {
+                        showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                    }
+                });
+        }
+    };
+
+    const handleWebSocketMessageReceived = (messageDossierId: string, message: DossierDiscussionMessage) => {
+        if (messageDossierId != dossierId) {
+            return;
+        }
+
+        setDossierDetails((prevDetails) => ({
+            ...prevDetails,
+            discussion: {
+                ...prevDetails.discussion,
+                messages: [...prevDetails.discussion.messages, message],
+            },
+        }));
     };
 
     const Message = ({
