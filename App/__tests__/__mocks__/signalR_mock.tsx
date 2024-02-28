@@ -1,9 +1,9 @@
 export class SignalRManager {
-  constructor(dossierId: any, message: any) {}
+    constructor() {}
 
-  startConnection() {}
+    startConnection() {}
 
-  endConnection() {}
+    endConnection() {}
 
-  sendMessage(message: any) {}
+    sendMessage() {}
 }
