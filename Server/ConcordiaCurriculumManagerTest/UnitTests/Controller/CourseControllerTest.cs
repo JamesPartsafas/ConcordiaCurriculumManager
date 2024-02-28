@@ -10,12 +10,7 @@ using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
-using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
-using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Models.Curriculum;
-using Microsoft.AspNetCore.Http;
-using Org.BouncyCastle.Utilities;
-using ConcordiaCurriculumManager.Models.Users;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 
