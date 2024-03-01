@@ -19,3 +19,8 @@
 .pageBreak{
         break-inside: avoid;
 }
+
+.breakBefore{
+    page-break-before: always;
+}
+
