@@ -4,7 +4,6 @@ import {
     CourseGroupingCreationRequestDTO,
     CourseGroupingDTO,
     CourseGroupingModificationRequestDTO,
-    CourseGroupingReferenceDTO,
     CourseGroupingRequestDTO,
     CourseIdentifierDTO,
     SchoolEnum,
@@ -56,7 +55,6 @@ export default function CreateCourseGrouping() {
     const [loading, setLoading] = useState<boolean>(false);
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
     const [courseIdentifiers, setCourseIdentifiers] = useState<CourseIdentifierDTO[]>([]);
-    const [courseGroupingSubreferences, setCourseGroupingSubreferences] = useState<CourseGroupingReferenceDTO[]>([]);
 
     const {
         isOpen: isCourseSelectionOpen,
@@ -74,6 +72,7 @@ export default function CreateCourseGrouping() {
         control,
         handleSubmit,
         formState: { errors, isDirty },
+        reset,
     } = useForm<CourseGroupingRequestDTO>({
         defaultValues: {
             courseGrouping: {
@@ -100,10 +99,6 @@ export default function CreateCourseGrouping() {
         control,
         name: "courseGrouping.courseIdentifiers",
     });
-
-    // to calm lint down for now
-    courseGrouping;
-    removeCourse;
 
     const fieldConfigurations = [
         {
@@ -196,19 +191,11 @@ export default function CreateCourseGrouping() {
                 setCourseIdentifiers((prev) => [...prev, courseIdentifier]);
             });
 
-            response.data.subGroupings.forEach((subGroup) => {
-                const subGroupReference: CourseGroupingReferenceDTO = {
-                    name: subGroup.name,
-                    childGroupCommonIdentifier: subGroup.commonIdentifier,
-                    groupingType: response.data.subGroupingReferences.find(
-                        (s) => s.childGroupCommonIdentifier === subGroup.commonIdentifier
-                    ).groupingType,
-                };
-
-                //add the subGroupReference to the state
-                setCourseGroupingSubreferences((prev) => [...prev, subGroupReference]);
+            reset({
+                courseGrouping: {
+                    ...response.data,
+                },
             });
-            // appendSubGroup(subGroupReference);
         });
     }
 
@@ -450,10 +437,8 @@ export default function CreateCourseGrouping() {
                                             <div>
                                                 {index + 1 + ". "}
                                                 {field.name ||
-                                                    courseGroupingSubreferences?.find(
-                                                        (c) =>
-                                                            c.childGroupCommonIdentifier ===
-                                                            field.childGroupCommonIdentifier
+                                                    courseGrouping?.subGroupings.find(
+                                                        (c) => c.commonIdentifier === field.childGroupCommonIdentifier
                                                     )?.name}
                                                 {" - "}
                                                 {field.groupingType === 0 ? " (Sub Grouping)" : " (Optional Grouping)"}
