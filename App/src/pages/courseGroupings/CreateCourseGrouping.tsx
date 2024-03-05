@@ -4,6 +4,7 @@ import {
     CourseGroupingCreationRequestDTO,
     CourseGroupingDTO,
     CourseGroupingModificationRequestDTO,
+    CourseGroupingReferenceDTO,
     CourseGroupingRequestDTO,
     CourseIdentifierDTO,
     SchoolEnum,
@@ -43,11 +44,6 @@ import { getAllCourseSettings } from "../../services/course";
 import { AllCourseSettings, CourseDataResponse } from "../../models/course";
 import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
 
-interface CourseGroupingSubreference {
-    name: string;
-    childGroupCommonIdentifier: string;
-}
-
 export default function CreateCourseGrouping() {
     const location = useLocation();
     const toast = useToast(); // Use the useToast hook
@@ -60,7 +56,7 @@ export default function CreateCourseGrouping() {
     const [loading, setLoading] = useState<boolean>(false);
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
     const [courseIdentifiers, setCourseIdentifiers] = useState<CourseIdentifierDTO[]>([]);
-    const [courseGroupingSubreferences, setCourseGroupingSubreferences] = useState<CourseGroupingSubreference[]>([]);
+    const [courseGroupingSubreferences, setCourseGroupingSubreferences] = useState<CourseGroupingReferenceDTO[]>([]);
 
     const {
         isOpen: isCourseSelectionOpen,
@@ -201,14 +197,18 @@ export default function CreateCourseGrouping() {
             });
 
             response.data.subGroupings.forEach((subGroup) => {
-                const subGroupReference = {
+                const subGroupReference: CourseGroupingReferenceDTO = {
                     name: subGroup.name,
                     childGroupCommonIdentifier: subGroup.commonIdentifier,
+                    groupingType: response.data.subGroupingReferences.find(
+                        (s) => s.childGroupCommonIdentifier === subGroup.commonIdentifier
+                    ).groupingType,
                 };
 
                 //add the subGroupReference to the state
                 setCourseGroupingSubreferences((prev) => [...prev, subGroupReference]);
             });
+            // appendSubGroup(subGroupReference);
         });
     }
 
