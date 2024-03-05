@@ -21,12 +21,15 @@ export enum GroupingTypeEnum {
 }
 
 export interface CourseIdentifierDTO {
+    subject?: string | null;
+    catalog?: number | null;
     concordiaCourseId: number;
 }
 
 export interface CourseGroupingReferenceDTO {
     id?: string;
     parentGroupId?: string;
+    name?: string | null;
     childGroupCommonIdentifier: string;
     groupingType: GroupingTypeEnum;
 }

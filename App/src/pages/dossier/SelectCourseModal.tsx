@@ -18,8 +18,6 @@ import AutocompleteInput from "../../components/Select";
 import { AllCourseSettings, CourseDataResponse } from "../../models/course";
 import { getCourseData } from "../../services/course";
 import { showToast } from "../../utils/toastUtils";
-import { BaseRoutes } from "../../constants";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 interface EditCourseModalProps {
@@ -27,6 +25,7 @@ interface EditCourseModalProps {
     onClose: () => void;
     allCourseSettings: AllCourseSettings | null;
     dossierId: string;
+    onCourseSelect: (course: CourseDataResponse) => void;
 }
 
 interface EditCourseModalForm {
@@ -34,7 +33,7 @@ interface EditCourseModalForm {
     catalog: number;
 }
 
-export default function EditCourseModal(props: EditCourseModalProps) {
+export default function SelectCourseModal(props: EditCourseModalProps) {
     const {
         register,
         handleSubmit,
@@ -45,7 +44,6 @@ export default function EditCourseModal(props: EditCourseModalProps) {
     } = useForm<EditCourseModalForm>();
 
     const toast = useToast();
-    const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
 
     function handleClose() {
@@ -65,13 +63,8 @@ export default function EditCourseModal(props: EditCourseModalProps) {
             .then(
                 (res: CourseDataResponse) => {
                     setLoading(false);
-                    navigate(
-                        BaseRoutes.EditCourse.replace(":id", data.catalog.toString()).replace(
-                            ":dossierId",
-                            props.dossierId
-                        ),
-                        { state: res.data }
-                    );
+                    props.onCourseSelect(res);
+                    handleClose();
                 },
                 (rej) => {
                     setLoading(false);
