@@ -1,4 +1,4 @@
-import { Badge, Box, Container, Flex, Heading, ListItem, OrderedList, Spacer, Text } from "@chakra-ui/react";
+import { Badge, Box, Center, Container, Flex, Heading, ListItem, OrderedList, Spacer, Text } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { useNavigate, useParams } from "react-router-dom";
@@ -12,6 +12,7 @@ import { Divider } from "@chakra-ui/react";
 import "../../assets/styles/print.css";
 import { UserContext } from "../../App";
 import { UserRoles } from "../../models/user";
+import DossierReportCourseGrouping from "../../components/Dossiers/DossierReportCourseGrouping";
 
 export default function DossierReport() {
     const navigate = useNavigate();
@@ -28,6 +29,7 @@ export default function DossierReport() {
     async function requestDossierReport(dossierId: string) {
         const dossierReportData: DossierReportResponse = await getDossierReport(dossierId);
         setDossierReport(dossierReportData.data);
+        console.log(dossierReportData.data);
     }
 
     async function requestAllCareerSettings() {
@@ -160,8 +162,12 @@ export default function DossierReport() {
                             ))}
                     </OrderedList>
                 </Box>
-
-                <Heading fontSize="4xl" mb={4} mt={4}>
+                <Center>
+                    <Heading fontSize="3xl" mb={4} mt={4} color="brandRed">
+                        Course Requests
+                    </Heading>
+                </Center>
+                <Heading fontSize="2xl" mb={4} mt={4}>
                     Course Creation Requests:
                 </Heading>
 
@@ -276,7 +282,9 @@ export default function DossierReport() {
                     ))}
                 </OrderedList>
 
-                <Heading size="xl">Course Deletion Requests:</Heading>
+                <Heading fontSize="2xl" mb={4} mt={4}>
+                    Course Deletion Requests:
+                </Heading>
 
                 <OrderedList ml={12} mt={2}>
                     {dossierReport?.courseDeletionRequests?.length === 0 && (
@@ -389,7 +397,7 @@ export default function DossierReport() {
                     ))}
                 </OrderedList>
 
-                <Heading fontSize="4xl" mb={4} mt={4}>
+                <Heading fontSize="2xl" mb={4} mt={4}>
                     Course Modification Requests:
                 </Heading>
 
@@ -450,6 +458,14 @@ export default function DossierReport() {
                         </ListItem>
                     ))}
                 </OrderedList>
+                <Center>
+                    <Heading fontSize="3xl" mb={4} mt={4} color="brandRed" className="breakBefore">
+                        Course Grouping Requests
+                    </Heading>
+                </Center>
+                <DossierReportCourseGrouping
+                    courseGrouping={dossierReport?.courseGroupingRequests}
+                ></DossierReportCourseGrouping>
             </Container>
 
             <Button

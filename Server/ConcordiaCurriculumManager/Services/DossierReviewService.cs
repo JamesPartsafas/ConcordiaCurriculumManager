@@ -19,6 +19,7 @@ public interface IDossierReviewService
     public Task<Dossier> GetDossierWithApprovalStagesAndRequestsOrThrow(Guid dossierId);
     public Task<Dossier> GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(Guid dossierId);
     public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message);
+    public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message, Guid userId);
 }
 
 public class DossierReviewService : IDossierReviewService
@@ -221,6 +222,25 @@ public class DossierReviewService : IDossierReviewService
         }
 
         message.AuthorId = Guid.Parse(userId);
+        dossier.Discussion.Messages.Add(message);
+
+        var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
+        if (isDossierSaved)
+            _logger.LogInformation($"Discussion message was successfully saved to dossier {dossier.Id}");
+        else
+            _logger.LogError($"Encountered error attempting to save a discussion message to dossier {dossier.Id}");
+    }
+
+    public async Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message, Guid userId)
+    {
+        var dossier = await GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(dossierId);
+
+        if (dossier.State.Equals(DossierStateEnum.Created))
+        {
+            throw new BadRequestException("The dossier is not published yet.");
+        }
+
+        message.AuthorId = userId;
         dossier.Discussion.Messages.Add(message);
 
         var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);

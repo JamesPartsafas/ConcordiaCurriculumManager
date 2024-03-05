@@ -1,6 +1,7 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
@@ -32,7 +33,7 @@ public interface IDossierRepository
     public Task<Dossier?> GetDossierReportByDossierId(Guid dossierId);
     public Task<IList<Dossier>> GetDossiersRequiredReview(Guid userId);
     public Task<bool> CheckIfCourseRequestExists(Guid dossierId, string subject, string catalog);
-    public Task<IList<Course>> GetChangesAcrossAllDossiers();
+    public Task<(IList<Course>, IList<CourseGrouping>)> GetChangesAcrossAllDossiers();
     public Task<User> GetDossierInitiator(Guid dossierId);
     public Task<IList<Dossier>> GetAllNonApprovedDossiers();
     public Task<IList<Dossier>> SearchDossiers(string? title, DossierStateEnum? state, Guid? groupId);
@@ -269,10 +270,14 @@ public class DossierRepository : IDossierRepository
         return false;
     }
 
-    public async Task<IList<Course>> GetChangesAcrossAllDossiers()
+    public async Task<(IList<Course>, IList<CourseGrouping>)> GetChangesAcrossAllDossiers()
     {
         var query = _dbContext.Courses.FromSqlInterpolated(
                 $@"SELECT DISTINCT ON (""CourseID"") c.* FROM ""Courses"" c WHERE ""Version"" IS NOT NULL AND ""Published"" = false ORDER BY ""CourseID"", ""Version"" DESC"
+            );
+
+        var query2 = _dbContext.CourseGroupings.FromSqlInterpolated(
+                $@"SELECT DISTINCT ON (""Id"") cg.* FROM ""CourseGroupings"" cg WHERE ""Version"" IS NOT NULL AND ""Published"" = false ORDER BY ""Id"", ""Version"" DESC"
             );
 
         query = query.Include(course => course.CourseCourseComponents)
@@ -280,7 +285,11 @@ public class DossierRepository : IDossierRepository
             .Include(course => course.CourseModificationRequest)
             .Include(course => course.CourseDeletionRequest);
 
-        return await query.ToListAsync();
+        query2 = query2.Include(courseGrouping => courseGrouping.CourseGroupingRequest)
+            .Include(courseGrouping => courseGrouping.CourseIdentifiers)
+            .Include(courseGrouping => courseGrouping.SubGroupingReferences);
+
+        return (await query.ToListAsync(), await query2.ToListAsync());
     }
 
     public async Task<User> GetDossierInitiator(Guid dossierId)

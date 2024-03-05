@@ -4,15 +4,15 @@ using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManager.Settings;
+using ConcordiaCurriculumManager.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Npgsql;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
-using System.Net;
-using System.Net.Mail;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -98,6 +98,7 @@ public class Program
 
         AddServices(builder.Services);
 
+        builder.Services.AddSignalR();
         builder.Services.AddMemoryCache();
         builder.Services.AddAutoMapper(typeof(Program));
 
@@ -179,6 +180,11 @@ public class Program
         app.UseMiddleware<EnrichLogContextMiddleware>();
 
         app.MapControllers();
+        app.MapHub<DossierDiscussionSignalR>("/ws/DossierReview", options =>
+        {
+            options.Transports = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
+            options.CloseOnAuthenticationExpiration = true;
+        });
 
         app.Run();
     }
