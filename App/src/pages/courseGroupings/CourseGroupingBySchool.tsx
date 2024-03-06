@@ -32,16 +32,16 @@ export default function GroupingBySchool() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (selectedSchool == "GinaCody") {
+        if (selectedSchool == "Gina Cody School of Engineering") {
             setChanger(SchoolEnum.GinaCody);
         }
-        if (selectedSchool == "ArtsAndScience") {
+        if (selectedSchool == "Faculty of Arts And Science") {
             setChanger(SchoolEnum.ArtsAndScience);
         }
-        if (selectedSchool == "FineArts") {
+        if (selectedSchool == "Faculty of Fine Arts") {
             setChanger(SchoolEnum.FineArts);
         }
-        if (selectedSchool == "JMSB") {
+        if (selectedSchool == "John Molson School of Business") {
             setChanger(SchoolEnum.JMSB);
         }
     }, [selectedSchool]);
@@ -79,27 +79,27 @@ export default function GroupingBySchool() {
                     >
                         <option
                             key={0}
-                            value={"GinaCody"} // Store the entire component object as a string
+                            value={"Gina Cody School of Engineering"} // Store the entire component object as a string
                         >
-                            GinaCody
+                            Gina Cody School of Engineering
                         </option>
                         <option
                             key={1}
-                            value={"ArtsAndScience"} // Store the entire component object as a string
+                            value={"Faculty of Arts And Science"} // Store the entire component object as a string
                         >
-                            ArtsAndScience
+                            Faculty of Arts And Science
                         </option>
                         <option
                             key={2}
-                            value={"FineArts"} // Store the entire component object as a string
+                            value={"Faculty of Fine Arts"} // Store the entire component object as a string
                         >
-                            FineArts
+                            Faculty of Fine Arts
                         </option>
                         <option
                             key={3}
-                            value={"JMSB"} // Store the entire component object as a string
+                            value={"John Molson School of Business"} // Store the entire component object as a string
                         >
-                            JMSB
+                            John Molson School of Business
                         </option>
                     </Select>
                     <Button
