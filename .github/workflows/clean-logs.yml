@@ -10,7 +10,7 @@ jobs:
     container: gradle:jdk11
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Installing PSQL
         run: |
