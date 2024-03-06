@@ -1,4 +1,4 @@
-import { Box, Container, FormControl, FormLabel, Heading, HStack, Input, Stack } from "@chakra-ui/react";
+import { Box, Container, FormControl, FormLabel, Heading, HStack, Input, Stack, useToast } from "@chakra-ui/react";
 import logo from "../../assets/logo.png";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ export default function CreateGroup() {
     const { handleSubmit } = useForm<GroupCreateDTO>();
     const navigate = useNavigate();
     const [groupName, setGroupName] = useState("");
+    const toast = useToast(); // Initialize useToast hook
 
     function onSubmit(data: GroupCreateDTO) {
         data.name = groupName;
@@ -19,12 +20,24 @@ export default function CreateGroup() {
             .then((res: GroupResponseDTO) => {
                 if (res.data != null) {
                     navigate(BaseRoutes.ManageableGroup);
+                    showToastMessage("Group created successfully", "success");
                 }
             })
             .catch((err) => {
                 console.log(err);
             });
     }
+
+    const showToastMessage = (message: string, status: "success" | "error") => {
+        toast({
+            title: message,
+            status: status,
+            duration: 3000,
+            isClosable: true,
+            position: "top-right",
+        });
+    };
+
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
