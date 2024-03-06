@@ -21,11 +21,13 @@ import Button from "../components/Button";
 import { BaseRoutes } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { RegisterDTO } from "../services/auth";
+import { AuthenticationResponse, RegisterDTO, decodeTokenToUser, editProfile, logout } from "../services/auth";
+import { showToast } from "../utils/toastUtils";
+import { User } from "../models/user";
 
 export default function EditProfileInfo() {
     const navigate = useNavigate();
-    //const { register, handleSubmit } = useForm<RegisterDTO>();
+    const { register, handleSubmit } = useForm<RegisterDTO>();
     const [showPassword, setShowPassword] = useState(false);
     const [showError, setShowError] = useState(false);
     const { toggleLoading } = useLoading(); // Use the useLoading hook
@@ -44,11 +46,27 @@ export default function EditProfileInfo() {
 
     function onSubmit(data: RegisterDTO) {
         handleLoadingButtonClick();
+        editProfile(data)
+            .then(
+                (res: AuthenticationResponse) => {
+                    if (res.data.accessToken != null) {
+                        showToast(toast, "Success!", "You have successfully changed your profile.", "success");
+                        navigate(BaseRoutes.Login);
+                    }
+                },
+                (rej) => {
+                    console.log(rej);
+                    setShowError(true);
+                }
+            )
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     return (
         <>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <Container maxW="lg" py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>
                     <Stack spacing="8">
                         <Stack spacing="6">
@@ -72,35 +90,35 @@ export default function EditProfileInfo() {
                                         <Input
                                             id="firstName"
                                             type="firstName"
-                                            /*{...edit("firstName", {
+                                            {...register("firstName", {
                                                 required: true,
-                                            })}*/
+                                            })}
                                         />
                                         <FormLabel htmlFor="lastName">Last Name</FormLabel>
                                         <Input
                                             id="lastName"
                                             type="lastName"
-                                            /*{...edit("lastName", {
+                                            {...register("lastName", {
                                                 required: true,
-                                            })}*/
+                                            })}
                                         />
                                         <FormLabel htmlFor="email">Email</FormLabel>
                                         <Input
                                             id="email"
                                             type="email"
-                                            /* {...edit("email", {
+                                           {...register("email", {
                                                 required: true,
                                                 pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                            })}*/
+                                            })}
                                         />
                                         <FormLabel htmlFor="password">Password</FormLabel>
                                         <InputGroup>
                                             <Input
                                                 id="password"
                                                 type={showPassword ? "text" : "password"}
-                                                /*{...edit("password", {
+                                                {...register("password", {
                                                     required: true,
-                                                })}*/
+                                                })}
                                             />
                                             <InputRightElement width="4.5rem">
                                                 <Button h="1.75rem" size="sm" onClick={toggleShowPassword}>

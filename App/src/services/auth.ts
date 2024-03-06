@@ -85,3 +85,10 @@ export function isAdmin(user: User): boolean {
 export function isAdminOrGroupMaster(user: User): boolean {
     return isAdmin(user) || user.masteredGroups != null;
 }
+
+export function editProfile(dto: RegisterDTO): Promise<AuthenticationResponse> {
+    return axios.post("/Authentication/EditProfileInfo", dto).then((response) => {
+        localStorage.setItem("token", response.data.accessToken);
+        return response;
+    });
+}
