@@ -543,4 +543,47 @@ public class CourseRepositoryTests
             Assert.AreEqual(CourseReferenceEnum.OutOfDate, reference.State);
         }
     }
+
+    [TestMethod]
+    public async Task AddCourseReferences_ValidInput_ReturnsTrueAndAddAllReferencesWherePassedCourseIsTheReferencingCourse()
+    {
+        var newCourse = TestData.GetSampleAcceptedCourse();
+        var randomCourse = TestData.GetSampleAcceptedCourse();
+
+        newCourse.Version = 1;
+
+        randomCourse.Subject = "COMP";
+        randomCourse.Catalog = "560T";
+        randomCourse.Published = true;
+
+        var newCourseReferences = new List<(string Subject, string Catalog)>
+        {
+            (randomCourse.Subject, randomCourse.Catalog)
+        };
+
+        await dbContext.Courses.AddRangeAsync(new List<Course> { newCourse, randomCourse });
+        await dbContext.SaveChangesAsync();
+
+        var result = await courseRepository.AddCourseReferences(newCourse, newCourseReferences);
+
+        Assert.IsTrue(result);
+
+        var newUpdatedReferences = await dbContext.CourseReferences
+            .Where(c => c.CourseReferencedId.Equals(newCourse.Id) || c.CourseReferencingId.Equals(newCourse.Id))
+            .ToListAsync();
+
+        foreach (var reference in newUpdatedReferences)
+        {
+            if (reference.CourseReferencedId.Equals(newCourse.Id))
+            {
+                Assert.Fail("The newCourse should not have any course referencing it. This is because this should reflect a course that was just published.");
+            }
+            else
+            {
+                Assert.AreEqual(randomCourse.Id, reference.CourseReferencedId);
+            }
+
+            Assert.AreEqual(CourseReferenceEnum.UpToDate, reference.State);
+        }
+    }
 }
