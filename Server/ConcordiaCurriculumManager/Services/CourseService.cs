@@ -400,24 +400,43 @@ public class CourseService : ICourseService
     public async Task<Course> PublishCourse(string subject, string catalog)
     {
         var newCourse = await _courseRepository.GetCourseBySubjectAndCatalog(subject, catalog) ?? throw new NotFoundException($"The course {subject}" + $"{catalog} was not found.");
-        var oldCourse = await _courseRepository.GetPublishedVersion(subject, catalog) ?? throw new NotFoundException($"The course {subject}" + $"{catalog} was not found.");
+        var oldCourse = await _courseRepository.GetPublishedVersion(subject, catalog);
+
+        if (newCourse.Published)
+        {
+            return newCourse;
+        }
 
         newCourse.MarkAsPublished();
-        oldCourse.MarkAsUnpublished();
-
-        await _courseRepository.UpdateCourse(newCourse);
-        await _courseRepository.UpdateCourse(oldCourse);
-
         var courseSubjectAndCatalog = ExtractReferencedCourseSubjectAndCatalog(newCourse);
 
-        bool result = newCourse.CourseState.Equals(CourseStateEnum.Deleted)
+        if (oldCourse is not null)
+        {
+            oldCourse.MarkAsUnpublished();
+            await _courseRepository.UpdateCourse(oldCourse);
+
+            var updateCourseReferencesStatus = newCourse.CourseState.Equals(CourseStateEnum.Deleted)
             ? await _courseRepository.InvalidateAllCourseReferences(oldCourse.Id)
             : await _courseRepository.UpdateCourseReferences(oldCourse, newCourse, courseSubjectAndCatalog);
 
-        if (!result)
-        {
-            _logger.LogError($"Failed to update the course references for {subject}-{catalog} with Id {newCourse.Id}");
+            if (!updateCourseReferencesStatus)
+            {
+                _logger.LogError($"Failed to update the course references for {subject}-{catalog} with Id {newCourse.Id}");
+            }
         }
+        else
+        {
+            _logger.LogInformation($"The course {subject}-{catalog} with ID {newCourse.Id} does not have an old published course. This could be the first time it is published");
+            var addCourseReferencesStatus = await _courseRepository.AddCourseReferences(newCourse, courseSubjectAndCatalog);
+
+            if (!addCourseReferencesStatus)
+            {
+                _logger.LogError($"Failed to add (all) the course references for {subject}-{catalog} with Id {newCourse.Id}");
+            }
+        }
+
+        await _courseRepository.UpdateCourse(newCourse);
+        _logger.LogInformation($"A new course version {newCourse.Version} with ID {newCourse.Id} was published.");
 
         return newCourse;
     }
