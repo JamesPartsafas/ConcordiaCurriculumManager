@@ -317,7 +317,7 @@ public class CourseGroupingService : ICourseGroupingService
             .ToList();
 
         var combinedGroupings = groupingsByName.Concat(creationGroupingsInDossier)
-            .DistinctBy(g =>  g.Id)
+            .DistinctBy(g =>  g!.Id)
             .ToList();
 
         var deletionGroupingIds = dossier.CourseGroupingRequests
