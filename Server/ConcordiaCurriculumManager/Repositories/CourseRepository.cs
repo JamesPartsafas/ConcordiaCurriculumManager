@@ -23,6 +23,7 @@ public interface ICourseRepository
     public Task<bool> UpdateCourse(Course course);
     Task<bool> UpdateCourseReferences(Course oldCourse, Course newCourse, List<(string Subject, string Catalog)> newCourseReferencing);
     Task<bool> InvalidateAllCourseReferences(Guid id);
+    Task<bool> AddCourseReferences(Course newCourse, List<(string Subject, string Catalog)> newCourseReferenced);
 }
 
 public class CourseRepository : ICourseRepository
@@ -218,5 +219,35 @@ public class CourseRepository : ICourseRepository
         var result = await _dbContext.SaveChangesAsync();
         await transaction.CommitAsync();
         return result == references.Count;
+    }
+
+    public async Task<bool> AddCourseReferences(Course newCourse, List<(string Subject, string Catalog)> newCourseReferenced)
+    {
+        using var transaction = _dbContext.Database.BeginTransaction();
+
+        var newReferences = new List<CourseReference>();
+        foreach ((var subject, var catalog) in newCourseReferenced)
+        {
+            var course = await GetPublishedVersion(subject, catalog);
+
+            if (course is null)
+            {
+                continue;
+            }
+
+            newReferences.Add(new CourseReference
+            {
+                CourseReferencedId = course.Id,
+                CourseReferenced = course,
+                CourseReferencingId = newCourse.Id,
+                CourseReferencing = newCourse,
+                State = CourseReferenceEnum.UpToDate
+            });
+        }
+
+        await _dbContext.CourseReferences.AddRangeAsync(newReferences);
+        var result = await _dbContext.SaveChangesAsync();
+        await transaction.CommitAsync();
+        return (result == newReferences.Count);
     }
 }

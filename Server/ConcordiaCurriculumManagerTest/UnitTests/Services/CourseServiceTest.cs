@@ -819,6 +819,30 @@ public class CourseServiceTest
     }
 
     [TestMethod]
+    public async Task PublishCourse_NewCourseIsFirstTimePublished_CallsAddCourseReferences()
+    {
+        var newCourse = TestData.GetSampleAcceptedCourse();
+
+        newCourse.CourseState = CourseStateEnum.Accepted;
+        newCourse.Description = "Design of classes. Inheritance. Polymorphism. Static and dynamic binding. Abstract classes. Exception handling. File I/O. Recursion. Interfaces and inner classes. Graphical user interfaces. Generics. Collections and iterators. Lectures: three hours per week. Tutorial: two hours per week. Laboratory:one hour per week.Prerequisite: COMP 248; MATH 203 or Cegep Mathematics 103 or NYA; MATH 205 or Cegep Mathematics 203 or NYB previously or concurrently.";
+        courseRepository.Setup(repo => repo.GetCourseBySubjectAndCatalog(newCourse.Subject, newCourse.Catalog)).ReturnsAsync(newCourse);
+        courseRepository.Setup(repo => repo.UpdateCourse(newCourse)).ReturnsAsync(true);
+
+        var expectedCourseSubjectAndCatalogExtracted = new List<(string, string)>()
+        {
+            ("COMP", "248"),
+            ("MATH", "203"),
+            ("MATH", "205")
+        };
+
+        var result = await courseService.PublishCourse(newCourse.Subject, newCourse.Catalog);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(true, result.Published);
+        courseRepository.Verify(m => m.AddCourseReferences(newCourse, It.Is<List<(string, string)>>(l => expectedCourseSubjectAndCatalogExtracted.TrueForAll(c => l.Contains(c)))), Times.Once);
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(NotFoundException), "A NotFoundException should be thrown when the course does not exist.")]
     public async Task PublishCourse_InvalidInput_ThrowsNotFoundException()
     {
