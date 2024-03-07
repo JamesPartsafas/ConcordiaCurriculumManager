@@ -7,6 +7,7 @@ using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
@@ -25,11 +26,13 @@ public class CourseGroupingController : Controller
 {
     private readonly IMapper _mapper;
     private readonly ICourseGroupingService _courseGroupingService;
+    private readonly IDossierService _dossierService;
 
-    public CourseGroupingController(ICourseGroupingService courseGroupingService, IMapper mapper)
+    public CourseGroupingController(ICourseGroupingService courseGroupingService, IMapper mapper, IDossierService dossierService)
     {
         _courseGroupingService = courseGroupingService;
         _mapper = mapper;
+        _dossierService = dossierService;
     }
 
     [HttpGet(nameof(GetCourseGrouping) + "/{courseGroupingId}")]
@@ -181,5 +184,42 @@ public class CourseGroupingController : Controller
         var editedCourseGroupingDTO = _mapper.Map<CourseGroupingDTO>(editedCourseGrouping);
 
         return Ok(editedCourseGroupingDTO);
+    }
+
+    [HttpGet("SearchGroupingsWithDossier/{dossierId}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Custom search results")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<IActionResult> SearchGroupingsWithDossier([FromRoute] Guid dossierId, [FromQuery] string searchQuery)
+    {
+        var dossier = await _dossierService.GetDossierDetailsByIdOrThrow(dossierId);
+        if (dossier == null)
+        {
+            return NotFound($"Dossier with ID {dossierId} not found.");
+        }
+
+        var groupingsByName = await _courseGroupingService.GetCourseGroupingsLikeName(searchQuery.Trim());
+
+        var creationGroupingsInDossier = dossier.CourseGroupingRequests
+            .Where(req => req.RequestType == RequestType.CreationRequest && req.CourseGrouping != null && req.CourseGrouping.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+            .Select(req => req.CourseGrouping)
+            .ToList();
+
+        var combinedGroupings = groupingsByName.Concat(creationGroupingsInDossier)
+            .Where(g => g != null)
+            .GroupBy(g => g.Id)
+            .Select(g => g.First())
+            .ToList();
+
+        var deletionGroupingIds = dossier.CourseGroupingRequests
+            .Where(req => req.RequestType == RequestType.DeletionRequest)
+            .Select(req => req.CourseGroupingId)
+            .ToList();
+
+        var filteredGroupings = combinedGroupings
+            .Where(g => !deletionGroupingIds.Contains(g.Id))
+            .ToList();
+
+        return Ok(filteredGroupings);
     }
 }
