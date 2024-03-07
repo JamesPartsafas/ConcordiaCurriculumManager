@@ -43,9 +43,6 @@ export default function DossierBrowser() {
         GetAllGroups()
             .then((res: MultiGroupResponseDTO) => {
                 setMyGroups(res.data);
-                if (res.data.length == 0) {
-                    showToast(toast, "Error!", "No results found.", "error");
-                }
             })
             .catch((err) => {
                 console.log(err);
@@ -61,9 +58,13 @@ export default function DossierBrowser() {
             .then((res: GetMyDossiersResponse) => {
                 console.log(JSON.stringify(res.data));
                 setMySearchedDossiers(res.data);
+                if (res.data.length == 0) {
+                    showToast(toast, "Error!", "No results found.", "error");
+                }
             })
             .catch((err) => {
                 console.log(err);
+                showToast(toast, "Error!", "An error has occured.", "error");
             });
     }
 
