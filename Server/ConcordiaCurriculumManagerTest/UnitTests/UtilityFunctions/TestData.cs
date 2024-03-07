@@ -422,6 +422,42 @@ public static class TestData
         return Guid.NewGuid();
     }
 
+    public static Dossier GetSampleDossierWithGroupings(Guid dossierId, bool includeCreationRequests, bool includeDeletionRequests)
+    {
+        var dossier = GetSampleDossier();
+        dossier.Id = dossierId;
+
+        if (includeCreationRequests)
+        {
+            var creationRequest = new CourseGroupingRequest
+            {
+                DossierId = dossierId,
+                RequestType = RequestType.CreationRequest,
+                CourseGrouping = GetSampleCourseGrouping(),
+                Rationale = "Rationale for creation",
+                ResourceImplication = "No additional resources required",
+                CourseGroupingId = TestData.GetSampleCourseGrouping().Id
+
+            };
+            dossier.CourseGroupingRequests.Add(creationRequest);
+        }
+
+        if (includeDeletionRequests)
+        {
+            var deletionRequest = new CourseGroupingRequest
+            {
+                DossierId = dossierId,
+                RequestType = RequestType.DeletionRequest,
+                CourseGroupingId = GetSampleCourseGrouping().Id,
+                Rationale = "Rationale for deletion",
+                ResourceImplication = "No additional resources required"
+            };
+            dossier.CourseGroupingRequests.Add(deletionRequest);
+        }
+
+        return dossier;
+    }
+
     // DOSSIER REVIEWS
     public static DossierSubmissionDTO GetSampleDossierSubmissionDTO()
     {
@@ -861,5 +897,23 @@ public static class TestData
             CourseGroupingId = Guid.NewGuid(),
             CourseGrouping = TestData.GetSampleCourseGrouping()
         };
+    }
+
+    public static (List<CourseGrouping> AllGroupings, List<CourseGrouping> FilteredGroupings) GetExpectedGroupingsBySearchQuery(string searchQuery)
+    {
+        var allGroupings = new List<CourseGrouping>
+    {
+        GetSampleCourseGrouping(),
+        GetSampleCourseGrouping(),
+        GetSampleCourseGrouping(),
+        GetSampleCourseGrouping(),
+        GetSampleCourseGrouping()
+    };
+
+        var filteredGroupings = allGroupings
+            .Where(g => g.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        return (allGroupings, filteredGroupings);
     }
 }

@@ -192,34 +192,10 @@ public class CourseGroupingController : Controller
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     public async Task<IActionResult> SearchGroupingsWithDossier([FromRoute] Guid dossierId, [FromQuery] string searchQuery)
     {
-        var dossier = await _dossierService.GetDossierDetailsByIdOrThrow(dossierId);
-        if (dossier == null)
-        {
-            return NotFound($"Dossier with ID {dossierId} not found.");
-        }
+        var courseGroupings = await _courseGroupingService.GetCourseGroupingsByDossierAndName(dossierId, searchQuery.Trim());
 
-        var groupingsByName = await _courseGroupingService.GetCourseGroupingsLikeName(searchQuery.Trim());
+        var courseGroupingDTOs = _mapper.Map<List<CourseGroupingDTO>>(courseGroupings);
 
-        var creationGroupingsInDossier = dossier.CourseGroupingRequests
-            .Where(req => req.RequestType == RequestType.CreationRequest && req.CourseGrouping != null && req.CourseGrouping.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-            .Select(req => req.CourseGrouping)
-            .ToList();
-
-        var combinedGroupings = groupingsByName.Concat(creationGroupingsInDossier)
-            .Where(g => g != null)
-            .GroupBy(g => g.Id)
-            .Select(g => g.First())
-            .ToList();
-
-        var deletionGroupingIds = dossier.CourseGroupingRequests
-            .Where(req => req.RequestType == RequestType.DeletionRequest)
-            .Select(req => req.CourseGroupingId)
-            .ToList();
-
-        var filteredGroupings = combinedGroupings
-            .Where(g => !deletionGroupingIds.Contains(g.Id))
-            .ToList();
-
-        return Ok(filteredGroupings);
+        return Ok(courseGroupingDTOs);
     }
 }
