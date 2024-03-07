@@ -13,6 +13,7 @@ import {
     AlertDialogOverlay,
     Flex,
     Input,
+    useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { isAdmin } from "../../services/auth";
@@ -30,6 +31,7 @@ export default function DisplayManageableGroups() {
     const groupsPerPage = 5;
     const user = useContext(UserContext);
     const cancelRef = useRef();
+    const toast = useToast();
 
     useEffect(() => {
         GetAllGroups()
@@ -92,6 +94,16 @@ export default function DisplayManageableGroups() {
 
     const indexOfLastGroup = currentPage * groupsPerPage;
     const indexOfFirstGroup = indexOfLastGroup - groupsPerPage;
+
+    const showToastMessage = (message: string, status: "success" | "error") => {
+        toast({
+            title: message,
+            status: status,
+            duration: 3000,
+            isClosable: true,
+            position: "top-right",
+        });
+    };
 
     return (
         <Box overflowX="auto" width="100%" height="100vh" padding="2vw">
@@ -170,6 +182,7 @@ export default function DisplayManageableGroups() {
                                         colorScheme="red"
                                         onClick={() => {
                                             onDeleteGroup(deleteGroupId);
+                                            showToastMessage("Group deleted successfully", "success");
                                         }}
                                         ml={3}
                                     >
@@ -209,6 +222,7 @@ export default function DisplayManageableGroups() {
                                         colorScheme="blue"
                                         onClick={() => {
                                             onSaveEditGroup();
+                                            showToastMessage("Group edited successfully", "success");
                                         }}
                                         ml={3}
                                     >

@@ -12,6 +12,7 @@ import {
     Text,
     ListItem,
     OrderedList,
+    useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
@@ -31,6 +32,7 @@ export default function AddingUserToGroup() {
     const [myGroup, setMyGroup] = useState<GroupDTO | null>(null);
     const [locationState, setLocationState] = useState({ gid: "", name: "" });
     const handleChange = (event) => setSearchInput(event.target.value);
+    const toast = useToast(); // Initialize useToast hook
 
     function getMyGroup(gid: string) {
         console.log("Grabbing group info");
@@ -41,6 +43,14 @@ export default function AddingUserToGroup() {
             })
             .catch((err) => {
                 console.log(err);
+                toast({
+                    title: "Error",
+                    description: "Failed to retrieve group information.",
+                    status: "error",
+                    duration: 5000,
+                    position: "top-right",
+                    isClosable: true,
+                });
             });
     }
 
@@ -52,6 +62,14 @@ export default function AddingUserToGroup() {
             })
             .catch((err) => {
                 console.log(err);
+                toast({
+                    title: "Error",
+                    description: "Failed to retrieve user information.",
+                    status: "error",
+                    duration: 5000,
+                    position: "top-right",
+                    isClosable: true,
+                });
             });
     }
 
@@ -64,6 +82,14 @@ export default function AddingUserToGroup() {
             })
             .catch((err) => {
                 console.log(err);
+                toast({
+                    title: "Error",
+                    description: "Failed to search for users.",
+                    status: "error",
+                    duration: 5000,
+                    position: "top-right",
+                    isClosable: true,
+                });
             });
     }
 
@@ -92,13 +118,37 @@ export default function AddingUserToGroup() {
             .then(
                 () => {
                     getMyGroup(myGroup.id);
+                    toast({
+                        title: "Success",
+                        description: "User added to group successfully.",
+                        status: "success",
+                        duration: 5000,
+                        position: "top-right",
+                        isClosable: true,
+                    });
                 },
                 (rej) => {
                     console.log(rej);
+                    toast({
+                        title: "Error",
+                        description: "Failed to add user to group.",
+                        status: "error",
+                        duration: 5000,
+                        position: "top-right",
+                        isClosable: true,
+                    });
                 }
             )
             .catch((err) => {
                 console.log(err);
+                toast({
+                    title: "Error",
+                    description: "An unexpected error occurred.",
+                    status: "error",
+                    duration: 5000,
+                    position: "top-right",
+                    isClosable: true,
+                });
             });
     }
 
