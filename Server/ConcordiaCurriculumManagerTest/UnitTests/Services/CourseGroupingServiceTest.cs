@@ -559,21 +559,21 @@ public class CourseGroupingServiceTest
     public async Task GetCourseGroupingsByDossierAndName_WithValidParameters_ReturnsFilteredGroupings()
     {
         var dossierId = Guid.NewGuid();
-        var searchQuery = "software";
+        var searchQuery = "Course A";
         var dossier = TestData.GetSampleDossierWithGroupings(dossierId, includeCreationRequests: true, includeDeletionRequests: true);
-        var expectedGroupings = TestData.GetExpectedGroupingsBySearchQuery(searchQuery);
-    
+        var (allGroupings, filteredGroupings) = TestData.GetExpectedGroupingsBySearchQuery(searchQuery);
+
         dossierRepository.Setup(repo => repo.GetDossierByDossierId(dossierId)).ReturnsAsync(dossier);
-        courseGroupingRepository.Setup(repo => repo.GetCourseGroupingsLikeName(searchQuery)).ReturnsAsync(expectedGroupings.AllGroupings);
-        
+        courseGroupingRepository.Setup(repo => repo.GetCourseGroupingsLikeName(searchQuery)).ReturnsAsync(filteredGroupings);
+
         var result = await courseGroupingService.GetCourseGroupingsByDossierAndName(dossierId, searchQuery);
-    
-        Assert.AreEqual(expectedGroupings.FilteredGroupings.Count, result.Count, "Expected filtered groupings count does not match actual count.");
-        foreach (var grouping in expectedGroupings.FilteredGroupings)
+
+        Assert.AreEqual(filteredGroupings.Count, result.Count, "Expected filtered groupings count does not match actual count.");
+        foreach (var expectedGrouping in filteredGroupings)
         {
-            Assert.IsTrue(result.Any(g => g!.Id == grouping.Id), $"Expected grouping with ID {grouping.Id} was not found in the results.");
+            Assert.IsTrue(result.Any(g => g!.Id == expectedGrouping.Id), $"Expected grouping with ID {expectedGrouping.Id} was not found in the results.");
         }
-        
+
         dossierRepository.Verify(mock => mock.GetDossierByDossierId(dossierId), Times.Once());
         courseGroupingRepository.Verify(mock => mock.GetCourseGroupingsLikeName(searchQuery), Times.Once());
     }

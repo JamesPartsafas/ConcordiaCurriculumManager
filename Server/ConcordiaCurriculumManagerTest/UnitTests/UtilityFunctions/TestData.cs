@@ -903,11 +903,9 @@ public static class TestData
     {
         var allGroupings = new List<CourseGrouping>
     {
-        GetSampleCourseGrouping(),
-        GetSampleCourseGrouping(),
-        GetSampleCourseGrouping(),
-        GetSampleCourseGrouping(),
-        GetSampleCourseGrouping()
+        GetSampleCourseGroupingWithName("Course A"),
+        GetSampleCourseGroupingWithName("Course B"),
+        GetSampleCourseGroupingWithName("Course C")
     };
 
         var filteredGroupings = allGroupings
@@ -915,5 +913,12 @@ public static class TestData
             .ToList();
 
         return (allGroupings, filteredGroupings);
+    }
+
+    private static CourseGrouping GetSampleCourseGroupingWithName(string name)
+    {
+        var grouping = GetSampleCourseGrouping();
+        grouping.Name = name;
+        return grouping;
     }
 }

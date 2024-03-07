@@ -309,7 +309,7 @@ public class CourseGroupingService : ICourseGroupingService
             throw new NotFoundException($"Dossier with ID {dossierId} not found.");
         }
 
-        var groupingsByName = await _courseGroupingRepository.GetCourseGroupingsLikeName(searchQuery.Trim());
+        var groupingsByName = await _courseGroupingRepository.GetCourseGroupingsLikeName(searchQuery);
 
         var creationGroupingsInDossier = dossier.CourseGroupingRequests
             .Where(req => req.RequestType == RequestType.CreationRequest && req.CourseGrouping != null && req.CourseGrouping.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
@@ -317,7 +317,7 @@ public class CourseGroupingService : ICourseGroupingService
             .ToList();
 
         var combinedGroupings = groupingsByName.Concat(creationGroupingsInDossier)
-            .DistinctBy(g =>  g!.Id)
+            .DistinctBy(g =>  g.Id)
             .ToList();
 
         var deletionGroupingIds = dossier.CourseGroupingRequests
