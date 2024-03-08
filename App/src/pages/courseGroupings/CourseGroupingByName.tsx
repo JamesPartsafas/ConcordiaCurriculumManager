@@ -18,14 +18,18 @@ import {
     Td,
     Tooltip,
     IconButton,
+    Tfoot,
+    useToast,
 } from "@chakra-ui/react";
 import { InfoIcon } from "@chakra-ui/icons";
 import Button from "../../components/Button";
 import { GetCourseGroupingByName } from "../../services/courseGrouping";
+import { showToast } from "../../utils/toastUtils";
 
 export default function CourseGroupingByName() {
     const [courseGroupings, setCourseGroupings] = useState<CourseGroupingDTO[]>([]);
     const [searchInput, setSearchInput] = useState<string>("");
+    const toast = useToast(); // Use the useToast hook
     const handleChange = (event) => setSearchInput(event.target.value);
     const navigate = useNavigate();
 
@@ -38,9 +42,13 @@ export default function CourseGroupingByName() {
         GetCourseGroupingByName(name)
             .then((res: MultiCourseGroupingDTO) => {
                 setCourseGroupings(res.data);
+                if (res.data.length == 0) {
+                    showToast(toast, "Error!", "No results found.", "error");
+                }
             })
             .catch((err) => {
                 console.log(err);
+                showToast(toast, "Error!", "An error has occured.", "error");
             });
     }
     return (
@@ -119,6 +127,15 @@ export default function CourseGroupingByName() {
                                     </Tr>
                                 ))}
                             </Tbody>
+                            <Tfoot>
+                                <Tr>
+                                    <Td height={20}>
+                                        <Flex>
+                                            <Text alignSelf="center">Showing {courseGroupings.length} results</Text>
+                                        </Flex>
+                                    </Td>
+                                </Tr>
+                            </Tfoot>
                         </Table>
                     </TableContainer>
                 </Flex>

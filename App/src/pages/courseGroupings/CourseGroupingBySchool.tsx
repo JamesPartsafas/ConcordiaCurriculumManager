@@ -12,6 +12,8 @@ import {
     Td,
     Tooltip,
     IconButton,
+    Tfoot,
+    useToast,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { CourseGroupingDTO, MultiCourseGroupingDTO, SchoolEnum } from "../../models/courseGrouping";
@@ -20,24 +22,26 @@ import { GetCourseGroupingBySchool } from "../../services/courseGrouping";
 import { InfoIcon } from "@chakra-ui/icons";
 import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import { showToast } from "../../utils/toastUtils";
 export default function GroupingBySchool() {
     const selectedSchoolRef = useRef<HTMLSelectElement>(null);
     const [selectedSchool, setSelectedSchool] = useState<string>("GinaCody");
     const [changer, setChanger] = useState<SchoolEnum>(SchoolEnum.GinaCody);
     const [courseGroupings, setCourseGroupings] = useState<CourseGroupingDTO[]>([]);
+    const toast = useToast(); // Use the useToast hook
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (selectedSchool == "GinaCody") {
+        if (selectedSchool == "Gina Cody School of Engineering") {
             setChanger(SchoolEnum.GinaCody);
         }
-        if (selectedSchool == "ArtsAndScience") {
+        if (selectedSchool == "Faculty of Arts And Science") {
             setChanger(SchoolEnum.ArtsAndScience);
         }
-        if (selectedSchool == "FineArts") {
+        if (selectedSchool == "Faculty of Fine Arts") {
             setChanger(SchoolEnum.FineArts);
         }
-        if (selectedSchool == "JMSB") {
+        if (selectedSchool == "John Molson School of Business") {
             setChanger(SchoolEnum.JMSB);
         }
     }, [selectedSchool]);
@@ -47,9 +51,13 @@ export default function GroupingBySchool() {
         GetCourseGroupingBySchool(input)
             .then((res: MultiCourseGroupingDTO) => {
                 setCourseGroupings(res.data);
+                if (res.data.length == 0) {
+                    showToast(toast, "Error!", "No results found.", "error");
+                }
             })
             .catch((err) => {
                 console.log(err);
+                showToast(toast, "Error!", "An error has occured.", "error");
             });
     }
 
@@ -71,27 +79,27 @@ export default function GroupingBySchool() {
                     >
                         <option
                             key={0}
-                            value={"GinaCody"} // Store the entire component object as a string
+                            value={"Gina Cody School of Engineering"} // Store the entire component object as a string
                         >
-                            GinaCody
+                            Gina Cody School of Engineering
                         </option>
                         <option
                             key={1}
-                            value={"ArtsAndScience"} // Store the entire component object as a string
+                            value={"Faculty of Arts And Science"} // Store the entire component object as a string
                         >
-                            ArtsAndScience
+                            Faculty of Arts And Science
                         </option>
                         <option
                             key={2}
-                            value={"FineArts"} // Store the entire component object as a string
+                            value={"Faculty of Fine Arts"} // Store the entire component object as a string
                         >
-                            FineArts
+                            Faculty of Fine Arts
                         </option>
                         <option
                             key={3}
-                            value={"JMSB"} // Store the entire component object as a string
+                            value={"John Molson School of Business"} // Store the entire component object as a string
                         >
-                            JMSB
+                            John Molson School of Business
                         </option>
                     </Select>
                     <Button
@@ -158,6 +166,15 @@ export default function GroupingBySchool() {
                                     </Tr>
                                 ))}
                             </Tbody>
+                            <Tfoot>
+                                <Tr>
+                                    <Td height={20}>
+                                        <Flex>
+                                            <Text alignSelf="center">Showing {courseGroupings.length} results</Text>
+                                        </Flex>
+                                    </Td>
+                                </Tr>
+                            </Tfoot>
                         </Table>
                     </TableContainer>
                 </Flex>

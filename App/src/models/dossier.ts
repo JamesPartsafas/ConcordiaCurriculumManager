@@ -88,6 +88,7 @@ export interface DossierReportDTO {
     courseCreationRequests: CourseCreationRequest[];
     courseModificationRequests: CourseModificationRequest[];
     courseDeletionRequests: CourseDeletionRequest[];
+    courseGroupingRequests: CourseGroupingRequestDTO[];
     description: string | null;
     initiatiorId: string;
     oldCourses: Course[];

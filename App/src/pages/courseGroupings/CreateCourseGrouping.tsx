@@ -3,7 +3,9 @@ import { useForm, useFieldArray, Controller } from "react-hook-form";
 import {
     CourseGroupingCreationRequestDTO,
     CourseGroupingDTO,
+    CourseGroupingModificationRequestDTO,
     CourseGroupingRequestDTO,
+    CourseIdentifierDTO,
     SchoolEnum,
 } from "../../models/courseGrouping"; // Adjust the import path as needed
 import {
@@ -23,43 +25,59 @@ import {
     ButtonGroup,
     IconButton,
     useToast,
+    useDisclosure,
 } from "@chakra-ui/react";
-import AutocompleteInput from "../../components/Select";
 import {
     EditCourseGroupingCreation,
-    GetCourseGroupingBySchool,
+    EditCourseGroupingModification,
+    GetCourseGrouping,
     InitiateCourseGroupingCreation,
+    InitiateCourseGroupingModification,
 } from "../../services/courseGrouping";
 import { MinusIcon } from "@chakra-ui/icons";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { BaseRoutes } from "../../constants";
 import { showToast } from "../../utils/toastUtils";
+import SelectCourseModal from "../dossier/SelectCourseModal";
+import { getAllCourseSettings } from "../../services/course";
+import { AllCourseSettings, CourseDataResponse } from "../../models/course";
+import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
 
 export default function CreateCourseGrouping() {
     const location = useLocation();
     const toast = useToast(); // Use the useToast hook
-    const { dossierId } = useParams();
+    const { dossierId, courseGroupingId } = useParams();
+
     const navigate = useNavigate();
     const state: { CourseGroupingRequest: CourseGroupingRequestDTO; api: string } = location.state;
 
-    const autoCompleteOptions = ["INDI Courses", "Engineering Core Courses", "Fine Arts Core"];
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO[]>();
+    const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO>();
     const [loading, setLoading] = useState<boolean>(false);
+    const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
+    const [courseIdentifiers, setCourseIdentifiers] = useState<CourseIdentifierDTO[]>([]);
+
+    const {
+        isOpen: isCourseSelectionOpen,
+        onOpen: onCourseSelectionOpen,
+        onClose: onCourseSelectionClose,
+    } = useDisclosure();
+
+    const {
+        isOpen: isSearchCourseGroupingOpen,
+        onOpen: onSearchCourseGroupingOpen,
+        onClose: onSearchCourseGroupingClose,
+    } = useDisclosure();
 
     const {
         control,
         handleSubmit,
         formState: { errors, isDirty },
+        reset,
     } = useForm<CourseGroupingRequestDTO>({
         defaultValues: {
-            // dossierId: state?.CourseGroupingRequest?.dossierId,
-            // rationale: state?.CourseGroupingRequest?.rationale,
-            // resourceImplication: state?.CourseGroupingRequest?.resourceImplication,
-            // comment: state?.CourseGroupingRequest?.comment,
-            // courseGrouping: state?.CourseGroupingRequest?.courseGrouping
-
-            //this is simpler but MIGHT break with the EDIT api
+            courseGrouping: {
+                isTopLevel: false,
+            },
             ...state?.CourseGroupingRequest,
         },
     });
@@ -81,12 +99,6 @@ export default function CreateCourseGrouping() {
         control,
         name: "courseGrouping.courseIdentifiers",
     });
-
-    // to calm lint down for now
-    courseGrouping;
-    courseFields;
-    appendCourse;
-    removeCourse;
 
     const fieldConfigurations = [
         {
@@ -155,11 +167,43 @@ export default function CreateCourseGrouping() {
     ];
 
     useEffect(() => {
-        GetCourseGroupingBySchool(SchoolEnum.GinaCody).then((response) => {
+        if (
+            state?.api === "editGroupingCreationRequest" ||
+            state?.api === "addGroupingModificationRequest" ||
+            state?.api === "editGroupingModificationRequest"
+        ) {
+            requestCourseGroupingById(courseGroupingId);
+        }
+        requestCourseSettings();
+    }, [dossierId, courseGroupingId]);
+
+    function requestCourseGroupingById(Id: string) {
+        GetCourseGrouping(Id).then((response) => {
             setCourseGrouping(response.data);
-            console.log(response.data);
+
+            response.data.courses.forEach((course) => {
+                const courseIdentifier = {
+                    concordiaCourseId: course.courseID,
+                    subject: course.subject,
+                    catalog: parseInt(course.catalog),
+                };
+
+                setCourseIdentifiers((prev) => [...prev, courseIdentifier]);
+            });
+
+            reset({
+                courseGrouping: {
+                    ...response.data,
+                },
+            });
         });
-    }, []);
+    }
+
+    function requestCourseSettings() {
+        getAllCourseSettings().then((res) => {
+            setCourseSettings(res.data);
+        });
+    }
 
     function requestEditCourseGroupingCreation(
         dossierId: string,
@@ -208,6 +252,51 @@ export default function CreateCourseGrouping() {
             });
     }
 
+    function requestInitiateCourseGroupingModification(
+        dossierId: string,
+        courseModificationRequest: CourseGroupingModificationRequestDTO
+    ) {
+        InitiateCourseGroupingModification(dossierId, courseModificationRequest)
+            .then(
+                () => {
+                    showToast(toast, "Success!", "Course grouping modification request initiated.", "success");
+                    setLoading(false);
+                    navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
+                },
+                () => {
+                    showToast(toast, "Error!", "Course grouping modification request could not be initiated.", "error");
+                    setLoading(false);
+                }
+            )
+            .catch(() => {
+                showToast(toast, "Error!", "Course grouping modification request could not be initiated.", "error");
+                setLoading(false);
+            });
+    }
+
+    function requestEditCourseGroupingModification(
+        dossierId: string,
+        courseGroupingId: string,
+        courseGroupingModificationRequest: CourseGroupingModificationRequestDTO
+    ) {
+        EditCourseGroupingModification(dossierId, courseGroupingId, courseGroupingModificationRequest)
+            .then(
+                () => {
+                    showToast(toast, "Success!", "Course grouping modification request edited.", "success");
+                    setLoading(false);
+                    navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
+                },
+                () => {
+                    showToast(toast, "Error!", "Course grouping modification request could not be edited.", "error");
+                    setLoading(false);
+                }
+            )
+            .catch(() => {
+                showToast(toast, "Error!", "Course grouping modification request could not be edited.", "error");
+                setLoading(false);
+            });
+    }
+
     function onSubmit(data) {
         data.dossierId = dossierId;
         data.courseGrouping.school = Number(data.courseGrouping.school);
@@ -215,24 +304,67 @@ export default function CreateCourseGrouping() {
         //TODO: need to check which api to call based on the state.api
         if (state?.api === "editGroupingCreationRequest") {
             requestEditCourseGroupingCreation(dossierId, state.CourseGroupingRequest.id, data);
+        } else if (state?.api === "addGroupingModificationRequest") {
+            requestInitiateCourseGroupingModification(dossierId, data);
+        } else if (state?.api === "editGroupingModificationRequest") {
+            requestEditCourseGroupingModification(dossierId, state.CourseGroupingRequest.id, data);
         } else {
             requestInitiateCourseGroupingCreation(dossierId, data);
         }
     }
 
-    const handleAddClick = () => {
-        if (selectedItem) {
-            appendSubGroup({ childGroupCommonIdentifier: selectedItem, groupingType: 0 });
-            setSelectedItem(null); // Reset selection after adding
-        }
-    };
+    function displaySelectCourseModal() {
+        return (
+            <SelectCourseModal
+                isOpen={isCourseSelectionOpen}
+                onClose={onCourseSelectionClose}
+                allCourseSettings={courseSettings}
+                dossierId={dossierId}
+                onCourseSelect={handleCourseSelect}
+            ></SelectCourseModal>
+        );
+    }
+
+    function displaySearchCourseGroupModal() {
+        return (
+            <SearchCourseGrouping
+                isOpen={isSearchCourseGroupingOpen}
+                onClose={onSearchCourseGroupingClose}
+                onSelectCourseGrouping={handleCourseGroupingSelect}
+                isEdit={false}
+            />
+        );
+    }
+
+    function handleCourseSelect(res: CourseDataResponse) {
+        appendCourse({
+            concordiaCourseId: res.data.courseID,
+            subject: res.data.subject,
+            catalog: parseInt(res.data.catalog),
+        });
+    }
+
+    function handleCourseGroupingSelect(res) {
+        appendSubGroup({
+            name: res.name,
+            childGroupCommonIdentifier: res.commonIdentifier,
+            groupingType: res.groupingType,
+        });
+    }
 
     return (
         <>
+            {displaySelectCourseModal()}
+            {displaySearchCourseGroupModal()}
+
             <Stack m={4}>
                 <Center m={4}>
                     <Heading>
-                        {state?.api === "editGroupingCreationRequest" ? "Edit Course Grouping" : "Add Course Grouping"}
+                        {state?.api === "editGroupingCreationRequest" ||
+                        state?.api === "addGroupingModificationRequest" ||
+                        state?.api === "editGroupingModificationRequest"
+                            ? "Edit Course Grouping"
+                            : "Add Course Grouping"}
                     </Heading>
                 </Center>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -291,13 +423,7 @@ export default function CreateCourseGrouping() {
                             <FormControl border="1px solid" borderRadius={5} p={2} borderColor={"gray.200"}>
                                 <FormLabel htmlFor="subGroupingReferences">Select the Sub Course Grouping:</FormLabel>
                                 <HStack>
-                                    <AutocompleteInput
-                                        options={autoCompleteOptions}
-                                        onSelect={setSelectedItem} // Use setSelectedItem directly here
-                                        width="100%"
-                                        placeholder="Select Sub Grouping"
-                                    />
-                                    <Button onClick={handleAddClick}>Add</Button>
+                                    <Button onClick={onSearchCourseGroupingOpen}>Add</Button>
                                 </HStack>
                                 {subGroupFields.map((field, index) => (
                                     <Box key={field.id} mt={2}>
@@ -310,7 +436,12 @@ export default function CreateCourseGrouping() {
                                         >
                                             <div>
                                                 {index + 1 + ". "}
-                                                {field.childGroupCommonIdentifier}
+                                                {field.name ||
+                                                    courseGrouping?.subGroupings.find(
+                                                        (c) => c.commonIdentifier === field.childGroupCommonIdentifier
+                                                    )?.name}
+                                                {" - "}
+                                                {field.groupingType === 0 ? " (Sub Grouping)" : " (Optional Grouping)"}
                                             </div>
                                             <ButtonGroup
                                                 size="sm"
@@ -332,15 +463,15 @@ export default function CreateCourseGrouping() {
                             <FormControl border="1px solid" borderRadius={5} p={2} borderColor={"gray.200"}>
                                 <FormLabel htmlFor="subGroupingReferences">Select the courses:</FormLabel>
                                 <HStack>
-                                    <AutocompleteInput
-                                        options={autoCompleteOptions}
-                                        onSelect={setSelectedItem} // Use setSelectedItem directly here
-                                        width="100%"
-                                        placeholder="Select Sub Grouping"
-                                    />
-                                    <Button onClick={handleAddClick}>Add</Button>
+                                    <Button
+                                        onClick={() => {
+                                            onCourseSelectionOpen();
+                                        }}
+                                    >
+                                        Add
+                                    </Button>
                                 </HStack>
-                                {subGroupFields.map((field, index) => (
+                                {courseFields.map((field, index) => (
                                     <Box key={field.id} mt={2}>
                                         <HStack
                                             justifyContent="space-between"
@@ -351,14 +482,22 @@ export default function CreateCourseGrouping() {
                                         >
                                             <div>
                                                 {index + 1 + ". "}
-                                                {field.childGroupCommonIdentifier}
+                                                {field.subject ||
+                                                    courseIdentifiers.find(
+                                                        (c) => c.concordiaCourseId === field.concordiaCourseId
+                                                    )?.subject}{" "}
+                                                {field.catalog ||
+                                                    courseIdentifiers.find(
+                                                        (c) => c.concordiaCourseId === field.concordiaCourseId
+                                                    )?.catalog}{" "}
+                                                -{" " + field.concordiaCourseId}
                                             </div>
                                             <ButtonGroup
                                                 size="sm"
                                                 isAttached
                                                 variant="outline"
                                                 ml="10px"
-                                                onClick={() => removeSubGroup(index)}
+                                                onClick={() => removeCourse(index)}
                                             >
                                                 <IconButton
                                                     rounded="full"

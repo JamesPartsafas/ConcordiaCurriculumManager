@@ -1,0 +1,26 @@
+name: Clean Up Log Table
+
+on:
+  schedule:
+    - cron: '30 8 * * *' # Runs everyday at 8:30AM UTC 
+
+jobs:
+  cleanup_logs:
+    runs-on: ubuntu-latest
+    container: gradle:jdk11
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Installing PSQL
+        run: |
+          apt-get update
+          apt-get install --yes --no-install-recommends postgresql-client 
+      
+      - name: Make cleanup script executable
+        run: chmod +x ./Scripts/CleanupLogs.sh
+
+      - name: Clean up old log entries
+        env:
+          db_string: ${{ secrets.RENDER_DATABASE_CONNECTION_STRING }}
+        run: ./Scripts/CleanupLogs.sh "$db_string" "30"

@@ -228,8 +228,9 @@ public class DossierService : IDossierService
 
     public async Task<CourseChanges> GetChangesAcrossAllDossiers()
     {
-        var courses = await _dossierRepository.GetChangesAcrossAllDossiers();
+        var (courses, courseGroupings) = await _dossierRepository.GetChangesAcrossAllDossiers();
         var oldCourses = new List<Course>();
+        var oldCourseGroupings = new List<CourseGrouping>();
 
         foreach (var course in courses)
         {
@@ -238,9 +239,32 @@ public class DossierService : IDossierService
             if (oldCourse == null) continue;
             oldCourses.Add(oldCourse);
         }
+
+        foreach (var cg in courseGroupings)
+        {
+            await _courseGroupingService.QueryRelatedCourseGroupingData(cg, false);
+
+            if (!cg.CourseGroupingRequest!.IsModificationRequest()) continue;
+
+            CourseGrouping grouping;
+            Guid commonId = cg.CommonIdentifier;
+            try
+            {
+                grouping = await _courseGroupingService.GetCourseGroupingByCommonIdentifier(commonId, false);
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogWarning($"Course grouping with common ID {commonId} not found in change log: {e.ToString()}");
+                continue;
+            }
+
+            oldCourseGroupings.Add(grouping);
+        }
+
         var courseCreationRequests = new List<CourseCreationRequest>();
         var courseModificationRequests = new List<CourseModificationRequest>();
         var courseDeletionRequests = new List<CourseDeletionRequest>();
+        var courseGroupingRequests = new List<CourseGroupingRequest>();
 
         foreach (var course in courses)
         {
@@ -269,12 +293,25 @@ public class DossierService : IDossierService
             }
         }
 
+        foreach (var cg in courseGroupings)
+        {
+            if (cg.CourseGroupingRequest is not null) 
+            {
+                var request = cg.CourseGroupingRequest;
+                cg.CourseGroupingRequest = null;
+                request.CourseGrouping = cg;
+                courseGroupingRequests.Add(request);
+            }
+        }
+
         return new CourseChanges
         {
             CourseCreationRequests = courseCreationRequests,
             CourseModificationRequests = courseModificationRequests,
             CourseDeletionRequests = courseDeletionRequests,
-            OldCourses = oldCourses
+            CourseGroupingRequests = courseGroupingRequests,
+            OldCourses = oldCourses,
+            OldCourseGroupings = oldCourseGroupings,
         };
     }
 

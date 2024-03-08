@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import logo from "../../assets/logo.png";
-import { Container, Stack, Heading, Box, HStack, Text, OrderedList, ListItem } from "@chakra-ui/react";
+import { Container, Stack, Heading, Box, HStack, Text, OrderedList, ListItem, useToast } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { GetGroupByID, GroupDTO, GroupResponseDTO, RemoveUserFromGroup } from "../../services/group";
@@ -9,6 +9,7 @@ import { UserDTO } from "../../models/user";
 
 export default function RemovingUserFromGroup() {
     const navigate = useNavigate();
+    const toast = useToast();
     const [locationState, setLocationState] = useState({ gid: "", name: "" });
     const [myGroup, setMyGroup] = useState<GroupDTO | null>(null);
     const [userList, setUserList] = useState<UserDTO[]>([]);
@@ -24,10 +25,26 @@ export default function RemovingUserFromGroup() {
                 },
                 (rej) => {
                     console.log(rej);
+                    toast({
+                        title: "Error",
+                        description: "Failed to retrieve group information.",
+                        status: "error",
+                        duration: 5000,
+                        position: "top-right",
+                        isClosable: true,
+                    });
                 }
             )
             .catch((err) => {
                 console.log(err);
+                toast({
+                    title: "Error",
+                    description: "An unexpected error occurred.",
+                    status: "error",
+                    duration: 5000,
+                    position: "top-right",
+                    isClosable: true,
+                });
             });
     }
 
@@ -54,13 +71,37 @@ export default function RemovingUserFromGroup() {
                 () => {
                     console.log("User Removed");
                     getMyGroup(myGroup.id);
+                    toast({
+                        title: "Success",
+                        description: "User removed successfully.",
+                        status: "success",
+                        duration: 5000,
+                        position: "top-right",
+                        isClosable: true,
+                    });
                 },
                 (rej) => {
                     console.log(rej);
+                    toast({
+                        title: "Error",
+                        description: "Failed to remove user.",
+                        status: "error",
+                        duration: 5000,
+                        position: "top-right",
+                        isClosable: true,
+                    });
                 }
             )
             .catch((err) => {
                 console.log(err);
+                toast({
+                    title: "Error",
+                    description: "An unexpected error occurred.",
+                    status: "error",
+                    duration: 5000,
+                    position: "top-right",
+                    isClosable: true,
+                });
             });
     }
 

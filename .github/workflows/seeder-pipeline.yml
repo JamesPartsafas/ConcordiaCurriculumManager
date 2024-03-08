@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
     - name: Check Path Filters
-      uses: dorny/paths-filter@v2
+      uses: dorny/paths-filter@v3
       id: filter
       with:
         filters: |
@@ -51,10 +51,10 @@ jobs:
       runs-on: windows-latest
       steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Check Path Filters
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v3
         id: filter
         with:
           filters: |
