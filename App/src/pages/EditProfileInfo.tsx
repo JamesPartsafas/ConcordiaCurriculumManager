@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useLoading } from "../utils/loadingContext";
 import {
     Box,
@@ -24,9 +24,11 @@ import { useForm } from "react-hook-form";
 import { AuthenticationResponse, RegisterDTO, decodeTokenToUser, editProfile, logout } from "../services/auth";
 import { showToast } from "../utils/toastUtils";
 import { User } from "../models/user";
+import { UserContext } from "../App";
 
 export default function EditProfileInfo() {
     const navigate = useNavigate();
+    const user = useContext(UserContext);
     const { register, handleSubmit } = useForm<RegisterDTO>();
     const [showPassword, setShowPassword] = useState(false);
     const [showError, setShowError] = useState(false);
@@ -90,6 +92,7 @@ export default function EditProfileInfo() {
                                         <Input
                                             id="firstName"
                                             type="firstName"
+                                            placeholder={user.firstName}
                                             {...register("firstName", {
                                                 required: true,
                                             })}
@@ -98,6 +101,7 @@ export default function EditProfileInfo() {
                                         <Input
                                             id="lastName"
                                             type="lastName"
+                                            placeholder={user.lastName}
                                             {...register("lastName", {
                                                 required: true,
                                             })}
@@ -106,7 +110,8 @@ export default function EditProfileInfo() {
                                         <Input
                                             id="email"
                                             type="email"
-                                           {...register("email", {
+                                            placeholder={user.email}
+                                            {...register("email", {
                                                 required: true,
                                                 pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                                             })}

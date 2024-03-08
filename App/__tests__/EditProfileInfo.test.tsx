@@ -3,8 +3,9 @@ import { BrowserRouter } from "react-router-dom";
 import { UserContext } from "../src/App";
 import { User } from "../src/models/user";
 import EditProfileInfo from "../src/pages/EditProfileInfo";
+import { LoadingProvider } from "../src/utils/loadingContext";
 
-describe("Add User to Group Test Case", () => {
+describe("Edit User Profile Test Case", () => {
     it("validate function should render all elements ", () => {
         const user: User = {
             firstName: "test",
@@ -22,7 +23,9 @@ describe("Add User to Group Test Case", () => {
         const component = render(
             <UserContext.Provider value={user}>
                 <BrowserRouter>
-                    <EditProfileInfo />
+                    <LoadingProvider>
+                        <EditProfileInfo />
+                    </LoadingProvider>
                 </BrowserRouter>
             </UserContext.Provider>
         );
