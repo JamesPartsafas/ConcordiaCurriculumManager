@@ -273,12 +273,15 @@ public class DossierRepository : IDossierRepository
     public async Task<(IList<Course>, IList<CourseGrouping>)> GetChangesAcrossAllDossiers()
     {
         var query = _dbContext.Courses.FromSqlInterpolated(
-                $@"SELECT DISTINCT ON (""CourseID"") c.* FROM ""Courses"" c WHERE ""Version"" IS NOT NULL AND ""Published"" = false ORDER BY ""CourseID"", ""Version"" DESC"
+                $@"SELECT DISTINCT ON (""CourseID"") c.* FROM ""Courses"" c WHERE ""Version"" IS NOT NULL ORDER BY ""CourseID"", ""Version"" DESC"
             );
 
         var query2 = _dbContext.CourseGroupings.FromSqlInterpolated(
-                $@"SELECT DISTINCT ON (""Id"") cg.* FROM ""CourseGroupings"" cg WHERE ""Version"" IS NOT NULL AND ""Published"" = false ORDER BY ""Id"", ""Version"" DESC"
+                $@"SELECT DISTINCT ON (""Id"") cg.* FROM ""CourseGroupings"" cg WHERE ""Version"" IS NOT NULL ORDER BY ""Id"", ""Version"" DESC"
             );
+
+        query = query.Where(course => !course.Published);
+        query2 = query2.Where(courseGrouping => !courseGrouping.Published);
 
         query = query.Include(course => course.CourseCourseComponents)
             .Include(course => course.CourseCreationRequest)
