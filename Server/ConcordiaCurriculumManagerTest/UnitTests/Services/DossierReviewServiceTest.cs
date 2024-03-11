@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Repositories;
@@ -201,6 +202,7 @@ public class DossierReviewServiceTest
         dossierRepository.Setup(dr => dr.UpdateDossier(It.IsAny<Dossier>())).ReturnsAsync(true);
         dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequests(dossier.Id)).ReturnsAsync(dossier);
         courseService.Setup(cs => cs.GetCourseVersions(dossier)).ReturnsAsync(TestData.GetSampleCourseVersionCollection());
+        dossierRepository.Setup(dr => dr.GetAllNonApprovedDossiers()).ReturnsAsync(new List<Dossier>());
 
         await dossierReviewService.ForwardDossier(dossier.Id, initiator);
 
@@ -222,6 +224,7 @@ public class DossierReviewServiceTest
         dossierRepository.Setup(dr => dr.UpdateDossier(It.IsAny<Dossier>())).ReturnsAsync(false);
         dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequests(dossier.Id)).ReturnsAsync(dossier);
         courseService.Setup(cs => cs.GetCourseVersions(dossier)).ReturnsAsync(TestData.GetSampleCourseVersionCollection());
+        dossierRepository.Setup(dr => dr.GetAllNonApprovedDossiers()).ReturnsAsync(new List<Dossier>());
 
         await dossierReviewService.ForwardDossier(dossier.Id, initiator);
 
@@ -229,6 +232,63 @@ public class DossierReviewServiceTest
         courseService.Verify(mock => mock.GetCourseVersions(dossier), Times.Once());
         dossierRepository.Verify(mock => mock.UpdateDossier(dossier), Times.Once());
         emailService.Verify(mock => mock.SendEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+    }
+
+    [TestMethod]
+    public async Task AcceptDossier_GivenOtherDossiers_UpdatesOtherDossierGroupings()
+    {
+        var acceptedDossier = TestData.GetSampleDossierInFinalStage();
+        var existingDossier = TestData.GetSampleDossier();
+        var initiator = TestData.GetSampleUser();
+
+        var groupingToModifyId = Guid.NewGuid();
+        var groupingToDeleteId = Guid.NewGuid();
+
+        var acceptedGroupingToModify = TestData.GetSampleCourseGroupingRequest();
+        acceptedGroupingToModify.CourseGrouping!.CourseIdentifiers = new List<CourseIdentifier>();
+        acceptedGroupingToModify.CourseGrouping!.SubGroupingReferences = new List<CourseGroupingReference>();
+        acceptedGroupingToModify.CourseGrouping!.CommonIdentifier = groupingToModifyId;
+        acceptedGroupingToModify.CourseGrouping!.State = CourseGroupingStateEnum.CourseGroupingDeletionProposal;
+        acceptedGroupingToModify.RequestType = RequestType.DeletionRequest;
+
+        var acceptedGroupingToDelete = TestData.GetSampleCourseGroupingRequest();
+        acceptedGroupingToDelete.CourseGrouping!.CourseIdentifiers = new List<CourseIdentifier>();
+        acceptedGroupingToDelete.CourseGrouping!.SubGroupingReferences = new List<CourseGroupingReference>();
+        acceptedGroupingToDelete.CourseGrouping!.CommonIdentifier = groupingToDeleteId;
+        acceptedGroupingToDelete.CourseGrouping!.State = CourseGroupingStateEnum.CourseGroupingDeletionProposal;
+        acceptedGroupingToDelete.RequestType = RequestType.DeletionRequest;
+
+        var existingGroupingToModify = TestData.GetSampleCourseGroupingRequest();
+        existingGroupingToModify.CourseGrouping!.CourseIdentifiers = new List<CourseIdentifier>();
+        existingGroupingToModify.CourseGrouping!.SubGroupingReferences = new List<CourseGroupingReference>();
+        existingGroupingToModify.CourseGrouping!.CommonIdentifier = groupingToModifyId;
+        existingGroupingToModify.CourseGrouping!.State = CourseGroupingStateEnum.CourseGroupingChangeProposal;
+        existingGroupingToModify.RequestType = RequestType.ModificationRequest;
+
+        var existingGroupingToDelete = TestData.GetSampleCourseGroupingRequest();
+        existingGroupingToDelete.CourseGrouping!.CourseIdentifiers = new List<CourseIdentifier>();
+        existingGroupingToDelete.CourseGrouping!.SubGroupingReferences = new List<CourseGroupingReference>();
+        existingGroupingToDelete.CourseGrouping!.CommonIdentifier = groupingToDeleteId;
+        existingGroupingToDelete.CourseGrouping!.State = CourseGroupingStateEnum.CourseGroupingDeletionProposal;
+        existingGroupingToDelete.RequestType = RequestType.DeletionRequest;
+
+        acceptedDossier.CourseGroupingRequests = new List<CourseGroupingRequest> { acceptedGroupingToModify, acceptedGroupingToDelete };
+        existingDossier.CourseGroupingRequests = new List<CourseGroupingRequest> { existingGroupingToModify, existingGroupingToDelete };
+
+        initiator.Id = acceptedDossier.InitiatorId;
+        acceptedDossier.Initiator = initiator;
+
+        dossierRepository.Setup(dr => dr.UpdateDossier(It.IsAny<Dossier>())).ReturnsAsync(true);
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequests(acceptedDossier.Id)).ReturnsAsync(acceptedDossier);
+        courseService.Setup(cs => cs.GetCourseVersions(acceptedDossier)).ReturnsAsync(TestData.GetSampleCourseVersionCollection());
+        courseGroupingService.Setup(cgs => cgs.GetGroupingVersions(acceptedDossier)).ReturnsAsync(TestData.GetSampleGroupingVersions());
+        dossierRepository.Setup(dr => dr.GetAllNonApprovedDossiers()).ReturnsAsync(new List<Dossier> { existingDossier });
+
+        await dossierReviewService.ForwardDossier(acceptedDossier.Id, initiator);
+
+        Assert.AreEqual(RequestType.CreationRequest, existingGroupingToModify.RequestType);
+        Assert.AreEqual(CourseGroupingStateEnum.NewCourseGroupingProposal, existingGroupingToModify.CourseGrouping!.State);
+        Assert.AreEqual(1, existingDossier.CourseGroupingRequests.Count);
     }
 
     [TestMethod]

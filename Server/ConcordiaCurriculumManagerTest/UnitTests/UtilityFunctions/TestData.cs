@@ -639,7 +639,7 @@ public static class TestData
             IsTopLevel = true,
             School = SchoolEnum.GinaCody,
             State = CourseGroupingStateEnum.Accepted,
-            Published = true,
+            Published = false,
             SubGroupingReferences = new List<CourseGroupingReference>
             {
                 {
