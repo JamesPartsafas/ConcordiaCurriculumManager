@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 import { useLoading } from "../utils/loadingContext";
 import {
     Box,
-    Checkbox,
     Container,
     FormControl,
     FormLabel,
@@ -21,9 +20,8 @@ import Button from "../components/Button";
 import { BaseRoutes } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { AuthenticationResponse, RegisterDTO, decodeTokenToUser, editProfile, logout } from "../services/auth";
+import { AuthenticationResponse, RegisterDTO, editProfile, logout } from "../services/auth";
 import { showToast } from "../utils/toastUtils";
-import { User } from "../models/user";
 import { UserContext } from "../App";
 
 export default function EditProfileInfo() {
