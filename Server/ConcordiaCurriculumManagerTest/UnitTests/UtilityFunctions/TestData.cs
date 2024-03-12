@@ -503,6 +503,14 @@ public static class TestData
         };
     }
 
+    public static EditDossierDiscussionMessageDTO GetSampleEditDossierDiscussionMessageDTO()
+    {
+        return new EditDossierDiscussionMessageDTO
+        {
+            DiscussionMessageId = Guid.NewGuid(),
+            NewMessage = "This is a new message"
+        };
+    }
     public static Dossier GetSampleDossierWithDiscussion()
     {
         var dossier = GetSampleDossier();

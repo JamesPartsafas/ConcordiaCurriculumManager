@@ -280,6 +280,104 @@ public class DossierReviewServiceTest
     }
 
     [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditDossierDiscussionReview_DossierDiscussionNotFound_Throws()
+    {
+        var dossierId = Guid.NewGuid();
+        var discussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+        var dossier = TestData.GetSampleDossier();
+        dossier.Discussion = null!;
+        dossier.State = DossierStateEnum.InReview;
+
+        userService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(Guid.NewGuid().ToString());
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(dossier);
+
+        await dossierReviewService.EditDossierDiscussionReview(dossierId, discussionMessage);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditDossierDiscussionReview_UserIdNotFound_Throws()
+    {
+        var dossierId = Guid.NewGuid();
+        var discussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+        var dossier = TestData.GetSampleDossier();
+        dossier.Discussion = null!;
+        dossier.State = DossierStateEnum.InReview;
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(dossier);
+
+        await dossierReviewService.EditDossierDiscussionReview(dossierId, discussionMessage);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditDossierDiscussionReview_DossierIsNotPublishedYet_Throws()
+    {
+        var dossierId = Guid.NewGuid();
+        var discussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+        var dossier = TestData.GetSampleDossier();
+        dossier.Discussion = null!;
+        dossier.State = DossierStateEnum.InReview;
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(dossier);
+
+        await dossierReviewService.EditDossierDiscussionReview(dossierId, discussionMessage);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task EditDossierDiscussionReview_DiscussionMessageDoesNotBelongToUser_Throws()
+    {
+        var dossier = TestData.GetSampleDossierWithDiscussion();
+        var discussionMessage = TestData.GetSampleDiscussionMessage();
+        var newDiscussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+
+        userService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(Guid.NewGuid().ToString());
+        dossierRepository.Setup(dr => dr.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
+        dossierRepository.Setup(dr => dr.UpdateDossier(dossier)).ReturnsAsync(true);
+        dossierReviewRepository.Setup(drr => drr.GetDiscussionMessageWithId(It.IsAny<Guid>())).ReturnsAsync(discussionMessage);
+
+        await dossierReviewService.EditDossierDiscussionReview(dossier.Id, newDiscussionMessage);
+
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public async Task EditDossierDiscussionReview_DiscussionMessageNotExist_Throws()
+    {
+        var dossier = TestData.GetSampleDossierWithDiscussion();
+        var discussionMessage = TestData.GetSampleDiscussionMessage();
+        var newDiscussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+
+        userService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(discussionMessage.AuthorId.ToString());
+        dossierRepository.Setup(dr => dr.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
+        dossierRepository.Setup(dr => dr.UpdateDossier(dossier)).ReturnsAsync(true);
+
+        await dossierReviewService.EditDossierDiscussionReview(dossier.Id, newDiscussionMessage);
+    }
+
+    [TestMethod]
+    public async Task EditDossierDiscussionReview_ValidInput_EditsMessageAndSaves()
+    {
+        var dossier = TestData.GetSampleDossierWithDiscussion();
+        var discussionMessage = TestData.GetSampleDiscussionMessage();
+        var newDiscussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+
+        userService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(discussionMessage.AuthorId.ToString());
+        dossierRepository.Setup(dr => dr.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
+        dossierRepository.Setup(dr => dr.UpdateDossier(dossier)).ReturnsAsync(true);
+       
+        dossierReviewRepository.Setup(drr => drr.GetDiscussionMessageWithId(It.IsAny<Guid>())).ReturnsAsync(discussionMessage);
+        dossierReviewRepository.Setup(drr => drr.UpdateDiscussionMessageReview(discussionMessage)).ReturnsAsync(true);
+
+        await dossierReviewService.EditDossierDiscussionReview(dossier.Id, newDiscussionMessage);
+
+        Assert.AreEqual(newDiscussionMessage.NewMessage, discussionMessage.Message);
+    }
+
+    [TestMethod]
     public async Task GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow_DossierExists_ReturnsDossier()
     {
         var dossierId = Guid.NewGuid();
