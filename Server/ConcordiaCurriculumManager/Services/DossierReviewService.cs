@@ -20,6 +20,7 @@ public interface IDossierReviewService
     public Task<Dossier> GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(Guid dossierId);
     public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message);
     public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message, Guid userId);
+    public Task EditDossierDiscussionReview(Guid dossierId, EditDossierDiscussionMessageDTO message);
 }
 
 public class DossierReviewService : IDossierReviewService
@@ -248,6 +249,34 @@ public class DossierReviewService : IDossierReviewService
             _logger.LogInformation($"Discussion message was successfully saved to dossier {dossier.Id}");
         else
             _logger.LogError($"Encountered error attempting to save a discussion message to dossier {dossier.Id}");
+    }
+
+    public async Task EditDossierDiscussionReview(Guid dossierId, EditDossierDiscussionMessageDTO message)
+    {
+        var userId = _userAuthenticationService.GetCurrentUserClaim(Claims.Id);
+        var dossier = await GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(dossierId);
+
+        if (dossier.State.Equals(DossierStateEnum.Created))
+        {
+            throw new BadRequestException("The dossier is not published yet.");
+        }
+
+        var discussionMessage = await _dossierReviewRepository.GetDiscussionMessageWithId(message.DiscussionMessageId) ?? throw new ArgumentException("The discussion message does not exist.");
+
+        if (Guid.Parse(userId) != discussionMessage.AuthorId)
+        {
+            throw new BadRequestException("You cannot edit a message that does not belong to you.");
+        }
+
+        discussionMessage.Message = message.NewMessage;
+        discussionMessage.ModifiedDate = DateTime.UtcNow;
+
+        var isDossierReviewSaved = await _dossierReviewRepository.UpdateDiscussionMessageReview(discussionMessage);
+
+        if (isDossierReviewSaved)
+            _logger.LogInformation($"Discussion message was successfully edited to dossier {dossierId}");
+        else
+            _logger.LogError($"Encountered error attempting to edit a discussion message to dossier {dossierId}");
     }
 
     public async Task<Dossier> GetDossierWithApprovalStagesOrThrow(Guid dossierId) => await _dossierReviewRepository.GetDossierWithApprovalStages(dossierId)
