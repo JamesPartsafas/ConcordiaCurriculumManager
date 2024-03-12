@@ -30,4 +30,11 @@ internal static class HttpContextUtil
             .Setup(x => x.AuthenticateAsync(httpContext.Object, It.IsAny<string>()))
             .ReturnsAsync(authResult);
     }
+
+    public static void MockHttpContextGetTokenWithUserToken(Mock<IHttpContextAccessor> httpContextAccessorMock, string tokenValue, IEnumerable<Claim> claims, string tokenName = "access_token", string scheme = "Bearer")
+    {
+        MockHttpContextGetToken(httpContextAccessorMock, tokenValue, tokenName, scheme);
+        var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+        httpContextAccessorMock.Setup(h => h.HttpContext!.User).Returns(user);
+    }
 }

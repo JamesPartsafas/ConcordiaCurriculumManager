@@ -253,13 +253,13 @@ public class UserAuthenticationServiceTests
 
         var claims = new Claim[]
         {
-            new Claim("email", "test@example.com")
+            new Claim(ClaimTypes.Email, "test@example.com")
         };
 
         var jwtToken = new JwtSecurityToken(claims: claims);
 
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
-        HttpContextUtil.MockHttpContextGetToken(httpContextAccessor, token);
+        HttpContextUtil.MockHttpContextGetTokenWithUserToken(httpContextAccessor, token, claims);
         var newUserService = new UserAuthenticationService(
             logger.Object,
             userRepository.Object,
@@ -278,7 +278,7 @@ public class UserAuthenticationServiceTests
         userRepository.Setup(repo => repo.UpdateUser(updatedUser))
             .ReturnsAsync(true);
 
-        var accessToken = await userService.EditUserAsync(updatedUser);
+        var accessToken = await newUserService.EditUserAsync(updatedUser);
 
         Assert.IsNotNull(accessToken);
     }
@@ -317,13 +317,13 @@ public class UserAuthenticationServiceTests
 
         var claims = new Claim[]
         {
-            new Claim("email", "test@example.com")
+            new Claim(ClaimTypes.Email, "test@example.com")
         };
 
         var jwtToken = new JwtSecurityToken(claims: claims);
 
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
-        HttpContextUtil.MockHttpContextGetToken(httpContextAccessor, token);
+        HttpContextUtil.MockHttpContextGetTokenWithUserToken(httpContextAccessor, token, claims);
         var newUserService = new UserAuthenticationService(
             logger.Object,
             userRepository.Object,
@@ -342,7 +342,7 @@ public class UserAuthenticationServiceTests
         userRepository.Setup(repo => repo.UpdateUser(updatedUser))
             .ReturnsAsync(false);
 
-        await userService.CreateUserAsync(updatedUser);
+        await newUserService.EditUserAsync(updatedUser);
     }
 
     [TestMethod]
