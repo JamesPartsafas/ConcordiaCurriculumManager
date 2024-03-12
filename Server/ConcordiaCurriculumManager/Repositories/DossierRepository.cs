@@ -322,6 +322,10 @@ public class DossierRepository : IDossierRepository
             .Include(d => d.CourseCreationRequests).ThenInclude(ccr => ccr.NewCourse)
             .Include(d => d.CourseModificationRequests).ThenInclude(cmr => cmr.Course)
             .Include(d => d.CourseDeletionRequests).ThenInclude(cdr => cdr.Course)
+            .Include(d => d.CourseGroupingRequests).ThenInclude(cgr => cgr.CourseGrouping)
+                .ThenInclude(cg => cg!.SubGroupingReferences)
+            .Include(d => d.CourseGroupingRequests).ThenInclude(cgr => cgr.CourseGrouping)
+                .ThenInclude(cg => cg!.CourseIdentifiers)
             .ToListAsync();
     }
 

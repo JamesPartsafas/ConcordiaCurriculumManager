@@ -10,6 +10,7 @@ public interface ICourseGroupingRepository
 {
     public Task<bool> SaveCourseGroupingRequest(CourseGroupingRequest courseGroupingRequest);
     public Task<bool> DeleteCourseGroupingRequest(CourseGroupingRequest courseGroupingRequest);
+    public Task<bool> DeleteSubgrouping(CourseGroupingReference reference);
     public Task<CourseGroupingRequest?> GetCourseGroupingRequestById(Guid requestId);
     public Task<CourseGrouping?> GetCourseGroupingById(Guid groupingId);
     public Task<CourseGrouping?> GetCourseGroupingByCommonIdentifier(Guid commonId);
@@ -50,6 +51,13 @@ public class CourseGroupingRepository : ICourseGroupingRepository
     {
         _dbContext.CourseGroupings.Remove(courseGroupingRequest.CourseGrouping!);
         _dbContext.CourseGroupingRequest.Remove(courseGroupingRequest);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteSubgrouping(CourseGroupingReference reference)
+    {
+        _dbContext.CourseGroupingReferences.Remove(reference);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }
