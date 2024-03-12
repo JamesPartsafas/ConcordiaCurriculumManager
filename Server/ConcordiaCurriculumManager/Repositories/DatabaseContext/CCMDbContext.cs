@@ -49,6 +49,8 @@ public class CCMDbContext : DbContext
 
     public DbSet<CourseIdentifier> CourseIdentifiers { get; set; }
 
+    public DbSet<DiscussionMessage> DiscussionMessage { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

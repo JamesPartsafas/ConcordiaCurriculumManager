@@ -12,6 +12,9 @@ public interface IDossierReviewRepository
     Task<Dossier?> GetDossierWithApprovalStages(Guid dossierId);
     Task<Dossier?> GetDossierWithApprovalStagesAndRequests(Guid dossierId);
     Task<Dossier?> GetDossierWithApprovalStagesAndRequestsAndDiscussion(Guid dossierId);
+    Task<DiscussionMessage?> GetDiscussionMessageWithId(Guid dicussionMessageId);
+    public Task<bool> UpdateDiscussionMessageReview(DiscussionMessage dossier);
+
 }
 
 public class DossierReviewRepository : IDossierReviewRepository
@@ -88,5 +91,17 @@ public class DossierReviewRepository : IDossierReviewRepository
             .Include(dossier => dossier.Discussion)
             .ThenInclude(discussion => discussion == null ? null : discussion.Messages)
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<DiscussionMessage?> GetDiscussionMessageWithId(Guid dicussionMessageId)
+    {
+        return await _dbContext.DiscussionMessage.Where(m => m.Id == dicussionMessageId).FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> UpdateDiscussionMessageReview(DiscussionMessage discussionMessage)
+    {
+        _dbContext.DiscussionMessage.Update(discussionMessage);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
     }
 }

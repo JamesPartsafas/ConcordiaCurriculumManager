@@ -76,4 +76,35 @@ public class DossierReviewRepositoryTest
         Assert.IsNotNull(result.Discussion);
         Assert.AreEqual(result.Id, dossier.Id);
     }
+
+    [TestMethod]
+    public async Task GetDiscussionMessageById_ValidId_ReturnsDiscussionMessage()
+    {
+        var discussionMessage = TestData.GetSampleDiscussionMessage();
+
+        dbContext.DiscussionMessage.Add(discussionMessage);
+        await dbContext.SaveChangesAsync();
+
+        var result = await dossierReviewRepository.GetDiscussionMessageWithId(discussionMessage.Id);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(result.Id, discussionMessage.Id);
+    }
+
+    [TestMethod]
+    public async Task UpdateUpdateDiscussionMessageReview_ReturnsTrue()
+    {
+        var discussionMessage = TestData.GetSampleDiscussionMessage();
+        var newDiscussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+
+        dbContext.DiscussionMessage.Add(discussionMessage);
+        await dbContext.SaveChangesAsync();
+
+        discussionMessage.Message = newDiscussionMessage.NewMessage;
+
+        var result = await dossierReviewRepository.UpdateDiscussionMessageReview(discussionMessage);
+
+        Assert.AreEqual(discussionMessage.Message, newDiscussionMessage.NewMessage);
+        Assert.IsTrue(result);
+    }
+
 }
