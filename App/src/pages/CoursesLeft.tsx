@@ -90,14 +90,20 @@ export default function CoursesLeft() {
 
             <Box width={"70%"} margin={"auto"} mb={10}>
                 {courseGrouping && (
-                    <IconButton
-                        aria-label="Select All"
-                        icon={selectAll ? <CheckIcon /> : <></>}
-                        colorScheme={selectAll ? "blue" : "gray"}
-                        onClick={() => {
-                            setSelectAll(!selectAll);
-                        }}
-                    />
+                    <Box>
+                        {" "}
+                        <IconButton
+                            aria-label="Select All"
+                            icon={selectAll ? <CheckIcon /> : <></>}
+                            colorScheme={selectAll ? "blue" : "white"}
+                            outlineColor={selectAll ? "" : "gray.500"}
+                            mr={2}
+                            onClick={() => {
+                                setSelectAll(!selectAll);
+                            }}
+                        />
+                        Select All
+                    </Box>
                 )}
 
                 <CourseGroupingComponent
