@@ -260,7 +260,10 @@ export function App() {
                         element={isLoggedIn == true ? <GroupDetails /> : <Navigate to={BaseRoutes.Login} />}
                     />
 
-                    <Route path={BaseRoutes.coursesLeft} element={<CoursesLeft />} />
+                    <Route
+                        path={BaseRoutes.coursesLeft}
+                        element={isLoggedIn == true ? <CoursesLeft /> : <Navigate to={BaseRoutes.Login} />}
+                    />
                 </Routes>
             </UserContext.Provider>
         </>
