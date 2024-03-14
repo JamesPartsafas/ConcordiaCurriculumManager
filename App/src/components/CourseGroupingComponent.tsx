@@ -39,6 +39,16 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
                         : `(${prop.courseGrouping?.requiredCredits} credits required)`}
                 </Heading>
             )}
+
+            {prop.courseGrouping && (
+                <Text mt={2} color={totalCredits >= Number(requiredCredits) ? "green.500" : "red.500"}>
+                    Total Selected Credits: {totalCredits}{" "}
+                    {totalCredits >= Number(requiredCredits)
+                        ? "(Requirement Met)"
+                        : "(Requirement Not Met)" + `(${requiredCredits} required)`}
+                </Text>
+            )}
+
             {prop.courseGrouping?.courses && prop.courseGrouping?.courses.length > 0 && (
                 <UnorderedList ml={12} styleType="none">
                     {prop.courseGrouping?.courses.map((course, index) => (
@@ -54,21 +64,16 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
                     ))}
                 </UnorderedList>
             )}
-            {prop.courseGrouping && (
-                <Text mt={2} color={totalCredits >= Number(requiredCredits) ? "green.500" : "red.500"}>
-                    Total Selected Credits: {totalCredits}{" "}
-                    {totalCredits >= Number(requiredCredits)
-                        ? "(Requirement Met)"
-                        : "(Requirement Not Met)" + `(${requiredCredits} required)`}
-                </Text>
-            )}
+
             {prop.courseGrouping?.subGroupings && prop.courseGrouping?.subGroupings.length > 0 && (
                 <Box ml={8}>
                     {prop.courseGrouping?.subGroupings.map((subGroup, index) => (
                         <CourseGroupingComponent
                             key={index}
                             courseGrouping={subGroup}
-                            inheritedRequiredCredits={Number(requiredCredits)}
+                            inheritedRequiredCredits={
+                                Number(requiredCredits) / prop.courseGrouping?.subGroupings.length
+                            }
                         />
                     ))}
                 </Box>
