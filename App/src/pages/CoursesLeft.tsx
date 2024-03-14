@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import Button from "../components/Button";
-import { Box, Heading, useDisclosure } from "@chakra-ui/react";
+import { Box, Heading, IconButton, useDisclosure } from "@chakra-ui/react";
 import SearchCourseGrouping from "../components/CourseGrouping/SearchCourseGrouping";
 import { GetCourseGrouping } from "../services/courseGrouping";
 import CourseGroupingComponent from "../components/CourseGroupingComponent";
+import { CheckIcon } from "@chakra-ui/icons";
 
 export default function CoursesLeft() {
     const [courseGrouping, setCourseGrouping] = useState(null);
+    const [selectAll, setSelectAll] = useState(false);
 
     const {
         isOpen: isSearchCourseGroupingOpen,
@@ -78,7 +80,7 @@ export default function CoursesLeft() {
                 alignItems="center"
             >
                 <Box w={"70%"} margin={"auto"} py={3}>
-                    <Heading size={"3xl"} color={"white"}>
+                    <Heading size={"3xl"} color={"white"} textAlign={"center"}>
                         {courseGrouping?.isTopLevel
                             ? " Degree Requirements for " + courseGrouping?.name
                             : "Select a Program"}
@@ -87,9 +89,21 @@ export default function CoursesLeft() {
             </Box>
 
             <Box width={"70%"} margin={"auto"} mb={10}>
+                {courseGrouping && (
+                    <IconButton
+                        aria-label="Select All"
+                        icon={selectAll ? <CheckIcon /> : <></>}
+                        colorScheme={selectAll ? "blue" : "gray"}
+                        onClick={() => {
+                            setSelectAll(!selectAll);
+                        }}
+                    />
+                )}
+
                 <CourseGroupingComponent
                     courseGrouping={courseGrouping}
                     inheritedRequiredCredits={Number(courseGrouping?.requiredCredits)}
+                    selectAll={selectAll}
                 />
             </Box>
         </>

@@ -6,6 +6,7 @@ interface CourseGroupingComponentProps {
     courseGrouping: CourseGroupingDTO;
     inheritedRequiredCredits?: number;
     onTotalCreditsChange?: (subgroupId: string | number, credits: number, isFulfilled: boolean) => void;
+    selectAll?: boolean;
 }
 
 export default function CourseGroupingComponent(prop: CourseGroupingComponentProps) {
@@ -42,14 +43,16 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
             totalCredits + totalSubgroupCredits,
             isCurrentGroupFulfilled
         );
-    }, [
-        prop.courseGrouping?.id,
-        totalCredits,
-        subgroupCredits,
-        subgroupFulfillment,
-        prop.onTotalCreditsChange,
-        requiredCredits,
-    ]);
+    }, [prop.courseGrouping?.id, totalCredits, subgroupCredits, subgroupFulfillment, requiredCredits]);
+
+    useEffect(() => {
+        if (prop.selectAll) {
+            const allCourseIDs = prop.courseGrouping.courses.map((course) => course.courseID);
+            setSelectedCourses(allCourseIDs);
+        } else {
+            setSelectedCourses([]);
+        }
+    }, [prop.selectAll]);
 
     // Adjusted to handle updates from subgroups correctly
     const handleSubgroupTotalCreditsChange = (subgroupId: string | number, credits: number, isFulfilled: boolean) => {
@@ -118,6 +121,7 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
                                 Number(requiredCredits) / prop.courseGrouping?.subGroupings.length //divide the number of credits equally on the subgroups. This is a naive approach
                             }
                             onTotalCreditsChange={handleSubgroupTotalCreditsChange}
+                            selectAll={prop.selectAll}
                         />
                     ))}
                 </Box>
