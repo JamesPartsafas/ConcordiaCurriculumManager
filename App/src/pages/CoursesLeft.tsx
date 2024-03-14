@@ -3,6 +3,7 @@ import Button from "../components/Button";
 import { Box, Heading, useDisclosure } from "@chakra-ui/react";
 import SearchCourseGrouping from "../components/CourseGrouping/SearchCourseGrouping";
 import { GetCourseGrouping } from "../services/courseGrouping";
+import CourseGroupingComponent from "../components/CourseGroupingComponent";
 
 export default function CoursesLeft() {
     const [courseGrouping, setCourseGrouping] = useState(null);
@@ -84,6 +85,10 @@ export default function CoursesLeft() {
                     </Heading>
                 </Box>
             </Box>
+
+            <div>
+                <CourseGroupingComponent courseGrouping={courseGrouping} />
+            </div>
         </>
     );
 }
