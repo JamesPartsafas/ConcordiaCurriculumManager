@@ -5,12 +5,13 @@ import { useEffect, useState } from "react";
 interface CourseGroupingComponentProps {
     courseGrouping: CourseGroupingDTO;
     inheritedRequiredCredits?: number;
-    onTotalCreditsChange?: (subgroupId: string | number, credits: number) => void;
+    onTotalCreditsChange?: (subgroupId: string | number, credits: number, isFulfilled: boolean) => void;
 }
 
 export default function CourseGroupingComponent(prop: CourseGroupingComponentProps) {
     const [selectedCourses, setSelectedCourses] = useState<number[]>([]);
     const [subgroupCredits, setSubgroupCredits] = useState<Record<string | number, number>>({});
+    const [subgroupFulfillment, setSubgroupFulfillment] = useState<Record<string | number, boolean>>({});
 
     // Determine the effective required credits for this grouping
     const requiredCredits =
@@ -24,15 +25,36 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
             ?.filter((course) => selectedCourses.includes(course.courseID))
             .reduce((acc, course) => acc + Number(course.creditValue), 0) || 0;
 
+    const allSubgroupsFulfilled = Object.values(subgroupFulfillment).every((isFulfilled) => isFulfilled);
+
     // Effect to report total credits including subgroups to parent
     useEffect(() => {
         const totalSubgroupCredits = Object.values(subgroupCredits).reduce((acc, credits) => acc + credits, 0);
-        prop.onTotalCreditsChange?.(prop.courseGrouping.id, totalCredits + totalSubgroupCredits);
-    }, [prop.courseGrouping?.id, totalCredits, subgroupCredits, prop.onTotalCreditsChange]);
+        const allSubgroupsFulfilled = Object.values(subgroupFulfillment).every((isFulfilled) => isFulfilled);
+
+        // Assuming the current group's requirement is also considered fulfilled
+        // if its own totalCredits and all its subgroups' requirements are fulfilled.
+        const isCurrentGroupFulfilled =
+            totalCredits + totalSubgroupCredits >= Number(requiredCredits) && allSubgroupsFulfilled;
+
+        prop.onTotalCreditsChange?.(
+            prop.courseGrouping.id,
+            totalCredits + totalSubgroupCredits,
+            isCurrentGroupFulfilled
+        );
+    }, [
+        prop.courseGrouping?.id,
+        totalCredits,
+        subgroupCredits,
+        subgroupFulfillment,
+        prop.onTotalCreditsChange,
+        requiredCredits,
+    ]);
 
     // Adjusted to handle updates from subgroups correctly
-    const handleSubgroupTotalCreditsChange = (subgroupId: string | number, credits: number) => {
+    const handleSubgroupTotalCreditsChange = (subgroupId: string | number, credits: number, isFulfilled: boolean) => {
         setSubgroupCredits((prev) => ({ ...prev, [subgroupId]: credits }));
+        setSubgroupFulfillment((prev) => ({ ...prev, [subgroupId]: isFulfilled }));
     };
 
     // Handle course selection toggle
@@ -56,7 +78,7 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
                     mt={2}
                     color={
                         totalCredits + Object.values(subgroupCredits).reduce((acc, value) => acc + value, 0) >=
-                        Number(requiredCredits)
+                            Number(requiredCredits) && allSubgroupsFulfilled
                             ? "green.500"
                             : "red.500"
                     }
@@ -64,7 +86,7 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
                     Total Selected Credits:{" "}
                     {totalCredits + Object.values(subgroupCredits).reduce((acc, value) => acc + value, 0)}{" "}
                     {totalCredits + Object.values(subgroupCredits).reduce((acc, value) => acc + value, 0) >=
-                    Number(requiredCredits)
+                        Number(requiredCredits) && allSubgroupsFulfilled
                         ? "(Requirement Met)"
                         : "(Requirement Not Met)"}
                 </Text>
