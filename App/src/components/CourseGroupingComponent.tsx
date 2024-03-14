@@ -72,7 +72,7 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
                             key={index}
                             courseGrouping={subGroup}
                             inheritedRequiredCredits={
-                                Number(requiredCredits) / prop.courseGrouping?.subGroupings.length
+                                Number(requiredCredits) / prop.courseGrouping?.subGroupings.length //divide the number of credits equally on the subgroups. This is a naive approach
                             }
                         />
                     ))}
