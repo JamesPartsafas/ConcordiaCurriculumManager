@@ -16,6 +16,7 @@ public static class ObjectSelectors
         LastName = user.LastName,
         Email = user.Email,
         Password = user.Password,
+        ResetPasswordToken = user.ResetPasswordToken,
         Roles = (List<Role>)user.Roles.Select(role => new Role
         {
             UserRole = role.UserRole
