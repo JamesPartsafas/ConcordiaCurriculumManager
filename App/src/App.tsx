@@ -44,6 +44,7 @@ import DeleteCourseGroupingEdit from "./pages/courseGroupings/DeleteCourseGroupi
 import AllGroups from "./pages/groups/allGroups";
 import GroupDetails from "./pages/groups/GroupDetails";
 import CreateCourseGrouping from "./pages/courseGroupings/CreateCourseGrouping";
+import CoursesLeft from "./pages/CoursesLeft";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -258,6 +259,8 @@ export function App() {
                         path={BaseRoutes.groupDetails}
                         element={isLoggedIn == true ? <GroupDetails /> : <Navigate to={BaseRoutes.Login} />}
                     />
+
+                    <Route path={BaseRoutes.coursesLeft} element={<CoursesLeft />} />
                 </Routes>
             </UserContext.Provider>
         </>

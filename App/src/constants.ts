@@ -36,4 +36,5 @@ export enum BaseRoutes {
     EditCourseGrouping = "/edit/CourseGrouping/:dossierId/:courseGroupingId",
     allGroups = "/allGroups",
     groupDetails = "/GroupDetails",
+    coursesLeft = "/coursesLeft",
 }
