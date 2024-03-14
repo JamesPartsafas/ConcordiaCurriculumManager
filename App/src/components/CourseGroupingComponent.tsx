@@ -1,14 +1,16 @@
 import { Box, Checkbox, Heading, ListItem, UnorderedList, Text } from "@chakra-ui/react";
 import { CourseGroupingDTO } from "../models/courseGrouping";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface CourseGroupingComponentProps {
     courseGrouping: CourseGroupingDTO;
     inheritedRequiredCredits?: number;
+    onTotalCreditsChange?: (subgroupId: string | number, credits: number) => void;
 }
 
 export default function CourseGroupingComponent(prop: CourseGroupingComponentProps) {
     const [selectedCourses, setSelectedCourses] = useState<number[]>([]);
+    const [subgroupCredits, setSubgroupCredits] = useState<Record<string | number, number>>({});
 
     // Determine the effective required credits for this grouping
     const requiredCredits =
@@ -21,6 +23,17 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
         prop.courseGrouping?.courses
             ?.filter((course) => selectedCourses.includes(course.courseID))
             .reduce((acc, course) => acc + Number(course.creditValue), 0) || 0;
+
+    // Effect to report total credits including subgroups to parent
+    useEffect(() => {
+        const totalSubgroupCredits = Object.values(subgroupCredits).reduce((acc, credits) => acc + credits, 0);
+        prop.onTotalCreditsChange?.(prop.courseGrouping.id, totalCredits + totalSubgroupCredits);
+    }, [prop.courseGrouping.id, totalCredits, subgroupCredits, prop.onTotalCreditsChange]);
+
+    // Adjusted to handle updates from subgroups correctly
+    const handleSubgroupTotalCreditsChange = (subgroupId: string | number, credits: number) => {
+        setSubgroupCredits((prev) => ({ ...prev, [subgroupId]: credits }));
+    };
 
     // Handle course selection toggle
     const toggleCourseSelection = (courseID: number) => {
@@ -41,8 +54,17 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
             )}
 
             {prop.courseGrouping && (
-                <Text mt={2} color={totalCredits >= Number(requiredCredits) ? "green.500" : "red.500"}>
-                    Total Selected Credits: {totalCredits}{" "}
+                <Text
+                    mt={2}
+                    color={
+                        totalCredits + Object.values(subgroupCredits).reduce((acc, value) => acc + value, 0) >=
+                        Number(requiredCredits)
+                            ? "green.500"
+                            : "red.500"
+                    }
+                >
+                    Total Selected Credits:{" "}
+                    {totalCredits + Object.values(subgroupCredits).reduce((acc, value) => acc + value, 0)}{" "}
                     {totalCredits >= Number(requiredCredits)
                         ? "(Requirement Met)"
                         : "(Requirement Not Met)" + `(${requiredCredits} required)`}
@@ -69,11 +91,12 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
                 <Box ml={8}>
                     {prop.courseGrouping?.subGroupings.map((subGroup, index) => (
                         <CourseGroupingComponent
-                            key={index}
+                            key={subGroup.id || index}
                             courseGrouping={subGroup}
                             inheritedRequiredCredits={
                                 Number(requiredCredits) / prop.courseGrouping?.subGroupings.length //divide the number of credits equally on the subgroups. This is a naive approach
                             }
+                            onTotalCreditsChange={handleSubgroupTotalCreditsChange}
                         />
                     ))}
                 </Box>
