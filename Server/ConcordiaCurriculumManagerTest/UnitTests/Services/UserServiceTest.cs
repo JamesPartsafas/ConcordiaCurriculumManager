@@ -8,13 +8,15 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
 public class UserServiceTest
 {
     private Mock<IUserRepository> userRepositoryMock = null!;
+    private Mock<IEmailService> userServiceMock = null!;
     private UserService userService = null!;
 
     [TestInitialize]
     public void Initialize()
     {
         userRepositoryMock = new Mock<IUserRepository>();
-        userService = new UserService(userRepositoryMock.Object);
+        userServiceMock = new Mock<IEmailService>();
+        userService = new UserService(userRepositoryMock.Object, userServiceMock.Object);
     }
 
     [TestMethod]

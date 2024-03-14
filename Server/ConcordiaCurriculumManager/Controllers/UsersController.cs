@@ -53,8 +53,8 @@ public class UsersController : Controller
     }
 
     [HttpPost(nameof(SendResetPasswordEmail))]
-    [SwaggerResponse(StatusCodes.Status201Created, "Email has been sent.")]
-    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Email has been sent.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "User with the email not found.")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
     public async Task<ActionResult> SendResetPasswordEmail([FromBody, Required] PasswordResetDTO reset)
     {
