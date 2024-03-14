@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Button from "../components/Button";
-import { useDisclosure } from "@chakra-ui/react";
+import { Box, useDisclosure } from "@chakra-ui/react";
 import SearchCourseGrouping from "../components/CourseGrouping/SearchCourseGrouping";
 import { GetCourseGrouping } from "../services/courseGrouping";
 
@@ -47,21 +47,23 @@ export default function CoursesLeft() {
     }
 
     return (
-        <div>
+        <>
             {displaySearchCourseGroupModal()}
 
-            <Button
-                backgroundColor="brandGray500"
-                _hover={{ bg: "brandGray" }}
-                variant="solid"
-                style="secondary"
-                width="100%"
-                onClick={() => {
-                    onSearchCourseGroupingOpen();
-                }}
-            >
-                Select Program
-            </Button>
-        </div>
+            <Box width="30%" margin={"auto"} marginTop={5}>
+                <Button
+                    backgroundColor="brandRed"
+                    _hover={{ bg: "brandGray" }}
+                    variant="solid"
+                    style="secondary"
+                    width="100%"
+                    onClick={() => {
+                        onSearchCourseGroupingOpen();
+                    }}
+                >
+                    Select Program
+                </Button>
+            </Box>
+        </>
     );
 }
