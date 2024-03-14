@@ -28,7 +28,7 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
     useEffect(() => {
         const totalSubgroupCredits = Object.values(subgroupCredits).reduce((acc, credits) => acc + credits, 0);
         prop.onTotalCreditsChange?.(prop.courseGrouping.id, totalCredits + totalSubgroupCredits);
-    }, [prop.courseGrouping.id, totalCredits, subgroupCredits, prop.onTotalCreditsChange]);
+    }, [prop.courseGrouping?.id, totalCredits, subgroupCredits, prop.onTotalCreditsChange]);
 
     // Adjusted to handle updates from subgroups correctly
     const handleSubgroupTotalCreditsChange = (subgroupId: string | number, credits: number) => {
@@ -47,9 +47,7 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
             {prop.courseGrouping && (
                 <Heading size="md" marginBottom={2}>
                     {prop.courseGrouping?.name}{" "}
-                    {prop.courseGrouping?.isTopLevel
-                        ? ""
-                        : `(${prop.courseGrouping?.requiredCredits} credits required)`}
+                    {prop.courseGrouping?.isTopLevel ? "" : `(${requiredCredits} credits required)`}
                 </Heading>
             )}
 
@@ -65,9 +63,7 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
                 >
                     Total Selected Credits:{" "}
                     {totalCredits + Object.values(subgroupCredits).reduce((acc, value) => acc + value, 0)}{" "}
-                    {totalCredits >= Number(requiredCredits)
-                        ? "(Requirement Met)"
-                        : "(Requirement Not Met)" + `(${requiredCredits} required)`}
+                    {totalCredits >= Number(requiredCredits) ? "(Requirement Met)" : "(Requirement Not Met)"}
                 </Text>
             )}
 
