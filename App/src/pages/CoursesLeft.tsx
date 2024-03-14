@@ -86,7 +86,7 @@ export default function CoursesLeft() {
                 </Box>
             </Box>
 
-            <Box width={"80%"} margin={"auto"} mb={10}>
+            <Box width={"70%"} margin={"auto"} mb={10}>
                 <CourseGroupingComponent
                     courseGrouping={courseGrouping}
                     inheritedRequiredCredits={Number(courseGrouping?.requiredCredits)}
