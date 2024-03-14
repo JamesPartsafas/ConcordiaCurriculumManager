@@ -98,6 +98,7 @@ export default function CoursesLeft() {
                             colorScheme={selectAll ? "blue" : "white"}
                             outlineColor={selectAll ? "" : "gray.500"}
                             mr={2}
+                            size={"xs"}
                             onClick={() => {
                                 setSelectAll(!selectAll);
                             }}
