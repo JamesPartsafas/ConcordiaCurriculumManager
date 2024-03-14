@@ -63,7 +63,10 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
                 >
                     Total Selected Credits:{" "}
                     {totalCredits + Object.values(subgroupCredits).reduce((acc, value) => acc + value, 0)}{" "}
-                    {totalCredits >= Number(requiredCredits) ? "(Requirement Met)" : "(Requirement Not Met)"}
+                    {totalCredits + Object.values(subgroupCredits).reduce((acc, value) => acc + value, 0) >=
+                    Number(requiredCredits)
+                        ? "(Requirement Met)"
+                        : "(Requirement Not Met)"}
                 </Text>
             )}
 
