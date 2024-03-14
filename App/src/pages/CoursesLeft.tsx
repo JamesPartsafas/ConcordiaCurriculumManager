@@ -70,7 +70,7 @@ export default function CoursesLeft() {
 
             <Box
                 mt={10}
-                mb={10}
+                mb={5}
                 backgroundColor={"brandRed"}
                 minH={"100px"}
                 display="flex"
@@ -86,9 +86,12 @@ export default function CoursesLeft() {
                 </Box>
             </Box>
 
-            <div>
-                <CourseGroupingComponent courseGrouping={courseGrouping} />
-            </div>
+            <Box width={"70%"} margin={"auto"}>
+                <CourseGroupingComponent
+                    courseGrouping={courseGrouping}
+                    inheritedRequiredCredits={Number(courseGrouping?.requiredCredits)}
+                />
+            </Box>
         </>
     );
 }
