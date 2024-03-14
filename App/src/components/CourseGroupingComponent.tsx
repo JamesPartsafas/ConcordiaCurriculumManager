@@ -28,6 +28,16 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
 
     const allSubgroupsFulfilled = Object.values(subgroupFulfillment).every((isFulfilled) => isFulfilled);
 
+    // Determine if all courses should be selected
+    //if a group has courses, they should all be selected before the extra credits are spilled to the subgroups
+    const shouldAllCoursesBeSelected =
+        prop.courseGrouping?.courses.reduce((acc, course) => acc + Number(course.creditValue), 0) <
+        Number(requiredCredits);
+
+    const areAllCoursesSelected = prop.courseGrouping?.courses.every((course) =>
+        selectedCourses.includes(course.courseID)
+    );
+
     // Effect to report total credits including subgroups to parent
     useEffect(() => {
         const totalSubgroupCredits = Object.values(subgroupCredits).reduce((acc, credits) => acc + credits, 0);
@@ -36,7 +46,9 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
         // Assuming the current group's requirement is also considered fulfilled
         // if its own totalCredits and all its subgroups' requirements are fulfilled.
         const isCurrentGroupFulfilled =
-            totalCredits + totalSubgroupCredits >= Number(requiredCredits) && allSubgroupsFulfilled;
+            (!shouldAllCoursesBeSelected || areAllCoursesSelected || !shouldAllCoursesBeSelected) &&
+            totalCredits + totalSubgroupCredits >= Number(requiredCredits) &&
+            allSubgroupsFulfilled;
 
         prop.onTotalCreditsChange?.(
             prop.courseGrouping.id,
@@ -80,16 +92,20 @@ export default function CourseGroupingComponent(prop: CourseGroupingComponentPro
                 <Text
                     mt={2}
                     color={
+                        (!shouldAllCoursesBeSelected || areAllCoursesSelected || !shouldAllCoursesBeSelected) &&
                         totalCredits + Object.values(subgroupCredits).reduce((acc, value) => acc + value, 0) >=
-                            Number(requiredCredits) && allSubgroupsFulfilled
+                            Number(requiredCredits) &&
+                        allSubgroupsFulfilled
                             ? "green.500"
                             : "red.500"
                     }
                 >
                     Total Selected Credits:{" "}
                     {totalCredits + Object.values(subgroupCredits).reduce((acc, value) => acc + value, 0)}{" "}
-                    {totalCredits + Object.values(subgroupCredits).reduce((acc, value) => acc + value, 0) >=
-                        Number(requiredCredits) && allSubgroupsFulfilled
+                    {(!shouldAllCoursesBeSelected || areAllCoursesSelected || !shouldAllCoursesBeSelected) &&
+                    totalCredits + Object.values(subgroupCredits).reduce((acc, value) => acc + value, 0) >=
+                        Number(requiredCredits) &&
+                    allSubgroupsFulfilled
                         ? "(Requirement Met)"
                         : "(Requirement Not Met)"}
                 </Text>
