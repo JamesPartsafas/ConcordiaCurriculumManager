@@ -512,7 +512,7 @@ export default function DossierReview() {
                         </Text>
                         <Text mt={2}>{message.message}</Text>
                         {!user.groups?.includes(group.groupId) ||
-                        !user.groups?.includes(currentGroup.groupId) ? null : (
+                        !user.groups?.includes(currentGroup?.groupId) ? null : (
                             <Button onClick={handleToggleReply} marginTop={2}>
                                 <ArrowLeftIcon marginRight={5} />
                                 {showReplyInput ? "Cancel Reply" : "Reply"}
