@@ -24,13 +24,12 @@ public class OwnerOfDossierHandler : AuthorizationHandler<OwnerOfDossierRequirem
 
         if (_httpContextAccessor.HttpContext is null)
         {
-            await VerifyUserHubContext(context, requirement);
+            _logger.LogWarning("OwnerOfDossierHandler is called on an endpoint without httpContext");
+            context.Fail();
+            return;
         }
-        else
-        {
-            await VerifyUserHttpContext(context, requirement);
-        }
-
+        
+        await VerifyUserHttpContext(context, requirement);
     }
 
     private async Task VerifyUserHttpContext(AuthorizationHandlerContext context, OwnerOfDossierRequirement requirement)
@@ -45,36 +44,6 @@ public class OwnerOfDossierHandler : AuthorizationHandler<OwnerOfDossierRequirem
         }
 
         await VerifyIsOwner(context, requirement, parsedDossierId);
-    }
-
-    private async Task VerifyUserHubContext(AuthorizationHandlerContext context, OwnerOfDossierRequirement requirement)
-    {
-        if (context.Resource is not HubInvocationContext invocationContext)
-        {
-            // This is not a SignalR Request. Abstain
-            _logger.LogWarning("OwnerOfDossierHandler is possibly called on a non-signalR endpoint");
-            return;
-        }
-
-        var httpContext = invocationContext.Context.GetHttpContext();
-
-        if (httpContext is null)
-        {
-            // This should never happen as all websocket connection has a handshake via http to upgrade the protocol
-            _logger.LogError("OwnerOfDossierHandler had an unexpected error: SignalR without an initiation HttpRequest");
-            return;
-        }
-
-        if (!httpContext.Request.Query.TryGetValue("dossierId", out var dossierId)
-            || !Guid.TryParse(dossierId.ToString(), out var parsedDossierId))
-        {
-            // There is no dossier Id. Abstain
-            _logger.LogWarning("OwnerOfDossierHandler is possibly called on a signalR endpoint that does not include a dossier id as a param");
-            return;
-        }
-
-        await VerifyIsOwner(context, requirement, parsedDossierId);
-        invocationContext.Context.Items.Add("dossierId", parsedDossierId);
     }
 
     private async Task VerifyIsOwner(AuthorizationHandlerContext context, OwnerOfDossierRequirement requirement, Guid parsedDossierId)
