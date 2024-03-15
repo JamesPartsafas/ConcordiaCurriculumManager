@@ -5,11 +5,15 @@ import { CourseGroupingDTO } from "../../models/courseGrouping";
 import { Link, useParams } from "react-router-dom";
 import { Box, Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react";
 import { BaseRoutes } from "../../constants";
+import CourseGroupingTreeStructure from "../../components/CourseGrouping/CourseGroupingTreeStructure";
+import Button from "../../components/Button";
 
 export default function CourseGrouping() {
     const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO>();
 
     const { courseGroupingId } = useParams();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const toggleModal = () => setIsModalOpen(!isModalOpen);
 
     useEffect(() => {
         requestCourseGrouping(courseGroupingId);
@@ -50,7 +54,31 @@ export default function CourseGrouping() {
                     </Heading>
                 </Box>
             </Box>
+            <Box display="flex" flexDirection="row-reverse" mr="8">
+                {courseGrouping ? (
+                    <>
+                        {/* Existing component code */}
 
+                        <Button
+                            style="secondary"
+                            width="auto"
+                            height="50px"
+                            variant="outline"
+                            marginTop="16px"
+                            onClick={toggleModal}
+                        >
+                            Explore Tree Map
+                        </Button>
+                        <CourseGroupingTreeStructure
+                            isOpen={isModalOpen}
+                            onClose={toggleModal}
+                            courseGrouping={courseGrouping}
+                        />
+                    </>
+                ) : (
+                    <Text>Loading...</Text>
+                )}
+            </Box>
             <Box w={"70%"} margin={"auto"}>
                 {courseGrouping?.isTopLevel ? (
                     <Heading size={"2xl"} mb={3}>
@@ -61,7 +89,6 @@ export default function CourseGrouping() {
                 )}
 
                 <Text>{courseGrouping?.description}</Text>
-
                 <Heading mb={3} mt={10} color={"brandRed"}>
                     {courseGrouping?.name}{" "}
                     {parseFloat(courseGrouping?.requiredCredits)
