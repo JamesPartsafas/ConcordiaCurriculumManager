@@ -12,7 +12,7 @@ namespace ConcordiaCurriculumManager.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize(Policies.IsGroupMasterOrAdmin)]
+[Authorize]
 public class UsersController : Controller
 {
     private readonly IMapper _mapper;
@@ -28,6 +28,7 @@ public class UsersController : Controller
     [SwaggerResponse(StatusCodes.Status200OK, "Current page of users was retrieved")]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [Authorize(Policies.IsGroupMasterOrAdmin)]
     public async Task<ActionResult> GetAllUsersAsync([FromQuery] Guid? lastId)
     {
         var users = await _userService.GetAllUsersPageableAsync(lastId ?? Guid.Empty);
@@ -50,4 +51,37 @@ public class UsersController : Controller
         var userDTOs = _mapper.Map<List<UserDTO>>(users);
         return Ok(userDTOs);
     }
+
+    [HttpGet(nameof(searchUsersByFirstName))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Current page of users was retrieved by first name")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> searchUsersByFirstName([FromQuery, Required] string firstName)
+    {
+        if (string.IsNullOrWhiteSpace(firstName))
+        {
+            throw new InvalidInputException("First name cannot be null or white space");
+        }
+
+        var users = await _userService.GetUsersByFirstName(firstName.Trim());
+        var userDTOs = _mapper.Map<List<UserDTO>>(users);
+        return Ok(userDTOs);
+    }
+
+    [HttpGet(nameof(searchUsersByLastName))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Current page of users was retrieved by last name")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> searchUsersByLastName([FromQuery, Required] string lastName)
+    {
+        if (string.IsNullOrWhiteSpace(lastName))
+        {
+            throw new InvalidInputException("Last name cannot be null or white space");
+        }
+
+        var users = await _userService.GetUsersByLastName(lastName.Trim());
+        var userDTOs = _mapper.Map<List<UserDTO>>(users);
+        return Ok(userDTOs);
+    }
+
 }
