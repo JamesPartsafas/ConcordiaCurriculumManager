@@ -1,5 +1,6 @@
 ﻿using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
+using Microsoft.AspNetCore.Server.HttpSys;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConcordiaCurriculumManager.Repositories;
@@ -13,6 +14,7 @@ public interface IUserRepository
     Task<IList<User>> GetUsersLikeEmailPageable(Guid id, string email);
     Task<IList<User>> GetUsersByFirstName(string firstName);
     Task<IList<User>> GetUsersByLastName(string lastName);
+    Task<int> SavePasswordResetToken(Guid? token, string email);
 }
 
 public class UserRepository : IUserRepository
@@ -69,4 +71,8 @@ public class UserRepository : IUserRepository
         .Select(ObjectSelectors.UserSelector())
         .ToListAsync();
 
+    public async Task<int> SavePasswordResetToken(Guid? token, string email) 
+    {
+        return await _dbContext.Users.Where(user => user.Email.Equals(email)).ExecuteUpdateAsync(b => b.SetProperty(user => user.ResetPasswordToken, token));
+    }
 }
