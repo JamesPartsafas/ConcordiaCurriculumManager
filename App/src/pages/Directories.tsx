@@ -10,10 +10,12 @@ import {
     Input,
     Table,
     TableContainer,
+    Tbody,
     Td,
     Th,
     Thead,
     Tr,
+    Text,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import Button from "../components/Button";
@@ -36,8 +38,12 @@ export default function Directories() {
         searchUsersByFirstname(firstName)
             .then(
                 (response) => {
-                    console.log(response.data);
-                    setUsers((prev) => [...prev, ...response.data]);
+                    setUsers((prev) => {
+                        const newUsers = response.data.filter(
+                            (user) => !prev.some((prevUser) => prevUser.id === user.id)
+                        );
+                        return [...prev, ...newUsers];
+                    });
                 },
                 (rej) => {
                     console.log(rej);
@@ -53,7 +59,12 @@ export default function Directories() {
             .then(
                 (response) => {
                     console.log(response.data);
-                    setUsers((prev) => [...prev, ...response.data]);
+                    setUsers((prev) => {
+                        const newUsers = response.data.filter(
+                            (user) => !prev.some((prevUser) => prevUser.id === user.id)
+                        );
+                        return [...prev, ...newUsers];
+                    });
                 },
                 (rej) => {
                     console.log(rej);
@@ -69,7 +80,12 @@ export default function Directories() {
             .then(
                 (response) => {
                     console.log(response.data);
-                    setUsers((prev) => [...prev, ...response.data]);
+                    setUsers((prev) => {
+                        const newUsers = response.data.filter(
+                            (user) => !prev.some((prevUser) => prevUser.id === user.id)
+                        );
+                        return [...prev, ...newUsers];
+                    });
                 },
                 (rej) => {
                     console.log(rej);
@@ -90,6 +106,9 @@ export default function Directories() {
         }
         if (data.email) {
             getUsersByEmail(data.email);
+        }
+        if (!data.firstName && !data.lastName && !data.email) {
+            setUsers(null);
         }
     }
 
@@ -142,43 +161,56 @@ export default function Directories() {
                 </form>
 
                 <Box mt={10}>
-                    <TableContainer width={"70%"}>
-                        <Table>
-                            <Thead>
-                                <Tr>
-                                    <Th>First Name</Th>
-                                    <Th>Last Name</Th>
-                                    <Th>Email</Th>
-                                    <Th>Contact</Th>
-                                </Tr>
-                            </Thead>
-                            <tbody>
-                                {users.map((user) => (
-                                    <Tr key={user.id}>
-                                        <Td>{user.firstName}</Td>
-                                        <Td>{user.lastName}</Td>
-                                        <Td>{user.email}</Td>
-                                        <Td>
-                                            <IconButton
-                                                ml={2}
-                                                aria-label="Review"
-                                                icon={<EmailIcon />}
-                                                onClick={() => {
-                                                    window.open("mailto:" + user.email);
-                                                }}
-                                            />
-                                            <IconButton
-                                                ml={2}
-                                                aria-label="Review"
-                                                icon={<PhoneIcon />}
-                                                isDisabled={true}
-                                            />
-                                        </Td>
-                                    </Tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    </TableContainer>
+                    {users?.length === 0 && (
+                        <Box backgroundColor={"brandBlue600"} width={"70%"} p={5}>
+                            No results match your search criteria. Please try to simplify your search.
+                        </Box>
+                    )}
+                    {users?.length > 0 && (
+                        <Box>
+                            <Text color={"brandRed"} mb={2} fontWeight={"bold"} fontSize={"lg"}>
+                                People seach results
+                            </Text>
+                            <Text mb={4}>displaying {users.length} result(s)</Text>
+                            <TableContainer width={"70%"}>
+                                <Table>
+                                    <Thead>
+                                        <Tr>
+                                            <Th>First Name</Th>
+                                            <Th>Last Name</Th>
+                                            <Th>Email</Th>
+                                            <Th>Contact</Th>
+                                        </Tr>
+                                    </Thead>
+                                    <Tbody>
+                                        {users.map((user) => (
+                                            <Tr key={user.id}>
+                                                <Td>{user.firstName}</Td>
+                                                <Td>{user.lastName}</Td>
+                                                <Td>{user.email}</Td>
+                                                <Td>
+                                                    <IconButton
+                                                        ml={2}
+                                                        aria-label="Review"
+                                                        icon={<EmailIcon />}
+                                                        onClick={() => {
+                                                            window.open("mailto:" + user.email);
+                                                        }}
+                                                    />
+                                                    <IconButton
+                                                        ml={2}
+                                                        aria-label="Review"
+                                                        icon={<PhoneIcon />}
+                                                        isDisabled={true}
+                                                    />
+                                                </Td>
+                                            </Tr>
+                                        ))}
+                                    </Tbody>
+                                </Table>
+                            </TableContainer>
+                        </Box>
+                    )}
                 </Box>
             </Box>
         </>
