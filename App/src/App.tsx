@@ -45,6 +45,8 @@ import AllGroups from "./pages/groups/allGroups";
 import GroupDetails from "./pages/groups/GroupDetails";
 import CreateCourseGrouping from "./pages/courseGroupings/CreateCourseGrouping";
 import CoursesLeft from "./pages/CoursesLeft";
+import CourseBySubject from "./pages/CourseBySubjectBrowser";
+import CoursesFromSubject from "./pages/CoursesFromSubject";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -263,6 +265,16 @@ export function App() {
                     <Route
                         path={BaseRoutes.coursesLeft}
                         element={isLoggedIn == true ? <CoursesLeft /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.CourseBySubject}
+                        element={isLoggedIn == true ? <CourseBySubject /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.CoursesFromSubject}
+                        element={isLoggedIn == true ? <CoursesFromSubject /> : <Navigate to={BaseRoutes.Login} />}
                     />
                 </Routes>
             </UserContext.Provider>

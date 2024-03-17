@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AllCourseSettings, Course, CourseDataResponse } from "../models/course";
+import { AllCourseSettings, Course, CourseDataResponse, MultiCourseDataResponse } from "../models/course";
 
 interface GetAllCourseSettingsResponse {
     data: AllCourseSettings;
@@ -96,4 +96,8 @@ export function editCourseCreationRequest(dossierId: string, course: Course) {
 
 export function editCourseModificationRequest(dossierId: string, course: Course) {
     return axios.put(`${CourseAPIEndpoints.EditCourseModificationRequest}/${dossierId}`, course);
+}
+
+export function getCoursesDataFromSubject(subject: string): Promise<MultiCourseDataResponse> {
+    return axios.get(`BySubject/${subject}`)
 }

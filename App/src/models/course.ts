@@ -120,6 +120,10 @@ export interface CourseDataResponse {
     data: Course;
 }
 
+export interface MultiCourseDataResponse{
+    data: Course[];
+}
+
 export interface CourseCreationRequestDTOResponse {
     data: {
         id: string;
