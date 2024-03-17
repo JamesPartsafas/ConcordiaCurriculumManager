@@ -35,6 +35,7 @@ export class SignalRManager {
         this.connection = new signalR.HubConnectionBuilder()
             .withUrl(`${this.baseUrl}/ws/DossierReview?dossierId=${this.dossierId}`, {
                 accessTokenFactory: () => this.accessToken,
+                transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
             })
             .configureLogging(signalR.LogLevel.Critical)
             .build();

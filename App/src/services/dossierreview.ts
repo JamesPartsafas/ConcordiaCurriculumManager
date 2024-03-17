@@ -11,6 +11,11 @@ interface ReviewDossierDTO {
     parentDiscussionMessageId?: string;
 }
 
+interface EditReviewMessageDTO {
+    discussionMessageId: string;
+    newMessage: string;
+}
+
 export function submitDossierForReview(dossierId: string, dossierForReviewDTO: SubmitDossierForReviewDTO) {
     return axios.post(`/DossierReview/SubmitDossierForReview/${dossierId}`, dossierForReviewDTO);
 }
@@ -29,4 +34,8 @@ export function forwardDossier(dossierId: string): Promise<void> {
 
 export function reviewDossier(dossierId: string, reviewDossierDTO: ReviewDossierDTO) {
     return axios.post(`/DossierReview/ReviewDossier/${dossierId}`, reviewDossierDTO);
+}
+
+export function editReviewMessage(dossierId: string, editReviewMessageDTO: EditReviewMessageDTO) {
+    return axios.put(`/DossierReview/EditReviewMessage/${dossierId}`, editReviewMessageDTO);
 }

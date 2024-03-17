@@ -1,6 +1,7 @@
 ﻿using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
@@ -20,6 +21,7 @@ public interface IDossierReviewService
     public Task<Dossier> GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(Guid dossierId);
     public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message);
     public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message, Guid userId);
+    public Task EditDossierDiscussionReview(Guid dossierId, EditDossierDiscussionMessageDTO message);
 }
 
 public class DossierReviewService : IDossierReviewService
@@ -209,6 +211,12 @@ public class DossierReviewService : IDossierReviewService
         {
             await ChangeAllCourseRequests(dossiers, request.Course!.Subject, request.Course.Catalog, "deletion");
         }
+
+        foreach (var existingDossier in dossiers)
+        {
+            await ChangeCourseGroupingRequests(dossier, existingDossier);
+            await _dossierRepository.UpdateDossier(dossier);
+        }
     }
 
     public async Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message)
@@ -248,6 +256,34 @@ public class DossierReviewService : IDossierReviewService
             _logger.LogInformation($"Discussion message was successfully saved to dossier {dossier.Id}");
         else
             _logger.LogError($"Encountered error attempting to save a discussion message to dossier {dossier.Id}");
+    }
+
+    public async Task EditDossierDiscussionReview(Guid dossierId, EditDossierDiscussionMessageDTO message)
+    {
+        var userId = _userAuthenticationService.GetCurrentUserClaim(Claims.Id);
+        var dossier = await GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(dossierId);
+
+        if (dossier.State.Equals(DossierStateEnum.Created))
+        {
+            throw new BadRequestException("The dossier is not published yet.");
+        }
+
+        var discussionMessage = await _dossierReviewRepository.GetDiscussionMessageWithId(message.DiscussionMessageId) ?? throw new ArgumentException("The discussion message does not exist.");
+
+        if (Guid.Parse(userId) != discussionMessage.AuthorId)
+        {
+            throw new BadRequestException("You cannot edit a message that does not belong to you.");
+        }
+
+        discussionMessage.Message = message.NewMessage;
+        discussionMessage.ModifiedDate = DateTime.UtcNow;
+
+        var isDossierReviewSaved = await _dossierReviewRepository.UpdateDiscussionMessageReview(discussionMessage);
+
+        if (isDossierReviewSaved)
+            _logger.LogInformation($"Discussion message was successfully edited to dossier {dossierId}");
+        else
+            _logger.LogError($"Encountered error attempting to edit a discussion message to dossier {dossierId}");
     }
 
     public async Task<Dossier> GetDossierWithApprovalStagesOrThrow(Guid dossierId) => await _dossierReviewRepository.GetDossierWithApprovalStages(dossierId)
@@ -325,6 +361,80 @@ public class DossierReviewService : IDossierReviewService
                         d.CourseDeletionRequests = d.CourseDeletionRequests.Where(request => request.Course!.CourseID != course.CourseID).ToList();
                         await _dossierRepository.DeleteCourseDeletionRequest(cdr);
                     }
+                }
+            }
+        }
+    }
+
+    private async Task ChangeCourseGroupingRequests(Dossier acceptedDossier, Dossier existingDossier)
+    {
+        ChangeBasedOnGroupingCreations(acceptedDossier, existingDossier);
+
+        await ChangeBasedOnGroupingDeletions(acceptedDossier, existingDossier);
+    }
+
+    /// <summary>
+    /// Creation requests should be made into modification requests if the grouping has already been accepted
+    /// </summary>
+    /// <param name="acceptedDossier"></param>
+    /// <param name="existingDossier"></param>
+    private void ChangeBasedOnGroupingCreations(Dossier acceptedDossier, Dossier existingDossier)
+    {
+        var acceptedCreationRequests = acceptedDossier.CourseGroupingRequests.Where(request => request.RequestType.Equals(RequestType.CreationRequest));
+
+        foreach (var request in existingDossier.CourseGroupingRequests)
+        {
+            if (request.RequestType.Equals(RequestType.CreationRequest))
+            {
+                if (acceptedCreationRequests.Any(acr => acr.CourseGrouping!.CommonIdentifier.Equals(request.CourseGrouping!.CommonIdentifier)))
+                {
+                    request.RequestType = RequestType.ModificationRequest;
+                    request.CourseGrouping!.State = CourseGroupingStateEnum.CourseGroupingChangeProposal;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Modifications of deleted groupings should be made into creation requests.
+    /// Deletions of deleted groupings should be removed from the dossier.
+    /// Deleted subgroupings should be removed from grouping requests.
+    /// </summary>
+    /// <param name="acceptedDossier"></param>
+    /// <param name="existingDossier"></param>
+    /// <returns></returns>
+    private async Task ChangeBasedOnGroupingDeletions(Dossier acceptedDossier, Dossier existingDossier)
+    {
+        var acceptedDeletionRequests = acceptedDossier.CourseGroupingRequests.Where(request => request.RequestType.Equals(RequestType.DeletionRequest));
+
+        for (var i = 0; i < existingDossier.CourseGroupingRequests.Count; i++)
+        {
+            var request = existingDossier.CourseGroupingRequests[i];
+            if (acceptedDeletionRequests.Any(adr => adr.CourseGrouping!.CommonIdentifier.Equals(request.CourseGrouping!.CommonIdentifier)))
+            {
+                if (request.RequestType.Equals(RequestType.ModificationRequest))
+                {
+                    request.RequestType = RequestType.CreationRequest;
+                    request.CourseGrouping!.State = CourseGroupingStateEnum.NewCourseGroupingProposal;
+                }
+                else
+                {
+                    existingDossier.CourseGroupingRequests.RemoveAt(i);
+                    await _courseGroupingService.DeleteCourseGroupingRequest(request);
+                    i--;
+                    continue;
+                }
+            }
+
+            var subgroupings = request.CourseGrouping!.SubGroupingReferences.ToList();
+            for (var j = 0; j < subgroupings.Count; j++)
+            {
+                var subgrouping = subgroupings[j];
+                if (acceptedDeletionRequests.Any(adr => adr.CourseGrouping!.CommonIdentifier.Equals(subgrouping.ChildGroupCommonIdentifier)))
+                {
+                    subgroupings.RemoveAt(j);
+                    await _courseGroupingService.DeleteSubgrouping(subgrouping);
+                    j--;
                 }
             }
         }
