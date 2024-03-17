@@ -436,7 +436,7 @@ export default function DossierReview() {
         depth: number;
     }) => {
         const marginLeft = `${depth * 20}px`;
-        const colorDepth = `gray.${depth * 100 + 200}`;
+        const colorDepth = `gray.${Math.min(depth * 100 + 100, 500)}`;
 
         const [showReplyInput, setShowReplyInput] = useState(false);
         const [replyText, setReplyText] = useState("");
