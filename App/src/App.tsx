@@ -38,6 +38,8 @@ import GroupingBySchool from "./pages/courseGroupings/CourseGroupingBySchool";
 import MyGroups from "./pages/groups/myGroups";
 import DossierChangeLog from "./pages/dossier/DossierChangeLog";
 import BrowserList from "./pages/BrowserList";
+import ProfilePage from "./pages/ProfilePage";
+import EditProfileInfo from "./pages/EditProfileInfo";
 import CourseGroupingByName from "./pages/courseGroupings/CourseGroupingByName";
 import DeleteCourseGrouping from "./pages/courseGroupings/DeleteCourseGrouping";
 import DeleteCourseGroupingEdit from "./pages/courseGroupings/DeleteCourseGroupingEdit";
@@ -248,6 +250,14 @@ export function App() {
                     <Route
                         path={BaseRoutes.browserList}
                         element={isLoggedIn == true ? <BrowserList /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.profile}
+                        element={isLoggedIn == true ? <ProfilePage /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.editProfileInfo}
+                        element={isLoggedIn == true ? <EditProfileInfo /> : <Navigate to={BaseRoutes.Login} />}
                     />
 
                     <Route

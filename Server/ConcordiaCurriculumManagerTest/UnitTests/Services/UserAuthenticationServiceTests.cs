@@ -239,6 +239,113 @@ public class UserAuthenticationServiceTests
     }
 
     [TestMethod]
+    public async Task EditUserAsync_ReturnsAccessToken()
+    {
+        var updatedUser = new User
+        {
+            FirstName = "fname",
+            LastName = "lname",
+            Email = "test@example.com",
+            Password = "password"
+        };
+
+        var token = "valid_token";
+
+        var claims = new Claim[]
+        {
+            new Claim(ClaimTypes.Email, "test@example.com")
+        };
+
+        var jwtToken = new JwtSecurityToken(claims: claims);
+
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        HttpContextUtil.MockHttpContextGetTokenWithUserToken(httpContextAccessor, token, claims);
+        var newUserService = new UserAuthenticationService(
+            logger.Object,
+            userRepository.Object,
+            options,
+            inputHasher.Object,
+            cacheService.Object,
+            httpContextAccessor.Object
+        );
+
+        userRepository.Setup(repo => repo.GetUserByEmail(updatedUser.Email))
+            .ReturnsAsync(updatedUser);
+
+        inputHasher.Setup(hasher => hasher.Hash(updatedUser.Password))
+            .Returns(updatedUser.Password);
+
+        userRepository.Setup(repo => repo.UpdateUser(updatedUser))
+            .ReturnsAsync(true);
+
+        var accessToken = await newUserService.EditUserAsync(updatedUser);
+
+        Assert.IsNotNull(accessToken);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task EditUserAsync_NoExistingUser_ThrowsArgumentException()
+    {
+        var updatedUser = new User
+        {
+            FirstName = "fname",
+            LastName = "lname",
+            Email = "existinguser@example.com",
+            Password = "existingpassword"
+        };
+
+        userRepository.Setup(repo => repo.GetUserByEmail(updatedUser.Email))
+            .ReturnsAsync((User?)null);
+
+        await userService.EditUserAsync(updatedUser);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public async Task EditUserAsync_ThrowsInvalidOperationException()
+    {
+        var updatedUser = new User
+        {
+            FirstName = "fname",
+            LastName = "lname",
+            Email = "test@example.com",
+            Password = "password"
+        };
+
+        var token = "valid_token";
+
+        var claims = new Claim[]
+        {
+            new Claim(ClaimTypes.Email, "test@example.com")
+        };
+
+        var jwtToken = new JwtSecurityToken(claims: claims);
+
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        HttpContextUtil.MockHttpContextGetTokenWithUserToken(httpContextAccessor, token, claims);
+        var newUserService = new UserAuthenticationService(
+            logger.Object,
+            userRepository.Object,
+            options,
+            inputHasher.Object,
+            cacheService.Object,
+            httpContextAccessor.Object
+        );
+
+        userRepository.Setup(repo => repo.GetUserByEmail(updatedUser.Email))
+            .ReturnsAsync(updatedUser);
+
+        inputHasher.Setup(hasher => hasher.Hash(updatedUser.Password))
+            .Returns(updatedUser.Password);
+
+        userRepository.Setup(repo => repo.UpdateUser(updatedUser))
+            .ReturnsAsync(false);
+
+        await newUserService.EditUserAsync(updatedUser);
+    }
+
+    [TestMethod]
     public async Task SignoutUser_ValidToken_CallsCacheService()
     {
         var token = "valid_token";

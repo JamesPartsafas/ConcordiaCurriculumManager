@@ -34,6 +34,14 @@ internal static class HttpContextUtil
             .ReturnsAsync(authResult);
     }
 
+
+    public static void MockHttpContextGetTokenWithUserToken(Mock<IHttpContextAccessor> httpContextAccessorMock, string tokenValue, IEnumerable<Claim> claims, string tokenName = "access_token", string scheme = "Bearer")
+    {
+        MockHttpContextGetToken(httpContextAccessorMock, tokenValue, tokenName, scheme);
+        var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+        httpContextAccessorMock.Setup(h => h.HttpContext!.User).Returns(user);
+    }
+
     public static Mock<HttpContext> GetMockHttpContextWithQuery(IEnumerable<(string, string)> queries)
     {
         var queryDict = new Dictionary<string, StringValues>();
@@ -45,5 +53,6 @@ internal static class HttpContextUtil
         mockHttpContext.Setup(c => c.Request).Returns(mockRequest.Object);
         
         return mockHttpContext;
+
     }
 }
