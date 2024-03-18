@@ -3,20 +3,21 @@ export default {
     testEnvironment: "jest-environment-jsdom",
     testMatch: ["**/***.test.tsx"],
     moduleFileExtensions: ["js", "jsx", "tsx", "ts"],
-    rootDir: "__tests__/",
-    transformIgnorePatterns: ["node_modules/(?!(d3-selection)/)"],
+    rootDir: "__tests__",
     transform: {
-        "^.+\\.(js|jsx|ts|tsx)$": [
+        "^.+\\.tsx?$": [
             "ts-jest",
-            "babel-jest",
             {
                 tsconfig: "./tsconfig-test.json",
                 diagnostics: {
-                    exclude: ["!*/.test.ts?(x)"],
+                    ignoreCodes: ["TS151001"],
                 },
             },
         ],
+
+        "^.+\\.jsx?$": "babel-jest",
     },
+    transformIgnorePatterns: ["node_modules/(?!(d3-selection|another-module-you-need-to-transform)/)"],
     moduleNameMapper: {
         "\\.(gif|ttf|eot|svg|png)$": "<rootDir>/__mocks__/image_mock.tsx",
         "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
