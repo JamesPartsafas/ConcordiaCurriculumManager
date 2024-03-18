@@ -45,6 +45,7 @@ import AllGroups from "./pages/groups/allGroups";
 import GroupDetails from "./pages/groups/GroupDetails";
 import CreateCourseGrouping from "./pages/courseGroupings/CreateCourseGrouping";
 import CoursesLeft from "./pages/CoursesLeft";
+import EmailResetPassword from "./pages/EmailResetPassword";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -89,6 +90,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.Home}
                         element={isLoggedIn == true ? <Home /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.ResetPasswordEmail}
+                        element={isLoggedIn == false ? <EmailResetPassword /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
                         path={BaseRoutes.CourseBrowser}
