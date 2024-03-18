@@ -4,6 +4,7 @@ export default {
     testMatch: ["**/***.test.tsx"],
     moduleFileExtensions: ["js", "jsx", "tsx", "ts"],
     rootDir: "__tests__/",
+    transformIgnorePatterns: ["node_modules/(?!(d3-selection)/)"],
     transform: {
         "^.+\\.tsx?$": [
             "ts-jest",
