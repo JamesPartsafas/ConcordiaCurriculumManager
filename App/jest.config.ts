@@ -14,8 +14,8 @@ export default {
                 },
             },
         ],
-        "^.+\\.jsx?$": "babel-jest",
     },
+    transformIgnorePatterns: ["node_modules/(?!(d3-selection)/)"],
     moduleNameMapper: {
         "\\.(gif|ttf|eot|svg|png)$": "<rootDir>/__mocks__/image_mock.tsx",
         "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
