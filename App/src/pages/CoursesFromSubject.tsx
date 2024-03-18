@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Course } from "../models/course";
-import { BaseRoutes } from "../constants";
 import { getCoursesDataFromSubject } from "../services/course";
 import {
     Box,

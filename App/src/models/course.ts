@@ -120,7 +120,7 @@ export interface CourseDataResponse {
     data: Course;
 }
 
-export interface MultiCourseDataResponse{
+export interface MultiCourseDataResponse {
     data: Course[];
 }
 
