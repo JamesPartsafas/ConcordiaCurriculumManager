@@ -6,8 +6,9 @@ export default {
     rootDir: "__tests__/",
     transformIgnorePatterns: ["node_modules/(?!(d3-selection)/)"],
     transform: {
-        "^.+\\.tsx?$": [
+        "^.+\\.(js|jsx|ts|tsx)$": [
             "ts-jest",
+            "babel-jest",
             {
                 tsconfig: "./tsconfig-test.json",
                 diagnostics: {
