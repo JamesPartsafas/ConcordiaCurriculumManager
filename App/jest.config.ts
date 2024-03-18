@@ -16,6 +16,7 @@ export default {
         ],
     },
     transformIgnorePatterns: ["node_modules/(?!(d3-selection)/)"],
+    setupFilesAfterEnv: ["<rootDir>/__mocks__/testSetup.js"],
     moduleNameMapper: {
         "\\.(gif|ttf|eot|svg|png)$": "<rootDir>/__mocks__/image_mock.tsx",
         "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
