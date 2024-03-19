@@ -10,7 +10,7 @@ namespace ConcordiaCurriculumManager.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize(Roles = RoleNames.Admin)]
+//[Authorize(Roles = RoleNames.Admin)]
 public class MetricsController : Controller
 {
     private readonly IMapper _mapper;
@@ -55,6 +55,45 @@ public class MetricsController : Controller
         startDate ??= DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-5));
         var httpStatusCodes = await _metricsService.GetTopHitHttpEndpoints(fromIndex, (DateOnly)startDate);
         var returnResult = _mapper.Map<HttpEndpointCountWrapperDTO>(httpStatusCodes);
+        returnResult.NextIndex += fromIndex;
+
+        return Ok(returnResult);
+    }
+
+    [HttpGet(nameof(GetTopViewedDossier))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Current top list of http endpoints was retrieved")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetTopViewedDossier([FromQuery] DateOnly? startDate, [FromQuery] int fromIndex = 0)
+    {
+        if (fromIndex < 0)
+        {
+            return BadRequest("From Index cannot be less than 0");
+        }
+
+        startDate ??= DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-5));
+        var httpStatusCodes = await _metricsService.GetTopViewedDossier(fromIndex, (DateOnly)startDate);
+        var returnResult = _mapper.Map<DossierViewCountWrapperDTO>(httpStatusCodes);
+        returnResult.NextIndex += fromIndex;
+
+        return Ok(returnResult);
+    }
+
+
+    [HttpGet(nameof(GetTopDossierViewingUser))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Current top list of http endpoints was retrieved")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetTopDossierViewingUser([FromQuery] DateOnly? startDate, [FromQuery] int fromIndex = 0)
+    {
+        if (fromIndex < 0)
+        {
+            return BadRequest("From Index cannot be less than 0");
+        }
+
+        startDate ??= DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-5));
+        var httpStatusCodes = await _metricsService.GetTopDossierViewingUser(fromIndex, (DateOnly)startDate);
+        var returnResult = _mapper.Map<UserDossierViewedCountWrapperDTO>(httpStatusCodes);
         returnResult.NextIndex += fromIndex;
 
         return Ok(returnResult);
