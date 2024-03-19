@@ -38,6 +38,8 @@ import GroupingBySchool from "./pages/courseGroupings/CourseGroupingBySchool";
 import MyGroups from "./pages/groups/myGroups";
 import DossierChangeLog from "./pages/dossier/DossierChangeLog";
 import BrowserList from "./pages/BrowserList";
+import ProfilePage from "./pages/ProfilePage";
+import EditProfileInfo from "./pages/EditProfileInfo";
 import CourseGroupingByName from "./pages/courseGroupings/CourseGroupingByName";
 import DeleteCourseGrouping from "./pages/courseGroupings/DeleteCourseGrouping";
 import DeleteCourseGroupingEdit from "./pages/courseGroupings/DeleteCourseGroupingEdit";
@@ -46,6 +48,8 @@ import GroupDetails from "./pages/groups/GroupDetails";
 import CreateCourseGrouping from "./pages/courseGroupings/CreateCourseGrouping";
 import CoursesLeft from "./pages/CoursesLeft";
 import EmailResetPassword from "./pages/EmailResetPassword";
+import CourseBySubject from "./pages/CourseBySubjectBrowser";
+import CoursesFromSubject from "./pages/CoursesFromSubject";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -254,6 +258,14 @@ export function App() {
                         path={BaseRoutes.browserList}
                         element={isLoggedIn == true ? <BrowserList /> : <Navigate to={BaseRoutes.Login} />}
                     />
+                    <Route
+                        path={BaseRoutes.profile}
+                        element={isLoggedIn == true ? <ProfilePage /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.editProfileInfo}
+                        element={isLoggedIn == true ? <EditProfileInfo /> : <Navigate to={BaseRoutes.Login} />}
+                    />
 
                     <Route
                         path={BaseRoutes.allGroups}
@@ -268,6 +280,16 @@ export function App() {
                     <Route
                         path={BaseRoutes.coursesLeft}
                         element={isLoggedIn == true ? <CoursesLeft /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.CourseBySubject}
+                        element={isLoggedIn == true ? <CourseBySubject /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.CoursesFromSubject}
+                        element={isLoggedIn == true ? <CoursesFromSubject /> : <Navigate to={BaseRoutes.Login} />}
                     />
                 </Routes>
             </UserContext.Provider>

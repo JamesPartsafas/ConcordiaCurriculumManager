@@ -11,6 +11,7 @@ using ConcordiaCurriculumManager.DTO;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingRequests;
 using ConcordiaCurriculumManager.DTO.CourseGrouping;
 using System.ComponentModel.DataAnnotations;
+using ConcordiaCurriculumManager.Models.Metrics;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 public static class TestData
@@ -872,9 +873,21 @@ public static class TestData
         };
     }
 
-    //EMAIL
+    // EMAIL
     public static PasswordResetDTO GetSamplePasswordResetDTO()
     {
         return new PasswordResetDTO { Email = "test@gmail.com" };
+    }
+
+    // Metrics
+    public static HttpMetric GetHttpMetric()
+    {
+        return new HttpMetric
+        {
+            Controller = "Controller",
+            Endpoint = "Endpoint",
+            ResponseStatusCode = 200,
+            ResponseTimeMilliSecond = 4000L
+        };
     }
 }
