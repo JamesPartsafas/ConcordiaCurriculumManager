@@ -39,4 +39,5 @@ export enum BaseRoutes {
     allGroups = "/allGroups",
     groupDetails = "/GroupDetails",
     coursesLeft = "/coursesLeft",
+    userBrowser = "/userBrowser",
 }
