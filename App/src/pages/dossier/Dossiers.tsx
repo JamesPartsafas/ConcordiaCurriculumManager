@@ -257,7 +257,6 @@ export default function Dossiers() {
                             handleNavigateToDossierReview={handleNavigateToDossierReview}
                             useIcons={false}
                             reviewIcons={true}
-                            editable={true}
                         />
                     </div>
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
