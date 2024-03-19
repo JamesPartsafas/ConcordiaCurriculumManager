@@ -3,6 +3,7 @@ using ConcordiaCurriculumManager.DTO;
 using ConcordiaCurriculumManager.DTO.Courses;
 using ConcordiaCurriculumManager.DTO.Dossiers;
 using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Middleware.Metrics;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Security;
@@ -45,6 +46,7 @@ public class DossierController : Controller
     }
 
     [HttpGet("{dossierId}")]
+    [ServiceFilter(typeof(AddDossierMetric))]
     [SwaggerResponse(StatusCodes.Status200OK, "Dossier retrieved successfully", typeof(DossierDetailsDTO))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Dossier not found")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
