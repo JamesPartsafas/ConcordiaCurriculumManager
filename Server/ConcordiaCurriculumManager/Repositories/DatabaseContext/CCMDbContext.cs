@@ -52,6 +52,8 @@ public class CCMDbContext : DbContext
 
     public DbSet<HttpMetric> HttpMetrics { get; set; }
 
+    public DbSet<DossierMetric> DossierMetrics { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -61,6 +63,20 @@ public class CCMDbContext : DbContext
         ConfigureGroupUserRelationship(modelBuilder);
         ConfigureDossierReviewRelationships(modelBuilder);
         ConfigureCourseGroupingRelationships(modelBuilder);
+        ConfigureMetricsRelationships(modelBuilder);
+    }
+
+    private void ConfigureMetricsRelationships(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<DossierMetric>()
+            .HasOne(dd => dd.Dossier)
+            .WithMany(d => d.DossierMetrics)
+            .HasForeignKey(dd => dd.DossierId);
+
+        modelBuilder.Entity<DossierMetric>()
+            .HasOne(dd => dd.User)
+            .WithMany(u => u.DossierMetrics)
+            .HasForeignKey(dd => dd.UserId);
     }
 
     private static void ConfigureCourseReferencesRelationship(ModelBuilder modelBuilder)
