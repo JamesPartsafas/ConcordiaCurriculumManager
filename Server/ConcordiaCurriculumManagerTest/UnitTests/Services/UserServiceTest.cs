@@ -1,5 +1,8 @@
-﻿using ConcordiaCurriculumManager.Repositories;
+﻿using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Users;
+using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Services;
+using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using Moq;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
@@ -8,13 +11,15 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
 public class UserServiceTest
 {
     private Mock<IUserRepository> userRepositoryMock = null!;
+    private Mock<IEmailService> emailServiceMock = null!;
     private UserService userService = null!;
 
     [TestInitialize]
     public void Initialize()
     {
         userRepositoryMock = new Mock<IUserRepository>();
-        userService = new UserService(userRepositoryMock.Object);
+        emailServiceMock = new Mock<IEmailService>();
+        userService = new UserService(userRepositoryMock.Object, emailServiceMock.Object);
     }
 
     [TestMethod]
@@ -35,5 +40,15 @@ public class UserServiceTest
 
         await userService.GetUserLikeEmailAsync(validId, validEmail);
         userRepositoryMock.Verify(repo => repo.GetUsersLikeEmailPageable(validId, validEmail), Times.Once);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task SendResetPasswordEmail_ThrowsNotFoundException()
+    {
+        var reset = TestData.GetSamplePasswordResetDTO();
+        userRepositoryMock.Setup(repo => repo.GetUserByEmail(It.IsAny<string>())).Throws(new NotFoundException());
+
+        await userService.SendResetPasswordEmail(reset);
     }
 }

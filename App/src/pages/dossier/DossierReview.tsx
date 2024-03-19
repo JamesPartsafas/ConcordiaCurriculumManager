@@ -37,9 +37,15 @@ import {
 } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
-import { ArrowLeftIcon, CopyIcon } from "@chakra-ui/icons";
+import { ArrowLeftIcon, CopyIcon, EditIcon } from "@chakra-ui/icons";
 import React from "react";
-import { forwardDossier, rejectDossier, returnDossier, reviewDossier } from "../../services/dossierreview";
+import {
+    editReviewMessage,
+    forwardDossier,
+    rejectDossier,
+    returnDossier,
+    reviewDossier,
+} from "../../services/dossierreview";
 import { showToast } from "../../utils/toastUtils";
 import { UserContext } from "../../App";
 import { UserRoles } from "../../models/user";
@@ -384,6 +390,25 @@ export default function DossierReview() {
         }
     };
 
+    const handleEditRequest = (newMessage, messageId) => {
+        const editReviewMessageDTO = {
+            discussionMessageId: messageId,
+            newMessage: newMessage,
+        };
+        editReviewMessage(dossierId, editReviewMessageDTO)
+            .then(() => {
+                showToast(toast, "Success!", "Edit message was successful.", "success");
+                requestDossierDetails(dossierId);
+            })
+            .catch((e) => {
+                if (e.response.status == 403) {
+                    showToast(toast, "Error!", "You cannot edit the message at this state.", "error");
+                } else {
+                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                }
+            });
+    };
+
     const handleWebSocketMessageReceived = (messageDossierId: string, message: DossierDiscussionMessage) => {
         if (messageDossierId != dossierId) {
             return;
@@ -417,6 +442,11 @@ export default function DossierReview() {
         const [replyError, setReplyError] = useState(true);
         const [replySubmitted, setReplySubmitted] = useState(false);
 
+        const [showEditInput, setShowEditInput] = useState(false);
+        const [editText, setEditText] = useState("");
+        const [editError, setEditError] = useState(true);
+        const [editSubmitted, setEditSubmitted] = useState(false);
+
         const handleToggleReply = () => {
             setShowReplyInput(!showReplyInput);
             if (!showReplyInput) {
@@ -424,10 +454,21 @@ export default function DossierReview() {
             }
         };
 
+        const handleToggleEdit = (message) => {
+            setEditText(message);
+            setShowEditInput(!showEditInput);
+        };
+
         const handleChangeReply = (e) => {
             if (e.currentTarget.value.length === 0 || e.currentTarget.value.trim() === "") setReplyError(true);
             else setReplyError(false);
             setReplyText(e.currentTarget.value);
+        };
+
+        const handleChangeEdit = (e) => {
+            if (e.currentTarget.value.length === 0 || e.currentTarget.value.trim() === "") setEditError(true);
+            else setEditError(false);
+            setEditText(e.currentTarget.value);
         };
 
         const handleSubmitReply = () => {
@@ -439,6 +480,18 @@ export default function DossierReview() {
                 setReplyText("");
                 setShowReplyInput(false);
                 setReplyError(false);
+            }
+        };
+
+        const handleSubmitEdit = () => {
+            setEditSubmitted(true);
+            if (editError) {
+                showToast(toast, "Error!", "Your edit message cannot be empty.", "error");
+            } else {
+                handleEditRequest(editText, message.id);
+                setEditText("");
+                setShowEditInput(false);
+                setEditError(false);
             }
         };
 
@@ -459,12 +512,19 @@ export default function DossierReview() {
                         </Text>
                         <Text mt={2}>{message.message}</Text>
                         {!user.groups?.includes(group.groupId) ||
-                        !user.groups?.includes(currentGroup.groupId) ? null : (
+                        !user.groups?.includes(currentGroup?.groupId) ? null : (
                             <Button onClick={handleToggleReply} marginTop={2}>
                                 <ArrowLeftIcon marginRight={5} />
                                 {showReplyInput ? "Cancel Reply" : "Reply"}
                             </Button>
                         )}
+
+                        {user.id == message.author.id ? (
+                            <Button onClick={() => handleToggleEdit(message.message)} marginTop={2} marginLeft={5}>
+                                <EditIcon marginRight={5} />
+                                {showEditInput ? "Cancel Edit" : "Edit"}
+                            </Button>
+                        ) : null}
 
                         {showReplyInput && (
                             <Box marginTop={4}>
@@ -484,6 +544,28 @@ export default function DossierReview() {
 
                                 <Button style="primary" width="auto" variant="solid" onClick={handleSubmitReply}>
                                     Submit reply
+                                </Button>
+                            </Box>
+                        )}
+
+                        {showEditInput && (
+                            <Box marginTop={4}>
+                                <FormControl isInvalid={editError && editSubmitted}>
+                                    <Textarea
+                                        onChange={handleChangeEdit}
+                                        placeholder={"Edit message..."}
+                                        value={editText}
+                                        minH={"50px"}
+                                        background={"white"}
+                                        marginBottom={2}
+                                    ></Textarea>
+                                    <FormErrorMessage fontSize={16} marginBottom={2}>
+                                        Edit cannot be empty.
+                                    </FormErrorMessage>
+                                </FormControl>
+
+                                <Button style="primary" width="auto" variant="solid" onClick={handleSubmitEdit}>
+                                    Submit edit
                                 </Button>
                             </Box>
                         )}

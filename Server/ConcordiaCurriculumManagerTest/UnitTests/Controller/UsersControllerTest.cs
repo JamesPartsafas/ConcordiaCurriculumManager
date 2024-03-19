@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.Controllers;
 using ConcordiaCurriculumManager.DTO;
+using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Services;
+using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Net;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Controller;
 
@@ -95,5 +98,41 @@ public class UsersControllerTest
 
         userService.Verify(service => service.GetUserLikeEmailAsync(validGuid, It.IsAny<string>()), Times.Once);
         Assert.IsInstanceOfType(result?.Value, typeof(List<UserDTO>));
+    }
+
+    [TestMethod]
+    public async Task SendResetPasswordEmail_Succeeds() { 
+        var reset = TestData.GetSamplePasswordResetDTO();
+        userService.Setup(service => service.SendResetPasswordEmail(reset)).ReturnsAsync(true);
+
+        var actionResult = await usersController.SendResetPasswordEmail(reset);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        userService.Verify(service => service.SendResetPasswordEmail(reset), Times.Once);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task SendResetPasswordEmai_InvalidCall_ThrowsNotFoundException()
+    {
+        var reset = TestData.GetSamplePasswordResetDTO();
+        userService.Setup(service => service.SendResetPasswordEmail(reset)).Throws(new NotFoundException());
+
+        await usersController.SendResetPasswordEmail(reset);
+        userService.Verify(service => service.SendResetPasswordEmail(reset), Times.Once);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task SendResetPasswordEmai_ServerError_Throws()
+    {
+        var reset = TestData.GetSamplePasswordResetDTO();
+        userService.Setup(service => service.SendResetPasswordEmail(reset)).Throws(new BadRequestException());
+
+        var actionResult = await usersController.SendResetPasswordEmail(reset);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
     }
 }

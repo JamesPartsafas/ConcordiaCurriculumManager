@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.Controllers;
 using ConcordiaCurriculumManager.DTO.Dossiers;
+using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
@@ -91,6 +92,26 @@ public class DossierReviewControllerTest
         var actionResult = await dossierReviewController.ReviewDossier(dossierId, dossierMessageDTO);
 
         dossierReviewService.Verify(mock => mock.AddDossierDiscussionReview(dossierId, It.IsAny<DiscussionMessage>()), Times.Once());
+        Assert.IsInstanceOfType(actionResult, typeof(NoContentResult));
+    }
+
+    [TestMethod]
+    public async Task EditReviewMessage_ValidCall_ReturnsNoContent()
+    {
+        var dossierId = Guid.NewGuid();
+        var dossierMessageDTO = TestData.GetSampleDossierDiscussionMessageDTO();
+
+        var discussionMessage = new EditDossierDiscussionMessageDTO()
+        {
+            NewMessage = "new message",
+            DiscussionMessageId = dossierMessageDTO.Id
+        };
+
+        dossierReviewService.Setup(drs => drs.EditDossierDiscussionReview(dossierId, It.IsAny<EditDossierDiscussionMessageDTO>())).Returns(Task.CompletedTask);
+
+        var actionResult = await dossierReviewController.EditReviewMessage(dossierId, discussionMessage);
+
+        dossierReviewService.Verify(mock => mock.EditDossierDiscussionReview(dossierId, It.IsAny<EditDossierDiscussionMessageDTO>()), Times.Once());
         Assert.IsInstanceOfType(actionResult, typeof(NoContentResult));
     }
 

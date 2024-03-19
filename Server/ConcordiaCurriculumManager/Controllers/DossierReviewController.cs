@@ -94,4 +94,16 @@ public class DossierReviewController : Controller
         await _dossierReviewService.AddDossierDiscussionReview(dossierId, dossierMessage);
         return NoContent();
     }
+
+    [HttpPut(nameof(EditReviewMessage) + "/{dossierId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Review message successfully edited")]
+    public async Task<ActionResult> EditReviewMessage([FromRoute, Required] Guid dossierId, [FromBody, Required] EditDossierDiscussionMessageDTO dossierMessageDTO)
+    {
+        await _dossierReviewService.EditDossierDiscussionReview(dossierId, dossierMessageDTO);
+        return NoContent();
+    }
+
 }

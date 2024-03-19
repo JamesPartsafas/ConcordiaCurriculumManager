@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Select from "../components/Select";
-import { Box, Button, Container, FormLabel, Heading, Stack } from "@chakra-ui/react";
+import { Box, Container, FormLabel, Heading, Stack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@chakra-ui/react";
 import { AllCourseSettings } from "../models/course";
 import { getAllCourseSettings } from "../services/course";
+import Button from "../components/Button";
 interface SubjectItem {
     value: string;
 }
@@ -83,6 +84,15 @@ export default function CourseBrowser() {
                                         type="submit"
                                     >
                                         Enter
+                                    </Button>
+                                    <Button
+                                        style="primary"
+                                        variant="outline"
+                                        height="40px"
+                                        width="fit-content"
+                                        onClick={() => navigate(-1)}
+                                    >
+                                        Return
                                     </Button>
                                 </Stack>
                             </Box>

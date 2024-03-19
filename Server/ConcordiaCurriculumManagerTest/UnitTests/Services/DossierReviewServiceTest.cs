@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Repositories;
@@ -201,6 +202,7 @@ public class DossierReviewServiceTest
         dossierRepository.Setup(dr => dr.UpdateDossier(It.IsAny<Dossier>())).ReturnsAsync(true);
         dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequests(dossier.Id)).ReturnsAsync(dossier);
         courseService.Setup(cs => cs.GetCourseVersions(dossier)).ReturnsAsync(TestData.GetSampleCourseVersionCollection());
+        dossierRepository.Setup(dr => dr.GetAllNonApprovedDossiers()).ReturnsAsync(new List<Dossier>());
 
         await dossierReviewService.ForwardDossier(dossier.Id, initiator);
 
@@ -222,6 +224,7 @@ public class DossierReviewServiceTest
         dossierRepository.Setup(dr => dr.UpdateDossier(It.IsAny<Dossier>())).ReturnsAsync(false);
         dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequests(dossier.Id)).ReturnsAsync(dossier);
         courseService.Setup(cs => cs.GetCourseVersions(dossier)).ReturnsAsync(TestData.GetSampleCourseVersionCollection());
+        dossierRepository.Setup(dr => dr.GetAllNonApprovedDossiers()).ReturnsAsync(new List<Dossier>());
 
         await dossierReviewService.ForwardDossier(dossier.Id, initiator);
 
@@ -229,6 +232,63 @@ public class DossierReviewServiceTest
         courseService.Verify(mock => mock.GetCourseVersions(dossier), Times.Once());
         dossierRepository.Verify(mock => mock.UpdateDossier(dossier), Times.Once());
         emailService.Verify(mock => mock.SendEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+    }
+
+    [TestMethod]
+    public async Task AcceptDossier_GivenOtherDossiers_UpdatesOtherDossierGroupings()
+    {
+        var acceptedDossier = TestData.GetSampleDossierInFinalStage();
+        var existingDossier = TestData.GetSampleDossier();
+        var initiator = TestData.GetSampleUser();
+
+        var groupingToModifyId = Guid.NewGuid();
+        var groupingToDeleteId = Guid.NewGuid();
+
+        var acceptedGroupingToModify = TestData.GetSampleCourseGroupingRequest();
+        acceptedGroupingToModify.CourseGrouping!.CourseIdentifiers = new List<CourseIdentifier>();
+        acceptedGroupingToModify.CourseGrouping!.SubGroupingReferences = new List<CourseGroupingReference>();
+        acceptedGroupingToModify.CourseGrouping!.CommonIdentifier = groupingToModifyId;
+        acceptedGroupingToModify.CourseGrouping!.State = CourseGroupingStateEnum.CourseGroupingDeletionProposal;
+        acceptedGroupingToModify.RequestType = RequestType.DeletionRequest;
+
+        var acceptedGroupingToDelete = TestData.GetSampleCourseGroupingRequest();
+        acceptedGroupingToDelete.CourseGrouping!.CourseIdentifiers = new List<CourseIdentifier>();
+        acceptedGroupingToDelete.CourseGrouping!.SubGroupingReferences = new List<CourseGroupingReference>();
+        acceptedGroupingToDelete.CourseGrouping!.CommonIdentifier = groupingToDeleteId;
+        acceptedGroupingToDelete.CourseGrouping!.State = CourseGroupingStateEnum.CourseGroupingDeletionProposal;
+        acceptedGroupingToDelete.RequestType = RequestType.DeletionRequest;
+
+        var existingGroupingToModify = TestData.GetSampleCourseGroupingRequest();
+        existingGroupingToModify.CourseGrouping!.CourseIdentifiers = new List<CourseIdentifier>();
+        existingGroupingToModify.CourseGrouping!.SubGroupingReferences = new List<CourseGroupingReference>();
+        existingGroupingToModify.CourseGrouping!.CommonIdentifier = groupingToModifyId;
+        existingGroupingToModify.CourseGrouping!.State = CourseGroupingStateEnum.CourseGroupingChangeProposal;
+        existingGroupingToModify.RequestType = RequestType.ModificationRequest;
+
+        var existingGroupingToDelete = TestData.GetSampleCourseGroupingRequest();
+        existingGroupingToDelete.CourseGrouping!.CourseIdentifiers = new List<CourseIdentifier>();
+        existingGroupingToDelete.CourseGrouping!.SubGroupingReferences = new List<CourseGroupingReference>();
+        existingGroupingToDelete.CourseGrouping!.CommonIdentifier = groupingToDeleteId;
+        existingGroupingToDelete.CourseGrouping!.State = CourseGroupingStateEnum.CourseGroupingDeletionProposal;
+        existingGroupingToDelete.RequestType = RequestType.DeletionRequest;
+
+        acceptedDossier.CourseGroupingRequests = new List<CourseGroupingRequest> { acceptedGroupingToModify, acceptedGroupingToDelete };
+        existingDossier.CourseGroupingRequests = new List<CourseGroupingRequest> { existingGroupingToModify, existingGroupingToDelete };
+
+        initiator.Id = acceptedDossier.InitiatorId;
+        acceptedDossier.Initiator = initiator;
+
+        dossierRepository.Setup(dr => dr.UpdateDossier(It.IsAny<Dossier>())).ReturnsAsync(true);
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequests(acceptedDossier.Id)).ReturnsAsync(acceptedDossier);
+        courseService.Setup(cs => cs.GetCourseVersions(acceptedDossier)).ReturnsAsync(TestData.GetSampleCourseVersionCollection());
+        courseGroupingService.Setup(cgs => cgs.GetGroupingVersions(acceptedDossier)).ReturnsAsync(TestData.GetSampleGroupingVersions());
+        dossierRepository.Setup(dr => dr.GetAllNonApprovedDossiers()).ReturnsAsync(new List<Dossier> { existingDossier });
+
+        await dossierReviewService.ForwardDossier(acceptedDossier.Id, initiator);
+
+        Assert.AreEqual(RequestType.CreationRequest, existingGroupingToModify.RequestType);
+        Assert.AreEqual(CourseGroupingStateEnum.NewCourseGroupingProposal, existingGroupingToModify.CourseGrouping!.State);
+        Assert.AreEqual(1, existingDossier.CourseGroupingRequests.Count);
     }
 
     [TestMethod]
@@ -277,6 +337,104 @@ public class DossierReviewServiceTest
         dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(dossier);
 
         await dossierReviewService.AddDossierDiscussionReview(dossierId, message);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditDossierDiscussionReview_DossierDiscussionNotFound_Throws()
+    {
+        var dossierId = Guid.NewGuid();
+        var discussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+        var dossier = TestData.GetSampleDossier();
+        dossier.Discussion = null!;
+        dossier.State = DossierStateEnum.InReview;
+
+        userService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(Guid.NewGuid().ToString());
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(dossier);
+
+        await dossierReviewService.EditDossierDiscussionReview(dossierId, discussionMessage);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditDossierDiscussionReview_UserIdNotFound_Throws()
+    {
+        var dossierId = Guid.NewGuid();
+        var discussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+        var dossier = TestData.GetSampleDossier();
+        dossier.Discussion = null!;
+        dossier.State = DossierStateEnum.InReview;
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(dossier);
+
+        await dossierReviewService.EditDossierDiscussionReview(dossierId, discussionMessage);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task EditDossierDiscussionReview_DossierIsNotPublishedYet_Throws()
+    {
+        var dossierId = Guid.NewGuid();
+        var discussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+        var dossier = TestData.GetSampleDossier();
+        dossier.Discussion = null!;
+        dossier.State = DossierStateEnum.InReview;
+
+        dossierReviewRepository.Setup(drr => drr.GetDossierWithApprovalStagesAndRequestsAndDiscussion(dossierId)).ReturnsAsync(dossier);
+
+        await dossierReviewService.EditDossierDiscussionReview(dossierId, discussionMessage);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task EditDossierDiscussionReview_DiscussionMessageDoesNotBelongToUser_Throws()
+    {
+        var dossier = TestData.GetSampleDossierWithDiscussion();
+        var discussionMessage = TestData.GetSampleDiscussionMessage();
+        var newDiscussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+
+        userService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(Guid.NewGuid().ToString());
+        dossierRepository.Setup(dr => dr.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
+        dossierRepository.Setup(dr => dr.UpdateDossier(dossier)).ReturnsAsync(true);
+        dossierReviewRepository.Setup(drr => drr.GetDiscussionMessageWithId(It.IsAny<Guid>())).ReturnsAsync(discussionMessage);
+
+        await dossierReviewService.EditDossierDiscussionReview(dossier.Id, newDiscussionMessage);
+
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public async Task EditDossierDiscussionReview_DiscussionMessageNotExist_Throws()
+    {
+        var dossier = TestData.GetSampleDossierWithDiscussion();
+        var discussionMessage = TestData.GetSampleDiscussionMessage();
+        var newDiscussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+
+        userService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(discussionMessage.AuthorId.ToString());
+        dossierRepository.Setup(dr => dr.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
+        dossierRepository.Setup(dr => dr.UpdateDossier(dossier)).ReturnsAsync(true);
+
+        await dossierReviewService.EditDossierDiscussionReview(dossier.Id, newDiscussionMessage);
+    }
+
+    [TestMethod]
+    public async Task EditDossierDiscussionReview_ValidInput_EditsMessageAndSaves()
+    {
+        var dossier = TestData.GetSampleDossierWithDiscussion();
+        var discussionMessage = TestData.GetSampleDiscussionMessage();
+        var newDiscussionMessage = TestData.GetSampleEditDossierDiscussionMessageDTO();
+
+        userService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(discussionMessage.AuthorId.ToString());
+        dossierRepository.Setup(dr => dr.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
+        dossierRepository.Setup(dr => dr.UpdateDossier(dossier)).ReturnsAsync(true);
+       
+        dossierReviewRepository.Setup(drr => drr.GetDiscussionMessageWithId(It.IsAny<Guid>())).ReturnsAsync(discussionMessage);
+        dossierReviewRepository.Setup(drr => drr.UpdateDiscussionMessageReview(discussionMessage)).ReturnsAsync(true);
+
+        await dossierReviewService.EditDossierDiscussionReview(dossier.Id, newDiscussionMessage);
+
+        Assert.AreEqual(newDiscussionMessage.NewMessage, discussionMessage.Message);
     }
 
     [TestMethod]

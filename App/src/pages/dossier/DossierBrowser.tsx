@@ -1,4 +1,4 @@
-import { Box, Flex, FormControl, FormLabel, Input, Select, useDisclosure, Text } from "@chakra-ui/react";
+import { Box, Flex, FormControl, FormLabel, Input, Select, useDisclosure, Text, useToast } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { DossierDTO, DossierStateEnum, GetMyDossiersResponse } from "../../model
 import DossierTable from "../../components/DossierTable";
 import { BaseRoutes } from "../../constants";
 import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../../services/group";
+import { showToast } from "../../utils/toastUtils";
 
 export default function DossierBrowser() {
     const [searchInput, setSearchInput] = useState<string>("");
@@ -21,6 +22,7 @@ export default function DossierBrowser() {
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
     const [changer, setChanger] = useState<DossierStateEnum>(DossierStateEnum.Created);
+    const toast = useToast(); // Use the useToast hook
 
     useEffect(() => {
         if (selectedState == "Created") {
@@ -44,6 +46,7 @@ export default function DossierBrowser() {
             })
             .catch((err) => {
                 console.log(err);
+                showToast(toast, "Error!", "An error has occured.", "error");
             });
     }, []);
 
@@ -55,9 +58,13 @@ export default function DossierBrowser() {
             .then((res: GetMyDossiersResponse) => {
                 console.log(JSON.stringify(res.data));
                 setMySearchedDossiers(res.data);
+                if (res.data.length == 0) {
+                    showToast(toast, "Error!", "No results found.", "error");
+                }
             })
             .catch((err) => {
                 console.log(err);
+                showToast(toast, "Error!", "An error has occured.", "error");
             });
     }
 

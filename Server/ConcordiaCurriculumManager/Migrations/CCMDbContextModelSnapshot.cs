@@ -647,6 +647,37 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.ToTable("SupportingFiles");
                 });
 
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Metrics.HttpMetrics", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Controller")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Endpoint")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ResponseStatusCode")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("ResponseTimeMilliSecond")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HttpMetrics");
+                });
+
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Users.Group", b =>
                 {
                     b.Property<Guid>("Id")
@@ -718,6 +749,9 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("ResetPasswordToken")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 

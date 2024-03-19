@@ -25,6 +25,8 @@ public interface ICourseGroupingService
     public Task<CourseGroupingRequest> EditCourseGroupingDeletion(Guid originalRequestId, CourseGroupingModificationRequestDTO dto);
     public Task<CourseGroupingRequest> GetCourseGroupingRequest(Guid groupingRequestId);
     public Task DeleteCourseGroupingRequest(Guid dossierId, Guid requestId);
+    public Task<bool> DeleteCourseGroupingRequest(CourseGroupingRequest request);
+    public Task<bool> DeleteSubgrouping(CourseGroupingReference reference);
     public Task<CourseGrouping> PublishCourseGrouping(Guid commonIdentifier);
     public Task<IDictionary<Guid, int>> GetGroupingVersions(Dossier dossier);
     public Task<List<CourseGrouping?>> GetCourseGroupingsByDossierAndName(Guid dossierId, string searchQuery);
@@ -247,6 +249,12 @@ public class CourseGroupingService : ICourseGroupingService
             throw new ServiceUnavailableException("The course grouping could not be deleted");
         }
     }
+
+    public async Task<bool> DeleteCourseGroupingRequest(CourseGroupingRequest request) => 
+        await _courseGroupingRepository.DeleteCourseGroupingRequest(request);
+
+    public async Task<bool> DeleteSubgrouping(CourseGroupingReference reference) =>
+        await _courseGroupingRepository.DeleteSubgrouping(reference);
 
     public async Task<CourseGrouping> PublishCourseGrouping(Guid commonIdentifier)
     {

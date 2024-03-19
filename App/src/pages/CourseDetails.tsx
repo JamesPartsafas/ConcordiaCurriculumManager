@@ -94,7 +94,7 @@ export default function CourseDetails() {
                     width="240px"
                     height="40px"
                     margin="auto"
-                    onClick={() => navigate(BaseRoutes.CourseBrowser)}
+                    onClick={() => navigate(-1)}
                 >
                     Go back to browser
                 </Button>

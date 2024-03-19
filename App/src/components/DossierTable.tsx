@@ -35,6 +35,7 @@ DossierTable.propTypes = {
     totalResults: PropTypes.number,
     useIcons: PropTypes.bool,
     reviewIcons: PropTypes.bool,
+    editable: PropTypes.bool,
 };
 function DossierTable({
     myDossiers: dossiers,
@@ -47,6 +48,7 @@ function DossierTable({
     handleNavigateToDossierReport,
     useIcons,
     reviewIcons,
+    editable,
 }) {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const totalResults = dossiers.length;
@@ -106,7 +108,7 @@ function DossierTable({
                                         />
                                     </Tooltip>
                                 )}
-                                {useIcons && (
+                                {(useIcons || editable) && (
                                     <Tooltip label="Edit This Dossier">
                                         <IconButton
                                             ml={2}

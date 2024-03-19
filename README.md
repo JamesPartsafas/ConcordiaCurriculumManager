@@ -13,3 +13,14 @@ The project contains an App folder for the frontend React project, built in Type
 - Roger Sioufi - 40177472  - Rodg.sioufi@gmail.com
 - Zi Hao Tan - 40174018 - zihaotan429@gmail.com
 - Tony Yang - 40171440 - yangtony2000@gmail.com
+
+## New Developer Instructions
+As a new developer, there are multiple projects contained in this repository that must be set up to begin developing in a local environment: A backend project in the `Server` folder, and frontend project in the `App` folder, and a data seeder project in the `Seeder` folder. See below for instructions on setting each one up:
+
+To set up the frontend project, refer to [the following document](https://github.com/JamesPartsafas/ConcordiaCurriculumManager/wiki/Front%E2%80%90End-Setup). Once the project is running, navigate to `http://localhost:4173` and verify that the login page is displayed to you.
+
+To set up the backend project, refer to [the following document](https://github.com/JamesPartsafas/ConcordiaCurriculumManager/tree/main/Server).
+
+Once the backend project is set up and running, close the server from within Visual Studio. Within psql, run the command `\dt` to verify that the tables for the project have been created by the migration that was run when setting up the backend project. Once that is verified, it is time to seed the base data for the project, such as courses, curriculums, and test users. Refer to [this document](https://github.com/JamesPartsafas/ConcordiaCurriculumManager/tree/main/Seeder) for further instructions. Once the seeder is run, verify within psql that the data is indeed present.
+
+Finally, now that everything has been set up, start up the server and start up the frontend app. Navigate to `http://localhost:4173`, click on the Register button, and create a new account. You should be redirected to the home page. If you are on the home page, then the setup for your local development environment is complete. If not, please troubleshoot using the previous steps as needed.

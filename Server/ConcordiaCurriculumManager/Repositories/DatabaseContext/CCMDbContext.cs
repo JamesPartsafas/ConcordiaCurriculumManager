@@ -2,10 +2,9 @@
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Metrics;
 using ConcordiaCurriculumManager.Models.Users;
-using ConcordiaCurriculumManager.Settings;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace ConcordiaCurriculumManager.Repositories.DatabaseContext;
 
@@ -48,6 +47,10 @@ public class CCMDbContext : DbContext
     public DbSet<CourseGroupingReference> CourseGroupingReferences { get; set; }
 
     public DbSet<CourseIdentifier> CourseIdentifiers { get; set; }
+
+    public DbSet<DiscussionMessage> DiscussionMessage { get; set; }
+
+    public DbSet<HttpMetric> HttpMetrics { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

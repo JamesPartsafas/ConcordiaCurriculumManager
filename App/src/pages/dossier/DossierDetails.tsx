@@ -465,20 +465,20 @@ export default function DossierDetails() {
                     >
                         Dossier Report
                     </Button>
+                    {dossierStateToString(dossierDetails) != "Created" && (
+                        <Button
+                            style="primary"
+                            variant="outline"
+                            height="40px"
+                            width="fit-content"
+                            ml="2"
+                            onClick={() => navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId))}
+                        >
+                            Dossier Review
+                        </Button>
+                    )}
                 </Box>
 
-                {dossierStateToString(dossierDetails) != "Created" && (
-                    <Button
-                        style="primary"
-                        variant="outline"
-                        height="40px"
-                        width="fit-content"
-                        ml="2"
-                        onClick={() => navigate(BaseRoutes.DossierReview.replace(":dossierId", dossierId))}
-                    >
-                        Dossier Review
-                    </Button>
-                )}
                 <div style={{ margin: "auto" }}>
                     <Heading textAlign={"center"} color={"brandRed"}>
                         {dossierDetails?.title}

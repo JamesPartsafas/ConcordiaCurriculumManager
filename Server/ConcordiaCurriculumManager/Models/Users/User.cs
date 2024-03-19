@@ -19,4 +19,6 @@ public class User : BaseModel
     public List<Group> MasteredGroups { get; set; } = new();
 
     public List<Dossier> Dossiers { get; set; } = new();
+
+    public Guid? ResetPasswordToken { get; set; }
 }

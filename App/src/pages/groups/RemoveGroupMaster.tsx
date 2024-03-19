@@ -6,9 +6,11 @@ import Button from "../../components/Button";
 import { GetGroupByID, GroupDTO, GroupResponseDTO, RemoveGroupMaster } from "../../services/group";
 import { BaseRoutes } from "../../constants";
 import { UserDTO } from "../../models/user";
+import { useToast } from "@chakra-ui/react";
 
 export default function RemovingMasterFromGroup() {
     const navigate = useNavigate();
+    const toast = useToast();
     const [locationState, setLocationState] = useState({ gid: "", name: "" });
     const [myGroup, setMyGroup] = useState<GroupDTO | null>(null);
     const [userList, setUserList] = useState<UserDTO[]>([]);
@@ -24,10 +26,24 @@ export default function RemovingMasterFromGroup() {
                 },
                 (rej) => {
                     console.log(rej);
+                    toast({
+                        title: "Error",
+                        description: "Failed to retrieve group information.",
+                        status: "error",
+                        duration: 5000,
+                        isClosable: true,
+                    });
                 }
             )
             .catch((err) => {
                 console.log(err);
+                toast({
+                    title: "Error",
+                    description: "An unexpected error occurred.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
             });
     }
 
@@ -54,13 +70,36 @@ export default function RemovingMasterFromGroup() {
                 () => {
                     console.log("User Removed");
                     getMyGroup(myGroup.id);
+                    toast({
+                        title: "Success",
+                        description: "Master removed successfully.",
+                        status: "success",
+                        duration: 5000,
+                        isClosable: true,
+                        position: "top-right",
+                    });
                 },
                 (rej) => {
                     console.log(rej);
+                    toast({
+                        title: "Error",
+                        description: "Failed to remove master.",
+                        status: "error",
+                        duration: 5000,
+                        isClosable: true,
+                        position: "top-right",
+                    });
                 }
             )
             .catch((err) => {
                 console.log(err);
+                toast({
+                    title: "Error",
+                    description: "An unexpected error occurred.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
             });
     }
 

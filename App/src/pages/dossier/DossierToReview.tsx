@@ -111,6 +111,7 @@ export default function DossiersToReview() {
                     totalResults={totalResults}
                     useIcons={false}
                     reviewIcons={true}
+                    editable={true}
                 />
             </Flex>
         </Box>
