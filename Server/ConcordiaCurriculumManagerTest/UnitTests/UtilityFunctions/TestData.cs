@@ -930,6 +930,8 @@ public static class TestData
         var grouping = GetSampleCourseGrouping();
         grouping.Name = name;
         return grouping;
+    }
+
     // EMAIL
     public static PasswordResetDTO GetSamplePasswordResetDTO()
     {
