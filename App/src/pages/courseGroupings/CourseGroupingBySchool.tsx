@@ -68,6 +68,16 @@ export default function GroupingBySchool() {
     return (
         <div>
             <Box maxW="5xl" m="auto">
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    margin="2%"
+                    onClick={() => navigate(-1)}
+                >
+                    Return
+                </Button>
                 <Flex flexDirection="column">
                     <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                         Curriculum by School
