@@ -18,6 +18,14 @@ export function updateAllUsers(uid: string): Promise<AllUsersResponseDTO> {
     return axios.get("/Users/GetAllUsersAsync?lastId=" + uid);
 }
 
+export function searchUsersByFirstname(firstname: string): Promise<AllUsersResponseDTO> {
+    return axios.get("/Users/SearchUsersByFirstname?firstName=" + firstname);
+}
+
+export function searchUsersByLastname(lastname: string): Promise<AllUsersResponseDTO> {
+    return axios.get("/Users/SearchUsersByLastname?lastName=" + lastname);
+}
+
 export function searchUsersByEmail(email: string): Promise<AllUsersResponseDTO> {
     return axios.get("/Users/SearchUsersByEmail?email=" + email);
 }

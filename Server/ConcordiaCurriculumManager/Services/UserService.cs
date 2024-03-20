@@ -12,6 +12,8 @@ public interface IUserService
     Task<IList<User>> GetUserLikeEmailAsync(Guid id, string email);
     Task<IList<User>> GetAllUsersPageableAsync(Guid id);
     Task<User?> GetUserById(Guid id);
+    Task<IList<User>> GetUsersByFirstName(string firstName);
+    Task<IList<User>> GetUsersByLastName(string lastName);
     Task<bool> SendResetPasswordEmail(PasswordResetDTO reset);
 }
 
@@ -32,6 +34,8 @@ public class UserService : IUserService
 
     public async Task<User?> GetUserById(Guid id) => await _userRepository.GetUserById(id);
 
+    public async Task<IList<User>> GetUsersByFirstName(string firstName) => await _userRepository.GetUsersByFirstName(firstName);
+    public async Task<IList<User>> GetUsersByLastName(string lastName) => await _userRepository.GetUsersByLastName(lastName);
     public async Task<bool> SendResetPasswordEmail(PasswordResetDTO reset) {
         var _ = await _userRepository.GetUserByEmail(reset.Email) ?? throw new NotFoundException("The email " + reset.Email + " does not exist.");
         Guid token = Guid.NewGuid();
