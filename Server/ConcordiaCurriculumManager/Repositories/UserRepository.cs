@@ -10,6 +10,7 @@ public interface IUserRepository
     Task<User?> GetUserById(Guid id);
     Task<User?> GetUserByEmail(string email);
     Task<bool> SaveUser(User user);
+    Task<bool> UpdateUser(User user);
     Task<IList<User>> GetAllUsersPageable(Guid id);
     Task<IList<User>> GetUsersLikeEmailPageable(Guid id, string email);
     Task<IList<User>> GetUsersByFirstName(string firstName);
@@ -33,12 +34,21 @@ public class UserRepository : IUserRepository
 
     public Task<User?> GetUserByEmail(string email) => _dbContext.Users
         .Where(user => string.Equals(user.Email.ToLower(), email.ToLower()))
-        .Select(ObjectSelectors.UserSelector())
+        .Include(user => user.Roles)
+        .Include(user => user.Groups)
+        .Include(user => user.MasteredGroups)
         .FirstOrDefaultAsync();
 
     public async Task<bool> SaveUser(User user)
     {
         await _dbContext.Users.AddAsync(user);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> UpdateUser(User user)
+    {
+        _dbContext.Users.Update(user);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
     }

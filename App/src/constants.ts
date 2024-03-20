@@ -31,6 +31,8 @@ export enum BaseRoutes {
     NoData = "/NoData",
     CourseGrouping = "/CourseGrouping/:courseGroupingId",
     myGroups = "/myGroups",
+    profile = "/profile",
+    editProfileInfo = "/editProfileInfo",
     browserList = "/browserList",
     CreateCourseGrouping = "/add/CourseGrouping/:dossierId",
     EditCourseGrouping = "/edit/CourseGrouping/:dossierId/:courseGroupingId",
@@ -38,4 +40,6 @@ export enum BaseRoutes {
     groupDetails = "/GroupDetails",
     coursesLeft = "/coursesLeft",
     Directories = "/directories",
+    CourseBySubject = "/coursebysubjectbrowser",
+    CoursesFromSubject = "/CoursesFromSubject",
 }

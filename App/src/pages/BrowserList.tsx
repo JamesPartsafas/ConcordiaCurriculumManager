@@ -34,6 +34,19 @@ export default function BrowserList() {
                     </Button>
                 </Stack>
                 <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
+                    <Text fontWeight="bold">Course by Subject Browser: </Text>
+                    <Button
+                        style="primary"
+                        variant="solid"
+                        width="270px"
+                        height="40px"
+                        margin="0px"
+                        onClick={() => navigate(BaseRoutes.CourseBySubject)}
+                    >
+                        View Course by Subject Browser
+                    </Button>
+                </Stack>
+                <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
                     <Text fontWeight="bold">Dossier Browser: </Text>
                     <Button
                         style="primary"
@@ -70,19 +83,6 @@ export default function BrowserList() {
                         onClick={() => navigate(BaseRoutes.GroupingByName)}
                     >
                         View Curriculum by Name
-                    </Button>
-                </Stack>
-                <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
-                    <Text fontWeight="bold">Courses by Subject Browser: </Text>
-                    <Button
-                        style="primary"
-                        variant="solid"
-                        width="240px"
-                        height="40px"
-                        margin="0px"
-                        //onClick={() => navigate(BaseRoutes.GroupingBySchool)}
-                    >
-                        View Course by Subject
                     </Button>
                 </Stack>
                 <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">

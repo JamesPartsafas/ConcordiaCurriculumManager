@@ -16,6 +16,7 @@ public interface IUserAuthenticationService
 {
     bool IsBlacklistedToken(string accessToken);
     Task<string> CreateUserAsync(User user);
+    Task<string> EditUserAsync(User user);
     Task<string> SigninUser(string email, string password);
     Task SignoutUser();
     Task<User> GetCurrentUser();
@@ -56,6 +57,28 @@ public class UserAuthenticationService : IUserAuthenticationService
         }
 
         return GenerateAccessToken(savedUser);
+    }
+
+    public async Task<string> EditUserAsync(User user)
+    {
+        var oldUserEmail = GetCurrentUserClaim(ClaimTypes.Email);
+        var oldUser = await _userRepository.GetUserByEmail(oldUserEmail) ?? throw new BadRequestException("The user doesn't exist");
+        var hashedPassword = _inputHasher.Hash(user.Password);
+        oldUser.Password = hashedPassword;
+        oldUser.Email = user.Email;
+        oldUser.FirstName = user.FirstName;
+        oldUser.LastName = user.LastName;
+        var savedUser = await _userRepository.UpdateUser(oldUser);
+
+        if (!savedUser)
+        {
+            _logger.LogWarning("Failed to update a user in the database");
+            throw new InvalidOperationException("Could not save user");
+        }
+
+        await SignoutUser();
+
+        return GenerateAccessToken(oldUser);
     }
 
     public async Task<string> CreateUserAsync(User user)

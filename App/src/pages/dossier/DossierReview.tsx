@@ -23,6 +23,7 @@ import {
     FormControl,
     FormErrorMessage,
     Heading,
+    Icon,
     Kbd,
     Stack,
     Tab,
@@ -37,7 +38,7 @@ import {
 } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
-import { ArrowLeftIcon, CopyIcon, EditIcon } from "@chakra-ui/icons";
+import { AddIcon, ArrowLeftIcon, CloseIcon, CopyIcon, EditIcon } from "@chakra-ui/icons";
 import React from "react";
 import {
     editReviewMessage,
@@ -435,7 +436,7 @@ export default function DossierReview() {
         depth: number;
     }) => {
         const marginLeft = `${depth * 20}px`;
-        const colorDepth = `gray.${depth * 100 + 200}`;
+        const colorDepth = `gray.${Math.min(depth * 100 + 100, 500)}`;
 
         const [showReplyInput, setShowReplyInput] = useState(false);
         const [replyText, setReplyText] = useState("");
@@ -446,6 +447,12 @@ export default function DossierReview() {
         const [editText, setEditText] = useState("");
         const [editError, setEditError] = useState(true);
         const [editSubmitted, setEditSubmitted] = useState(false);
+
+        const [showReplies, setShowReplies] = useState(false);
+
+        const toggleReplies = () => {
+            setShowReplies(!showReplies);
+        };
 
         const handleToggleReply = () => {
             setShowReplyInput(!showReplyInput);
@@ -571,17 +578,31 @@ export default function DossierReview() {
                         )}
                     </Box>
                 </CardBody>
-                {messages
-                    .filter((m) => m.parentDiscussionMessageId === message.id)
-                    .map((childMessage) => (
-                        <Message
-                            key={childMessage.id}
-                            message={childMessage}
-                            messages={messages}
-                            group={group}
-                            depth={depth + 1}
-                        />
-                    ))}
+                {showReplies &&
+                    messages
+                        .filter((m) => m.parentDiscussionMessageId === message.id)
+                        .map((childMessage) => (
+                            <Message
+                                key={childMessage.id}
+                                message={childMessage}
+                                messages={messages}
+                                group={group}
+                                depth={depth + 1}
+                            />
+                        ))}
+                {messages.some((m) => m.parentDiscussionMessageId === message.id) && (
+                    <Text
+                        marginLeft={2}
+                        marginBottom={2}
+                        color="blue.500"
+                        textDecoration="underline"
+                        cursor="pointer"
+                        onClick={toggleReplies}
+                    >
+                        {showReplies ? <Icon as={CloseIcon} mr={1} /> : <Icon as={AddIcon} mr={1} />}
+                        {showReplies ? "Close replies" : "See replies"}
+                    </Text>
+                )}
             </div>
         );
     };
