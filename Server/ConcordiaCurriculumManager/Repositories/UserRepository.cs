@@ -13,6 +13,8 @@ public interface IUserRepository
     Task<bool> UpdateUser(User user);
     Task<IList<User>> GetAllUsersPageable(Guid id);
     Task<IList<User>> GetUsersLikeEmailPageable(Guid id, string email);
+    Task<IList<User>> GetUsersByFirstName(string firstName);
+    Task<IList<User>> GetUsersByLastName(string lastName);
     Task<int> SavePasswordResetToken(Guid? token, string email);
 }
 
@@ -61,6 +63,20 @@ public class UserRepository : IUserRepository
     public async Task<IList<User>> GetUsersLikeEmailPageable(Guid id, string email) => await _dbContext.Users
         .OrderBy(u => u.Id)
         .Where(u => u.Id > id && u.Email.Contains(email))
+        .Take(10)
+        .Select(ObjectSelectors.UserSelector())
+        .ToListAsync();
+
+    public async Task<IList<User>> GetUsersByFirstName(string firstName) => await _dbContext.Users
+        .OrderBy(u => u.Id)
+        .Where(u => u.FirstName.ToLower().Contains(firstName.ToLower())) 
+        .Take(10)
+        .Select(ObjectSelectors.UserSelector())
+        .ToListAsync();
+
+    public async Task<IList<User>> GetUsersByLastName(string lastName) => await _dbContext.Users
+        .OrderBy(u => u.Id)
+        .Where(u => u.LastName.ToLower().Contains(lastName.ToLower())) 
         .Take(10)
         .Select(ObjectSelectors.UserSelector())
         .ToListAsync();
