@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../App";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import Button from "../components/Button";
 import { BaseRoutes } from "../constants";
 import GroupTable from "../components/GroupTable";
 import { GetAllGroups, GroupDTO, MultiGroupResponseDTO } from "../services/group";
 import { UserDTO } from "../models/user";
-import { AllUsersResponseDTO, getAllUsers, searchUsersByEmail } from "../services/user";
+import { AllUsersResponseDTO, searchUsersByEmail } from "../services/user";
 function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
@@ -39,12 +39,11 @@ export default function ProfilePage() {
                     //Get index of found group
                     const position = users.map((user) => user.email).indexOf(email);
                     setFoundUser(users[position]);
-                    {
-                    }
                 }
-            } catch (error) {}
+            } catch (error) {
+                console.error("Error fetching user info:", error);
+            }
         };
-
         getUser();
     }, []);
 
@@ -100,7 +99,7 @@ export default function ProfilePage() {
                             Edit Info and Password
                         </Button>
                     ) : (
-                        <Text>This isn't your profile</Text>
+                        <Text>This is not your profile</Text>
                     )}
                 </Flex>
                 <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
