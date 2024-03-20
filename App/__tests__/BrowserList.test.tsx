@@ -2,9 +2,9 @@ import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { UserContext } from "../src/App";
 import { User } from "../src/models/user";
-import ProfilePage from "../src/pages/ProfilePage";
+import BrowserList from "../src/pages/BrowserList";
 
-describe("Profile Page Test Case", () => {
+describe("Browser List Test Case", () => {
     it("validate function should render all elements ", async () => {
         const user: User = {
             firstName: "test",
@@ -19,17 +19,16 @@ describe("Profile Page Test Case", () => {
             issuer: "admin",
             audience: "",
         };
-        //Ignore error from no mock available for group fetch function.
-        console.error = () => {};
+
         const component = render(
             <UserContext.Provider value={user}>
                 <BrowserRouter>
-                    <ProfilePage />
+                    <BrowserList />
                 </BrowserRouter>
             </UserContext.Provider>
         );
 
-        const labelNode = component.getByText("Back to Home Page");
+        const labelNode = component.getByText("Browser List");
         expect(labelNode).toBeDefined;
     });
 });
