@@ -6,6 +6,10 @@ export interface AllUsersResponseDTO {
     data: UserDTO[];
 }
 
+export interface EmailPasswordResetDTO {
+    email: string;
+}
+
 export function getAllUsers(): Promise<AllUsersResponseDTO> {
     return axios.get("/Users/GetAllUsersAsync");
 }
@@ -24,4 +28,8 @@ export function searchUsersByLastname(lastname: string): Promise<AllUsersRespons
 
 export function searchUsersByEmail(email: string): Promise<AllUsersResponseDTO> {
     return axios.get("/Users/SearchUsersByEmail?email=" + email);
+}
+
+export function SendResetPasswordEmail(email: EmailPasswordResetDTO): Promise<unknown> {
+    return axios.post("/Users/SendResetPasswordEmail", email);
 }
