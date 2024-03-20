@@ -9,7 +9,6 @@ import {
     SchoolEnum,
 } from "../../models/courseGrouping"; // Adjust the import path as needed
 import {
-    Button,
     Center,
     FormControl,
     FormErrorMessage,
@@ -42,6 +41,7 @@ import SelectCourseModal from "../dossier/SelectCourseModal";
 import { getAllCourseSettings } from "../../services/course";
 import { AllCourseSettings, CourseDataResponse } from "../../models/course";
 import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
+import Button from "../../components/Button";
 
 export default function CreateCourseGrouping() {
     const location = useLocation();
@@ -175,6 +175,8 @@ export default function CreateCourseGrouping() {
             requestCourseGroupingById(courseGroupingId);
         }
         requestCourseSettings();
+
+        window.scrollTo(0, 0);
     }, [dossierId, courseGroupingId]);
 
     function requestCourseGroupingById(Id: string) {
@@ -358,6 +360,16 @@ export default function CreateCourseGrouping() {
             {displaySearchCourseGroupModal()}
 
             <Stack m={4}>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
+                >
+                    Back to Dossier
+                </Button>
+
                 <Center m={4}>
                     <Heading>
                         {state?.api === "editGroupingCreationRequest" ||
