@@ -1,5 +1,5 @@
 using ConcordiaCurriculumManager.Filters;
-using ConcordiaCurriculumManager.Middleware;
+using ConcordiaCurriculumManager.Middleware.Metrics;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using ConcordiaCurriculumManager.Security;
@@ -111,6 +111,7 @@ public class Program
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         });
 
+        builder.Services.AddScoped<AddDossierMetric>();
         builder.Services.AddEndpointsApiExplorer();
 
         if (env.IsDevelopment())
@@ -214,6 +215,6 @@ public class Program
         services.AddScoped<IDossierRepository, DossierRepository>();
         services.AddScoped<IDossierReviewRepository, DossierReviewRepository>();
         services.AddScoped<ICourseIdentifiersRepository, CourseIdentifiersRepository>();
-        services.AddScoped<IHttpMetricsRepository, HttpMetricsRepository>();
+        services.AddScoped<IMetricsRepository, MetricsRepository>();
     }
 }

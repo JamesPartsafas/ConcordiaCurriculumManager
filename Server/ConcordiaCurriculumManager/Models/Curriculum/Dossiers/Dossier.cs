@@ -4,6 +4,7 @@ using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Metrics;
 using ConcordiaCurriculumManager.Models.Users;
 using NpgsqlTypes;
 
@@ -35,6 +36,8 @@ namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers
         public IList<ApprovalHistory> ApprovalHistories { get; set; } = new List<ApprovalHistory>();
 
         public required DossierDiscussion Discussion { get; set; }
+
+        public IList<DossierMetric> DossierMetrics { get; set; } = new List<DossierMetric>();
 
         public void MarkAsRejected(User user)
         {

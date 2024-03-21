@@ -8,14 +8,14 @@ namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
 [TestClass]
 public class MetricsServiceTest
 {
-    private Mock<IHttpMetricsRepository> _httpMetricsRepository = null!;
+    private Mock<IMetricsRepository> _metricsRepository = null!;
     private MetricsService _metricServices = null!;
 
     [TestInitialize]
     public void Initialize()
     {
-        _httpMetricsRepository = new Mock<IHttpMetricsRepository>();
-        _metricServices = new MetricsService(_httpMetricsRepository.Object);
+        _metricsRepository = new Mock<IMetricsRepository>();
+        _metricServices = new MetricsService(_metricsRepository.Object);
     }
 
     [TestMethod]
@@ -24,7 +24,7 @@ public class MetricsServiceTest
         var httpMetric = TestData.GetHttpMetric();
         await _metricServices.SaveHttpMetric(httpMetric);
 
-        _httpMetricsRepository.Verify(repo => repo.SaveMetricAsync(httpMetric), Times.Once);
+        _metricsRepository.Verify(repo => repo.SaveHttpMetricAsync(httpMetric), Times.Once);
     }
 
     [TestMethod]
@@ -34,7 +34,7 @@ public class MetricsServiceTest
         DateOnly startDate = DateOnly.FromDateTime(DateTime.Now);
 
         await _metricServices.GetTopHttpStatusCodes(startingIndex, startDate);
-        _httpMetricsRepository.Verify(repo => repo.GetTopHttpStatusFromIndexAndDate(startingIndex, startDate), Times.Once);
+        _metricsRepository.Verify(repo => repo.GetTopHttpStatusFromIndexAndDate(startingIndex, startDate), Times.Once);
     }
 
     [TestMethod]
@@ -44,6 +44,26 @@ public class MetricsServiceTest
         DateOnly startDate = DateOnly.FromDateTime(DateTime.Now);
 
         await _metricServices.GetTopHitHttpEndpoints(startingIndex, startDate);
-        _httpMetricsRepository.Verify(repo => repo.GetTopHitHttpEndpoints(startingIndex, startDate), Times.Once);
+        _metricsRepository.Verify(repo => repo.GetTopHitHttpEndpoints(startingIndex, startDate), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetTopViewedDossier_Calls_GetTopViewedDossier_In_Repository_With_Correct_Parameters()
+    {
+        int startingIndex = 0;
+        DateOnly startDate = DateOnly.FromDateTime(DateTime.Now);
+
+        await _metricServices.GetTopViewedDossier(startingIndex, startDate);
+        _metricsRepository.Verify(repo => repo.GetTopViewedDossierFromIndexAndDate(startingIndex, startDate), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetTopDossierViewingUser_Calls_GetTopDossierViewingUser_In_Repository_With_Correct_Parameters()
+    {
+        int startingIndex = 0;
+        DateOnly startDate = DateOnly.FromDateTime(DateTime.Now);
+
+        await _metricServices.GetTopDossierViewingUser(startingIndex, startDate);
+        _metricsRepository.Verify(repo => repo.GetTopDossierViewingUser(startingIndex, startDate), Times.Once);
     }
 }

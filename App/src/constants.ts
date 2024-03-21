@@ -2,6 +2,7 @@ export enum BaseRoutes {
     Home = "/",
     Login = "/login",
     Register = "/register",
+    ResetPasswordEmail = "/resetPasswordEmail",
     Dossiers = "/dossiers",
     NotFound = "*",
     AddCourse = "/add-course/:dossierId",
@@ -39,6 +40,7 @@ export enum BaseRoutes {
     allGroups = "/allGroups",
     groupDetails = "/GroupDetails",
     coursesLeft = "/coursesLeft",
+    Directories = "/directories",
     CourseBySubject = "/coursebysubjectbrowser",
     CoursesFromSubject = "/CoursesFromSubject",
 }
