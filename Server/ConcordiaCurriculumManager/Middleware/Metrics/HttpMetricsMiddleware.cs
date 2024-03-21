@@ -2,7 +2,7 @@
 using ConcordiaCurriculumManager.Services;
 using System.Diagnostics;
 
-namespace ConcordiaCurriculumManager.Middleware;
+namespace ConcordiaCurriculumManager.Middleware.Metrics;
 
 public class HttpMetricsMiddleware
 {
