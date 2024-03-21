@@ -69,5 +69,13 @@ public class AutoMapper : Profile
         CreateMap<List<HttpEndpointCount>, HttpEndpointCountWrapperDTO>()
             .ForMember(dest => dest.Result, opt => opt.MapFrom(src => src))
             .ForMember(dest => dest.NextIndex, opt => opt.MapFrom(src => src.Count));
+        CreateMap<DossierViewCount, DossierViewCountDTO>();
+        CreateMap<List<DossierViewCount>, DossierViewCountWrapperDTO>()
+            .ForMember(dest => dest.Result, opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest.NextIndex, opt => opt.MapFrom(src => src.Count));
+        CreateMap<UserDossierViewedCount, UserDossierViewedCountDTO>();
+        CreateMap<List<UserDossierViewedCount>, UserDossierViewedCountWrapperDTO>()
+            .ForMember(dest => dest.Result, opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest.NextIndex, opt => opt.MapFrom(src => src.Count));
     }
 }

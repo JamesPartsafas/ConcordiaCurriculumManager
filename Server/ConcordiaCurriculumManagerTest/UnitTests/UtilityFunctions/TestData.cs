@@ -890,4 +890,18 @@ public static class TestData
             ResponseTimeMilliSecond = 4000L
         };
     }
+
+    public static DossierMetric GetDossierMetric()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier();
+
+        return new DossierMetric
+        {
+            DossierId = dossier.Id,
+            Dossier = dossier,
+            UserId = user.Id,
+            User = user
+        };
+    }
 }
