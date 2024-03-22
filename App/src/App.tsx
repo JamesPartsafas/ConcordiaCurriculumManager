@@ -47,6 +47,7 @@ import AllGroups from "./pages/groups/allGroups";
 import GroupDetails from "./pages/groups/GroupDetails";
 import CreateCourseGrouping from "./pages/courseGroupings/CreateCourseGrouping";
 import CoursesLeft from "./pages/CoursesLeft";
+import UserBrowser from "./pages/UserBrowser";
 import EmailResetPassword from "./pages/EmailResetPassword";
 import Directories from "./pages/Directories";
 import CourseBySubject from "./pages/CourseBySubjectBrowser";
@@ -296,6 +297,11 @@ export function App() {
                     <Route
                         path={BaseRoutes.CoursesFromSubject}
                         element={isLoggedIn == true ? <CoursesFromSubject /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.userBrowser}
+                        element={isAdmin(user) == true ? <UserBrowser /> : <Navigate to={BaseRoutes.Login} />}
                     />
                 </Routes>
             </UserContext.Provider>

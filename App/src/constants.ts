@@ -43,4 +43,5 @@ export enum BaseRoutes {
     Directories = "/directories",
     CourseBySubject = "/coursebysubjectbrowser",
     CoursesFromSubject = "/CoursesFromSubject",
+    userBrowser = "/userBrowser",
 }

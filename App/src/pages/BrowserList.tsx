@@ -2,9 +2,13 @@ import { Container, Stack, Text } from "@chakra-ui/react";
 import Button from "../components/Button";
 import { BaseRoutes } from "../constants";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../App";
+import { useContext } from "react";
+import { isAdmin } from "../services/auth";
 
 export default function BrowserList() {
     const navigate = useNavigate();
+    const user = useContext(UserContext);
     return (
         <div>
             <Container maxW={"5xl"} mt={5} pl={0}>
@@ -98,6 +102,21 @@ export default function BrowserList() {
                         View Groups
                     </Button>
                 </Stack>
+                {isAdmin(user) && (
+                    <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
+                        <Text fontWeight="bold">For Admins Only: User Browser: </Text>
+                        <Button
+                            style="secondary"
+                            variant="solid"
+                            width="240px"
+                            height="40px"
+                            margin="0px"
+                            onClick={() => navigate(BaseRoutes.userBrowser)}
+                        >
+                            View User Profiles
+                        </Button>
+                    </Stack>
+                )}
             </Container>
         </div>
     );
