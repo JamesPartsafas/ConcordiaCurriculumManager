@@ -126,7 +126,11 @@ export default function Login(props: LoginProps) {
                                 </Stack>
                                 <HStack justify="space-between">
                                     <Checkbox defaultChecked>Remember me</Checkbox>
-                                    <Button variant="text" size="sm">
+                                    <Button
+                                        variant="text"
+                                        size="sm"
+                                        onClick={() => navigate(BaseRoutes.ResetPasswordEmail)}
+                                    >
                                         Forgot password?
                                     </Button>
                                 </HStack>

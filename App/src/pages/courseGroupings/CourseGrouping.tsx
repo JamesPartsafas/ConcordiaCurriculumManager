@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { GetCourseGrouping } from "../../services/courseGrouping";
 import { CourseGroupingDTO } from "../../models/courseGrouping";
 
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Box, Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react";
 import { BaseRoutes } from "../../constants";
 import CourseGroupingTreeStructure from "../../components/CourseGrouping/CourseGroupingTreeStructure";
@@ -10,7 +10,7 @@ import Button from "../../components/Button";
 
 export default function CourseGrouping() {
     const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO>();
-
+    const navigate = useNavigate();
     const { courseGroupingId } = useParams();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const toggleModal = () => setIsModalOpen(!isModalOpen);
@@ -192,6 +192,16 @@ export default function CourseGrouping() {
                         </Text>
                     </Box>
                 )}
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    margin="2%"
+                    onClick={() => navigate(-1)}
+                >
+                    Return
+                </Button>
             </Box>
         </>
     );

@@ -1,4 +1,5 @@
 using ConcordiaCurriculumManager.Filters;
+using ConcordiaCurriculumManager.Middleware.Metrics;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using ConcordiaCurriculumManager.Security;
@@ -110,6 +111,7 @@ public class Program
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         });
 
+        builder.Services.AddScoped<AddDossierMetric>();
         builder.Services.AddEndpointsApiExplorer();
 
         if (env.IsDevelopment())
@@ -178,6 +180,7 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseMiddleware<EnrichLogContextMiddleware>();
+        app.UseMiddleware<HttpMetricsMiddleware>();
 
         app.MapControllers();
         app.MapHub<DossierDiscussionSignalR>("/ws/DossierReview", options =>
@@ -203,6 +206,7 @@ public class Program
         services.AddScoped<IDossierReviewService, DossierReviewService>();
         services.AddScoped<IGroupService, GroupService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IMetricsService, MetricsService>();
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
@@ -211,5 +215,6 @@ public class Program
         services.AddScoped<IDossierRepository, DossierRepository>();
         services.AddScoped<IDossierReviewRepository, DossierReviewRepository>();
         services.AddScoped<ICourseIdentifiersRepository, CourseIdentifiersRepository>();
+        services.AddScoped<IMetricsRepository, MetricsRepository>();
     }
 }

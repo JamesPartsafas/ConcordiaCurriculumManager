@@ -48,6 +48,28 @@ public class AuthenticationController : Controller
         return Created($"/{nameof(Register)}", response);
     }
 
+    [Authorize]
+    [HttpPost(nameof(EditProfileInfo))]
+    [Consumes(typeof(RegisterDTO), MediaTypeNames.Application.Json)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status201Created, "User info changed succesfully")]
+    public async Task<ActionResult> EditProfileInfo([FromBody, Required] RegisterDTO parameter)
+    {
+        if (parameter.Email.Equals("EmailExample@example.com"))
+        {
+            throw new InvalidInputException("Cannot use example values");
+        }
+
+        var parsedUserInput = _mapper.Map<User>(parameter);
+        
+        var accessToken = await _userAuthenticationService.EditUserAsync(parsedUserInput);
+        var response = new AuthenticationResponse() { AccessToken = accessToken };
+
+        return Ok(response);
+    }
+
+
     [HttpPost(nameof(Login))]
     [Consumes(typeof(LoginDTO), MediaTypeNames.Application.Json)]
     [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]

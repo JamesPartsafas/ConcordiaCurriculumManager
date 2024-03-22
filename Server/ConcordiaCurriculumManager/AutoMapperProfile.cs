@@ -8,10 +8,12 @@ using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingReque
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.DTO.Metrics;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Metrics;
 using ConcordiaCurriculumManager.Models.Users;
 
 namespace ConcordiaCurriculumManager;
@@ -59,5 +61,21 @@ public class AutoMapper : Profile
         CreateMap<CourseIdentifier, CourseIdentifierDTO>();
         CreateMap<CourseGroupingRequest, CourseGroupingRequestDTO>();
         CreateMap<CourseChanges, CourseChangesDTO>();
+        CreateMap<HttpStatusCount, HttpStatusCountDTO>();
+        CreateMap<List<HttpStatusCount>, HttpStatusCountWrapperDTO>()
+            .ForMember(dest => dest.Result, opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest.NextIndex, opt => opt.MapFrom(src => src.Count));
+        CreateMap<HttpEndpointCount, HttpEndpointCountDTO>();
+        CreateMap<List<HttpEndpointCount>, HttpEndpointCountWrapperDTO>()
+            .ForMember(dest => dest.Result, opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest.NextIndex, opt => opt.MapFrom(src => src.Count));
+        CreateMap<DossierViewCount, DossierViewCountDTO>();
+        CreateMap<List<DossierViewCount>, DossierViewCountWrapperDTO>()
+            .ForMember(dest => dest.Result, opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest.NextIndex, opt => opt.MapFrom(src => src.Count));
+        CreateMap<UserDossierViewedCount, UserDossierViewedCountDTO>();
+        CreateMap<List<UserDossierViewedCount>, UserDossierViewedCountWrapperDTO>()
+            .ForMember(dest => dest.Result, opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest.NextIndex, opt => opt.MapFrom(src => src.Count));
     }
 }

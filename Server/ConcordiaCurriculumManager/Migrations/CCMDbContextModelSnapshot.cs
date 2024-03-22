@@ -647,6 +647,64 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.ToTable("SupportingFiles");
                 });
 
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Metrics.DossierMetric", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DossierId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DossierId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DossierMetrics");
+                });
+
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Metrics.HttpMetric", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Controller")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Endpoint")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ResponseStatusCode")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("ResponseTimeMilliSecond")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HttpMetrics");
+                });
+
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Users.Group", b =>
                 {
                     b.Property<Guid>("Id")
@@ -718,6 +776,9 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("ResetPasswordToken")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -1037,6 +1098,25 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Metrics.DossierMetric", b =>
+                {
+                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.Dossier", "Dossier")
+                        .WithMany("DossierMetrics")
+                        .HasForeignKey("DossierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ConcordiaCurriculumManager.Models.Users.User", "User")
+                        .WithMany("DossierMetrics")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dossier");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("CourseGroupingCourseIdentifier", b =>
                 {
                     b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings.CourseGrouping", null)
@@ -1146,6 +1226,8 @@ namespace ConcordiaCurriculumManager.Migrations
 
                     b.Navigation("Discussion")
                         .IsRequired();
+
+                    b.Navigation("DossierMetrics");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview.DossierDiscussion", b =>
@@ -1160,6 +1242,8 @@ namespace ConcordiaCurriculumManager.Migrations
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Users.User", b =>
                 {
+                    b.Navigation("DossierMetrics");
+
                     b.Navigation("Dossiers");
                 });
 #pragma warning restore 612, 618

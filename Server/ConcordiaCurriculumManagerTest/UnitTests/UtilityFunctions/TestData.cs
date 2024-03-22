@@ -10,6 +10,8 @@ using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.DTO;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.CourseGroupingRequests;
 using ConcordiaCurriculumManager.DTO.CourseGrouping;
+using System.ComponentModel.DataAnnotations;
+using ConcordiaCurriculumManager.Models.Metrics;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 public static class TestData
@@ -868,6 +870,38 @@ public static class TestData
             RequestType = RequestType.CreationRequest,
             CourseGroupingId = Guid.NewGuid(),
             CourseGrouping = TestData.GetSampleCourseGrouping()
+        };
+    }
+
+    // EMAIL
+    public static PasswordResetDTO GetSamplePasswordResetDTO()
+    {
+        return new PasswordResetDTO { Email = "test@gmail.com" };
+    }
+
+    // Metrics
+    public static HttpMetric GetHttpMetric()
+    {
+        return new HttpMetric
+        {
+            Controller = "Controller",
+            Endpoint = "Endpoint",
+            ResponseStatusCode = 200,
+            ResponseTimeMilliSecond = 4000L
+        };
+    }
+
+    public static DossierMetric GetDossierMetric()
+    {
+        var user = GetSampleUser();
+        var dossier = GetSampleDossier();
+
+        return new DossierMetric
+        {
+            DossierId = dossier.Id,
+            Dossier = dossier,
+            UserId = user.Id,
+            User = user
         };
     }
 }
