@@ -50,15 +50,9 @@ export default function EditProfileInfo() {
             .then(
                 (res: AuthenticationResponse) => {
                     if (res.data.accessToken != null) {
-                        logout().then(
-                            () => {
-                                navigate(BaseRoutes.Login);
-                                showToast(toast, "Success!", "You have successfully changed your profile.", "success");
-                            },
-                            (rej) => {
-                                showToast(toast, "Error!", rej.message, "error");
-                            }
-                        );
+                        logout();
+                        navigate(BaseRoutes.Login);
+                        showToast(toast, "Success!", "You have successfully changed your profile.", "success");
                     }
                 },
                 (rej) => {
