@@ -331,8 +331,6 @@ public class CourseGroupingService : ICourseGroupingService
         var deletionGroupingIds = dossier.CourseGroupingRequests
             .Where(req => req.RequestType == RequestType.DeletionRequest)
             .Select(req => req.CourseGrouping?.CommonIdentifier)
-            .Where(id => id.HasValue)
-            .Select(id => id!.Value)
             .ToList();
 
         var filteredGroupings = combinedGroupings
