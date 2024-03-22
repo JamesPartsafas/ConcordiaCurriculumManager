@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
     Box,
     Button,
@@ -20,7 +21,6 @@ import { useForm } from "react-hook-form";
 import { AuthenticationResponse, decodeTokenToUser, isAdminOrGroupMaster, login, LoginDTO } from "../services/auth";
 import { User } from "../models/user";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { BaseRoutes } from "../constants";
 import { showToast } from "../utils/toastUtils";
 
@@ -32,10 +32,11 @@ export interface LoginProps {
 
 export default function Login(props: LoginProps) {
     const navigate = useNavigate();
-    const { register, handleSubmit } = useForm<LoginDTO>();
+    const { register, handleSubmit, setValue } = useForm<LoginDTO>(); 
     const [showPassword, setShowPassword] = useState(false);
     const [showError, setShowError] = useState(false);
-    const toast = useToast(); // Use the useToast hook
+    const [rememberMe, setRememberMe] = useState(false);
+    const toast = useToast();
     const [loading, setLoading] = useState<boolean>(false);
 
     function toggleShowPassword() {
@@ -55,6 +56,9 @@ export default function Login(props: LoginProps) {
                         props.setIsLoggedIn(true);
                         props.setIsAdminOrGroupMaster(isAdminOrGroupMaster(user));
                         navigate("/");
+                        if (rememberMe) {
+                            localStorage.setItem("rememberedUser", JSON.stringify(data)); // Store email and password in local storage
+                        }
                     }
                 },
                 (rej) => {
@@ -75,6 +79,17 @@ export default function Login(props: LoginProps) {
                 console.log("err");
             });
     }
+
+    useEffect(() => {
+        const rememberedUser = localStorage.getItem("rememberedUser");
+        if (rememberedUser) {
+            setRememberMe(true);
+            const userData = JSON.parse(rememberedUser);
+            Object.keys(userData).forEach((key) => {
+                setValue(key as "email" | "password", userData[key]); // Pre-fill email and password fields
+            });
+        }
+    }, [setValue]);
 
     return (
         <>
@@ -125,7 +140,9 @@ export default function Login(props: LoginProps) {
                                     </FormControl>
                                 </Stack>
                                 <HStack justify="space-between">
-                                    <Checkbox defaultChecked>Remember me</Checkbox>
+                                    <Checkbox isChecked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)}>
+                                        Remember me
+                                    </Checkbox>
                                     <Button
                                         variant="text"
                                         size="sm"
