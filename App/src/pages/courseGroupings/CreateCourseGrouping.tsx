@@ -9,7 +9,6 @@ import {
     SchoolEnum,
 } from "../../models/courseGrouping"; // Adjust the import path as needed
 import {
-    Button,
     Center,
     FormControl,
     FormErrorMessage,
@@ -43,6 +42,8 @@ import { getAllCourseSettings } from "../../services/course";
 import { AllCourseSettings, CourseDataResponse } from "../../models/course";
 import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
 import CourseGroupingDiffViewer from "../../components/CourseDifference/CourseGroupingDifference";
+import Button from "../../components/Button";
+
 export default function CreateCourseGrouping() {
     const location = useLocation();
     const toast = useToast(); // Use the useToast hook
@@ -177,6 +178,8 @@ export default function CreateCourseGrouping() {
             requestCourseGroupingById(courseGroupingId);
         }
         requestCourseSettings();
+
+        window.scrollTo(0, 0);
     }, [dossierId, courseGroupingId]);
 
     function requestCourseGroupingById(Id: string) {
@@ -363,8 +366,7 @@ export default function CreateCourseGrouping() {
     return (
         <>
             <Button
-                color={"brandRed"}
-                border={"1px solid"}
+                style="primary"
                 variant="outline"
                 width="100px"
                 height="40px"
@@ -384,6 +386,16 @@ export default function CreateCourseGrouping() {
             )}
 
             <Stack m={4}>
+                <Button
+                    style="primary"
+                    variant="outline"
+                    height="40px"
+                    width="fit-content"
+                    onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
+                >
+                    Back to Dossier
+                </Button>
+
                 <Center m={4}>
                     <Heading>
                         {state?.api === "editGroupingCreationRequest" ||
