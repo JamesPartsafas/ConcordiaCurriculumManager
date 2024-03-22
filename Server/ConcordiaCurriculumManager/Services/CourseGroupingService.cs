@@ -328,13 +328,13 @@ public class CourseGroupingService : ICourseGroupingService
             .DistinctBy(g =>  g!.Id)
             .ToList();
 
-        var deletionGroupingIds = dossier.CourseGroupingRequests
-            .Where(req => req.RequestType == RequestType.DeletionRequest)
-            .Select(req => req.CourseGrouping?.CommonIdentifier)
+        var deletionGroupingCommonIdentifiers = dossier.CourseGroupingRequests
+            .Where(req => req.RequestType == RequestType.DeletionRequest && req.CourseGrouping != null)
+            .Select(req => req.CourseGrouping!.CommonIdentifier)
             .ToList();
 
         var filteredGroupings = combinedGroupings
-            .Where(g => g != null && !deletionGroupingIds.Contains(g.Id))
+            .Where(g => g != null && !deletionGroupingCommonIdentifiers.Contains(g.CommonIdentifier))
             .ToList();
 
         return filteredGroupings;
