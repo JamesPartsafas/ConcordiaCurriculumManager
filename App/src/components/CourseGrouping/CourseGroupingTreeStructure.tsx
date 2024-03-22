@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Tree } from "react-d3-tree";
-import "../../assets/styles/course-grouping.css";
+
 import {
     Modal,
     ModalOverlay,
