@@ -32,7 +32,7 @@ export interface LoginProps {
 
 export default function Login(props: LoginProps) {
     const navigate = useNavigate();
-    const { register, handleSubmit, setValue } = useForm<LoginDTO>(); 
+    const { register, handleSubmit, setValue } = useForm<LoginDTO>();
     const [showPassword, setShowPassword] = useState(false);
     const [showError, setShowError] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
