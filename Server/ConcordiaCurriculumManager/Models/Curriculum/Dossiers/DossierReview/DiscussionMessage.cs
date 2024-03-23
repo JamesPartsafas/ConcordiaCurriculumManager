@@ -28,7 +28,7 @@ public class DiscussionMessage : BaseModel
     public void MarkAsDeleted(Guid userId)
     {
         if (!userId.Equals(AuthorId))
-            throw new BadRequestException("You must be the user who posted to the message to delete it");
+            throw new BadRequestException("You must be the user who posted the message to delete it");
 
         IsDeleted = true;
     }
