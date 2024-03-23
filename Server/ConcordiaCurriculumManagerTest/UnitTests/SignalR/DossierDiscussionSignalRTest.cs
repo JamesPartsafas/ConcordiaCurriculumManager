@@ -63,7 +63,8 @@ public class DossierDiscussionSignalRTest
             DossierDiscussionId = dossierId,
             Message = dossierMessageDTO.Message,
             GroupId = dossierMessageDTO.GroupId,
-            AuthorId = Guid.NewGuid()
+            AuthorId = Guid.NewGuid(),
+            IsDeleted = false
         };
 
         dossier.State = DossierStateEnum.InReview;
@@ -112,7 +113,8 @@ public class DossierDiscussionSignalRTest
             DossierDiscussionId = dossierId,
             Message = dossierMessageDTO.Message,
             GroupId = dossierMessageDTO.GroupId,
-            AuthorId = Guid.NewGuid()
+            AuthorId = Guid.NewGuid(),
+            IsDeleted = false
         };
 
         _hubCallerContextMock.SetupGet(x => x.User)
@@ -192,7 +194,8 @@ public class DossierDiscussionSignalRTest
             DossierDiscussionId = dossierId,
             Message = dossierMessageDTO.Message,
             GroupId = dossierMessageDTO.GroupId,
-            AuthorId = Guid.NewGuid()
+            AuthorId = Guid.NewGuid(),
+            IsDeleted = false
         };
 
         _hubCallerContextMock.SetupGet(x => x.User)
@@ -239,7 +242,8 @@ public class DossierDiscussionSignalRTest
             DossierDiscussionId = dossierId,
             Message = dossierMessageDTO.Message,
             GroupId = dossierMessageDTO.GroupId,
-            AuthorId = Guid.NewGuid()
+            AuthorId = Guid.NewGuid(),
+            IsDeleted = false
         };
 
         dossier.State = DossierStateEnum.InReview;

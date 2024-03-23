@@ -501,7 +501,8 @@ public static class TestData
             DossierDiscussionId = Guid.NewGuid(),
             GroupId = Guid.NewGuid(),
             AuthorId = Guid.NewGuid(),
-            Message = "This is a test message"
+            Message = "This is a test message",
+            IsDeleted = false
         };
     }
 
@@ -523,6 +524,14 @@ public static class TestData
         };
 
         return dossier;
+    }
+
+    public static DossierDiscussion GetSampleDossierDiscussion()
+    {
+        return new DossierDiscussion
+        {
+            DossierId = Guid.NewGuid()
+        };
     }
 
     public static CourseChanges GetSampleCourseChange() 
@@ -575,7 +584,8 @@ public static class TestData
             Message = "This is a test message",
             GroupId = Guid.NewGuid(),
             CreatedDate = DateTime.Now,
-            ModifiedDate = DateTime.Now
+            ModifiedDate = DateTime.Now,
+            IsDeleted = false
         };
     }
 
