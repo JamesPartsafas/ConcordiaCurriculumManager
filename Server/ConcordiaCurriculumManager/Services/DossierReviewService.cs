@@ -22,6 +22,7 @@ public interface IDossierReviewService
     public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message);
     public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message, Guid userId);
     public Task EditDossierDiscussionReview(Guid dossierId, EditDossierDiscussionMessageDTO message);
+    Task VoteDossierDiscussionMessage(Guid dossierId, VoteDossierDiscussionMessageDTO voteDTO);
 }
 
 public class DossierReviewService : IDossierReviewService
@@ -437,6 +438,61 @@ public class DossierReviewService : IDossierReviewService
                     j--;
                 }
             }
+        }
+    }
+
+    public async Task VoteDossierDiscussionMessage(Guid dossierId, VoteDossierDiscussionMessageDTO voteDTO)
+    {
+        var messageId = voteDTO.DiscussionMessageId;
+        var userId = _userAuthenticationService.GetCurrentUserClaim(Claims.Id);
+        var dossier = await GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(dossierId);
+
+        if (!Guid.TryParse(userId, out var parsedUserId))
+        {
+            throw new BadRequestException("User Id is not valid");
+        }
+
+        if (dossier.State.Equals(DossierStateEnum.Created))
+        {
+            throw new BadRequestException("The dossier is not published yet.");
+        }
+
+        var result = true;
+        var vote = await _dossierReviewRepository.GetVoteByUserAndMessageId(parsedUserId, messageId);
+
+        if (vote is not null && !voteDTO.Value.Equals(vote.DiscussionMessageVoteValue))
+        {
+            result = await _dossierReviewRepository.DeleteVote(parsedUserId, messageId);
+
+            if (result && !voteDTO.Value.Equals(VoteDossierDiscussionMessageValue.NoVote))
+            {
+                var parsedVote = new DiscussionMessageVote()
+                {
+                    DiscussionMessageId = messageId,
+                    UserId = parsedUserId,
+                    DiscussionMessageVoteValue = voteDTO.Value.Equals(VoteDossierDiscussionMessageValue.Upvote) ?
+                        DiscussionMessageVoteValue.Upvote : DiscussionMessageVoteValue.Downvote
+                };
+
+                result = await _dossierReviewRepository.InsertVote(parsedVote);
+            }
+        }
+        else if (vote is null && !voteDTO.Value.Equals(VoteDossierDiscussionMessageValue.NoVote))
+        {
+            var parsedVote = new DiscussionMessageVote()
+            {
+                DiscussionMessageId = messageId,
+                UserId = parsedUserId,
+                DiscussionMessageVoteValue = voteDTO.Value.Equals(VoteDossierDiscussionMessageValue.Upvote) ?
+                    DiscussionMessageVoteValue.Upvote : DiscussionMessageVoteValue.Downvote
+            };
+
+            result = await _dossierReviewRepository.InsertVote(parsedVote);
+        }
+
+        if (!result)
+        {
+            throw new BadRequestException("Failed to register the vote. The discussion message might not exist");
         }
     }
 
