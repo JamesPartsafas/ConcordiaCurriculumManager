@@ -22,6 +22,7 @@ public interface IDossierReviewService
     public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message);
     public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message, Guid userId);
     public Task EditDossierDiscussionReview(Guid dossierId, EditDossierDiscussionMessageDTO message);
+    public Task DeleteDossierDiscussionReview(Guid dossierId, Guid messageId);
 }
 
 public class DossierReviewService : IDossierReviewService
@@ -284,6 +285,20 @@ public class DossierReviewService : IDossierReviewService
             _logger.LogInformation($"Discussion message was successfully edited to dossier {dossierId}");
         else
             _logger.LogError($"Encountered error attempting to edit a discussion message to dossier {dossierId}");
+    }
+
+    public async Task DeleteDossierDiscussionReview(Guid dossierId, Guid messageId)
+    {
+        var userId = _userAuthenticationService.GetCurrentUserClaim(Claims.Id);
+        var dossier = await GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(dossierId);
+
+        dossier.Discussion.DeleteMessage(messageId, Guid.Parse(userId));
+
+        var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
+        if (isDossierSaved)
+            _logger.LogInformation($"Discussion message was successfully deleted from dossier {dossier.Id}");
+        else
+            _logger.LogError($"Encountered error attempting to delete a discussion message from dossier {dossier.Id}");
     }
 
     public async Task<Dossier> GetDossierWithApprovalStagesOrThrow(Guid dossierId) => await _dossierReviewRepository.GetDossierWithApprovalStages(dossierId)

@@ -9,4 +9,5 @@ public class DossierDiscussionMessageDTO
     public Guid? ParentDiscussionMessageId { get; set; }
     public required DateTime CreatedDate { get; set; }
     public required DateTime ModifiedDate { get; set; }
+    public required bool IsDeleted { get; set; }
 }
