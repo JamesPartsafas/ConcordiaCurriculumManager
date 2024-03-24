@@ -11,4 +11,5 @@ public class DossierDiscussionMessageDTO
     public required DateTime ModifiedDate { get; set; }
     public int VoteCount { get; set; } = 0;
     public IEnumerable<DiscussionMessageVoteDTO> DiscussionMessageVotes { get; set; } = new List<DiscussionMessageVoteDTO>();
+    public required bool IsDeleted { get; set; }
 }

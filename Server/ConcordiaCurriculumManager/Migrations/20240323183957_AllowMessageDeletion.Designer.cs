@@ -3,6 +3,7 @@ using System;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConcordiaCurriculumManager.Migrations
 {
     [DbContext(typeof(CCMDbContext))]
-    partial class CCMDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240323183957_AllowMessageDeletion")]
+    partial class AllowMessageDeletion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -584,9 +587,6 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Property<Guid?>("ParentDiscussionMessageId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("VoteCount")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
@@ -598,42 +598,6 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.HasIndex("ParentDiscussionMessageId");
 
                     b.ToTable("DiscussionMessage");
-                });
-
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview.DiscussionMessageVote", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("DiscussionMessageId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("DiscussionMessageVoteValue")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("UserId1")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DiscussionMessageId");
-
-                    b.HasIndex("UserId1");
-
-                    b.HasIndex("UserId", "DiscussionMessageId")
-                        .IsUnique();
-
-                    b.ToTable("DiscussionMessageVote");
                 });
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview.DossierDiscussion", b =>
@@ -1118,29 +1082,6 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Navigation("ParentDiscussionMessage");
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview.DiscussionMessageVote", b =>
-                {
-                    b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview.DiscussionMessage", "DiscussionMessage")
-                        .WithMany("DiscussionMessageVotes")
-                        .HasForeignKey("DiscussionMessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ConcordiaCurriculumManager.Models.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ConcordiaCurriculumManager.Models.Users.User", null)
-                        .WithMany("DiscussionMessageVotes")
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("DiscussionMessage");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview.DossierDiscussion", b =>
                 {
                     b.HasOne("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.Dossier", "Dossier")
@@ -1295,11 +1236,6 @@ namespace ConcordiaCurriculumManager.Migrations
                     b.Navigation("DossierMetrics");
                 });
 
-            modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview.DiscussionMessage", b =>
-                {
-                    b.Navigation("DiscussionMessageVotes");
-                });
-
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview.DossierDiscussion", b =>
                 {
                     b.Navigation("Messages");
@@ -1312,8 +1248,6 @@ namespace ConcordiaCurriculumManager.Migrations
 
             modelBuilder.Entity("ConcordiaCurriculumManager.Models.Users.User", b =>
                 {
-                    b.Navigation("DiscussionMessageVotes");
-
                     b.Navigation("DossierMetrics");
 
                     b.Navigation("Dossiers");

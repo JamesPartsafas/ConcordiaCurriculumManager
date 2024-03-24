@@ -438,6 +438,22 @@ public class DossierReviewServiceTest
     }
 
     [TestMethod]
+    public async Task DeleteDossierDiscussionReview_ValidInput_DeletesMessageAndSaves()
+    {
+        var dossier = TestData.GetSampleDossierWithDiscussion();
+        var discussionMessage = TestData.GetSampleDiscussionMessage();
+        dossier.Discussion.Messages = new List<DiscussionMessage> { discussionMessage };
+
+        userService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(discussionMessage.AuthorId.ToString());
+        dossierRepository.Setup(dr => dr.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
+        dossierRepository.Setup(dr => dr.UpdateDossier(dossier)).ReturnsAsync(true);
+
+        await dossierReviewService.DeleteDossierDiscussionReview(dossier.Id, discussionMessage.Id);
+
+        Assert.AreEqual(true, discussionMessage.IsDeleted);
+    }
+
+    [TestMethod]
     public async Task GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow_DossierExists_ReturnsDossier()
     {
         var dossierId = Guid.NewGuid();
