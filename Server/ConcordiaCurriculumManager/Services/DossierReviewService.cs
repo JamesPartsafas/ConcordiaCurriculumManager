@@ -38,6 +38,7 @@ public class DossierReviewService : IDossierReviewService
     private readonly IEmailService _emailService;
     private readonly ICourseRepository _courseRepository;
     private readonly ICourseGroupingService _courseGroupingService;
+    private readonly ICacheService<IEnumerable<DiscussionMessageVote>> _cacheService;
 
     public DossierReviewService(
         ILogger<DossierReviewService> logger,
@@ -49,7 +50,8 @@ public class DossierReviewService : IDossierReviewService
         IUserAuthenticationService userAuthenticationService,
         IEmailService emailService,
         ICourseRepository courseRepository,
-        ICourseGroupingService courseGroupingService)
+        ICourseGroupingService courseGroupingService,
+        ICacheService<IEnumerable<DiscussionMessageVote>> cacheService)
     {
         _logger = logger;
         _dossierService = dossierService;
@@ -61,6 +63,7 @@ public class DossierReviewService : IDossierReviewService
         _emailService = emailService;
         _courseRepository = courseRepository;
         _courseGroupingService = courseGroupingService;
+        _cacheService = cacheService;
     }
 
     public async Task SubmitDossierForReview(DossierSubmissionDTO dto)
@@ -508,6 +511,10 @@ public class DossierReviewService : IDossierReviewService
         if (!result)
         {
             throw new BadRequestException("Failed to register the vote. The discussion message might not exist");
+        }
+        else
+        {
+            _cacheService.Delete(dossierId.ToString());
         }
     }
 
