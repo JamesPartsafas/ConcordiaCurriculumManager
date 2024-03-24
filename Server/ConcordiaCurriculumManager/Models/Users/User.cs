@@ -1,4 +1,5 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Metrics;
 
 namespace ConcordiaCurriculumManager.Models.Users;
@@ -22,6 +23,8 @@ public class User : BaseModel
     public List<Dossier> Dossiers { get; set; } = new();
 
     public List<DossierMetric> DossierMetrics { get; set; } = new();
+
+    public List<DiscussionMessageVote> DiscussionMessageVotes { get; set; } = new();
 
     public Guid? ResetPasswordToken { get; set; }
 }

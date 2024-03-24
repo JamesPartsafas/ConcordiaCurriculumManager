@@ -6,6 +6,7 @@ using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories;
 
@@ -20,6 +21,7 @@ public class DossierReviewRepositoryTest
     {
         var options = new DbContextOptionsBuilder<CCMDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
             .Options;
 
         dbContext = new CCMDbContext(options);

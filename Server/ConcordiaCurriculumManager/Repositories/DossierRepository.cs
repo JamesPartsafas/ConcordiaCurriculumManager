@@ -98,6 +98,7 @@ public class DossierRepository : IDossierRepository
         .ThenInclude(a => a.Group)
         .Include(dossier => dossier.Discussion)
         .ThenInclude(discussion => discussion.Messages)
+        .ThenInclude(discussionMessage => discussionMessage.DiscussionMessageVotes)
         .FirstOrDefaultAsync();
 
     public async Task<bool> SaveDossier(Dossier dossier)
