@@ -22,6 +22,18 @@ public class CacheServiceTests
     }
 
     [TestMethod]
+    public void Get_ExistingKey_ReturnsCachedValue()
+    {
+        var key = "existingKey";
+        object? cachedValue = "cachedValue";
+        _memoryCacheMock.Setup(m => m.TryGetValue(key, out cachedValue)).Returns(true);
+
+        var result = _cacheService.Get(key);
+
+        Assert.AreEqual(cachedValue, result);
+    }
+
+    [TestMethod]
     public void GetOrCreate_ExistingKey_ReturnsCachedValue()
     {
         var key = "existingKey";
@@ -71,5 +83,16 @@ public class CacheServiceTests
         var result = _cacheService.Exists(key);
 
         Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public void Delete_CallsRemove()
+    {
+        var key = "existingKey";
+        object? cachedValue = "cachedValue";
+
+        _cacheService.Delete(key);
+
+        _memoryCacheMock.Verify(m => m.Remove(key), Times.Once);
     }
 }
