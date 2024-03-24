@@ -1,4 +1,5 @@
 import axios from "axios";
+import { DiscussionMessageVoteEnum } from "../models/dossier"
 
 interface SubmitDossierForReviewDTO {
     dossierId: string;
@@ -15,6 +16,11 @@ interface EditReviewMessageDTO {
     discussionMessageId: string;
     newMessage: string;
 }
+
+interface VoteReviewMessageDTO {
+    discussionMessageId: string;
+    value: DiscussionMessageVoteEnum;
+} 
 
 export function submitDossierForReview(dossierId: string, dossierForReviewDTO: SubmitDossierForReviewDTO) {
     return axios.post(`/DossierReview/SubmitDossierForReview/${dossierId}`, dossierForReviewDTO);
@@ -38,4 +44,8 @@ export function reviewDossier(dossierId: string, reviewDossierDTO: ReviewDossier
 
 export function editReviewMessage(dossierId: string, editReviewMessageDTO: EditReviewMessageDTO) {
     return axios.put(`/DossierReview/EditReviewMessage/${dossierId}`, editReviewMessageDTO);
+}
+
+export function voteDossierMessage(dossierId: string, dto: VoteReviewMessageDTO) {
+    return axios.post(`/DossierReview/VoteReviewMessage/${dossierId}`, dto);
 }
