@@ -4,7 +4,9 @@ namespace ConcordiaCurriculumManager.Services;
 
 public interface ICacheService<T>
 {
+    void Delete(string key);
     bool Exists(string key);
+    T? Get(string key);
     T? GetOrCreate(string key, Func<(T cacheEntry, TimeSpan expiryDate, bool neverRemove)> createItem);
 }
 
@@ -19,6 +21,19 @@ public class CacheService<T> : ICacheService<T>
         _cache = cache;
         _logger = logger;
         _lock = new ReaderWriterLockSlim();
+    }
+
+    public T? Get(string key)
+    {
+        try
+        {
+            _lock.EnterReadLock();
+            return _cache.Get<T>(key);
+        }
+        finally
+        {
+            _lock.ExitReadLock();
+        }
     }
 
     public T? GetOrCreate(string key, Func<(T cacheEntry, TimeSpan expiryDate, bool neverRemove)> createItem)
@@ -58,6 +73,19 @@ public class CacheService<T> : ICacheService<T>
         {
             _lock.EnterReadLock();
             return _cache.TryGetValue(key, out _);
+        }
+        finally
+        {
+            _lock.ExitReadLock();
+        }
+    }
+
+    public void Delete(string key)
+    {
+        try
+        {
+            _lock.EnterReadLock();
+            _cache.Remove(key);
         }
         finally
         {
