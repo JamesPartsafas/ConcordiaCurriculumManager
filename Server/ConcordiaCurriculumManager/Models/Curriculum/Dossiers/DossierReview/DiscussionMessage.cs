@@ -25,7 +25,7 @@ public class DiscussionMessage : BaseModel
 
     public int VoteCount { get; set; } = 0;
     
-    public IEnumerable<DiscussionMessageVote>? DiscussionMessageVotes { get; set; } = new HashSet<DiscussionMessageVote>();
+    public IEnumerable<DiscussionMessageVote> DiscussionMessageVotes { get; set; } = new HashSet<DiscussionMessageVote>();
     
     public required bool IsDeleted { get; set; } = false;
 
