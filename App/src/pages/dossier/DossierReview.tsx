@@ -443,7 +443,7 @@ export default function DossierReview() {
                     showToast(toast, "Error!", "One or more validation errors occurred", "error");
                 }
             });
-    }
+    };
 
     const Message = ({
         message,
@@ -473,13 +473,13 @@ export default function DossierReview() {
 
         const [messageUpvoted, setMessageUpvoted] = useState(false);
         const [messageDownvoted, setMessageDownvoted] = useState(false);
-        
+
         useEffect(() => {
             const vote = message.discussionMessageVotes.find((vote) => vote.userId === user.id);
-            
+
             if (vote) {
                 const voteValue = vote.discussionMessageVoteValue;
-                
+
                 if (voteValue.valueOf() === DiscussionMessageVoteEnum.Upvote) {
                     setMessageUpvoted(true);
                 } else {
@@ -543,12 +543,12 @@ export default function DossierReview() {
         const handleUpvote = () => {
             const voteValue = messageUpvoted ? DiscussionMessageVoteEnum.NoVote : DiscussionMessageVoteEnum.Upvote;
             handleVoteRequest(message.id, voteValue);
-        }
+        };
 
         const handleDownvote = () => {
             const voteValue = messageDownvoted ? DiscussionMessageVoteEnum.NoVote : DiscussionMessageVoteEnum.Downvote;
             handleVoteRequest(message.id, voteValue);
-        }
+        };
 
         return (
             <div style={{ marginLeft: marginLeft }}>
@@ -566,13 +566,23 @@ export default function DossierReview() {
                             {new Date(message.createdDate).getSeconds().toString()}
                         </Text>
                         <Text mt={2}>{message.message}</Text>
-                        
+
                         <Flex alignItems="center">
-                            <Button onClick={handleUpvote} marginTop={2} backgroundColor={messageUpvoted ? "orange.200" : ""}>
+                            <Button
+                                onClick={handleUpvote}
+                                marginTop={2}
+                                backgroundColor={messageUpvoted ? "orange.200" : ""}
+                            >
                                 <ArrowUpIcon />
                             </Button>
-                            <Text as="span" fontWeight="bold" marginTop={2} marginRight={4} marginLeft={4}>{message.voteCount}</Text>
-                            <Button onClick={handleDownvote} marginTop={2} backgroundColor={messageDownvoted ? "purple.200" : ""}>
+                            <Text as="span" fontWeight="bold" marginTop={2} marginRight={4} marginLeft={4}>
+                                {message.voteCount}
+                            </Text>
+                            <Button
+                                onClick={handleDownvote}
+                                marginTop={2}
+                                backgroundColor={messageDownvoted ? "purple.200" : ""}
+                            >
                                 <ArrowDownIcon />
                             </Button>
 

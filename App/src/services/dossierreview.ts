@@ -1,5 +1,5 @@
 import axios from "axios";
-import { DiscussionMessageVoteEnum } from "../models/dossier"
+import { DiscussionMessageVoteEnum } from "../models/dossier";
 
 interface SubmitDossierForReviewDTO {
     dossierId: string;
@@ -20,7 +20,7 @@ interface EditReviewMessageDTO {
 interface VoteReviewMessageDTO {
     discussionMessageId: string;
     value: DiscussionMessageVoteEnum;
-} 
+}
 
 export function submitDossierForReview(dossierId: string, dossierForReviewDTO: SubmitDossierForReviewDTO) {
     return axios.post(`/DossierReview/SubmitDossierForReview/${dossierId}`, dossierForReviewDTO);
