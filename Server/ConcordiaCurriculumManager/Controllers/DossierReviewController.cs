@@ -116,6 +116,7 @@ public class DossierReviewController : Controller
         await _dossierReviewService.DeleteDossierDiscussionReview(dossierId, messageId);
         return NoContent();
     }
+    
     [HttpPost(nameof(VoteReviewMessage) + "/{dossierId}")]
     [Authorize(Policies.IsOwnerOfDossier)]
     [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
