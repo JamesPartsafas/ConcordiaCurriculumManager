@@ -76,7 +76,7 @@ public class DossierReviewService : IDossierReviewService
 
         if (isDossierSaved && areStagesSaved)
         {
-            _ = SendEmailToCurrentApprovingGroup(dossier, "Pending Dossier Review", EmailTemplates.GetDossierPendingReviewTemplate);
+            SendEmailToCurrentApprovingGroupInBackground(dossier, "Pending Dossier Review", EmailTemplates.GetDossierPendingReviewTemplate);
             _logger.LogInformation($"Dossier {dossier.Id} submitted for review to group {approvalStages.First().Id}");
         }
         else
@@ -454,6 +454,9 @@ public class DossierReviewService : IDossierReviewService
             }
         }
     }
+
+    private void SendEmailToCurrentApprovingGroupInBackground(Dossier dossier, string subject, Func<string, Guid, string> EmailTemplateFunc) =>
+        Task.Run(async () => await SendEmailToCurrentApprovingGroup(dossier, subject, EmailTemplateFunc));
 
     private async Task SendEmailToCurrentApprovingGroup(Dossier dossier, string subject, Func<string, Guid, string> EmailTemplateFunc)
     {
