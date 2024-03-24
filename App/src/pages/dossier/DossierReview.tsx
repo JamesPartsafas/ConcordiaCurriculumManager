@@ -5,6 +5,7 @@ import {
     DossierDetailsResponse,
     dossierStateToString,
     DossierDiscussionMessage,
+    DiscussionMessageVoteEnum,
 } from "../../models/dossier";
 import { getDossierDetails } from "../../services/dossier";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -38,7 +39,7 @@ import {
 } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
-import { AddIcon, ArrowLeftIcon, CloseIcon, CopyIcon, EditIcon } from "@chakra-ui/icons";
+import { AddIcon, ArrowDownIcon, ArrowLeftIcon, ArrowUpIcon, CloseIcon, CopyIcon, EditIcon } from "@chakra-ui/icons";
 import React from "react";
 import {
     editReviewMessage,
@@ -46,6 +47,7 @@ import {
     rejectDossier,
     returnDossier,
     reviewDossier,
+    voteDossierMessage,
 } from "../../services/dossierreview";
 import { showToast } from "../../utils/toastUtils";
 import { UserContext } from "../../App";
@@ -424,6 +426,25 @@ export default function DossierReview() {
         }));
     };
 
+    const handleVoteRequest = (messageId: string, voteValue: DiscussionMessageVoteEnum) => {
+        const voteReviewMessageDTO = {
+            discussionMessageId: messageId,
+            value: voteValue,
+        };
+        voteDossierMessage(dossierId, voteReviewMessageDTO)
+            .then(() => {
+                showToast(toast, "Success!", "Vote was registered successfully.", "success");
+                requestDossierDetails(dossierId);
+            })
+            .catch((e) => {
+                if (e.response.status == 403) {
+                    showToast(toast, "Error!", "You cannot vote for any message at this state.", "error");
+                } else {
+                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
+                }
+            });
+    }
+
     const Message = ({
         message,
         messages,
@@ -449,6 +470,23 @@ export default function DossierReview() {
         const [editSubmitted, setEditSubmitted] = useState(false);
 
         const [showReplies, setShowReplies] = useState(false);
+
+        const [messageUpvoted, setMessageUpvoted] = useState(false);
+        const [messageDownvoted, setMessageDownvoted] = useState(false);
+        
+        useEffect(() => {
+            const vote = message.discussionMessageVotes.find((vote) => vote.userId === user.id);
+            
+            if (vote) {
+                const voteValue = vote.discussionMessageVoteValue;
+                
+                if (voteValue.valueOf() === DiscussionMessageVoteEnum.Upvote) {
+                    setMessageUpvoted(true);
+                } else {
+                    setMessageDownvoted(true);
+                }
+            }
+        }, []);
 
         const toggleReplies = () => {
             setShowReplies(!showReplies);
@@ -502,6 +540,16 @@ export default function DossierReview() {
             }
         };
 
+        const handleUpvote = () => {
+            const voteValue = messageUpvoted ? DiscussionMessageVoteEnum.NoVote : DiscussionMessageVoteEnum.Upvote;
+            handleVoteRequest(message.id, voteValue);
+        }
+
+        const handleDownvote = () => {
+            const voteValue = messageDownvoted ? DiscussionMessageVoteEnum.NoVote : DiscussionMessageVoteEnum.Downvote;
+            handleVoteRequest(message.id, voteValue);
+        }
+
         return (
             <div style={{ marginLeft: marginLeft }}>
                 <CardBody key={group.groupId}>
@@ -518,64 +566,75 @@ export default function DossierReview() {
                             {new Date(message.createdDate).getSeconds().toString()}
                         </Text>
                         <Text mt={2}>{message.message}</Text>
-                        {!user.groups?.includes(group.groupId) ||
-                        !user.groups?.includes(currentGroup?.groupId) ? null : (
-                            <Button onClick={handleToggleReply} marginTop={2}>
-                                <ArrowLeftIcon marginRight={5} />
-                                {showReplyInput ? "Cancel Reply" : "Reply"}
+                        
+                        <Flex alignItems="center">
+                            <Button onClick={handleUpvote} marginTop={2} backgroundColor={messageUpvoted ? "orange.200" : ""}>
+                                <ArrowUpIcon />
                             </Button>
-                        )}
-
-                        {user.id == message.author.id ? (
-                            <Button onClick={() => handleToggleEdit(message.message)} marginTop={2} marginLeft={5}>
-                                <EditIcon marginRight={5} />
-                                {showEditInput ? "Cancel Edit" : "Edit"}
+                            <Text as="span" fontWeight="bold" marginTop={2} marginRight={4} marginLeft={4}>{message.voteCount}</Text>
+                            <Button onClick={handleDownvote} marginTop={2} backgroundColor={messageDownvoted ? "purple.200" : ""}>
+                                <ArrowDownIcon />
                             </Button>
-                        ) : null}
 
-                        {showReplyInput && (
-                            <Box marginTop={4}>
-                                <FormControl isInvalid={replyError && replySubmitted}>
-                                    <Textarea
-                                        onChange={handleChangeReply}
-                                        placeholder={"Reply to message..."}
-                                        value={replyText}
-                                        minH={"50px"}
-                                        background={"white"}
-                                        marginBottom={2}
-                                    ></Textarea>
-                                    <FormErrorMessage fontSize={16} marginBottom={2}>
-                                        Reply cannot be empty.
-                                    </FormErrorMessage>
-                                </FormControl>
-
-                                <Button style="primary" width="auto" variant="solid" onClick={handleSubmitReply}>
-                                    Submit reply
+                            {!user.groups?.includes(group.groupId) ||
+                            !user.groups?.includes(currentGroup?.groupId) ? null : (
+                                <Button onClick={handleToggleReply} marginLeft={4} marginTop={2}>
+                                    <ArrowLeftIcon marginRight={5} />
+                                    {showReplyInput ? "Cancel Reply" : "Reply"}
                                 </Button>
-                            </Box>
-                        )}
+                            )}
 
-                        {showEditInput && (
-                            <Box marginTop={4}>
-                                <FormControl isInvalid={editError && editSubmitted}>
-                                    <Textarea
-                                        onChange={handleChangeEdit}
-                                        placeholder={"Edit message..."}
-                                        value={editText}
-                                        minH={"50px"}
-                                        background={"white"}
-                                        marginBottom={2}
-                                    ></Textarea>
-                                    <FormErrorMessage fontSize={16} marginBottom={2}>
-                                        Edit cannot be empty.
-                                    </FormErrorMessage>
-                                </FormControl>
-
-                                <Button style="primary" width="auto" variant="solid" onClick={handleSubmitEdit}>
-                                    Submit edit
+                            {user.id == message.author.id ? (
+                                <Button onClick={() => handleToggleEdit(message.message)} marginTop={2} marginLeft={5}>
+                                    <EditIcon marginRight={5} />
+                                    {showEditInput ? "Cancel Edit" : "Edit"}
                                 </Button>
-                            </Box>
-                        )}
+                            ) : null}
+
+                            {showReplyInput && (
+                                <Box marginTop={4}>
+                                    <FormControl isInvalid={replyError && replySubmitted}>
+                                        <Textarea
+                                            onChange={handleChangeReply}
+                                            placeholder={"Reply to message..."}
+                                            value={replyText}
+                                            minH={"50px"}
+                                            background={"white"}
+                                            marginBottom={2}
+                                        ></Textarea>
+                                        <FormErrorMessage fontSize={16} marginBottom={2}>
+                                            Reply cannot be empty.
+                                        </FormErrorMessage>
+                                    </FormControl>
+
+                                    <Button style="primary" width="auto" variant="solid" onClick={handleSubmitReply}>
+                                        Submit reply
+                                    </Button>
+                                </Box>
+                            )}
+
+                            {showEditInput && (
+                                <Box marginTop={4}>
+                                    <FormControl isInvalid={editError && editSubmitted}>
+                                        <Textarea
+                                            onChange={handleChangeEdit}
+                                            placeholder={"Edit message..."}
+                                            value={editText}
+                                            minH={"50px"}
+                                            background={"white"}
+                                            marginBottom={2}
+                                        ></Textarea>
+                                        <FormErrorMessage fontSize={16} marginBottom={2}>
+                                            Edit cannot be empty.
+                                        </FormErrorMessage>
+                                    </FormControl>
+
+                                    <Button style="primary" width="auto" variant="solid" onClick={handleSubmitEdit}>
+                                        Submit edit
+                                    </Button>
+                                </Box>
+                            )}
+                        </Flex>
                     </Box>
                 </CardBody>
                 {showReplies &&
