@@ -21,4 +21,8 @@ public class DiscussionMessage : BaseModel
     public Guid? ParentDiscussionMessageId { get; set; }
 
     public DiscussionMessage? ParentDiscussionMessage { get; set; }
+
+    public int VoteCount { get; set; } = 0;
+    
+    public IEnumerable<DiscussionMessageVote>? DiscussionMessageVotes { get; set; } = new HashSet<DiscussionMessageVote>();
 }
