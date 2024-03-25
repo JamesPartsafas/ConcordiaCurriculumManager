@@ -1,11 +1,15 @@
 import json
+import uuid
 from bs4 import BeautifulSoup
 
-with open('Courses.json', 'r') as f:
-    courses_data = json.load(f)
 
-with open('CourseIdentifiers.json', 'r') as f:
-    course_identifiers_data = json.load(f)
+def load_json_data(filename):
+    with open(filename, 'r', encoding='utf-8') as loaded_file:
+        return json.load(loaded_file)
+
+
+courses_data = load_json_data('Courses.json')['Data']
+course_identifiers_data = load_json_data('CourseIdentifiers.json')['Data']
 
 
 def get_course_identifier_id(concordia_course_id):
@@ -15,8 +19,39 @@ def get_course_identifier_id(concordia_course_id):
     return None
 
 
-with open('engineering_courses.html', 'r', encoding='utf-8') as file:
+with open('Section 71.30.1 Course Requirements (BEng in Electrical Engineering) - Concordia University.html', 'r',
+          encoding='utf-8') as file:
     soup = BeautifulSoup(file.read(), 'html.parser')
+
+
+def generate_course_grouping_reference_id():
+    return str(uuid.uuid4())
+
+
+def find_or_create_course_grouping(groupings, name, required_credits, is_top_level, description, notes):
+    for grouping in groupings:
+        if grouping['Name'] == name:
+            return grouping['Id'], False
+
+    new_id = str(uuid.uuid4())
+    common_identifier = str(uuid.uuid4())
+    groupings.append({
+        "Id": new_id,
+        "CommonIdentifier": common_identifier,
+        "Name": name,
+        "RequiredCredits": required_credits,
+        "IsTopLevel": is_top_level,
+        "School": 0,
+        "Description": description,
+        "Notes": notes,
+        "State": 0,
+        "Version": 1,
+        "Published": True,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": []
+    })
+    return new_id, True
+
 
 course_groupings = {
     "Data": []
@@ -24,40 +59,29 @@ course_groupings = {
 
 for program in soup.find_all('div', class_='program-node'):
     program_title = program.find('div', class_='title program-title').text.strip()
+
+    required_credits = "0.00"
+    description = "Program description here."
+    notes = "Program notes here."
+
+    program_id, is_new = find_or_create_course_grouping(course_groupings['Data'], program_title, required_credits, True,
+                                                        description, notes)
+
+    if not is_new:
+        continue
+
     sub_groups = program.find_next_sibling('div', class_='program-node-children')
-
-    main_group = {
-        "Id": str(program['id']),
-        "Name": program_title,
-        "SubGroupings": []
-    }
-
     for group in sub_groups.find_all('div', class_='defined-group'):
         group_title = group.find('div', class_='title').text.strip()
-        group_id = group['title']
-        courses = []
+        sub_group_id, _ = find_or_create_course_grouping(course_groupings['Data'], group_title, "0.00", False,
+                                                         "Sub-group description", "Sub-group notes")
 
-        for course in group.find_all('div', class_='formatted-course'):
-            course_code = course.find('span', class_='course-code-number').a.text.strip()
-            subject, catalog = course_code.split()
+        course_groupings['Data'][-1]['CourseGroupingReferences'].append({
+            "Id": generate_course_grouping_reference_id(),
+            "ChildGroupCommonIdentifier": course_groupings['Data'][-1]['CommonIdentifier'],
 
-            for course_item in courses_data["Data"]:
-                if course_item["Subject"] == subject and course_item["Catalog"] == catalog:
-                    course_id = get_course_identifier_id(course_item["CourseID"])
-                    if course_id:
-                        courses.append({
-                            "CourseIdentifiersId": course_id,
-                            "CreditValue": course.find('span', class_='course-credits').text.strip()
-                        })
-                    break
-
-        main_group["SubGroupings"].append({
-            "Id": group_id,
-            "Name": group_title,
-            "Courses": courses
+            "GroupingType": 0
         })
 
-    course_groupings["Data"].append(main_group)
-
-with open('CourseGroupings.json', 'w', encoding='utf-8') as f:
+with open('UpdatedCourseGroupings.json', 'w', encoding='utf-8') as f:
     json.dump(course_groupings, f, ensure_ascii=False, indent=4)

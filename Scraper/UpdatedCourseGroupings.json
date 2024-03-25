@@ -1,0 +1,229 @@
+{
+    "Data": [
+        {
+            "Id": "1279837d-2dd6-484d-af77-593f8dad12ed",
+            "CommonIdentifier": "5dca8f1c-d702-443b-9d31-57b92155459d",
+            "Name": "BEng in Electrical Engineering (120 credits)",
+            "RequiredCredits": "0.00",
+            "IsTopLevel": true,
+            "School": 0,
+            "Description": "Program description here.",
+            "Notes": "Program notes here.",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "15751940-48db-463c-b8a6-20f19828992c",
+            "CommonIdentifier": "c299f9a4-ba6e-42cf-9fdd-f17ab1a77841",
+            "Name": "Electrical Engineering Core (72.5 credits)",
+            "RequiredCredits": "0.00",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "Sub-group description",
+            "Notes": "Sub-group notes",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+                {
+                    "Id": "92cb349d-1a5b-4c56-b840-a41fe5c6e765",
+                    "ChildGroupCommonIdentifier": "c299f9a4-ba6e-42cf-9fdd-f17ab1a77841",
+                    "GroupingType": 0
+                }
+            ],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "cc9ffcc7-96bb-410d-a1d9-e1a1336639b4",
+            "CommonIdentifier": "1e3b9c4d-f3ef-4404-baaa-cca4481cc387",
+            "Name": "Electrical Engineering Electives (17 credits)",
+            "RequiredCredits": "0.00",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "Sub-group description",
+            "Notes": "Sub-group notes",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+                {
+                    "Id": "259bfedf-ade6-4c5c-b40b-081c608f5314",
+                    "ChildGroupCommonIdentifier": "1e3b9c4d-f3ef-4404-baaa-cca4481cc387",
+                    "GroupingType": 0
+                }
+            ],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "e6a19ec5-c215-4cf8-a578-7ff65c9c2c18",
+            "CommonIdentifier": "a9e1f963-cc61-457e-8823-0c385117dfc6",
+            "Name": "Telecommunication Networks and Signal Processing Electives: Electrical Engineering",
+            "RequiredCredits": "0.00",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "Sub-group description",
+            "Notes": "Sub-group notes",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+                {
+                    "Id": "948b9e7b-7277-4144-80d2-675e41d7596c",
+                    "ChildGroupCommonIdentifier": "a9e1f963-cc61-457e-8823-0c385117dfc6",
+                    "GroupingType": 0
+                }
+            ],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "7eaac99c-1bae-4de5-829e-48001a8fb822",
+            "CommonIdentifier": "9b3fb484-c8ea-43e0-afd7-9c4088655a2f",
+            "Name": "Microdevices, Electronics and VLSI Electives: Electrical Engineering",
+            "RequiredCredits": "0.00",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "Sub-group description",
+            "Notes": "Sub-group notes",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+                {
+                    "Id": "984d2081-d542-4b16-b36c-67bc9fc01e59",
+                    "ChildGroupCommonIdentifier": "9b3fb484-c8ea-43e0-afd7-9c4088655a2f",
+                    "GroupingType": 0
+                }
+            ],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "e2e708a1-bcd3-431b-a735-42fe2ee1d445",
+            "CommonIdentifier": "7275fdb6-b4a7-44f0-9d46-d67df7ca9f69",
+            "Name": "Power and Renewable Energy Systems Electives: Electrical Engineering",
+            "RequiredCredits": "0.00",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "Sub-group description",
+            "Notes": "Sub-group notes",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+                {
+                    "Id": "991c0f06-8e5c-43c7-8edf-f2b7dd1961a3",
+                    "ChildGroupCommonIdentifier": "7275fdb6-b4a7-44f0-9d46-d67df7ca9f69",
+                    "GroupingType": 0
+                }
+            ],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "2e0f620a-7f5e-44dc-adab-bd3979ff66ec",
+            "CommonIdentifier": "ddf284fb-bf03-4b2a-82f6-336f70b556ce",
+            "Name": "Controls, Robotics and Avionics Electives: Electrical Engineering",
+            "RequiredCredits": "0.00",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "Sub-group description",
+            "Notes": "Sub-group notes",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+                {
+                    "Id": "1e5d5157-0b2d-47f5-8dfd-373e4cf368dc",
+                    "ChildGroupCommonIdentifier": "ddf284fb-bf03-4b2a-82f6-336f70b556ce",
+                    "GroupingType": 0
+                }
+            ],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "88e1af15-2947-46ef-9283-7a8405000e10",
+            "CommonIdentifier": "9b2c693a-f507-4113-9836-c6d705ff9fa6",
+            "Name": "Waves and Electromagnetics Electives: Electrical Engineering",
+            "RequiredCredits": "0.00",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "Sub-group description",
+            "Notes": "Sub-group notes",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+                {
+                    "Id": "39ca3d2d-c732-4487-b4c5-79b35c5bc8b9",
+                    "ChildGroupCommonIdentifier": "9b2c693a-f507-4113-9836-c6d705ff9fa6",
+                    "GroupingType": 0
+                }
+            ],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "fcb39949-2ce0-4dfa-ac85-ebe04f2258a1",
+            "CommonIdentifier": "01f94cbe-3e20-4abf-bc9f-5e4571202708",
+            "Name": "Computer Systems Electives: Electrical Engineering",
+            "RequiredCredits": "0.00",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "Sub-group description",
+            "Notes": "Sub-group notes",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+                {
+                    "Id": "455179c2-f82b-4a28-9107-613c57b743a4",
+                    "ChildGroupCommonIdentifier": "01f94cbe-3e20-4abf-bc9f-5e4571202708",
+                    "GroupingType": 0
+                }
+            ],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "dc2744a0-89fb-4256-bba0-0cf4bf2312a3",
+            "CommonIdentifier": "70bfb92a-6793-48a6-b0fe-02aab0dc1fdb",
+            "Name": "Biological and Biomedical Engineering Electives: Electrical Engineering",
+            "RequiredCredits": "0.00",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "Sub-group description",
+            "Notes": "Sub-group notes",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+                {
+                    "Id": "51fae7dd-1333-4c07-b814-fa65e3aaa130",
+                    "ChildGroupCommonIdentifier": "70bfb92a-6793-48a6-b0fe-02aab0dc1fdb",
+                    "GroupingType": 0
+                }
+            ],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "0dc4537f-b3b8-4170-b745-427734a00d70",
+            "CommonIdentifier": "2495db6c-2dd5-40b5-b775-62fb12da6aa7",
+            "Name": "Other Electives: Electrical Engineering",
+            "RequiredCredits": "0.00",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "Sub-group description",
+            "Notes": "Sub-group notes",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+                {
+                    "Id": "52a4d805-4eca-4ec8-898a-7f7905c83e78",
+                    "ChildGroupCommonIdentifier": "2495db6c-2dd5-40b5-b775-62fb12da6aa7",
+                    "GroupingType": 0
+                }
+            ],
+            "CourseGroupingCourseIdentifier": []
+        }
+    ]
+}
