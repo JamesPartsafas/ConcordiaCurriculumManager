@@ -49,3 +49,7 @@ export function editReviewMessage(dossierId: string, editReviewMessageDTO: EditR
 export function voteDossierMessage(dossierId: string, dto: VoteReviewMessageDTO) {
     return axios.post(`/DossierReview/VoteReviewMessage/${dossierId}`, dto);
 }
+
+export function deleteReviewMessage(dossierId: string, messageId: string) {
+    return axios.delete(`/DossierReview/DeleteReviewMessage/${dossierId}/${messageId}`);
+}
