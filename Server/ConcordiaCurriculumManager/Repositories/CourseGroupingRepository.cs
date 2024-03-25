@@ -23,6 +23,7 @@ public interface ICourseGroupingRepository
     public Task<bool> UpdateCourseGrouping(CourseGrouping courseGrouping);
     public Task<CourseGrouping?> GetCourseGroupingByCommonIdentifierAnyState(Guid commonId);
     public Task<IEnumerable<CourseGrouping>> GetCourseGroupingHistory(Guid commonIdentifier);
+    public Task<ICollection<CourseGrouping>> GetPublishedCourseGroupingsLikeName(string name);
 }
 
 public class CourseGroupingRepository : ICourseGroupingRepository
@@ -126,6 +127,20 @@ public class CourseGroupingRepository : ICourseGroupingRepository
         return result.Where(cg => cg.State.Equals(CourseGroupingStateEnum.Accepted)).ToList();
     }
 
+    public async Task<ICollection<CourseGrouping>> GetPublishedCourseGroupingsLikeName(string name)
+    {
+        var result = await _dbContext.CourseGroupings
+        .Where(cg => cg.Name.Trim().ToLower().Contains(name.Trim().ToLower()) && cg.Version != null && cg.Published)
+        .Take(10)
+        .Include(cg => cg.SubGroupingReferences)
+        .Include(cg => cg.CourseIdentifiers)
+        .GroupBy(cg => cg.CommonIdentifier)
+        .Select(group => group.OrderByDescending(cg => cg.Version).First())
+        .ToListAsync();
+
+        return result.Where(cg => cg.State.Equals(CourseGroupingStateEnum.Accepted)).ToList();
+    }
+
     public async Task<IList<CourseGrouping>> GetCourseGroupingsContainingSubgrouping(CourseGrouping grouping)
     {
         var query = _dbContext.CourseGroupings.FromSqlInterpolated(
@@ -152,7 +167,7 @@ public class CourseGroupingRepository : ICourseGroupingRepository
 
     public async Task<CourseGrouping?> GetCourseGroupingContainingCourse(Course course) => await _dbContext.CourseGroupings
        .Include(cg => cg.CourseIdentifiers)
-       .Where(cg => cg.CourseIdentifiers.Any(ci => ci.ConcordiaCourseId.Equals(course.CourseID)))
+       .Where(cg => cg.CourseIdentifiers.Any(ci => ci.ConcordiaCourseId.Equals(course.CourseID)) && cg.Published)
        .FirstOrDefaultAsync();
 
     public async Task<IEnumerable<CourseGrouping>> GetCourseGroupingHistory(Guid commonIdentifier)
