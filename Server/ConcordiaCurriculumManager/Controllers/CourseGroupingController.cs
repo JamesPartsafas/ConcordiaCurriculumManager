@@ -198,4 +198,15 @@ public class CourseGroupingController : Controller
 
         return Ok(courseGroupingDTOs);
     }
+
+    [HttpGet(nameof(GetCourseGroupingHistory) + "/{commonIdentifier}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course history retrieved")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetCourseGroupingHistory([FromRoute, Required] Guid commonIdentifier)
+    {
+        var courseData = await _courseGroupingService.GetCourseGroupingHistory(commonIdentifier);
+        var courseDataDTOs = _mapper.Map<IEnumerable<CourseGroupingDTO>>(courseData);
+        return Ok(courseDataDTOs);
+    }
 }
