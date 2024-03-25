@@ -17,6 +17,7 @@ public interface IDossierRepository
     public Task<bool> SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
     public Task<List<Dossier>> GetDossiersByID(Guid userId);
     public Task<Dossier?> GetDossierByDossierId(Guid dossierId);
+    public Task<Dossier?> GetDossierByDossierIdWithoutVote(Guid dossierId);
     public Task<bool> SaveDossier(Dossier dossier);
     public Task<bool> UpdateDossier(Dossier dossier);
     public Task<bool> DeleteDossier(Dossier dossier);
@@ -99,6 +100,30 @@ public class DossierRepository : IDossierRepository
         .Include(dossier => dossier.Discussion)
         .ThenInclude(discussion => discussion.Messages)
         .ThenInclude(discussionMessage => discussionMessage.DiscussionMessageVotes)
+        .FirstOrDefaultAsync();
+
+    public async Task<Dossier?> GetDossierByDossierIdWithoutVote(Guid dossierId) => await _dbContext.Dossiers
+        .Where(d => d.Id == dossierId)
+        .Include(d => d.CourseCreationRequests)
+        .ThenInclude(c => c.NewCourse)
+        .Include(d => d.CourseDeletionRequests)
+        .ThenInclude(c => c.Course)
+        .Include(d => d.CourseModificationRequests)
+        .ThenInclude(c => c.Course)
+        .Include(d => d.CourseGroupingRequests)
+        .ThenInclude(c => c.CourseGrouping)
+        .ThenInclude(c => c!.CourseIdentifiers)
+        .Include(d => d.CourseGroupingRequests)
+        .ThenInclude(c => c.CourseGrouping)
+        .ThenInclude(c => c!.SubGroupings)
+        .Include(d => d.ApprovalStages)
+        .ThenInclude(a => a.Group == null ? null : a.Group.Members)
+        .Include(d => d.ApprovalStages)
+        .ThenInclude(a => a.Group == null ? null : a.Group.GroupMasters)
+        .Include(d => d.ApprovalHistories)
+        .ThenInclude(a => a.Group)
+        .Include(dossier => dossier.Discussion)
+        .ThenInclude(discussion => discussion.Messages)
         .FirstOrDefaultAsync();
 
     public async Task<bool> SaveDossier(Dossier dossier)

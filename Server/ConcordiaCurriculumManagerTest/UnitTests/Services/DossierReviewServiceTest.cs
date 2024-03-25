@@ -23,6 +23,7 @@ public class DossierReviewServiceTest
     private Mock<IDossierReviewRepository> dossierReviewRepository = null!;
     private Mock<ICourseRepository> courseRepository = null!;
     private Mock<ICourseGroupingService> courseGroupingService = null!;
+    private Mock<ICacheService<IEnumerable<DiscussionMessageVote>>> cacheService = null!;
 
     private DossierReviewService dossierReviewService = null!;
 
@@ -39,6 +40,7 @@ public class DossierReviewServiceTest
         emailService = new Mock<IEmailService>();
         courseRepository = new Mock<ICourseRepository>();
         courseGroupingService = new Mock<ICourseGroupingService>();
+        cacheService = new Mock<ICacheService<IEnumerable<DiscussionMessageVote>>>();
 
         dossierReviewService = new DossierReviewService(
             logger.Object,
@@ -50,7 +52,8 @@ public class DossierReviewServiceTest
             userService.Object,
             emailService.Object,
             courseRepository.Object,
-            courseGroupingService.Object
+            courseGroupingService.Object,
+            cacheService.Object
         );
     }
 
