@@ -89,7 +89,7 @@ public class UsersController : Controller
     [SwaggerResponse(StatusCodes.Status200OK, "Email has been sent.")]
     [SwaggerResponse(StatusCodes.Status404NotFound, "User with the email not found.")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
-    public async Task<ActionResult> SendResetPasswordEmail([FromBody, Required] PasswordResetDTO reset)
+    public async Task<ActionResult> SendResetPasswordEmail([FromBody, Required] EmailPasswordResetDTO reset)
     {
         var result = await _userService.SendResetPasswordEmail(reset);
         return Ok(result);

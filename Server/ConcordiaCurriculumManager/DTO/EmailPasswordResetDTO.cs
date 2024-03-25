@@ -1,6 +1,6 @@
 ﻿namespace ConcordiaCurriculumManager.DTO;
 
-public class PasswordResetDTO
+public class EmailPasswordResetDTO
 {
     public required string Email { get; set; }
 }
