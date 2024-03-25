@@ -15,17 +15,20 @@ public interface IUserService
     Task<IList<User>> GetUsersByFirstName(string firstName);
     Task<IList<User>> GetUsersByLastName(string lastName);
     Task<bool> SendResetPasswordEmail(EmailPasswordResetDTO reset);
+    Task<bool> ResetPassword(PasswordResetDTO password, Guid token);
 }
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IEmailService _emailService;
+    private readonly IInputHasherService _inputHasher;
 
-    public UserService(IUserRepository userRepository, IEmailService emailService)
+    public UserService(IUserRepository userRepository, IEmailService emailService, IInputHasherService inputHasher)
     {
         _userRepository = userRepository;
         _emailService = emailService;
+        _inputHasher = inputHasher;
     }
 
     public async Task<IList<User>> GetAllUsersPageableAsync(Guid id) => await _userRepository.GetAllUsersPageable(id);
@@ -46,6 +49,18 @@ public class UserService : IUserService
         string body = "Click the following link to reset your password: " + resetLink;
 
         return await _emailService.SendEmail(reset.Email, subject, body);
+
+    }
+    public async Task<bool> ResetPassword(PasswordResetDTO password, Guid token)
+    {
+        var user = await _userRepository.GetUserByResetPasswordToken(token) ?? throw new NotFoundException("A user with the reset password token " + token + " does not exist.");
+        var newPassword = password.Password;
+        var hashedPassword = _inputHasher.Hash(newPassword);
+
+        user.Password = hashedPassword;
+        user.ResetPasswordToken = null;
+
+        return await _userRepository.UpdateUser(user); ;
 
     }
 }
