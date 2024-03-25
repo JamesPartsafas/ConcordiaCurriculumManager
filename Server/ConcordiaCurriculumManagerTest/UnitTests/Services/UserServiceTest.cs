@@ -12,6 +12,7 @@ public class UserServiceTest
 {
     private Mock<IUserRepository> userRepositoryMock = null!;
     private Mock<IEmailService> emailServiceMock = null!;
+    private Mock<IInputHasherService> inputHasher = null!;
     private UserService userService = null!;
 
     [TestInitialize]
@@ -19,7 +20,8 @@ public class UserServiceTest
     {
         userRepositoryMock = new Mock<IUserRepository>();
         emailServiceMock = new Mock<IEmailService>();
-        userService = new UserService(userRepositoryMock.Object, emailServiceMock.Object);
+        inputHasher = new Mock<IInputHasherService>();
+        userService = new UserService(userRepositoryMock.Object, emailServiceMock.Object, inputHasher.Object);
     }
 
     [TestMethod]
@@ -46,7 +48,7 @@ public class UserServiceTest
     [ExpectedException(typeof(NotFoundException))]
     public async Task SendResetPasswordEmail_ThrowsNotFoundException()
     {
-        var reset = TestData.GetSamplePasswordResetDTO();
+        var reset = TestData.GetSampleEmailPasswordResetDTO();
         userRepositoryMock.Setup(repo => repo.GetUserByEmail(It.IsAny<string>())).Throws(new NotFoundException());
 
         await userService.SendResetPasswordEmail(reset);

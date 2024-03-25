@@ -102,7 +102,7 @@ public class UsersControllerTest
 
     [TestMethod]
     public async Task SendResetPasswordEmail_Succeeds() { 
-        var reset = TestData.GetSamplePasswordResetDTO();
+        var reset = TestData.GetSampleEmailPasswordResetDTO();
         userService.Setup(service => service.SendResetPasswordEmail(reset)).ReturnsAsync(true);
 
         var actionResult = await usersController.SendResetPasswordEmail(reset);
@@ -116,7 +116,7 @@ public class UsersControllerTest
     [ExpectedException(typeof(NotFoundException))]
     public async Task SendResetPasswordEmai_InvalidCall_ThrowsNotFoundException()
     {
-        var reset = TestData.GetSamplePasswordResetDTO();
+        var reset = TestData.GetSampleEmailPasswordResetDTO();
         userService.Setup(service => service.SendResetPasswordEmail(reset)).Throws(new NotFoundException());
 
         await usersController.SendResetPasswordEmail(reset);
@@ -127,7 +127,7 @@ public class UsersControllerTest
     [ExpectedException(typeof(BadRequestException))]
     public async Task SendResetPasswordEmai_ServerError_Throws()
     {
-        var reset = TestData.GetSamplePasswordResetDTO();
+        var reset = TestData.GetSampleEmailPasswordResetDTO();
         userService.Setup(service => service.SendResetPasswordEmail(reset)).Throws(new BadRequestException());
 
         var actionResult = await usersController.SendResetPasswordEmail(reset);

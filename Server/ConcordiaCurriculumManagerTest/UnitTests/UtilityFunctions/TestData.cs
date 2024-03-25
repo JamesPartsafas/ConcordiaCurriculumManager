@@ -943,10 +943,11 @@ public static class TestData
     }
 
     // EMAIL
-    public static EmailPasswordResetDTO GetSamplePasswordResetDTO()
+    public static EmailPasswordResetDTO GetSampleEmailPasswordResetDTO()
     {
         return new EmailPasswordResetDTO { Email = "test@gmail.com" };
     }
+
 
     // Metrics
     public static HttpMetric GetHttpMetric()
