@@ -943,9 +943,9 @@ public static class TestData
     }
 
     // EMAIL
-    public static PasswordResetDTO GetSamplePasswordResetDTO()
+    public static EmailPasswordResetDTO GetSamplePasswordResetDTO()
     {
-        return new PasswordResetDTO { Email = "test@gmail.com" };
+        return new EmailPasswordResetDTO { Email = "test@gmail.com" };
     }
 
     // Metrics
