@@ -22,6 +22,7 @@ public interface ICourseGroupingRepository
     public Task<CourseGrouping?> GetPublishedVersion(Guid commonId);
     public Task<bool> UpdateCourseGrouping(CourseGrouping courseGrouping);
     public Task<CourseGrouping?> GetCourseGroupingByCommonIdentifierAnyState(Guid commonId);
+    public Task<IEnumerable<CourseGrouping>> GetCourseGroupingHistory(Guid commonIdentifier);
 }
 
 public class CourseGroupingRepository : ICourseGroupingRepository
@@ -153,4 +154,19 @@ public class CourseGroupingRepository : ICourseGroupingRepository
        .Include(cg => cg.CourseIdentifiers)
        .Where(cg => cg.CourseIdentifiers.Any(ci => ci.ConcordiaCourseId.Equals(course.CourseID)))
        .FirstOrDefaultAsync();
+
+    public async Task<IEnumerable<CourseGrouping>> GetCourseGroupingHistory(Guid commonIdentifier)
+    {
+        var query = from courseGrouping in _dbContext.CourseGroupings
+                    where courseGrouping.CommonIdentifier.Equals(commonIdentifier)
+                          && (courseGrouping.State == CourseGroupingStateEnum.Accepted || courseGrouping.State == CourseGroupingStateEnum.Deleted)
+                    let latestPublishedVersion = _dbContext.CourseGroupings
+                                                   .Where(cg => cg.CommonIdentifier.Equals(commonIdentifier) && cg.Published)
+                                                   .Max(cg => cg.Version)
+                    where courseGrouping.Version <= latestPublishedVersion
+                    orderby courseGrouping.Version descending
+                    select courseGrouping;
+
+        return await query.ToListAsync();
+    }
 }

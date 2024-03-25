@@ -5,14 +5,7 @@ using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
-using NetTopologySuite.Utilities;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
-using System.Linq;
-using RTools_NTS.Util;
-using System.IdentityModel.Tokens.Jwt;
-using Org.BouncyCastle.Utilities;
 
 namespace ConcordiaCurriculumManager.Services;
 public interface IDossierService
@@ -160,6 +153,7 @@ public class DossierService : IDossierService
                 var messageVotes = message.DiscussionMessageVotes.ToList();
                 messageVotes.Add(vote);
                 message.DiscussionMessageVotes = messageVotes;
+                _dossierRepository.ReattachDiscussionMessage(message);
             }
         }
 

@@ -12,6 +12,7 @@ namespace ConcordiaCurriculumManager.Repositories;
 
 public interface IDossierRepository
 {
+    public void ReattachDiscussionMessage(DiscussionMessage message);
     public Task<bool> SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task<bool> SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
     public Task<bool> SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
@@ -47,6 +48,16 @@ public class DossierRepository : IDossierRepository
     public DossierRepository(CCMDbContext dbContext)
     {
         _dbContext = dbContext;
+    }
+
+    public void ReattachDiscussionMessage(DiscussionMessage message)
+    {
+        if (_dbContext.Entry(message).State != EntityState.Detached)
+        {
+            _dbContext.Entry(message).State = EntityState.Detached;
+        }
+
+        _dbContext.Attach(message);
     }
 
     public async Task<bool> SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest)
@@ -308,7 +319,7 @@ public class DossierRepository : IDossierRepository
 
         query = query.Where(course => !course.Published);
         query2 = query2.Where(courseGrouping => !courseGrouping.Published);
-
+        
         query = query.Include(course => course.CourseCourseComponents)
             .Include(course => course.CourseCreationRequest)
             .Include(course => course.CourseModificationRequest)

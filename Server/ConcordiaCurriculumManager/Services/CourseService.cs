@@ -6,9 +6,7 @@ using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
-using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
 
@@ -34,6 +32,7 @@ public interface ICourseService
     public Task<Course> GetCourseByIdAsync(Guid id);
     public Task<IEnumerable<Course>> GetCoursesBySubjectAsync(string subjectCode);
     public Task<Course> PublishCourse(string subject, string catalog);
+    public Task<IEnumerable<Course>> GetCourseHistory(string subject, string catalog);
 }
 
 public class CourseService : ICourseService
@@ -86,10 +85,9 @@ public class CourseService : ICourseService
         return componentsList;
     }
 
-    public async Task<IEnumerable<string>> GetAllCourseSubjects()
-    {
-        return await _courseRepository.GetUniqueCourseSubjects();
-    }
+    public async Task<IEnumerable<string>> GetAllCourseSubjects() => await _courseRepository.GetUniqueCourseSubjects();
+
+    public async Task<IEnumerable<Course>> GetCourseHistory(string subject, string catalog) => await _courseRepository.GetCourseHistory(subject, catalog);
 
     public async Task<Course> GetCourseDataOrThrowOnDeleted(string subject, string catalog)
     {
