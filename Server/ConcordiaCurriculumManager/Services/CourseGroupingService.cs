@@ -30,6 +30,7 @@ public interface ICourseGroupingService
     public Task<CourseGrouping> PublishCourseGrouping(Guid commonIdentifier);
     public Task<IDictionary<Guid, int>> GetGroupingVersions(Dossier dossier);
     public Task<List<CourseGrouping?>> GetCourseGroupingsByDossierAndName(Guid dossierId, string searchQuery);
+    public Task<IEnumerable<CourseGrouping>> GetCourseGroupingHistory(Guid commonIdentifier);
 }
 
 public class CourseGroupingService : ICourseGroupingService
@@ -255,6 +256,9 @@ public class CourseGroupingService : ICourseGroupingService
 
     public async Task<bool> DeleteSubgrouping(CourseGroupingReference reference) =>
         await _courseGroupingRepository.DeleteSubgrouping(reference);
+
+    public async Task<IEnumerable<CourseGrouping>> GetCourseGroupingHistory(Guid commonIdentifier) =>
+        await _courseGroupingRepository.GetCourseGroupingHistory(commonIdentifier);
 
     public async Task<CourseGrouping> PublishCourseGrouping(Guid commonIdentifier)
     {
