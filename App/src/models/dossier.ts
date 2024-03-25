@@ -74,6 +74,14 @@ export interface DossierDiscussionMessage {
     parentDiscussionMessageId: string;
     createdDate: Date;
     modifiedDate: Date;
+    voteCount: number;
+    discussionMessageVotes: DiscussionMessageVote[];
+}
+
+export interface DiscussionMessageVote {
+    discussionMessageId: string;
+    userId: string;
+    discussionMessageVoteValue: DiscussionMessageVoteEnum;
 }
 
 export enum DossierStateEnum {
@@ -81,6 +89,12 @@ export enum DossierStateEnum {
     InReview = 1,
     Rejected = 2,
     Approved = 3,
+}
+
+export enum DiscussionMessageVoteEnum {
+    Upvote = 0,
+    Downvote = 1,
+    NoVote = 2,
 }
 
 export interface DossierReportDTO {
