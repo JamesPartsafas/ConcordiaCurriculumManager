@@ -94,4 +94,14 @@ public class UsersController : Controller
         var result = await _userService.SendResetPasswordEmail(reset);
         return Ok(result);
     }
+
+    [HttpPut(nameof(ResetPassword))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Password has been changed.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "User with the token not found.")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> ResetPassword([FromBody, Required] PasswordResetDTO password, [FromQuery, Required] Guid token)
+    {
+        var result = await _userService.ResetPassword(password, token);
+        return Ok(result);
+    }
 }
