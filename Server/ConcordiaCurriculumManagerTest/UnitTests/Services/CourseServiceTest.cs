@@ -430,7 +430,7 @@ public class CourseServiceTest
         var dossier = TestData.GetSampleDossier(user);
         var course = TestData.GetSampleCourse();
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
-        dossierService.Setup(cr => cr.GetDossierDetailsById(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
+        dossierService.Setup(cr => cr.GetDossierDetailsByIdOrThrow(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
         courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingContainingCourse(course)).ReturnsAsync(TestData.GetSampleCourseGrouping());
 
         await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);

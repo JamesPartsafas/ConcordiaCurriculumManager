@@ -106,7 +106,7 @@ public class CourseGroupingServiceTest
 
         var output = await courseGroupingService.GetCourseGroupingsLikeName(grouping.Name);
 
-        courseGroupingRepository.Verify(mock => mock.GetCourseGroupingsLikeName(It.IsAny<string>()), Times.Once());
+        courseGroupingRepository.Verify(mock => mock.GetPublishedCourseGroupingsLikeName(It.IsAny<string>()), Times.Once());
     }
 
     [TestMethod]
