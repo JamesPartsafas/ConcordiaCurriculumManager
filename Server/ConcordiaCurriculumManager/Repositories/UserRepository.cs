@@ -16,6 +16,7 @@ public interface IUserRepository
     Task<IList<User>> GetUsersByFirstName(string firstName);
     Task<IList<User>> GetUsersByLastName(string lastName);
     Task<int> SavePasswordResetToken(Guid? token, string email);
+    Task<User?> GetUserByResetPasswordToken(Guid token);
 }
 
 public class UserRepository : IUserRepository
@@ -85,4 +86,8 @@ public class UserRepository : IUserRepository
     {
         return await _dbContext.Users.Where(user => user.Email.Equals(email)).ExecuteUpdateAsync(b => b.SetProperty(user => user.ResetPasswordToken, token));
     }
+
+    public Task<User?> GetUserByResetPasswordToken(Guid token) => _dbContext.Users
+    .Where(user => user.ResetPasswordToken == token)
+    .FirstOrDefaultAsync();
 }
