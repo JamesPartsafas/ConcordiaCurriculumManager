@@ -66,7 +66,7 @@ export default function ManageableGroupsTreeStructure(props: ManageableGroupsTre
                             pathFunc="step"
                             collapsible={true}
                             translate={{ x: window.innerWidth / 2, y: window.innerHeight / 5 }}
-                            nodeSize={{ x: 120, y: 120 }}
+                            nodeSize={{ x: 150, y: 150 }}
                             separation={{ siblings: 1.5, nonSiblings: 1.5 }}
                             renderCustomNodeElement={renderNode}
                         />
