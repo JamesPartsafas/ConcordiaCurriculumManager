@@ -64,7 +64,6 @@ import { UserContext } from "../../App";
 import { UserRoles } from "../../models/user";
 import DossierHistoryModal from "./DossierHistoryModal";
 import { SignalRManager } from "../../utils/SignalRManager";
-import DossierDetails from "./DossierDetails";
 
 export default function DossierReview() {
     const { dossierId } = useParams();
