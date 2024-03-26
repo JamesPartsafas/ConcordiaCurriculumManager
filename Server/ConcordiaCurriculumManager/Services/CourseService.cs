@@ -371,7 +371,7 @@ public class CourseService : ICourseService
     private async Task VerifyCourseIsNotInCourseGroupingOrThrow(Dossier dossier, Course course)
     {
         var groupings = await _courseGroupingRepository.GetCourseGroupingsContainingCourse(course);
-        groupings = groupings?.Where(grouping => grouping.Published && !grouping.State.Equals(CourseGroupingStateEnum.Deleted)).ToList();
+        groupings = groupings?.Where(grouping => !grouping.State.Equals(CourseGroupingStateEnum.Deleted)).ToList();
 
         if (groupings is null || groupings.Count == 0)
         {
