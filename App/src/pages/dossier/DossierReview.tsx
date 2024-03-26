@@ -39,9 +39,19 @@ import {
 } from "@chakra-ui/react";
 import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
-import { AddIcon, ArrowDownIcon, ArrowLeftIcon, ArrowUpIcon, CloseIcon, CopyIcon, EditIcon } from "@chakra-ui/icons";
+import {
+    AddIcon,
+    ArrowDownIcon,
+    ArrowLeftIcon,
+    ArrowUpIcon,
+    CloseIcon,
+    CopyIcon,
+    DeleteIcon,
+    EditIcon,
+} from "@chakra-ui/icons";
 import React from "react";
 import {
+    deleteReviewMessage,
     editReviewMessage,
     forwardDossier,
     rejectDossier,
@@ -330,6 +340,17 @@ export default function DossierReview() {
         setMessage(e.currentTarget.value);
     };
 
+    const handleDeleteReviewMessage = (messageId: string) => {
+        deleteReviewMessage(dossierId, messageId)
+            .then(() => {
+                showToast(toast, "Success!", "Message successfully deleted.", "success");
+                requestDossierDetails(dossierId);
+            })
+            .catch(() => {
+                showToast(toast, "Error!", "One or more validation errors occurred", "error");
+            });
+    };
+
     const handleSubmitRequest = () => {
         setFormSubmitted(true);
         if (messageError) return;
@@ -488,6 +509,12 @@ export default function DossierReview() {
             }
         }, []);
 
+        const {
+            isOpen: isOpenDeleteMessage,
+            onOpen: onOpenDeleteMessage,
+            onClose: onCloseDeleteMessage,
+        } = useDisclosure();
+
         const toggleReplies = () => {
             setShowReplies(!showReplies);
         };
@@ -539,6 +566,55 @@ export default function DossierReview() {
                 setEditError(false);
             }
         };
+
+        function deleteMessageAlertDialog(messageId: string) {
+            return (
+                <AlertDialog
+                    isOpen={isOpenDeleteMessage}
+                    leastDestructiveRef={cancelRef}
+                    onClose={onCloseDeleteMessage}
+                >
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                                Delete Review Message
+                            </AlertDialogHeader>
+
+                            <AlertDialogBody>
+                                Are you sure you want to delete this message? You can&apos;t undo this action
+                                afterwards.
+                            </AlertDialogBody>
+
+                            <AlertDialogFooter>
+                                <Button
+                                    style="secondary"
+                                    variant="outline"
+                                    width="fit-content"
+                                    height="40px"
+                                    ref={cancelRef}
+                                    onClick={onCloseDeleteMessage}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    style="primary"
+                                    variant="solid"
+                                    width="fit-content"
+                                    height="40px"
+                                    onClick={() => {
+                                        handleDeleteReviewMessage(messageId);
+                                        onCloseDeleteMessage();
+                                    }}
+                                    ml={3}
+                                >
+                                    Delete
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
+            );
+        }
 
         const handleUpvote = () => {
             const voteValue = messageUpvoted ? DiscussionMessageVoteEnum.NoVote : DiscussionMessageVoteEnum.Upvote;
@@ -601,6 +677,15 @@ export default function DossierReview() {
                                 </Button>
                             ) : null}
 
+                            {user.id == message.author.id ? (
+                                <Button onClick={() => onOpenDeleteMessage()} marginTop={2} marginLeft={5}>
+                                    <DeleteIcon marginRight={5} />
+                                    Delete
+                                </Button>
+                            ) : null}
+
+                            {deleteMessageAlertDialog(message.id)}
+
                             {showReplyInput && (
                                 <Box marginTop={4}>
                                     <FormControl isInvalid={replyError && replySubmitted}>
@@ -650,15 +735,110 @@ export default function DossierReview() {
                 {showReplies &&
                     messages
                         .filter((m) => m.parentDiscussionMessageId === message.id)
-                        .map((childMessage) => (
-                            <Message
-                                key={childMessage.id}
-                                message={childMessage}
-                                messages={messages}
-                                group={group}
-                                depth={depth + 1}
-                            />
-                        ))}
+                        .map((childMessage) =>
+                            childMessage.isDeleted ? (
+                                <MessageDeleted
+                                    key={childMessage.id}
+                                    message={childMessage}
+                                    messages={messages}
+                                    group={group}
+                                    depth={depth + 1}
+                                />
+                            ) : (
+                                <Message
+                                    key={childMessage.id}
+                                    message={childMessage}
+                                    messages={messages}
+                                    group={group}
+                                    depth={depth + 1}
+                                />
+                            )
+                        )}
+                {messages.some((m) => m.parentDiscussionMessageId === message.id) && (
+                    <Text
+                        marginLeft={2}
+                        marginBottom={2}
+                        color="blue.500"
+                        textDecoration="underline"
+                        cursor="pointer"
+                        onClick={toggleReplies}
+                    >
+                        {showReplies ? <Icon as={CloseIcon} mr={1} /> : <Icon as={AddIcon} mr={1} />}
+                        {showReplies ? "Close replies" : "See replies"}
+                    </Text>
+                )}
+            </div>
+        );
+    };
+
+    const MessageDeleted = ({
+        message,
+        messages,
+        group,
+        depth,
+    }: {
+        message: DossierDiscussionMessage;
+        messages: DossierDiscussionMessage[];
+        group: ApprovalStage;
+        depth: number;
+    }) => {
+        const marginLeft = `${depth * 20}px`;
+        const colorDepth = `gray.${Math.min(depth * 100 + 100, 500)}`;
+
+        const [showReplies, setShowReplies] = useState(false);
+
+        const toggleReplies = () => {
+            setShowReplies(!showReplies);
+        };
+
+        return (
+            <div style={{ marginLeft: marginLeft }}>
+                <CardBody key={group.groupId}>
+                    <Box bg={colorDepth} p={2}>
+                        <Text fontWeight="bold">
+                            {message.author.firstName} {message.author.lastName}
+                            <br />
+                            {group.group.name}
+                        </Text>
+                        <Text>
+                            {message.createdDate.toString().substring(0, 10)}{" "}
+                            {new Date(message.createdDate).getHours().toString()}:
+                            {new Date(message.createdDate).getMinutes().toString()}:
+                            {new Date(message.createdDate).getSeconds().toString()}
+                        </Text>
+                        <Text>
+                            Deleted: {message.modifiedDate.toString().substring(0, 10)}{" "}
+                            {new Date(message.modifiedDate).getHours().toString()}:
+                            {new Date(message.modifiedDate).getMinutes().toString()}:
+                            {new Date(message.modifiedDate).getSeconds().toString()}]
+                        </Text>
+                        <Text mt={2}>[This message has been deleted.]</Text>
+
+                        <Flex alignItems="center"></Flex>
+                    </Box>
+                </CardBody>
+                {showReplies &&
+                    messages
+                        .filter((m) => m.parentDiscussionMessageId === message.id)
+                        .map((childMessage) =>
+                            childMessage.isDeleted ? (
+                                <MessageDeleted
+                                    key={childMessage.id}
+                                    message={childMessage}
+                                    messages={messages}
+                                    group={group}
+                                    depth={depth + 1}
+                                />
+                            ) : (
+                                <Message
+                                    key={childMessage.id}
+                                    message={childMessage}
+                                    messages={messages}
+                                    group={group}
+                                    depth={depth + 1}
+                                />
+                            )
+                        )}
                 {messages.some((m) => m.parentDiscussionMessageId === message.id) && (
                     <Text
                         marginLeft={2}
@@ -688,15 +868,25 @@ export default function DossierReview() {
                         <Card key={message.id}>
                             {dossierDetails?.approvalStages
                                 .filter((stage) => message.groupId == stage.groupId)
-                                .map((filteredGroup) => (
-                                    <Message
-                                        key={message.id}
-                                        message={message}
-                                        messages={allMessages}
-                                        group={filteredGroup}
-                                        depth={0}
-                                    />
-                                ))}
+                                .map((filteredGroup) =>
+                                    message.isDeleted ? (
+                                        <MessageDeleted
+                                            key={message.id}
+                                            message={message}
+                                            messages={allMessages}
+                                            group={filteredGroup}
+                                            depth={0}
+                                        />
+                                    ) : (
+                                        <Message
+                                            key={message.id}
+                                            message={message}
+                                            messages={allMessages}
+                                            group={filteredGroup}
+                                            depth={0}
+                                        />
+                                    )
+                                )}
                         </Card>
                     ))}
             </div>
@@ -958,17 +1148,29 @@ export default function DossierReview() {
                                                                             new Date(a.createdDate).getTime() -
                                                                             new Date(b.createdDate).getTime()
                                                                     )
-                                                                    .map((filteredMessage) => (
-                                                                        <Message
-                                                                            key={filteredMessage.id}
-                                                                            message={filteredMessage}
-                                                                            group={stage}
-                                                                            messages={
-                                                                                dossierDetails?.discussion.messages
-                                                                            }
-                                                                            depth={0}
-                                                                        />
-                                                                    ))}
+                                                                    .map((filteredMessage) =>
+                                                                        filteredMessage.isDeleted ? (
+                                                                            <MessageDeleted
+                                                                                key={filteredMessage.id}
+                                                                                message={filteredMessage}
+                                                                                group={stage}
+                                                                                messages={
+                                                                                    dossierDetails?.discussion.messages
+                                                                                }
+                                                                                depth={0}
+                                                                            />
+                                                                        ) : (
+                                                                            <Message
+                                                                                key={filteredMessage.id}
+                                                                                message={filteredMessage}
+                                                                                group={stage}
+                                                                                messages={
+                                                                                    dossierDetails?.discussion.messages
+                                                                                }
+                                                                                depth={0}
+                                                                            />
+                                                                        )
+                                                                    )}
                                                             </Card>
                                                         </TabPanel>
                                                     ))}

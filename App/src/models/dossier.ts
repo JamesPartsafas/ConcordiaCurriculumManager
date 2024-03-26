@@ -76,6 +76,7 @@ export interface DossierDiscussionMessage {
     modifiedDate: Date;
     voteCount: number;
     discussionMessageVotes: DiscussionMessageVote[];
+    isDeleted: boolean;
 }
 
 export interface DiscussionMessageVote {

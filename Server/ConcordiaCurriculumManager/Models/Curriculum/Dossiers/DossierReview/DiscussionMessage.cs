@@ -35,5 +35,6 @@ public class DiscussionMessage : BaseModel
             throw new BadRequestException("You must be the user who posted the message to delete it");
 
         IsDeleted = true;
+        ModifiedDate = DateTime.UtcNow;
     }
 }
