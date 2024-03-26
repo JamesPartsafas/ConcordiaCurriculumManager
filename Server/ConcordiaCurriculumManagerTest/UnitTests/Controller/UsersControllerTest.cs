@@ -135,4 +135,44 @@ public class UsersControllerTest
 
         Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
     }
+
+    [TestMethod]
+    public async Task ResetPassword_Succeeds()
+    {
+        var newPassword = TestData.GetSamplePasswordResetDTO();
+        var token = Guid.NewGuid();
+        userService.Setup(service => service.ResetPassword(newPassword, token)).ReturnsAsync(true);
+
+        var actionResult = await usersController.ResetPassword(newPassword, token);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.OK, objectResult.StatusCode);
+        userService.Verify(service => service.ResetPassword(newPassword, token), Times.Once);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task ResetPassword_InvalidCall_ThrowsNotFoundException()
+    {
+        var newPassword = TestData.GetSamplePasswordResetDTO();
+        var token = Guid.NewGuid();
+        userService.Setup(service => service.ResetPassword(newPassword, token)).Throws(new NotFoundException());
+
+        await usersController.ResetPassword(newPassword, token);
+        userService.Verify(service => service.ResetPassword(newPassword, token), Times.Once);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(BadRequestException))]
+    public async Task ResetPassword_ServerError_Throws()
+    {
+        var newPassword = TestData.GetSamplePasswordResetDTO();
+        var token = Guid.NewGuid();
+        userService.Setup(service => service.ResetPassword(newPassword, token)).Throws(new BadRequestException());
+
+        var actionResult = await usersController.ResetPassword(newPassword, token);
+        var objectResult = (ObjectResult)actionResult;
+
+        Assert.AreEqual((int)HttpStatusCode.InternalServerError, objectResult.StatusCode);
+    }
 }
