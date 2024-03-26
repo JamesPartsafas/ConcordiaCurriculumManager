@@ -1,6 +1,7 @@
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
+using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Services;
@@ -429,9 +430,12 @@ public class CourseServiceTest
         var user = TestData.GetSampleUser();
         var dossier = TestData.GetSampleDossier(user);
         var course = TestData.GetSampleCourse();
+        var courseGroup = TestData.GetSampleCourseGrouping();
+        courseGroup.Published = true;
+
         courseRepository.Setup(cr => cr.GetCourseBySubjectAndCatalog(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(course);
         dossierService.Setup(cr => cr.GetDossierDetailsByIdOrThrow(It.IsAny<Guid>())).ReturnsAsync(TestData.GetSampleDossier(user));
-        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingContainingCourse(course)).ReturnsAsync(TestData.GetSampleCourseGrouping());
+        courseGroupingRepository.Setup(cgr => cgr.GetCourseGroupingsContainingCourse(course)).ReturnsAsync(new List<CourseGrouping> { courseGroup });
 
         await courseService.InitiateCourseDeletion(TestData.GetSampleCourseCreationDeletionDTO(course, dossier), user.Id);
     }
