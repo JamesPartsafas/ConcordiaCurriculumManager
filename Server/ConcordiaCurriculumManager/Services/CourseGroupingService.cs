@@ -104,6 +104,8 @@ public class CourseGroupingService : ICourseGroupingService
             }
             grouping.SubGroupings.Add(subGrouping);
         }
+
+        grouping.SubGroupings = grouping.SubGroupings.GroupBy(x => x.CommonIdentifier).Select(x => x.First()).ToList();
     }
 
     private async Task<IList<Course>> GetCoursesFromIdentifiers(ICollection<CourseIdentifier> identifiers)
