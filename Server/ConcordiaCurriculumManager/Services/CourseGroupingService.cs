@@ -82,7 +82,7 @@ public class CourseGroupingService : ICourseGroupingService
             throw new InvalidInputException("The course grouping name cannot be empty.");
         }
 
-        return await _courseGroupingRepository.GetPublishedCourseGroupingsLikeName(name);
+        return await _courseGroupingRepository.GetCourseGroupingsLikeName(name);
     }
 
     public async Task QueryRelatedCourseGroupingData(CourseGrouping grouping, bool recursiveSearch = true)

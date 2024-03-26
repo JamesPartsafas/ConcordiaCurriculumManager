@@ -370,28 +370,32 @@ public class CourseService : ICourseService
 
     private async Task VerifyCourseIsNotInCourseGroupingOrThrow(Dossier dossier, Course course)
     {
-        var grouping = await _courseGroupingRepository.GetCourseGroupingContainingCourse(course);
+        var groupings = await _courseGroupingRepository.GetCourseGroupingsContainingCourse(course);
+        groupings = groupings?.Where(grouping => grouping.Published && !grouping.State.Equals(CourseGroupingStateEnum.Deleted)).ToList();
 
-        if (grouping is null)
+        if (groupings is null || groupings.Count == 0)
         {
             return;
         }
 
-        var courseGroupingChanged = dossier.CourseGroupingRequests.FirstOrDefault(request => request.CourseGrouping?.CommonIdentifier.Equals(grouping.CommonIdentifier) ?? false)
+        foreach (var grouping in groupings)
+        {
+            var courseGroupingChanged = dossier.CourseGroupingRequests.FirstOrDefault(request => request.CourseGrouping?.CommonIdentifier.Equals(grouping.CommonIdentifier) ?? false)
                                     ?? throw new BadRequestException($"A deletion request cannot be made for {course.Subject} {course.Catalog} as it is part of the {grouping.Name} course grouping. To delete this course, modify the course grouping first.");
 
-        if (courseGroupingChanged.RequestType.Equals(RequestType.DeletionRequest))
-        {
-            return;
-        }
+            if (courseGroupingChanged.RequestType.Equals(RequestType.DeletionRequest))
+            {
+                continue;
+            }
 
-        var courseExist = courseGroupingChanged.CourseGrouping?.CourseIdentifiers.Any(identifier => identifier.Equals(course.CourseID));
-        if (courseExist is null || courseExist == false)
-        {
-            return;
-        }
+            var courseExist = courseGroupingChanged.CourseGrouping?.CourseIdentifiers.Any(identifier => identifier.Equals(course.CourseID));
+            if (courseExist is null || courseExist == false)
+            {
+                continue;
+            }
 
-        throw new BadRequestException($"A deletion request cannot be made for {course.Subject} {course.Catalog} as it is part of the {grouping.Name} course grouping. To delete this course, modify the course grouping first.");
+            throw new BadRequestException($"A deletion request cannot be made for {course.Subject} {course.Catalog} as it is part of the {grouping.Name} course grouping. To delete this course, modify the course grouping first.");
+        }
     }
 
     public async Task<Course> GetCourseByIdAsync(Guid id)
