@@ -29,7 +29,7 @@ export default function DossiersToReview() {
         console.log(selectedDossier);
     }, []);
 
-    function getAllDossiersRequired() {
+    async function getAllDossiersRequired() {
         getDossierRequiredReview()
             .then(
                 (res: GetMyDossiersResponse) => {
