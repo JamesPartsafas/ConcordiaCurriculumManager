@@ -1,0 +1,373 @@
+
+"Data": [
+    {
+        "Id": "fc06ea68-7ce0-4811-92ed-117fd1b2f111",
+        "CommonIdentifier": "ce387724-66e1-47e2-a375-7536de4556fe",
+        "Name": "BEng in Software Engineering",
+        "RequiredCredits": "120",
+        "IsTopLevel": true,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [
+			{	
+                "Id": "3d4c97c0-1e49-434a-919a-a86e90768e25",
+                "ChildGroupCommonIdentifier": "048625ec-3bfa-40c2-be0f-02fc0324bdac",
+                "GroupingType": 0
+            },
+            {
+                "Id": "d540b404-c05e-4a59-a2be-842a5cef673d",
+                "ChildGroupCommonIdentifier": "457c5588-c5e7-4b09-9414-750b40b38d76",
+                "GroupingType": 0
+            },
+            {
+                "Id": "8eee9eef-d42f-404f-bcab-6015ca017508",
+                "ChildGroupCommonIdentifier": "ec25ba07-1f5f-4165-accc-d0b23056901c",
+                "GroupingType": 0
+            },
+            {
+                "Id": "847ba1d1-3cb7-4c10-916e-6e4a7bb939e1",
+                "ChildGroupCommonIdentifier": "ab1ec313-c899-4cd2-8e13-4f86cfc71154",
+                "GroupingType": 0
+            },
+            {
+                "Id": "5b8513b5-a93d-4760-a8df-59d5103f5a26",
+                "ChildGroupCommonIdentifier": "0348fa1e-763c-4345-adfd-e30698951d2b",
+                "GroupingType": 0
+            }
+        ],
+        "CourseGroupingCourseIdentifier": []
+    },
+    {
+        "Id": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+        "CommonIdentifier": "457c5588-c5e7-4b09-9414-750b40b38d76",
+        "Name": "Software Engineering Core",
+        "RequiredCredits": "47.5",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "5b7a0541-74cb-444f-b129-b3aada88ef5e"
+            },
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "8c2d6a53-1816-42f1-8fd9-5bc192c24f62"
+            },
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "ca6c37fe-b6ab-469a-ae01-aee5c01e1466"
+            },
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "4d63cfd9-e897-4ed2-b9d4-ac1995d47f56"
+            },
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "b7c7c95d-6c3e-4f97-9c9f-00aa82ffca9d"
+            },
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "886dc3ab-e575-445b-9776-ab7d6490bd42"
+            },
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "4b59539d-20bf-4e62-9bed-4712fcc9b550"
+            },
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "a3739990-cd92-4ed2-8da6-de66b304ed0f"
+            },
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "7d7c58c6-be7b-41ad-8fcb-57b1b5646dbe"
+            },
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "87515b83-4a42-4d90-a99c-009f5fb32b16"
+            },
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "30a5957a-74db-47c1-bdc6-60c20a79d33f"
+            },
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "f70c85bc-c82e-41c0-892f-907cf28934ef"
+            },
+            {
+                "CourseGroupingId": "10a7094d-2560-4a7d-8b89-abd0f865aae9",
+                "CourseIdentifiersId": "9519e39c-a615-41bc-afa0-0c49de4e9af7"
+            }
+        ]
+    },
+    {
+        "Id": "da6725e2-2583-498c-9239-c669ef4d53e8",
+        "CommonIdentifier": "ec25ba07-1f5f-4165-accc-d0b23056901c",
+        "Name": "Computer Science Group: Software Engineering",
+        "RequiredCredits": "23",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "da6725e2-2583-498c-9239-c669ef4d53e8",
+                "CourseIdentifiersId": "80a91b95-76e7-4fa4-b9f0-db4797358d22"
+            },
+            {
+                "CourseGroupingId": "da6725e2-2583-498c-9239-c669ef4d53e8",
+                "CourseIdentifiersId": "6c4b658f-a15f-42a7-a849-f7b6286c572c"
+            },
+            {
+                "CourseGroupingId": "da6725e2-2583-498c-9239-c669ef4d53e8",
+                "CourseIdentifiersId": "4f666950-f5ee-4355-9594-21e01a1e5205"
+            },
+            {
+                "CourseGroupingId": "da6725e2-2583-498c-9239-c669ef4d53e8",
+                "CourseIdentifiersId": "cee19a35-e413-4163-be3b-f6d56bf32130"
+            },
+            {
+                "CourseGroupingId": "da6725e2-2583-498c-9239-c669ef4d53e8",
+                "CourseIdentifiersId": "975d21af-d6ee-448d-8553-b9676baafe42"
+            },
+            {
+                "CourseGroupingId": "da6725e2-2583-498c-9239-c669ef4d53e8",
+                "CourseIdentifiersId": "82ee8094-dbfc-487c-8c43-b268e08b8a54"
+            },
+            {
+                "CourseGroupingId": "da6725e2-2583-498c-9239-c669ef4d53e8",
+                "CourseIdentifiersId": "74af95e9-7e1d-484b-837c-b811280556a2"
+            }
+        ]
+    },
+    {
+        "Id": "00d8f047-0240-4d4d-a7dc-df2459365a3e",
+        "CommonIdentifier": "ab1ec313-c899-4cd2-8e13-4f86cfc71154",
+        "Name": "Engineering and Natural Science Group: Software Engineering",
+        "RequiredCredits": "3",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "00d8f047-0240-4d4d-a7dc-df2459365a3e",
+                "CourseIdentifiersId": "e7786719-d5e0-4006-9653-aab11a76bd55"
+            },
+            {
+                "CourseGroupingId": "00d8f047-0240-4d4d-a7dc-df2459365a3e",
+                "CourseIdentifiersId": "b7b65490-826f-4dcf-a3d8-caeffd0e4edb"
+            }
+        ]
+    },
+    {
+        "Id": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+        "CommonIdentifier": "0348fa1e-763c-4345-adfd-e30698951d2b",
+        "Name": "Software Engineering Electives",
+        "RequiredCredits": "16",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "f5fc6cb3-beee-4307-b3ca-32a810116133"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "845c788d-1b95-4f42-9650-73e03da587a8"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "74141479-3707-4f6a-9b11-7df30f95caf7"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "b0823cb5-8950-4479-94be-aceb7e6132ac"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "07d1fcc0-9b26-4f5b-978b-21d27a3c182b"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "67dcb87b-78b4-4079-ba3d-b5bc5c9a4fad"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "c15c06a7-6827-4484-bb40-d4ee0a3889aa"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "fb92f57f-4fdd-4a92-8b0b-cc2ee183bbe0"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "1b6a9f84-51b2-41bd-a41b-10b2ca00a630"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "f02f5d73-f3dc-4b06-a716-ba960adf4153"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "dc5b1eda-7cf9-42dd-b6f6-449dbe03f37e"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "4df1c8f6-53d2-45ec-be1b-6fdffb1ed0d1"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "a5520ec1-c000-4bdb-8ffb-645ea48949d2"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "d93cccd0-62f3-4335-9527-70eabefcdd74"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "37c3edfb-ec62-4e59-8517-266d97b3223f"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "ae7b21ad-9089-40e1-87ec-8a45dfae6278"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "bf638597-267a-4366-8629-4d6a9d4166a5"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "297407ad-167b-4d9f-a08b-3b3d97cdc596"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "cb298742-8924-4828-a04f-ceb2ea19d5df"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "d9820cf5-cae6-467f-b396-49ba98fd87cf"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "97828367-abef-4eba-a573-6d9eb7281f67"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "c647c6fa-584d-4711-8016-6b59fb725af1"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "36681b27-dd8b-4059-b1ac-85bec9c99582"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "77605ef3-18e4-4d2d-a042-2796e20fe50b"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "b90273a1-ea4b-4ae8-9368-5e2aa6186859"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "c673eece-71b4-4dd4-bdf9-ff9c60cbcd99"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "b118fc3f-d6bd-4874-8065-43382bc8b7a3"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "057e3a7c-0907-4440-bbf6-34827d5cd8ea"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "49c8a4c0-ab43-42f1-acb9-5f6fb355ae82"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "2ebac821-97fc-4102-b01c-9bbeaa146dc2"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "12d33dc3-34d5-4917-9ae5-345648283861"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "8be69d47-f3e5-446a-a20d-0e6ff93904e7"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "579bc4f9-bfc5-4188-9f41-601033cbd383"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "7931dd2b-180b-4f33-95d0-740d5a3aa47f"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "700bfa3c-33a8-42e2-ad1a-baf738add304"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "787ef997-5e28-4d64-96c8-8f58f638ceb7"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "38b4d1fc-76fe-4959-b34f-19935a626abc"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "222324ea-9fcb-45ee-b239-0ac191781517"
+            },
+            {
+                "CourseGroupingId": "e647e20e-1ff7-48c8-a5ee-e337b99908a6",
+                "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+            }
+        ]
+    },
+	{
+		"Id": "d6853bb3-983a-45b8-8695-4cf27a22b2af",
+		"CommonIdentifier": "048625ec-3bfa-40c2-be0f-02fc0324bdac",
+		"Name": "Engineering Core for Software Engineering",
+		"RequiredCredits": "30.5",
+		"IsTopLevel": false,
+		"School": 0,
+		"Description": "",
+		"Notes": "",
+		"State": 0,
+		"Version": 1,
+		"Published": true,
+		"CourseGroupingReferences": [
+			{
+				"Id": "156a98f9-815a-4cf6-a0be-248e577bb919",
+				"ChildGroupCommonIdentifier": "86072b4b-c98e-458b-8f8e-230eca367fe3",
+				"GroupingType": 0
+			}
+		],
+		"CourseGroupingCourseIdentifier": []
+	}
+]

@@ -1,0 +1,522 @@
+
+"Data": [
+    {
+        "Id": "be9a4cf0-7582-4983-be2c-536ed92ec133",
+        "CommonIdentifier": "f9877074-1232-4fe8-a62c-38218446b717",
+        "Name": "BEng in Computer Engineering",
+        "RequiredCredits": "120",
+        "IsTopLevel": true,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [
+			{
+                "Id": "5e7cc68e-30c3-4f5a-a33f-27d0540b2f36",
+                "ChildGroupCommonIdentifier": "399b89fe-f98f-4ab7-a6db-1683e2909390",
+                "GroupingType": 0
+            },
+            {
+                "Id": "62606ce2-c536-4f90-a5a6-161ec128d9f6",
+                "ChildGroupCommonIdentifier": "4a9b7742-f274-47a2-acae-2a98192855d8",
+                "GroupingType": 0
+            },
+            {
+                "Id": "88ec2389-6513-4c57-b6fd-74fbde80ad5d",
+                "ChildGroupCommonIdentifier": "9b15b125-db15-48d4-aab0-66b29721d847",
+                "GroupingType": 0
+            }
+        ],
+        "CourseGroupingCourseIdentifier": []
+    },
+    {
+        "Id": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+        "CommonIdentifier": "4a9b7742-f274-47a2-acae-2a98192855d8",
+        "Name": "Computer Engineering Core",
+        "RequiredCredits": "69.5",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "d672f323-0be9-414e-9b0b-cfcf104e487d"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "064e56ad-930c-4369-9152-56f5101376e1"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "559c2d94-55d9-40a9-bb69-9c3dffe61f57"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "8799456a-4a61-4fc8-83f5-9d80bb1eb358"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "6752ddde-c183-4aea-9816-6b5f04da15f6"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "39367a01-aa9e-4e36-bd37-f01fe4244e88"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "e8735ee7-ec49-4115-ab09-1fdaed4f57a9"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "1c52872f-89b8-4700-8f0e-785b6b14dc37"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "1df29602-ffb4-4a82-98a4-db2cb10d838f"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "74141479-3707-4f6a-9b11-7df30f95caf7"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "4424a19a-a652-42a1-9deb-720f4f6a6516"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "a1b6a9d7-811a-49fd-a912-554b90d006f4"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "70a1759a-1b7a-4214-9c89-008a9ca23fc6"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "048741ca-8744-4dea-b38e-5ee953ca0a9b"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "73d314ab-d435-4e69-bba3-0e1a20738182"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "d882c80d-c501-438e-9e35-b7ae85cffc66"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "df5b2cdb-7b7d-4466-81bc-6e8cd34cb9f6"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "09205c9a-2113-43e3-9f4c-d79f9a9ebd8f"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "f6fa0a9c-e220-41b1-bd6c-18e53104fe47"
+            },
+            {
+                "CourseGroupingId": "7d2534d4-3ac3-42a1-9de4-5a7da76c3120",
+                "CourseIdentifiersId": "b7c7c95d-6c3e-4f97-9c9f-00aa82ffca9d"
+            }
+        ]
+    },
+    {
+        "Id": "631a73c7-3a9c-4f68-8a94-8ed1beffb9ef",
+        "CommonIdentifier": "9b15b125-db15-48d4-aab0-66b29721d847",
+        "Name": "Computer Engineering Electives",
+        "RequiredCredits": "20",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [
+			{
+                "Id": "31085d8b-4209-486b-bdef-7148a5c4a61d",
+                "ChildGroupCommonIdentifier": "e1a9ac55-3724-4bfa-90db-06c4cb645ffb",
+                "GroupingType": 0
+            },
+            {
+                "Id": "6f313dda-b13c-43be-a48c-c8c0a261d63e",
+                "ChildGroupCommonIdentifier": "d306f3ac-a251-4eda-a7fe-bdb2e89a4396",
+                "GroupingType": 0
+            },
+            {
+                "Id": "b20bfac0-7122-45c2-9e59-746337e92f56",
+                "ChildGroupCommonIdentifier": "6e76e2fc-80a6-4da1-a369-dcff6b09415c",
+                "GroupingType": 0
+            },
+            {
+                "Id": "dee5547d-0ef6-49ea-8c73-e6a58687ad35",
+                "ChildGroupCommonIdentifier": "7a282555-48d6-4b2d-bae8-783f2e3d8674",
+                "GroupingType": 0
+            },
+            {
+                "Id": "313806b7-06b6-44ae-8701-acb33591b9fa",
+                "ChildGroupCommonIdentifier": "f470ff9e-8cd2-43b0-a060-e2a1c6e5a09e",
+                "GroupingType": 0
+            },
+            {
+                "Id": "8bd3d545-cef6-4fb7-a936-6d80c1c4b9ca",
+                "ChildGroupCommonIdentifier": "284ea69f-931b-466d-b497-632ab9370853",
+                "GroupingType": 0
+            },
+            {
+                "Id": "785ee757-4d0b-4a1e-b61b-21e39738fc11",
+                "ChildGroupCommonIdentifier": "075fb09d-ca1d-4c52-b230-d70f64a647d8",
+                "GroupingType": 0
+            }
+		],
+        "CourseGroupingCourseIdentifier": []
+    },
+    {
+        "Id": "b5ff84d4-ee4c-48e7-b0dd-a0a58173dc8f",
+        "CommonIdentifier": "e1a9ac55-3724-4bfa-90db-06c4cb645ffb",
+        "Name": "Hardware/Electronics/VLSI Electives: Computer Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "b5ff84d4-ee4c-48e7-b0dd-a0a58173dc8f",
+                "CourseIdentifiersId": "51952803-321c-4e7f-97de-047c0a620ad6"
+            },
+            {
+                "CourseGroupingId": "b5ff84d4-ee4c-48e7-b0dd-a0a58173dc8f",
+                "CourseIdentifiersId": "ab08ef62-8610-457f-8ecc-4f672f5eba27"
+            },
+            {
+                "CourseGroupingId": "b5ff84d4-ee4c-48e7-b0dd-a0a58173dc8f",
+                "CourseIdentifiersId": "766dc9c1-4f42-4125-a421-346434a006e1"
+            },
+            {
+                "CourseGroupingId": "b5ff84d4-ee4c-48e7-b0dd-a0a58173dc8f",
+                "CourseIdentifiersId": "e2a2bd4f-96b3-48f6-b551-e1f3e49c9bc4"
+            },
+            {
+                "CourseGroupingId": "b5ff84d4-ee4c-48e7-b0dd-a0a58173dc8f",
+                "CourseIdentifiersId": "3f81174d-4323-4f6a-857e-a188b0fe1dfa"
+            },
+            {
+                "CourseGroupingId": "b5ff84d4-ee4c-48e7-b0dd-a0a58173dc8f",
+                "CourseIdentifiersId": "c7dd57b1-6b96-4fa3-9ecd-9e66309f975f"
+            },
+            {
+                "CourseGroupingId": "b5ff84d4-ee4c-48e7-b0dd-a0a58173dc8f",
+                "CourseIdentifiersId": "d245463d-79ab-4760-896e-d9d9bf5b48fe"
+            },
+            {
+                "CourseGroupingId": "b5ff84d4-ee4c-48e7-b0dd-a0a58173dc8f",
+                "CourseIdentifiersId": "61bef8a1-13b5-4a5d-957c-06ddfb6d92a5"
+            }
+        ]
+    },
+    {
+        "Id": "5c3766a9-f260-4cd9-9e16-df631ff32aaa",
+        "CommonIdentifier": "d306f3ac-a251-4eda-a7fe-bdb2e89a4396",
+        "Name": "Software and System Design Electives: Computer Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "5c3766a9-f260-4cd9-9e16-df631ff32aaa",
+                "CourseIdentifiersId": "8342ee2f-e51d-417a-8f2b-a4485ed1ed13"
+            },
+            {
+                "CourseGroupingId": "5c3766a9-f260-4cd9-9e16-df631ff32aaa",
+                "CourseIdentifiersId": "db5e412d-e364-497e-aa44-86ccd97f622c"
+            },
+            {
+                "CourseGroupingId": "5c3766a9-f260-4cd9-9e16-df631ff32aaa",
+                "CourseIdentifiersId": "83988f4f-18fc-453a-9a71-9fbbff553a65"
+            },
+            {
+                "CourseGroupingId": "5c3766a9-f260-4cd9-9e16-df631ff32aaa",
+                "CourseIdentifiersId": "ca495315-4c1f-41e1-96cc-7f5a7e32f416"
+            },
+            {
+                "CourseGroupingId": "5c3766a9-f260-4cd9-9e16-df631ff32aaa",
+                "CourseIdentifiersId": "ca6c37fe-b6ab-469a-ae01-aee5c01e1466"
+            },
+            {
+                "CourseGroupingId": "5c3766a9-f260-4cd9-9e16-df631ff32aaa",
+                "CourseIdentifiersId": "886dc3ab-e575-445b-9776-ab7d6490bd42"
+            },
+            {
+                "CourseGroupingId": "5c3766a9-f260-4cd9-9e16-df631ff32aaa",
+                "CourseIdentifiersId": "4b59539d-20bf-4e62-9bed-4712fcc9b550"
+            },
+            {
+                "CourseGroupingId": "5c3766a9-f260-4cd9-9e16-df631ff32aaa",
+                "CourseIdentifiersId": "2ebac821-97fc-4102-b01c-9bbeaa146dc2"
+            },
+            {
+                "CourseGroupingId": "5c3766a9-f260-4cd9-9e16-df631ff32aaa",
+                "CourseIdentifiersId": "7d7c58c6-be7b-41ad-8fcb-57b1b5646dbe"
+            }
+        ]
+    },
+    {
+        "Id": "380f8f21-e55d-4d8a-a0ad-0868669eaff3",
+        "CommonIdentifier": "6e76e2fc-80a6-4da1-a369-dcff6b09415c",
+        "Name": "Biological and Biomedical Engineering Electives: Computer Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "380f8f21-e55d-4d8a-a0ad-0868669eaff3",
+                "CourseIdentifiersId": "83988f4f-18fc-453a-9a71-9fbbff553a65"
+            },
+            {
+                "CourseGroupingId": "380f8f21-e55d-4d8a-a0ad-0868669eaff3",
+                "CourseIdentifiersId": "7a4db4bf-0c56-4f75-b36f-5dafb4cc2d31"
+            },
+            {
+                "CourseGroupingId": "380f8f21-e55d-4d8a-a0ad-0868669eaff3",
+                "CourseIdentifiersId": "2c3ddab2-f3b7-4a67-b78b-70ff6258adda"
+            },
+            {
+                "CourseGroupingId": "380f8f21-e55d-4d8a-a0ad-0868669eaff3",
+                "CourseIdentifiersId": "4013ccb7-d71b-42e1-bd6b-2569175a6f8d"
+            },
+            {
+                "CourseGroupingId": "380f8f21-e55d-4d8a-a0ad-0868669eaff3",
+                "CourseIdentifiersId": "1d527270-219e-4ceb-96cd-d5a21a869194"
+            }
+        ]
+    },
+    {
+        "Id": "874ac2e9-7f37-4aa9-8429-a44d346ec3d2",
+        "CommonIdentifier": "7a282555-48d6-4b2d-bae8-783f2e3d8674",
+        "Name": "Computer Science and Programming Electives: Computer Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "874ac2e9-7f37-4aa9-8429-a44d346ec3d2",
+                "CourseIdentifiersId": "f0cd8e96-98c8-4dcb-be3e-06fcef06a7dc"
+            },
+            {
+                "CourseGroupingId": "874ac2e9-7f37-4aa9-8429-a44d346ec3d2",
+                "CourseIdentifiersId": "83988f4f-18fc-453a-9a71-9fbbff553a65"
+            },
+            {
+                "CourseGroupingId": "874ac2e9-7f37-4aa9-8429-a44d346ec3d2",
+                "CourseIdentifiersId": "cee19a35-e413-4163-be3b-f6d56bf32130"
+            },
+            {
+                "CourseGroupingId": "874ac2e9-7f37-4aa9-8429-a44d346ec3d2",
+                "CourseIdentifiersId": "ac2522f7-9fbb-4c1e-8358-b6e55e5e93b9"
+            },
+            {
+                "CourseGroupingId": "874ac2e9-7f37-4aa9-8429-a44d346ec3d2",
+                "CourseIdentifiersId": "c15c06a7-6827-4484-bb40-d4ee0a3889aa"
+            },
+            {
+                "CourseGroupingId": "874ac2e9-7f37-4aa9-8429-a44d346ec3d2",
+                "CourseIdentifiersId": "f02f5d73-f3dc-4b06-a716-ba960adf4153"
+            },
+            {
+                "CourseGroupingId": "874ac2e9-7f37-4aa9-8429-a44d346ec3d2",
+                "CourseIdentifiersId": "dc5b1eda-7cf9-42dd-b6f6-449dbe03f37e"
+            },
+            {
+                "CourseGroupingId": "874ac2e9-7f37-4aa9-8429-a44d346ec3d2",
+                "CourseIdentifiersId": "37c3edfb-ec62-4e59-8517-266d97b3223f"
+            },
+            {
+                "CourseGroupingId": "874ac2e9-7f37-4aa9-8429-a44d346ec3d2",
+                "CourseIdentifiersId": "bf638597-267a-4366-8629-4d6a9d4166a5"
+            },
+            {
+                "CourseGroupingId": "874ac2e9-7f37-4aa9-8429-a44d346ec3d2",
+                "CourseIdentifiersId": "cb298742-8924-4828-a04f-ceb2ea19d5df"
+            },
+            {
+                "CourseGroupingId": "874ac2e9-7f37-4aa9-8429-a44d346ec3d2",
+                "CourseIdentifiersId": "97828367-abef-4eba-a573-6d9eb7281f67"
+            }
+        ]
+    },
+    {
+        "Id": "b3d04959-a373-42ac-b6e8-88dd90ef4755",
+        "CommonIdentifier": "f470ff9e-8cd2-43b0-a060-e2a1c6e5a09e",
+        "Name": "Telecommunication Networks and Signal Processing Electives: Computer Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "b3d04959-a373-42ac-b6e8-88dd90ef4755",
+                "CourseIdentifiersId": "ca50a25d-12ac-438d-b052-2a522aa57f30"
+            },
+            {
+                "CourseGroupingId": "b3d04959-a373-42ac-b6e8-88dd90ef4755",
+                "CourseIdentifiersId": "630ba345-768d-41fe-9ded-5fd44c19219e"
+            },
+            {
+                "CourseGroupingId": "b3d04959-a373-42ac-b6e8-88dd90ef4755",
+                "CourseIdentifiersId": "b19756ea-b7ee-46db-8825-661b6677330a"
+            },
+            {
+                "CourseGroupingId": "b3d04959-a373-42ac-b6e8-88dd90ef4755",
+                "CourseIdentifiersId": "6372d4b3-c77f-4081-9385-e0ee9871152e"
+            },
+            {
+                "CourseGroupingId": "b3d04959-a373-42ac-b6e8-88dd90ef4755",
+                "CourseIdentifiersId": "3a72c1de-00c9-471c-a35b-c5c080b7a7df"
+            },
+            {
+                "CourseGroupingId": "b3d04959-a373-42ac-b6e8-88dd90ef4755",
+                "CourseIdentifiersId": "42aeff23-38a9-4a2d-9dbc-deccb42f2686"
+            },
+            {
+                "CourseGroupingId": "b3d04959-a373-42ac-b6e8-88dd90ef4755",
+                "CourseIdentifiersId": "48f84136-02cd-4616-8679-fe7a1b6d44bf"
+            },
+            {
+                "CourseGroupingId": "b3d04959-a373-42ac-b6e8-88dd90ef4755",
+                "CourseIdentifiersId": "ec5bfbb3-782b-450b-9986-6744c4482e28"
+            }
+        ]
+    },
+    {
+        "Id": "b73381fb-7f2e-43dc-8410-c3621c4e3b94",
+        "CommonIdentifier": "284ea69f-931b-466d-b497-632ab9370853",
+        "Name": "Controls, Robotics and Avionics Electives: Computer Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "b73381fb-7f2e-43dc-8410-c3621c4e3b94",
+                "CourseIdentifiersId": "70a39f15-b601-45fa-b8aa-2eec6812d44f"
+            },
+            {
+                "CourseGroupingId": "b73381fb-7f2e-43dc-8410-c3621c4e3b94",
+                "CourseIdentifiersId": "f5fc6cb3-beee-4307-b3ca-32a810116133"
+            },
+            {
+                "CourseGroupingId": "b73381fb-7f2e-43dc-8410-c3621c4e3b94",
+                "CourseIdentifiersId": "845c788d-1b95-4f42-9650-73e03da587a8"
+            },
+            {
+                "CourseGroupingId": "b73381fb-7f2e-43dc-8410-c3621c4e3b94",
+                "CourseIdentifiersId": "ed3c1e02-896f-4f42-b021-8626f9ba6350"
+            },
+            {
+                "CourseGroupingId": "b73381fb-7f2e-43dc-8410-c3621c4e3b94",
+                "CourseIdentifiersId": "32cf88ae-6634-4790-9c27-6554c454a51d"
+            },
+            {
+                "CourseGroupingId": "b73381fb-7f2e-43dc-8410-c3621c4e3b94",
+                "CourseIdentifiersId": "b233c1c0-deb2-4254-9665-1778522e4f74"
+            },
+            {
+                "CourseGroupingId": "b73381fb-7f2e-43dc-8410-c3621c4e3b94",
+                "CourseIdentifiersId": "44323ae0-4d08-4114-9d9e-8464e5b792e7"
+            },
+            {
+                "CourseGroupingId": "b73381fb-7f2e-43dc-8410-c3621c4e3b94",
+                "CourseIdentifiersId": "aa0e9acf-d9ac-43c5-aa4b-c9452177d6a8"
+            },
+            {
+                "CourseGroupingId": "b73381fb-7f2e-43dc-8410-c3621c4e3b94",
+                "CourseIdentifiersId": "4d3ec0f3-c089-433d-b9ca-03588e76b329"
+            }
+        ]
+    },
+    {
+        "Id": "73e9462a-130b-4206-9f99-71b5798f1a24",
+        "CommonIdentifier": "075fb09d-ca1d-4c52-b230-d70f64a647d8",
+        "Name": "Other Electives: Computer Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "73e9462a-130b-4206-9f99-71b5798f1a24",
+                "CourseIdentifiersId": "48473bd4-f70c-46d0-a6e4-07403a5165d6"
+            },
+            {
+                "CourseGroupingId": "73e9462a-130b-4206-9f99-71b5798f1a24",
+                "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+            }
+        ]
+    },
+	{
+		"Id": "5eec0c74-7b4d-4e4b-aa2e-129ca7239483",
+		"CommonIdentifier": "399b89fe-f98f-4ab7-a6db-1683e2909390",
+		"Name": "Engineering Core for Computer Engineering",
+		"RequiredCredits": "30.5",
+		"IsTopLevel": false,
+		"School": 0,
+		"Description": "",
+		"Notes": "",
+		"State": 0,
+		"Version": 1,
+		"Published": true,
+		"CourseGroupingReferences": [
+			{
+				"Id": "56d1e1d8-3c7b-4249-95d2-4952de58bfb1",
+				"ChildGroupCommonIdentifier": "86072b4b-c98e-458b-8f8e-230eca367fe3",
+				"GroupingType": 0
+			}
+		],
+		"CourseGroupingCourseIdentifier": []
+	}
+]

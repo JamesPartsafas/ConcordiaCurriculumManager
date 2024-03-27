@@ -1,0 +1,605 @@
+
+"Data": [
+    {
+        "Id": "4045c542-8e68-4414-b4d6-233f691e074c",
+        "CommonIdentifier": "94389b81-03a2-444a-834c-8b8c48be000f",
+        "Name": "BEng in Mechanical Engineering",
+        "RequiredCredits": "120",
+        "IsTopLevel": true,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [
+			{
+                "Id": "34078ee2-6a6f-4a20-8efa-804be7ae937b",
+                "ChildGroupCommonIdentifier": "2609e485-35fd-4b12-8da6-b3b6ea226ae1",
+                "GroupingType": 0
+            },
+            {
+                "Id": "42340326-7353-4d40-81ca-c4a9552dca1a",
+                "ChildGroupCommonIdentifier": "687c3700-0b5d-4d45-b408-eba9f23e7355",
+                "GroupingType": 0
+            },
+            {
+                "Id": "5ab22e5a-588d-48fb-85e2-4d1563339c76",
+                "ChildGroupCommonIdentifier": "17dd227f-3bff-4923-bfa8-0a686a2ab63c",
+                "GroupingType": 0
+            }
+        ],
+        "CourseGroupingCourseIdentifier": []
+    },
+    {
+        "Id": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+        "CommonIdentifier": "687c3700-0b5d-4d45-b408-eba9f23e7355",
+        "Name": "Mechanical Engineering Core",
+        "RequiredCredits": "87",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "5c0527b8-f196-4cfb-8843-1aaa31f45612"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "8ede4229-c0f0-4ece-a434-dee645c4a23a"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "e55367dc-0e99-41e2-b86e-659d15110bbd"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "e6ceeb10-6905-415b-aa91-82f9dcdbc39a"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "a981618e-7f4d-4646-bcd5-161b329ef7fc"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "98c35971-6cbd-45b1-a107-d3bcead4b381"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "bb88e774-e65e-4a67-b565-0ca1f3233d28"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "66489cf9-460f-4f00-b3e6-187c6ac5c73d"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "4b4a7880-890f-4cb1-b762-b15efbc6173f"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "026f0ade-921a-4a2c-9e26-7f49c85a12b5"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "9a9e3251-6be3-475f-84c5-e2a781f509b9"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "1800a2f4-a0d3-4421-b3b8-0a8ff9060231"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "c89dff7a-023f-40e8-8059-448b8fc913d2"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "76bebbdd-ae91-43ca-ab8b-a4bf30dd2ca6"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "495d82f8-96d8-4a2e-9afc-9ac8ca4db217"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "c2e60d62-ff94-4bc9-b610-31a9f2ace889"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "c8d37a1d-ddf2-4b55-be0a-aec9eb988272"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "4732b28e-bfbc-4d39-bd49-71e5ca00b83c"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "c0135484-26b8-4c3e-826b-e76b6355ed92"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "91a526d8-eade-49b0-b773-e9833a8a6698"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "0f41fb92-9094-49ae-97f2-9923913fa0fd"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "b7b65490-826f-4dcf-a3d8-caeffd0e4edb"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "e650f8da-fa8f-4146-b545-f14b8d1b1110"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "512c3424-7e35-4d39-a0f5-4d7fa934d7f7"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "50614887-7096-4dc4-9e94-503f55d7f0d9"
+            },
+            {
+                "CourseGroupingId": "0fc16475-124c-4b6b-ac93-5da15cc32c13",
+                "CourseIdentifiersId": "b3b60d06-d134-4a34-83af-1ac88034d265"
+            }
+        ]
+    },
+    {
+        "Id": "a4f0aa0b-bfa3-46a6-a59f-9ca0d0faeb7f",
+        "CommonIdentifier": "17dd227f-3bff-4923-bfa8-0a686a2ab63c",
+        "Name": "Mechanical Engineering Electives",
+        "RequiredCredits": "6",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [
+			{
+                "Id": "842882da-5232-47ca-b97d-cca7db4de424",
+                "ChildGroupCommonIdentifier": "965ed997-4815-4c76-aa70-dc0d5bee2ec1",
+                "GroupingType": 0
+            },
+            {
+                "Id": "2176ceca-457b-44ca-9081-c4cbb756d358",
+                "ChildGroupCommonIdentifier": "3ff079cc-280f-463f-b6ac-4e1daa9fd83a",
+                "GroupingType": 0
+            },
+            {
+                "Id": "bf8c3e08-afc6-46a5-af6e-03e540b7aabd",
+                "ChildGroupCommonIdentifier": "cb374210-08bc-4ad1-9374-f134b8c1cc3d",
+                "GroupingType": 0
+            },
+            {
+                "Id": "aa5aded4-713b-41a8-8e3b-054dd84b978d",
+                "ChildGroupCommonIdentifier": "3b39a37b-d4ca-4a17-96ac-0db7704ca73e",
+                "GroupingType": 0
+            },
+            {
+                "Id": "13bea5a3-d058-4ee6-b3a1-c3c05dfd947d",
+                "ChildGroupCommonIdentifier": "27277eb9-bf61-493e-a990-d2872e606129",
+                "GroupingType": 0
+            },
+            {
+                "Id": "d91db6be-3a8e-4b78-b838-3071c07b4270",
+                "ChildGroupCommonIdentifier": "97586300-32f8-43f1-8aec-08009ff61f81",
+                "GroupingType": 0
+            }
+		],
+        "CourseGroupingCourseIdentifier": []
+    },
+    {
+        "Id": "a326164e-904a-41aa-ab63-b1fde05e6876",
+        "CommonIdentifier": "965ed997-4815-4c76-aa70-dc0d5bee2ec1",
+        "Name": "Aerospace Group: Mechanical Engineering BEng",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "70a39f15-b601-45fa-b8aa-2eec6812d44f"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "620bc67d-c9f8-4fd7-9634-61c0c3f150fa"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "82c19458-6389-466e-a8cb-2245108e7b09"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "537a194b-dad3-46f3-b062-557917eeb9cc"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "20ea375e-d7be-4583-9b1d-1d3f8223320b"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "38f20944-20b7-46fe-9993-a3ed0807174c"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "f5fc6cb3-beee-4307-b3ca-32a810116133"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "845c788d-1b95-4f42-9650-73e03da587a8"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "d8df08ff-8d95-4f93-a19d-24d9b760211e"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "d6bf513c-c12a-4533-81f1-fec7c3e13331"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "42be8a0a-f489-47d6-9474-85cc0b22d6c9"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "96ac755b-6fa3-4c3e-ace4-ed280476708a"
+            },
+            {
+                "CourseGroupingId": "a326164e-904a-41aa-ab63-b1fde05e6876",
+                "CourseIdentifiersId": "a4c0d483-ba91-413a-9bd8-c4e31d1620b6"
+            }
+        ]
+    },
+    {
+        "Id": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+        "CommonIdentifier": "3ff079cc-280f-463f-b6ac-4e1daa9fd83a",
+        "Name": "Design and Manufacturing Group: Mechanical Engineering BEng",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "96ac755b-6fa3-4c3e-ace4-ed280476708a"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "99c2692b-9daa-43da-91a0-95680460a6d7"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "f6369301-7817-4959-9bb6-30a6a1c4d6df"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "353c94c5-1b5b-4ec3-b54f-24fa7ee0efd6"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "c9703f8b-aa9c-46b5-84d3-9dbc42a0a6f4"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "0d6f92c2-22bd-42b7-ba49-d263a3604847"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "deafac63-d0c6-4043-8bea-d513922c1665"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "e750687f-35fa-46d6-9a2c-901adcd70b1a"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "4ee124c8-4766-498a-84eb-55b1a0a2406a"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "a3d1d340-3c5b-4bf8-b537-5385b0a9ed36"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "f9efec8d-17c0-4d8a-96a6-9b00f3b39780"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "e9bab9f1-90f3-4d45-a048-39d414194c2b"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "d7511049-de89-402c-abdb-9d47b462bf14"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "b6347d8c-baec-4240-acf7-046dae6e5cea"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "fbbdb922-7d82-4325-bc46-2702a9211bb2"
+            },
+            {
+                "CourseGroupingId": "1a2bd758-2141-4a57-8a71-0c7dcb1ffdf4",
+                "CourseIdentifiersId": "a4c0d483-ba91-413a-9bd8-c4e31d1620b6"
+            }
+        ]
+    },
+    {
+        "Id": "62a4f485-c513-476e-b99d-d8b678af75b0",
+        "CommonIdentifier": "cb374210-08bc-4ad1-9374-f134b8c1cc3d",
+        "Name": "Systems and Mechatronics Group: Mechanical Engineering BEng",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "62a4f485-c513-476e-b99d-d8b678af75b0",
+                "CourseIdentifiersId": "f5fc6cb3-beee-4307-b3ca-32a810116133"
+            },
+            {
+                "CourseGroupingId": "62a4f485-c513-476e-b99d-d8b678af75b0",
+                "CourseIdentifiersId": "845c788d-1b95-4f42-9650-73e03da587a8"
+            },
+            {
+                "CourseGroupingId": "62a4f485-c513-476e-b99d-d8b678af75b0",
+                "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+            },
+            {
+                "CourseGroupingId": "62a4f485-c513-476e-b99d-d8b678af75b0",
+                "CourseIdentifiersId": "96ac755b-6fa3-4c3e-ace4-ed280476708a"
+            },
+            {
+                "CourseGroupingId": "62a4f485-c513-476e-b99d-d8b678af75b0",
+                "CourseIdentifiersId": "94852f03-075b-4152-9fe1-10b912aea8a4"
+            },
+            {
+                "CourseGroupingId": "62a4f485-c513-476e-b99d-d8b678af75b0",
+                "CourseIdentifiersId": "f2c59415-f322-4811-ab66-960c92337d22"
+            },
+            {
+                "CourseGroupingId": "62a4f485-c513-476e-b99d-d8b678af75b0",
+                "CourseIdentifiersId": "3264241f-ebef-4d86-a2a7-1643311a92ca"
+            },
+            {
+                "CourseGroupingId": "62a4f485-c513-476e-b99d-d8b678af75b0",
+                "CourseIdentifiersId": "e678604b-c070-410c-89a5-9c7a43b6ec84"
+            },
+            {
+                "CourseGroupingId": "62a4f485-c513-476e-b99d-d8b678af75b0",
+                "CourseIdentifiersId": "c5051930-431a-470d-9d23-201463cb2a41"
+            },
+            {
+                "CourseGroupingId": "62a4f485-c513-476e-b99d-d8b678af75b0",
+                "CourseIdentifiersId": "8ff2d265-d266-4244-96f2-3afaced23813"
+            },
+            {
+                "CourseGroupingId": "62a4f485-c513-476e-b99d-d8b678af75b0",
+                "CourseIdentifiersId": "a4c0d483-ba91-413a-9bd8-c4e31d1620b6"
+            }
+        ]
+    },
+    {
+        "Id": "3900b856-220f-4d86-928f-c02644341f35",
+        "CommonIdentifier": "3b39a37b-d4ca-4a17-96ac-0db7704ca73e",
+        "Name": "Thermo-Fluids and Propulsion Group: Mechanical Engineering BEng",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "3900b856-220f-4d86-928f-c02644341f35",
+                "CourseIdentifiersId": "82c19458-6389-466e-a8cb-2245108e7b09"
+            },
+            {
+                "CourseGroupingId": "3900b856-220f-4d86-928f-c02644341f35",
+                "CourseIdentifiersId": "537a194b-dad3-46f3-b062-557917eeb9cc"
+            },
+            {
+                "CourseGroupingId": "3900b856-220f-4d86-928f-c02644341f35",
+                "CourseIdentifiersId": "38f20944-20b7-46fe-9993-a3ed0807174c"
+            },
+            {
+                "CourseGroupingId": "3900b856-220f-4d86-928f-c02644341f35",
+                "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+            },
+            {
+                "CourseGroupingId": "3900b856-220f-4d86-928f-c02644341f35",
+                "CourseIdentifiersId": "96ac755b-6fa3-4c3e-ace4-ed280476708a"
+            },
+            {
+                "CourseGroupingId": "3900b856-220f-4d86-928f-c02644341f35",
+                "CourseIdentifiersId": "94852f03-075b-4152-9fe1-10b912aea8a4"
+            },
+            {
+                "CourseGroupingId": "3900b856-220f-4d86-928f-c02644341f35",
+                "CourseIdentifiersId": "cef44dd5-8565-4571-9f23-10c23beec0b7"
+            },
+            {
+                "CourseGroupingId": "3900b856-220f-4d86-928f-c02644341f35",
+                "CourseIdentifiersId": "ee9e586c-8f12-4fcb-afd0-5ce64abba983"
+            },
+            {
+                "CourseGroupingId": "3900b856-220f-4d86-928f-c02644341f35",
+                "CourseIdentifiersId": "eb9fa7ae-b3f2-4ce7-8d53-8b3936611e6d"
+            },
+            {
+                "CourseGroupingId": "3900b856-220f-4d86-928f-c02644341f35",
+                "CourseIdentifiersId": "f2c59415-f322-4811-ab66-960c92337d22"
+            },
+            {
+                "CourseGroupingId": "3900b856-220f-4d86-928f-c02644341f35",
+                "CourseIdentifiersId": "b6347d8c-baec-4240-acf7-046dae6e5cea"
+            },
+            {
+                "CourseGroupingId": "3900b856-220f-4d86-928f-c02644341f35",
+                "CourseIdentifiersId": "a4c0d483-ba91-413a-9bd8-c4e31d1620b6"
+            }
+        ]
+    },
+    {
+        "Id": "d7fbc0dc-1bd9-4a70-853e-b725407520ea",
+        "CommonIdentifier": "27277eb9-bf61-493e-a990-d2872e606129",
+        "Name": "Vehicle Systems Group: Mechanical Engineering BEng",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "d7fbc0dc-1bd9-4a70-853e-b725407520ea",
+                "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+            },
+            {
+                "CourseGroupingId": "d7fbc0dc-1bd9-4a70-853e-b725407520ea",
+                "CourseIdentifiersId": "96ac755b-6fa3-4c3e-ace4-ed280476708a"
+            },
+            {
+                "CourseGroupingId": "d7fbc0dc-1bd9-4a70-853e-b725407520ea",
+                "CourseIdentifiersId": "94852f03-075b-4152-9fe1-10b912aea8a4"
+            },
+            {
+                "CourseGroupingId": "d7fbc0dc-1bd9-4a70-853e-b725407520ea",
+                "CourseIdentifiersId": "98941668-b4b2-455c-a175-6c033c5ed92e"
+            },
+            {
+                "CourseGroupingId": "d7fbc0dc-1bd9-4a70-853e-b725407520ea",
+                "CourseIdentifiersId": "843d0415-142d-46c7-9881-37ebf78cc7e8"
+            },
+            {
+                "CourseGroupingId": "d7fbc0dc-1bd9-4a70-853e-b725407520ea",
+                "CourseIdentifiersId": "c5051930-431a-470d-9d23-201463cb2a41"
+            },
+            {
+                "CourseGroupingId": "d7fbc0dc-1bd9-4a70-853e-b725407520ea",
+                "CourseIdentifiersId": "a4c0d483-ba91-413a-9bd8-c4e31d1620b6"
+            }
+        ]
+    },
+    {
+        "Id": "687efda4-9981-4042-b75e-f02942abeaa4",
+        "CommonIdentifier": "97586300-32f8-43f1-8aec-08009ff61f81",
+        "Name": "Stress Analysis Group: Mechanical Engineering BEng",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "687efda4-9981-4042-b75e-f02942abeaa4",
+                "CourseIdentifiersId": "9c120fd7-11f0-4cd7-a9d9-6b5d27583f98"
+            },
+            {
+                "CourseGroupingId": "687efda4-9981-4042-b75e-f02942abeaa4",
+                "CourseIdentifiersId": "d6bf513c-c12a-4533-81f1-fec7c3e13331"
+            },
+            {
+                "CourseGroupingId": "687efda4-9981-4042-b75e-f02942abeaa4",
+                "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+            },
+            {
+                "CourseGroupingId": "687efda4-9981-4042-b75e-f02942abeaa4",
+                "CourseIdentifiersId": "96ac755b-6fa3-4c3e-ace4-ed280476708a"
+            },
+            {
+                "CourseGroupingId": "687efda4-9981-4042-b75e-f02942abeaa4",
+                "CourseIdentifiersId": "0d6f92c2-22bd-42b7-ba49-d263a3604847"
+            },
+            {
+                "CourseGroupingId": "687efda4-9981-4042-b75e-f02942abeaa4",
+                "CourseIdentifiersId": "94852f03-075b-4152-9fe1-10b912aea8a4"
+            },
+            {
+                "CourseGroupingId": "687efda4-9981-4042-b75e-f02942abeaa4",
+                "CourseIdentifiersId": "4ee124c8-4766-498a-84eb-55b1a0a2406a"
+            },
+            {
+                "CourseGroupingId": "687efda4-9981-4042-b75e-f02942abeaa4",
+                "CourseIdentifiersId": "77ef5c89-4ea6-4641-a46f-4e66e366d129"
+            },
+            {
+                "CourseGroupingId": "687efda4-9981-4042-b75e-f02942abeaa4",
+                "CourseIdentifiersId": "d7511049-de89-402c-abdb-9d47b462bf14"
+            },
+            {
+                "CourseGroupingId": "687efda4-9981-4042-b75e-f02942abeaa4",
+                "CourseIdentifiersId": "f3946732-fbab-44b3-81a4-8f4fdc38349e"
+            },
+            {
+                "CourseGroupingId": "687efda4-9981-4042-b75e-f02942abeaa4",
+                "CourseIdentifiersId": "a4c0d483-ba91-413a-9bd8-c4e31d1620b6"
+            }
+        ]
+    },
+	{
+		"Id": "848cf8cb-f5b3-4d2f-9f02-2c521b67e8ab",
+		"CommonIdentifier": "2609e485-35fd-4b12-8da6-b3b6ea226ae1",
+		"Name": "Engineering Core for Mechanical Engineering",
+		"RequiredCredits": "27",
+		"IsTopLevel": false,
+		"School": 0,
+		"Description": "",
+		"Notes": "",
+		"State": 0,
+		"Version": 1,
+		"Published": true,
+		"CourseGroupingReferences": [
+			{
+				"Id": "c24e2590-140e-4f3b-be4c-869417a82acd",
+				"ChildGroupCommonIdentifier": "86072b4b-c98e-458b-8f8e-230eca367fe3",
+				"GroupingType": 0
+			}
+		],
+		"CourseGroupingCourseIdentifier": []
+	}
+]

@@ -1,0 +1,378 @@
+
+"Data": [
+    {
+        "Id": "e87c43bd-08f5-47ae-87fe-3595334f6a70",
+        "CommonIdentifier": "b1830ef5-6699-4cf6-8bc9-8ec90b258a8f",
+        "Name": "BEng in Civil Engineering",
+        "RequiredCredits": "120",
+        "IsTopLevel": true,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [
+			{
+				"Id": "63d06ced-7ef0-454b-8b6e-e1a8f7efb1d7",
+				"ChildGroupCommonIdentifier": "b869afd8-b442-496b-a366-66d6ea60592a",
+				"GroupingType": 0
+			},
+            {
+                "Id": "02ceb15c-3193-42b3-aea5-6aa2c1517341",
+                "ChildGroupCommonIdentifier": "cf74542d-1c14-4e70-9d7c-305f0b41b7b9",
+                "GroupingType": 0
+            },
+            {
+                "Id": "abca269b-6811-444f-924b-ef5560340791",
+                "ChildGroupCommonIdentifier": "0fc1248d-d3f3-487f-ae64-38f7189c5ee1",
+                "GroupingType": 0
+            }
+        ],
+        "CourseGroupingCourseIdentifier": []
+    },
+    {
+        "Id": "26462fcf-68d3-413e-ae02-f769f3afec88",
+        "CommonIdentifier": "cf74542d-1c14-4e70-9d7c-305f0b41b7b9",
+        "Name": "Civil Engineering Core",
+        "RequiredCredits": "74.50",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "96128ec8-1509-474f-a462-f1db059384ff"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "dea79a76-a23a-43a6-b6e3-930d9bfbb890"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "e0e1f114-975d-447e-9f92-46eefaee74fa"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "6f89eb19-46e2-4056-a142-b60562ea82eb"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "6f1c2309-87cc-419e-af9c-e8758967a7eb"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "c6588da4-891a-40a2-887e-388d48dd4447"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "252b57ba-1b92-4e2e-b8da-fb9841c190e1"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "d2cc23d5-487b-4414-aa3c-5373aa7d7ed9"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "c911723a-10cf-40b2-90f0-2997a43a01a6"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "463ed117-0e52-48ed-b152-2495f8e47a17"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "2fa9b184-7045-483a-948c-38c39abea20d"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "6bd502ea-aaa0-4a03-87cb-22ad4a2eb047"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "e443f638-3722-495e-88ff-5224b1d60d9a"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "d12d1742-deff-484f-a0ad-f547df7c6942"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "30920d59-479e-4ba2-8387-c655e12825a1"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "2e0b8e91-4ecc-48cb-b25b-c32be50ceddb"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "2c959e6e-be8c-4250-a35f-18a7e88acb24"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "5c0527b8-f196-4cfb-8843-1aaa31f45612"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "8ede4229-c0f0-4ece-a434-dee645c4a23a"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "e55367dc-0e99-41e2-b86e-659d15110bbd"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "e6ceeb10-6905-415b-aa91-82f9dcdbc39a"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "a981618e-7f4d-4646-bcd5-161b329ef7fc"
+            },
+            {
+                "CourseGroupingId": "26462fcf-68d3-413e-ae02-f769f3afec88",
+                "CourseIdentifiersId": "98c35971-6cbd-45b1-a107-d3bcead4b381"
+            }
+        ]
+    },
+    {
+        "Id": "ce1c6730-de07-4dfd-a75c-8e0b6113a6bb",
+        "CommonIdentifier": "0fc1248d-d3f3-487f-ae64-38f7189c5ee1",
+        "Name": "Option Course Requirements: BEng in Civil Engineering",
+        "RequiredCredits": "15",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [
+			{
+                "Id": "4406e509-22d4-4579-aba8-7a064590b2f7",
+                "ChildGroupCommonIdentifier": "775a2738-b099-404e-9ca4-df6cb0951e16",
+                "GroupingType": 0
+            },
+            {
+                "Id": "be4ff41e-a547-4538-a3e1-b97735b1d404",
+                "ChildGroupCommonIdentifier": "85408b4d-9e5b-4830-a2a3-26db38167953",
+                "GroupingType": 0
+            },
+            {
+                "Id": "484e5f44-5d50-409c-8ba8-069721ee0312",
+                "ChildGroupCommonIdentifier": "027ff37a-a940-435c-986f-b2efd79b58e7",
+                "GroupingType": 0
+            }
+		],
+        "CourseGroupingCourseIdentifier": []
+    },
+    {
+        "Id": "518f7a87-d613-45af-af5c-b8da6cde8819",
+        "CommonIdentifier": "775a2738-b099-404e-9ca4-df6cb0951e16",
+        "Name": "Option A – Civil Infrastructure",
+        "RequiredCredits": "15",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "518f7a87-d613-45af-af5c-b8da6cde8819",
+                "CourseIdentifiersId": "4842702d-b3f2-4e4d-8896-2e17ade2d72c"
+            },
+            {
+                "CourseGroupingId": "518f7a87-d613-45af-af5c-b8da6cde8819",
+                "CourseIdentifiersId": "a47815c3-39cf-4c96-ae97-245d9a8ff24d"
+            },
+            {
+                "CourseGroupingId": "518f7a87-d613-45af-af5c-b8da6cde8819",
+                "CourseIdentifiersId": "640c1612-acfa-496e-bd8b-7f283c8bd287"
+            },
+            {
+                "CourseGroupingId": "518f7a87-d613-45af-af5c-b8da6cde8819",
+                "CourseIdentifiersId": "8f060dd0-f5ba-4eb3-913d-704baf670312"
+            },
+            {
+                "CourseGroupingId": "518f7a87-d613-45af-af5c-b8da6cde8819",
+                "CourseIdentifiersId": "5bf23999-c51c-4877-9648-4b1131838f4f"
+            },
+            {
+                "CourseGroupingId": "518f7a87-d613-45af-af5c-b8da6cde8819",
+                "CourseIdentifiersId": "95e00c68-310c-4750-b5b9-d55bac12bc53"
+            },
+            {
+                "CourseGroupingId": "518f7a87-d613-45af-af5c-b8da6cde8819",
+                "CourseIdentifiersId": "97a0bde1-7748-40fa-a0a1-1c088ca33b9c"
+            },
+            {
+                "CourseGroupingId": "518f7a87-d613-45af-af5c-b8da6cde8819",
+                "CourseIdentifiersId": "89af60d8-6aca-4a48-9fa3-b1a188d04f61"
+            },
+            {
+                "CourseGroupingId": "518f7a87-d613-45af-af5c-b8da6cde8819",
+                "CourseIdentifiersId": "ddd356a1-6270-4d8a-a2bb-ae5cdaf070d1"
+            },
+            {
+                "CourseGroupingId": "518f7a87-d613-45af-af5c-b8da6cde8819",
+                "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+            },
+            {
+                "CourseGroupingId": "518f7a87-d613-45af-af5c-b8da6cde8819",
+                "CourseIdentifiersId": "96ac755b-6fa3-4c3e-ace4-ed280476708a"
+            }
+        ]
+    },
+    {
+        "Id": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+        "CommonIdentifier": "85408b4d-9e5b-4830-a2a3-26db38167953",
+        "Name": "Option B – Environmental",
+        "RequiredCredits": "15",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+                "CourseIdentifiersId": "7f65603d-9538-4355-8c89-782eb71abfe4"
+            },
+            {
+                "CourseGroupingId": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+                "CourseIdentifiersId": "e599ce04-51e5-44b5-9cd4-91ea29f05705"
+            },
+            {
+                "CourseGroupingId": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+                "CourseIdentifiersId": "f17e05bd-2e7f-4432-a748-d31a8de32e9f"
+            },
+            {
+                "CourseGroupingId": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+                "CourseIdentifiersId": "00764629-ff63-45de-9702-203198d5a659"
+            },
+            {
+                "CourseGroupingId": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+                "CourseIdentifiersId": "3cffd96b-2e09-44ca-9ac3-c0877526e388"
+            },
+            {
+                "CourseGroupingId": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+                "CourseIdentifiersId": "07d1fb29-efd4-4769-9f3f-b9434445f953"
+            },
+            {
+                "CourseGroupingId": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+                "CourseIdentifiersId": "bab03238-de77-44c3-abbf-08c41270ab21"
+            },
+            {
+                "CourseGroupingId": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+                "CourseIdentifiersId": "d0773d13-9abe-4bb5-891e-a1e92a47131f"
+            },
+            {
+                "CourseGroupingId": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+                "CourseIdentifiersId": "815ff0b0-7785-4a6b-a289-8c8944ca762f"
+            },
+            {
+                "CourseGroupingId": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+                "CourseIdentifiersId": "ddd356a1-6270-4d8a-a2bb-ae5cdaf070d1"
+            },
+            {
+                "CourseGroupingId": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+                "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+            },
+            {
+                "CourseGroupingId": "e8eee1ce-8f37-4131-811d-31ba8fd3bde7",
+                "CourseIdentifiersId": "96ac755b-6fa3-4c3e-ace4-ed280476708a"
+            }
+        ]
+    },
+    {
+        "Id": "24318120-c246-41fe-8eb5-a83451ec426c",
+        "CommonIdentifier": "027ff37a-a940-435c-986f-b2efd79b58e7",
+        "Name": "Option C – Construction Engineering and Management (CEM)",
+        "RequiredCredits": "15",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "24318120-c246-41fe-8eb5-a83451ec426c",
+                "CourseIdentifiersId": "c55a440d-49bd-475a-8331-02e693bc3b64"
+            },
+            {
+                "CourseGroupingId": "24318120-c246-41fe-8eb5-a83451ec426c",
+                "CourseIdentifiersId": "e2f2a833-7a9b-4e34-a116-5b7cb3764eeb"
+            },
+            {
+                "CourseGroupingId": "24318120-c246-41fe-8eb5-a83451ec426c",
+                "CourseIdentifiersId": "6d890d9b-865f-4abb-b251-0fa99c289565"
+            },
+            {
+                "CourseGroupingId": "24318120-c246-41fe-8eb5-a83451ec426c",
+                "CourseIdentifiersId": "cd613cf9-47b0-47e8-88a0-329b460aa9b2"
+            },
+            {
+                "CourseGroupingId": "24318120-c246-41fe-8eb5-a83451ec426c",
+                "CourseIdentifiersId": "90372997-fc75-4d0c-ac93-db6da3316e35"
+            },
+            {
+                "CourseGroupingId": "24318120-c246-41fe-8eb5-a83451ec426c",
+                "CourseIdentifiersId": "34005a73-adc6-4d02-9fa7-6938f8ca2fa9"
+            },
+            {
+                "CourseGroupingId": "24318120-c246-41fe-8eb5-a83451ec426c",
+                "CourseIdentifiersId": "aa82554f-6252-49c5-916b-28fc55d38b40"
+            },
+            {
+                "CourseGroupingId": "24318120-c246-41fe-8eb5-a83451ec426c",
+                "CourseIdentifiersId": "1dfd7bc5-664a-4c95-a569-c6574cc5ea41"
+            },
+            {
+                "CourseGroupingId": "24318120-c246-41fe-8eb5-a83451ec426c",
+                "CourseIdentifiersId": "ddd356a1-6270-4d8a-a2bb-ae5cdaf070d1"
+            },
+            {
+                "CourseGroupingId": "24318120-c246-41fe-8eb5-a83451ec426c",
+                "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+            },
+            {
+                "CourseGroupingId": "24318120-c246-41fe-8eb5-a83451ec426c",
+                "CourseIdentifiersId": "96ac755b-6fa3-4c3e-ace4-ed280476708a"
+            }
+        ]
+    },
+	{
+		"Id": "ff303b56-fa9b-4c55-8d78-b2bf69752ad2",
+		"CommonIdentifier": "b869afd8-b442-496b-a366-66d6ea60592a",
+		"Name": "Engineering Core for Civil Engineering",
+		"RequiredCredits": "30.5",
+		"IsTopLevel": false,
+		"School": 0,
+		"Description": "",
+		"Notes": "",
+		"State": 0,
+		"Version": 1,
+		"Published": true,
+		"CourseGroupingReferences": [
+			{
+				"Id": "43d97444-6759-491f-8c28-2411d0168d91",
+				"ChildGroupCommonIdentifier": "86072b4b-c98e-458b-8f8e-230eca367fe3",
+				"GroupingType": 0
+			}
+		],
+		"CourseGroupingCourseIdentifier": []
+	}
+]
