@@ -24,7 +24,7 @@ import {
 } from "@chakra-ui/react";
 import Button from "../Button";
 import { showToast } from "../../utils/toastUtils";
-import { GetCourseGroupingByName } from "../../services/courseGrouping";
+import { GetCourseGroupingByDossier, GetCourseGroupingByName } from "../../services/courseGrouping";
 import { useState } from "react";
 import { CourseGroupingDTO, MultiCourseGroupingDTO } from "../../models/courseGrouping";
 
@@ -33,6 +33,7 @@ export default function SearchCourseGrouping(props: {
     onClose: () => void;
     onSelectCourseGrouping: (courseGrouping) => void;
     isEdit?: boolean;
+    dossierId?: string;
 }) {
     const toast = useToast();
 
@@ -46,6 +47,23 @@ export default function SearchCourseGrouping(props: {
 
     const searchByName = (name: string) => {
         GetCourseGroupingByName(name)
+            .then((res: MultiCourseGroupingDTO) => {
+                setCourseGroupings(res.data);
+            })
+            .catch((err) => {
+                if (err.response.status == 400) {
+                    showToast(
+                        toast,
+                        "Error!",
+                        err.response ? "You cannot search an empty string." : "One or more validation errors occurred",
+                        "error"
+                    );
+                }
+            });
+    };
+
+    const searchByDossier = (dossierId: string, name: string) => {
+        GetCourseGroupingByDossier(dossierId, name)
             .then((res: MultiCourseGroupingDTO) => {
                 setCourseGroupings(res.data);
             })
@@ -129,7 +147,8 @@ export default function SearchCourseGrouping(props: {
                                 width="22%"
                                 height="40px"
                                 onClick={() => {
-                                    searchByName(searchInput);
+                                    if (props.dossierId) searchByDossier(props.dossierId, searchInput);
+                                    else searchByName(searchInput);
                                 }}
                             >
                                 Search

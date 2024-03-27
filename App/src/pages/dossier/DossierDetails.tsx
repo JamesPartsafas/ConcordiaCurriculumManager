@@ -341,6 +341,7 @@ export default function DossierDetails() {
                 onClose={onSearchCourseGroupingClose}
                 onSelectCourseGrouping={handleCourseGroupingSelect}
                 isEdit={true}
+                dossierId={dossierId}
             />
         );
     }
