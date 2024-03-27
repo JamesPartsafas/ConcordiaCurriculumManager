@@ -22,6 +22,7 @@ interface CourseGroupingCreationResponse {
 const CourseGroupingAPIEndpoints = {
     GetCourseGrouping: "/CourseGrouping/GetCourseGrouping",
     GetGroupingBySchool: "/CourseGrouping/GetCourseGroupingsBySchoolNonRecursive",
+    GetGroupingByDossier: "/CourseGrouping/SearchGroupingsWithDossier",
     InitiateCourseGroupingCreation: "/CourseGrouping/InitiateCourseGroupingCreation",
     InitiateCourseGroupingModification: "/CourseGrouping/InitiateCourseGroupingModification",
     InitiateCourseGroupingDeletion: "/CourseGrouping/InitiateCourseGroupingDeletion",
@@ -41,6 +42,10 @@ export function GetCourseGroupingBySchool(school: SchoolEnum): Promise<GetMultiC
 
 export function GetCourseGroupingByName(name: string): Promise<GetMultiCourseGroupingResponse> {
     return axios.get("/CourseGrouping/SearchCourseGroupingsByName?name=" + name);
+}
+
+export function GetCourseGroupingByDossier(dossierId: string, name: string): Promise<GetMultiCourseGroupingResponse> {
+    return axios.get(`${CourseGroupingAPIEndpoints.GetGroupingByDossier}/${dossierId}?searchQuery=${name}`);
 }
 
 export function InitiateCourseGroupingCreation(
