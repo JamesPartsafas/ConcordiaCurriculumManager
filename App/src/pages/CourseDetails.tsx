@@ -96,7 +96,7 @@ export default function CourseDetails() {
                     margin="auto"
                     onClick={() => navigate(-1)}
                 >
-                    Go back to browser
+                    Go back
                 </Button>
             </Card>
         </div>
