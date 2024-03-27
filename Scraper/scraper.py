@@ -1,7 +1,12 @@
 import json
 import uuid
 import re
+import argparse
 from bs4 import BeautifulSoup
+
+parser = argparse.ArgumentParser(description='Process and create course groupings from an HTML file.')
+parser.add_argument('html_file', type=str, help='The path to the HTML file containing course information')
+args = parser.parse_args()
 
 
 def load_json_data(filename):
@@ -20,7 +25,7 @@ def get_course_identifier_id(concordia_course_id):
     return None
 
 
-with open('CoursePages/Section 71.50.2 Course Requirements (BEng in Civil Engineering) - Concordia University.html', 'r', encoding='utf-8') as file:
+with open(args.html_file, 'r', encoding='utf-8') as file:
     soup = BeautifulSoup(file.read(), 'html.parser')
 
 
