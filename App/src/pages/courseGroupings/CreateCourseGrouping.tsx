@@ -41,6 +41,7 @@ import SelectCourseModal from "../dossier/SelectCourseModal";
 import { getAllCourseSettings } from "../../services/course";
 import { AllCourseSettings, CourseDataResponse } from "../../models/course";
 import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
+import CourseGroupingDiffViewer from "../../components/CourseDifference/CourseGroupingDifference";
 import Button from "../../components/Button";
 
 export default function CreateCourseGrouping() {
@@ -52,6 +53,7 @@ export default function CreateCourseGrouping() {
     const state: { CourseGroupingRequest: CourseGroupingRequestDTO; api: string } = location.state;
 
     const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO>();
+    const [newCourseGrouing, setNewCourseGrouping] = useState<CourseGroupingDTO>();
     const [loading, setLoading] = useState<boolean>(false);
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
     const [courseIdentifiers, setCourseIdentifiers] = useState<CourseIdentifierDTO[]>([]);
@@ -71,6 +73,7 @@ export default function CreateCourseGrouping() {
     const {
         control,
         handleSubmit,
+        watch,
         formState: { errors, isDirty },
         reset,
     } = useForm<CourseGroupingRequestDTO>({
@@ -81,7 +84,7 @@ export default function CreateCourseGrouping() {
             ...state?.CourseGroupingRequest,
         },
     });
-
+    const courseGroupingWatched = watch("courseGrouping"); // Watches the entire courseGrouping object
     const {
         fields: subGroupFields,
         append: appendSubGroup,
@@ -354,10 +357,33 @@ export default function CreateCourseGrouping() {
         });
     }
 
+    useEffect(() => {
+        setNewCourseGrouping(() => ({
+            ...courseGroupingWatched,
+        }));
+    }, [JSON.stringify(courseGroupingWatched)]);
+
     return (
         <>
+            <Button
+                style="primary"
+                variant="outline"
+                width="100px"
+                height="40px"
+                ml={8}
+                mt={5}
+                onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
+            >
+                Back
+            </Button>
             {displaySelectCourseModal()}
             {displaySearchCourseGroupModal()}
+            {courseGrouping && (
+                <CourseGroupingDiffViewer
+                    oldGrouping={courseGrouping}
+                    newGrouping={newCourseGrouing}
+                ></CourseGroupingDiffViewer>
+            )}
 
             <Stack m={4}>
                 <Button
