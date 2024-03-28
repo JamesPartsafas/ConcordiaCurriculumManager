@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import DossierTable from "../../components/DossierTable";
 import { UserRoles } from "../../models/user";
+import DossierModal from "./DossierModal";
 
 export default function DossiersToReview() {
     const user = useContext(UserContext);
@@ -19,6 +20,8 @@ export default function DossiersToReview() {
     const [selectedDossier, setSelectedDossier] = useState<DossierDTO | null>(null);
     const resultsPerPage = 5;
     const totalResults = myDossiers.length;
+    const [dossierModalAction, setDossierModalTitle] = useState<"add" | "edit">();
+    const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
 
     const startIndex = myDossiers.length === 0 ? 0 : (currentPage - 1) * resultsPerPage + 1;
     const endIndex = Math.min(currentPage * resultsPerPage, totalResults);
@@ -43,6 +46,13 @@ export default function DossiersToReview() {
                 console.log(err);
             });
     }
+    function displayDossierModal() {
+        setShowDossierModal(true);
+    }
+
+    function closeDossierModal() {
+        setShowDossierModal(false);
+    }
 
     function handleNavigateToDossierDetails(dossierId: string) {
         navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
@@ -57,63 +67,76 @@ export default function DossiersToReview() {
     }
 
     return (
-        <Box maxW="5xl" m="auto">
-            <Container maxW={"5xl"} mt={5} pl={0}>
-                <Button
-                    style="primary"
-                    variant="outline"
-                    height="40px"
-                    width="fit-content"
-                    onClick={() => navigate(BaseRoutes.Home)}
-                >
-                    Return to Home
-                </Button>
-                <Button
-                    style="primary"
-                    variant="outline"
-                    width="fit-content"
-                    height="40px"
-                    alignSelf="flex-end"
-                    ml="2"
-                    isDisabled={!user.roles.includes(UserRoles.Initiator)}
-                    onClick={() => {
-                        navigate(BaseRoutes.Dossiers);
-                    }}
-                >
-                    My Dossiers
-                </Button>
-                <Button
-                    style="primary"
-                    variant="outline"
-                    height="40px"
-                    width="fit-content"
-                    ml="2"
-                    onClick={() => navigate(BaseRoutes.DossierBrowser)}
-                >
-                    Dossier Browser
-                </Button>
-            </Container>
-            <Flex flexDirection="column">
-                <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
-                    Dossiers Requiring Your Review
-                </Text>
-                <DossierTable
-                    myDossiers={myDossiers}
-                    startIndex={startIndex}
-                    endIndex={endIndex}
-                    onOpen={onOpen}
-                    setSelectedDossier={setSelectedDossier}
-                    handleNavigateToDossierDetails={handleNavigateToDossierDetails}
-                    handleNavigateToDossierReview={handleNavigateToDossierReview}
-                    handleNavigateToDossierReport={handleNavigateToDossierReport}
-                    setCurrentPage={setCurrentPage}
-                    currentPage={currentPage}
-                    totalResults={totalResults}
-                    useIcons={false}
-                    reviewIcons={true}
-                    editable={true}
+        <div>
+            <Box maxW="5xl" m="auto">
+                <Container maxW={"5xl"} mt={5} pl={0}>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        height="40px"
+                        width="fit-content"
+                        onClick={() => navigate(BaseRoutes.Home)}
+                    >
+                        Return to Home
+                    </Button>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        width="fit-content"
+                        height="40px"
+                        alignSelf="flex-end"
+                        ml="2"
+                        isDisabled={!user.roles.includes(UserRoles.Initiator)}
+                        onClick={() => {
+                            navigate(BaseRoutes.Dossiers);
+                        }}
+                    >
+                        My Dossiers
+                    </Button>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        height="40px"
+                        width="fit-content"
+                        ml="2"
+                        onClick={() => navigate(BaseRoutes.DossierBrowser)}
+                    >
+                        Dossier Browser
+                    </Button>
+                </Container>
+                <Flex flexDirection="column">
+                    <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
+                        Dossiers Requiring Your Review
+                    </Text>
+                    <DossierTable
+                        myDossiers={myDossiers}
+                        startIndex={startIndex}
+                        endIndex={endIndex}
+                        onOpen={onOpen}
+                        setDossierModalTitle={setDossierModalTitle}
+                        setSelectedDossier={setSelectedDossier}
+                        displayDossierModal={displayDossierModal}
+                        handleNavigateToDossierDetails={handleNavigateToDossierDetails}
+                        handleNavigateToDossierReview={handleNavigateToDossierReview}
+                        handleNavigateToDossierReport={handleNavigateToDossierReport}
+                        setCurrentPage={setCurrentPage}
+                        currentPage={currentPage}
+                        totalResults={totalResults}
+                        useIcons={false}
+                        reviewIcons={true}
+                        editable={true}
+                    />
+                </Flex>
+            </Box>
+            {showDossierModal && (
+                <DossierModal
+                    action={dossierModalAction}
+                    dossier={selectedDossier}
+                    dossierList={myDossiers}
+                    open={showDossierModal}
+                    closeModal={closeDossierModal}
                 />
-            </Flex>
-        </Box>
+            )}
+        </div>
     );
 }

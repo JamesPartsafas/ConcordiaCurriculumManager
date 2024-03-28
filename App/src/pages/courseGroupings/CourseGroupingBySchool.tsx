@@ -144,7 +144,13 @@ export default function GroupingBySchool() {
                             <Tbody>
                                 {courseGroupings.slice(0, courseGroupings.length).map((grouping) => (
                                     <Tr key={grouping.id} display={"flex"}>
-                                        <Td minW={"250px"} maxW={"250px"} style={{ whiteSpace: "normal" }}>
+                                        <Td
+                                            minW={"250px"}
+                                            maxW={"250px"}
+                                            overflow="hidden"
+                                            textOverflow="ellipsis"
+                                            style={{ whiteSpace: "normal" }}
+                                        >
                                             {grouping.name}
                                         </Td>
                                         <Td minW={"455px"} maxW={"455px"}>
@@ -157,7 +163,7 @@ export default function GroupingBySchool() {
                                                 {grouping.requiredCredits}
                                             </Text>
                                         </Td>
-                                        <Td minW={"130px"} maxW={"130px"}>
+                                        <Td overflow="hidden" textOverflow="ellipsis" minW={"130px"} maxW={"130px"}>
                                             {grouping.school}
                                         </Td>
 

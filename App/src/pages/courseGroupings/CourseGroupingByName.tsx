@@ -110,7 +110,7 @@ export default function CourseGroupingByName() {
                             <Tbody>
                                 {courseGroupings.slice(0, courseGroupings.length).map((grouping) => (
                                     <Tr key={grouping.id} display={"flex"}>
-                                        <Td minW={"250px"} maxW={"250px"}>
+                                        <Td overflow="hidden" textOverflow="ellipsis" minW={"250px"} maxW={"250px"}>
                                             {grouping.name}
                                         </Td>
                                         <Td minW={"455px"} maxW={"455px"}>
@@ -118,7 +118,7 @@ export default function CourseGroupingByName() {
                                                 {grouping.requiredCredits}
                                             </Text>
                                         </Td>
-                                        <Td minW={"130px"} maxW={"130px"}>
+                                        <Td overflow="hidden" textOverflow="ellipsis" minW={"130px"} maxW={"130px"}>
                                             {grouping.school}
                                         </Td>
 
