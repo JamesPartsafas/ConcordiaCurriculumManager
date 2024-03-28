@@ -6,107 +6,130 @@ import {
     FormControl,
     FormLabel,
     Stack,
-    NumberInput,
-    NumberInputField,
     Box,
     Textarea,
     useToast,
     FormErrorMessage,
+    Input,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { deleteCourse, getAllCourseSettings } from "../services/course";
-import { AllCourseSettings } from "../models/course";
-import AutocompleteInput from "../components/Select";
-import { showToast } from "./../utils/toastUtils";
-import Button from "../components/Button";
-import { useNavigate, useParams } from "react-router-dom";
-import { BaseRoutes } from "../constants";
+import { editCourseDeletionRequest } from "../../services/course";
+import { CourseDeletionRequest, DeletedCourse } from "../../models/course";
+import { showToast } from "../../utils/toastUtils";
+import Button from "../../components/Button";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { BaseRoutes } from "../../constants";
 
-export default function DeleteCourse() {
+export default function DeleteCourseEdit() {
     const { dossierId } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const toast = useToast();
 
     const [isLoading, toggleLoading] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
-    const [courseSubjectError, setCourseSubjectError] = useState(true);
-    const [courseCatalogError, setCourseCatalogError] = useState(true);
-    const [rationaleError, setRationaleError] = useState(true);
-    const [resourceImplicationError, setResourceImplicationError] = useState(true);
+    const [rationaleError, setRationaleError] = useState(false);
+    const [resourceImplicationError, setResourceImplicationError] = useState(false);
+    const [formError, setFormError] = useState(true);
 
-    const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
-    const [subject, setSubject] = useState("");
-    const [catalog, setCatalog] = useState("");
+    const emptyCourse: DeletedCourse = {
+        subject: "",
+        catalog: "",
+        title: "",
+        description: "",
+        creditValue: "",
+        preReqs: "",
+        career: 0,
+        equivalentCourses: "",
+        componentCodes: undefined,
+        dossierId: "",
+        courseNotes: "",
+        rationale: "",
+        supportingFiles: undefined,
+        resourceImplication: "",
+        id: "",
+        createdDate: undefined,
+        modifiedDate: undefined,
+        version: 0,
+        published: false,
+        courseState: 0,
+        comment: "",
+    };
+    const emptyCourseDeletionRequest: CourseDeletionRequest = {
+        course: emptyCourse,
+        courseId: "",
+        id: "",
+        dossierId: "",
+        rationale: "",
+        resourceImplication: "",
+        comment: "",
+        createdDate: undefined,
+        modifiedDate: undefined,
+    };
+    const [courseDeletionRequest, setCourseDeletionRequest] =
+        useState<CourseDeletionRequest>(emptyCourseDeletionRequest);
     const [rationale, setRationale] = useState("");
     const [resourceImplication, setResourceImplication] = useState("");
     const [comment, setComment] = useState("");
 
-    const handleChangeSubject = (value: string) => {
-        if (value.length === 0) setCourseSubjectError(true);
-        else setCourseSubjectError(false);
-        setSubject(value);
-    };
-    const handleChangeCatalog = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.currentTarget.value.length === 0) setCourseCatalogError(true);
-        else setCourseCatalogError(false);
-        setCatalog(e.currentTarget.value);
-    };
     const handleChangeRationale = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         if (e.currentTarget.value.length === 0) setRationaleError(true);
         else setRationaleError(false);
         setRationale(e.currentTarget.value);
+        setFormError(false);
     };
     const handleChangeResourceImplication = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         if (e.currentTarget.value.length === 0) setResourceImplicationError(true);
         else setResourceImplicationError(false);
         setResourceImplication(e.currentTarget.value);
+        setFormError(false);
     };
     const handleChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setComment(e.currentTarget.value);
+        setFormError(false);
     };
     const handleSubmitRequest = () => {
         setFormSubmitted(true);
-        if (courseSubjectError || courseCatalogError || rationaleError || resourceImplicationError) return;
-        else {
+        if (formError) {
+            showToast(toast, "Error!", "You cannot submit a change that performs no modifications.", "error");
+            return;
+        } else if (rationale.trim().length === 0) {
+            setRationaleError(true);
+            return;
+        } else if (resourceImplication.trim().length === 0) {
+            setResourceImplicationError(true);
+            return;
+        } else {
             toggleLoading(true);
-            const courseDeletionRequest = {
+            const courseDeletionRequestData = {
                 dossierId: dossierId,
                 rationale: rationale,
                 resourceImplication: resourceImplication,
-                subject: subject,
-                catalog: catalog,
                 comment: comment,
+                id: courseDeletionRequest.id,
             };
-            deleteCourse(dossierId, courseDeletionRequest)
+            editCourseDeletionRequest(dossierId, courseDeletionRequestData)
                 .then(() => {
-                    showToast(toast, "Success!", "Course deletion request successfully added.", "success");
+                    showToast(toast, "Success!", "Course deletion request successfully changed.", "success");
                     toggleLoading(false);
                     navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId));
                 })
-                .catch((err) => {
-                    showToast(
-                        toast,
-                        "Error!",
-                        err.response ? err.response.data : "One or more validation errors occurred",
-                        "error"
-                    );
+                .catch(() => {
+                    showToast(toast, "Error!", "One or more validation errors occurred", "error");
                     toggleLoading(false);
                 });
         }
     };
     useEffect(() => {
-        getAllCourseSettings()
-            .then((res) => {
-                setAllCourseSettings(res.data);
-            })
-            .catch((err) => {
-                showToast(toast, "Error!", err.message, "error");
-            });
+        setRationale(location.state.key.rationale);
+        setResourceImplication(location.state.key.resourceImplication);
+        setComment(location.state.key.comment);
+        setCourseDeletionRequest(location.state.key);
     }, []);
 
     return (
         <>
-            {allCourseSettings && (
+            {
                 <Box>
                     <form>
                         <Flex>
@@ -114,7 +137,7 @@ export default function DeleteCourse() {
                                 <Button
                                     style="primary"
                                     variant="outline"
-                                    width="100px"
+                                    width="10%"
                                     height="40px"
                                     onClick={() => navigate(BaseRoutes.DossierDetails.replace(":dossierId", dossierId))}
                                 >
@@ -123,34 +146,29 @@ export default function DeleteCourse() {
                                 <Stack>
                                     <Center>
                                         <Heading as="h1" size="2xl" color="brandRed">
-                                            Delete Course
+                                            Edit Course Deletion Request
                                         </Heading>
                                     </Center>
                                 </Stack>
                                 <Stack>
                                     <Stack>
-                                        <FormControl isInvalid={courseSubjectError && formSubmitted}>
+                                        <FormControl>
                                             <FormLabel m={0}>Subject</FormLabel>
-                                            <AutocompleteInput
-                                                options={allCourseSettings?.courseSubjects}
-                                                onSelect={handleChangeSubject}
+                                            <Input
+                                                value={courseDeletionRequest?.course?.subject}
                                                 width="100%"
-                                                placeholder="Subject"
+                                                readOnly
                                             />
-                                            <FormErrorMessage>Subject is required</FormErrorMessage>
                                         </FormControl>
                                     </Stack>
                                     <Stack>
-                                        <FormControl isInvalid={courseCatalogError && formSubmitted}>
+                                        <FormControl>
                                             <FormLabel m={0}>Course Code</FormLabel>
-                                            <NumberInput value={catalog}>
-                                                <NumberInputField
-                                                    placeholder="Course Code"
-                                                    pl="16px"
-                                                    onChange={handleChangeCatalog}
-                                                />
-                                            </NumberInput>
-                                            <FormErrorMessage>Course code is required</FormErrorMessage>
+                                            <Input
+                                                value={courseDeletionRequest?.course?.catalog}
+                                                width="100%"
+                                                readOnly
+                                            />
                                         </FormControl>
                                     </Stack>
                                 </Stack>
@@ -200,6 +218,7 @@ export default function DeleteCourse() {
                                         <FormControl>
                                             <Textarea
                                                 value={comment}
+                                                //defaultValue={courseDeletionRequest?.comment}
                                                 onChange={handleChangeComment}
                                                 placeholder="Add any additional comments."
                                                 minH={"200px"}
@@ -224,7 +243,7 @@ export default function DeleteCourse() {
                         </Flex>
                     </form>
                 </Box>
-            )}
+            }
         </>
     );
 }

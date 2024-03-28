@@ -1,11 +1,11 @@
 import { Card, Text, Heading } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Course } from "../models/course";
-import { getCourseData } from "../services/course";
+import { Course } from "../../models/course";
+import { getCourseData } from "../../services/course";
 import { useNavigate } from "react-router-dom";
-import { BaseRoutes } from "../constants";
-import Button from "../components/Button";
+import { BaseRoutes } from "../../constants";
+import Button from "../../components/Button";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
