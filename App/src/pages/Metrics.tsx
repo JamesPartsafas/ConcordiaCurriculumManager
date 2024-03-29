@@ -241,26 +241,26 @@ export default function Metrics() {
                     <Thead backgroundColor={"#e2e8f0"}>
                         <Tr>
                             <Th whiteSpace="nowrap" textAlign={"center"}>
-                                Endpoint
+                                Dossier Name
                             </Th>
                             <Th whiteSpace="nowrap" textAlign={"center"}>
-                                FullPath
+                                Dossier State
                             </Th>
                             <Th whiteSpace="nowrap" textAlign={"center"}>
                                 Count
                             </Th>
                         </Tr>
                         <Tbody>
-                            {httpEndpointCount.slice(endpointIndex, endpointIndex + 5).map((endpoint) => (
+                            {dossierViewCount.slice(dossierViewIndex, dossierViewIndex + 5).map((dossier) => (
                                 <Tr>
                                     <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                                        {endpoint.endpoint}
+                                        {dossier.dossier.title}
                                     </Td>
                                     <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                                        {endpoint.fullpath}
+                                        {dossier.dossier.state}
                                     </Td>
                                     <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                                        {endpoint.count}
+                                        {dossier.count}
                                     </Td>
                                 </Tr>
                             ))}
@@ -270,16 +270,16 @@ export default function Metrics() {
                                 <Td height={20}>
                                     <Flex>
                                         <Text alignSelf="center">
-                                            Showing {endpointIndex} to {endpointIndex + 5} of {httpEndpointCount.length}{" "}
-                                            results
+                                            Showing {dossierViewIndex} to {dossierViewIndex + 5} of{" "}
+                                            {dossierViewCount.length} results
                                         </Text>
                                         <Spacer />
                                         <ChakraButton
                                             mr={4}
                                             p={4}
                                             variant="outline"
-                                            onClick={() => getHttpEndpoints(endpointIndex - 5)}
-                                            isDisabled={endpointIndex < 5}
+                                            onClick={() => getHttpEndpoints(dossierViewIndex - 5)}
+                                            isDisabled={dossierViewIndex < 5}
                                         >
                                             Prev
                                         </ChakraButton>
@@ -287,11 +287,11 @@ export default function Metrics() {
                                             p={4}
                                             variant="outline"
                                             onClick={() =>
-                                                endpointIndex + 5 < httpEndpointCount.length
-                                                    ? getHttpEndpoints(endpointIndex + 5)
-                                                    : getHttpEndpoints(httpEndpointCount.length - 1)
+                                                dossierViewIndex + 5 < dossierViewCount.length
+                                                    ? getHttpEndpoints(dossierViewIndex + 5)
+                                                    : getHttpEndpoints(dossierViewCount.length - 1)
                                             }
-                                            isDisabled={endpointIndex + 5 >= httpEndpointCount.length}
+                                            isDisabled={dossierViewIndex + 5 >= dossierViewCount.length}
                                         >
                                             Next
                                         </ChakraButton>
@@ -308,26 +308,22 @@ export default function Metrics() {
                     <Thead backgroundColor={"#e2e8f0"}>
                         <Tr>
                             <Th whiteSpace="nowrap" textAlign={"center"}>
-                                Endpoint
+                                User Email
                             </Th>
-                            <Th whiteSpace="nowrap" textAlign={"center"}>
-                                FullPath
-                            </Th>
+
                             <Th whiteSpace="nowrap" textAlign={"center"}>
                                 Count
                             </Th>
                         </Tr>
                         <Tbody>
-                            {httpEndpointCount.slice(endpointIndex, endpointIndex + 5).map((endpoint) => (
+                            {userDossierViewedCount.slice(userDossierIndex, userDossierIndex + 5).map((user) => (
                                 <Tr>
                                     <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                                        {endpoint.endpoint}
+                                        {user.user.email}
                                     </Td>
+
                                     <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                                        {endpoint.fullpath}
-                                    </Td>
-                                    <Td whiteSpace="nowrap" padding="16px" textAlign="center">
-                                        {endpoint.count}
+                                        {user.count}
                                     </Td>
                                 </Tr>
                             ))}
@@ -337,16 +333,16 @@ export default function Metrics() {
                                 <Td height={20}>
                                     <Flex>
                                         <Text alignSelf="center">
-                                            Showing {endpointIndex} to {endpointIndex + 5} of {httpEndpointCount.length}{" "}
-                                            results
+                                            Showing {userDossierIndex} to {userDossierIndex + 5} of{" "}
+                                            {userDossierViewedCount.length} results
                                         </Text>
                                         <Spacer />
                                         <ChakraButton
                                             mr={4}
                                             p={4}
                                             variant="outline"
-                                            onClick={() => getHttpEndpoints(endpointIndex - 5)}
-                                            isDisabled={endpointIndex < 5}
+                                            onClick={() => getHttpEndpoints(userDossierIndex - 5)}
+                                            isDisabled={userDossierIndex < 5}
                                         >
                                             Prev
                                         </ChakraButton>
@@ -354,11 +350,11 @@ export default function Metrics() {
                                             p={4}
                                             variant="outline"
                                             onClick={() =>
-                                                endpointIndex + 5 < httpEndpointCount.length
-                                                    ? getHttpEndpoints(endpointIndex + 5)
-                                                    : getHttpEndpoints(httpEndpointCount.length - 1)
+                                                userDossierIndex + 5 < userDossierViewedCount.length
+                                                    ? getHttpEndpoints(userDossierIndex + 5)
+                                                    : getHttpEndpoints(userDossierViewedCount.length - 1)
                                             }
-                                            isDisabled={endpointIndex + 5 >= httpEndpointCount.length}
+                                            isDisabled={userDossierIndex + 5 >= userDossierViewedCount.length}
                                         >
                                             Next
                                         </ChakraButton>
