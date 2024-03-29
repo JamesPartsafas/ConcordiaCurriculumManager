@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
     Box,
     Button,
@@ -21,6 +21,7 @@ import { useForm } from "react-hook-form";
 import { AuthenticationResponse, decodeTokenToUser, isAdminOrGroupMaster, login, LoginDTO } from "../services/auth";
 import { User } from "../models/user";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { BaseRoutes } from "../constants";
 import { showToast } from "../utils/toastUtils";
 
@@ -32,12 +33,36 @@ export interface LoginProps {
 
 export default function Login(props: LoginProps) {
     const navigate = useNavigate();
-    const { register, handleSubmit, setValue } = useForm<LoginDTO>();
+    const { register, handleSubmit } = useForm<LoginDTO>();
     const [showPassword, setShowPassword] = useState(false);
     const [showError, setShowError] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
     const toast = useToast();
     const [loading, setLoading] = useState<boolean>(false);
+    const [rememberMe, setRememberMe] = useState<boolean>(true); // Set default to true
+
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            if (!rememberMe) {
+                // Clear the token from local storage if "Remember me" is not checked
+                localStorage.removeItem("accessToken");
+            } else {
+                // Clear the token from session storage if "Remember me" is checked
+                sessionStorage.removeItem("accessToken");
+            }
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        // Check if "Remember me" is enabled on page load
+        const storedRememberMe = localStorage.getItem("rememberMe");
+        if (storedRememberMe !== null) {
+            setRememberMe(JSON.parse(storedRememberMe));
+        }
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, []);
 
     function toggleShowPassword() {
         setShowPassword(!showPassword);
@@ -50,46 +75,32 @@ export default function Login(props: LoginProps) {
             .then(
                 (res: AuthenticationResponse) => {
                     if (res.data.accessToken != null) {
-                        showToast(toast, "Success!", "You have successfully logged in.", "success");
                         const user: User = decodeTokenToUser(res.data.accessToken);
                         props.setUser(user);
                         props.setIsLoggedIn(true);
                         props.setIsAdminOrGroupMaster(isAdminOrGroupMaster(user));
                         navigate("/");
                         if (rememberMe) {
-                            localStorage.setItem("rememberedUser", JSON.stringify(data)); // Store email and password in local storage
+                            localStorage.setItem("accessToken", res.data.accessToken); // Save to local storage if "Remember me" is checked
+                            localStorage.setItem("token", res.data.accessToken);
+                        } else {
+                            sessionStorage.setItem("accessToken", res.data.accessToken); // Save to session storage if "Remember me" is not checked
                         }
+                        showToast(toast, "Success!", "You have successfully logged in.", "success");
                     }
                 },
                 (rej) => {
                     console.log(rej);
-                    //wrong password
                     if (rej.response?.status === 400) {
                         setShowError(true);
                         showToast(toast, "Error!", "Incorrect Credentials", "error");
-                        setLoading(false);
                     } else {
                         showToast(toast, "Error!", rej.message, "error");
-                        setLoading(false);
                     }
                 }
             )
-            .catch((err) => {
-                console.log(err);
-                console.log("err");
-            });
+            .finally(() => setLoading(false));
     }
-
-    useEffect(() => {
-        const rememberedUser = localStorage.getItem("rememberedUser");
-        if (rememberedUser) {
-            setRememberMe(true);
-            const userData = JSON.parse(rememberedUser);
-            Object.keys(userData).forEach((key) => {
-                setValue(key as "email" | "password", userData[key]); // Pre-fill email and password fields
-            });
-        }
-    }, [setValue]);
 
     return (
         <>
@@ -140,7 +151,7 @@ export default function Login(props: LoginProps) {
                                     </FormControl>
                                 </Stack>
                                 <HStack justify="space-between">
-                                    <Checkbox isChecked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)}>
+                                    <Checkbox defaultChecked onChange={(e) => setRememberMe(e.target.checked)}>
                                         Remember me
                                     </Checkbox>
                                     <Button
