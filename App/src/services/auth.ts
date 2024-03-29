@@ -51,10 +51,19 @@ export function RegisterUser(dto: RegisterDTO): Promise<AuthenticationResponse> 
 }
 
 export function logout(): Promise<void> {
-    return axios.post("/Authentication/Logout").then(() => {
-        //remove token from local storage
-        localStorage.removeItem("token");
-        localStorage.removeItem("accessToken");
+    return new Promise<void>((resolve, reject) => {
+        axios
+            .post("/Authentication/Logout")
+            .then(() => {
+                // Clear the token and authorization header
+                localStorage.removeItem("token");
+                localStorage.removeItem("accessToken");
+                delete axios.defaults.headers.common["Authorization"]; // Clear authorization header
+                resolve();
+            })
+            .catch((error) => {
+                reject(error);
+            });
     });
 }
 
