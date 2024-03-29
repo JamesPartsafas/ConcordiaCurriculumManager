@@ -1,6 +1,6 @@
 import { Container, Heading, Stack, Text } from "@chakra-ui/react";
 import Button from "../components/Button";
-import { BaseRoutes } from "../constants";
+//import { BaseRoutes } from "../constants";
 import { useNavigate } from "react-router-dom";
 
 export default function NoData() {
@@ -25,9 +25,9 @@ export default function NoData() {
                         width="200px"
                         height="40px"
                         margin="0px"
-                        onClick={() => navigate(BaseRoutes.Home)}
+                        onClick={() => navigate(-3)} // i have no clue why -3 here but it works.
                     >
-                        Go Home
+                        Go back
                     </Button>
                 </Stack>
             </Container>
