@@ -490,7 +490,10 @@ export default function DossierReview() {
         const [editError, setEditError] = useState(true);
         const [editSubmitted, setEditSubmitted] = useState(false);
 
-        const [showReplies, setShowReplies] = useState(false);
+        const [showReplies, setShowReplies] = useState<boolean>(() => {
+            const storedMessageState = localStorage.getItem(message.id);
+            return storedMessageState ? JSON.parse(storedMessageState) : false;
+        });
 
         const [messageUpvoted, setMessageUpvoted] = useState(false);
         const [messageDownvoted, setMessageDownvoted] = useState(false);
@@ -516,7 +519,9 @@ export default function DossierReview() {
         } = useDisclosure();
 
         const toggleReplies = () => {
-            setShowReplies(!showReplies);
+            const newMessageState = !showReplies;
+            setShowReplies(newMessageState);
+            localStorage.setItem(message.id, JSON.stringify(newMessageState));
         };
 
         const handleToggleReply = () => {
@@ -785,10 +790,15 @@ export default function DossierReview() {
         const marginLeft = `${depth * 20}px`;
         const colorDepth = `gray.${Math.min(depth * 100 + 100, 500)}`;
 
-        const [showReplies, setShowReplies] = useState(false);
+        const [showReplies, setShowReplies] = useState<boolean>(() => {
+            const storedMessageState = localStorage.getItem(message.id);
+            return storedMessageState ? JSON.parse(storedMessageState) : false;
+        });
 
         const toggleReplies = () => {
-            setShowReplies(!showReplies);
+            const newMessageState = !showReplies;
+            setShowReplies(newMessageState);
+            localStorage.setItem(message.id, JSON.stringify(newMessageState));
         };
 
         return (
