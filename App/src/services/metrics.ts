@@ -52,7 +52,7 @@ export interface UserDossierViewedCountDTO
 export interface UserDossierViewedResponseDTO
 {
     result: UserDossierViewedCountDTO[];
-    nextInt: number
+    nextIndex: number
 }
 
 //api calls
