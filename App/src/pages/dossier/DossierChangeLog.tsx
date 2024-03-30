@@ -3,7 +3,7 @@ import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { DossierReportDTO } from "../../models/dossier";
+import { ChangeLogDTO } from "../../models/dossier";
 import { changeLogPublishCourse, getChangesAcrossAllDossiers } from "../../services/dossier";
 import { AllCourseSettings, componentMappings } from "../../models/course";
 import { getAllCourseSettings } from "../../services/course";
@@ -15,12 +15,13 @@ import { showToast } from "../../utils/toastUtils";
 import { useContext } from "react";
 import { isAdminOrGroupMaster } from "../../services/auth";
 import { UserContext } from "../../App";
+import DossierReportCourseGrouping from "../../components/Dossiers/DossierReportCourseGrouping";
 
 export default function DossierChangeLog() {
     const toast = useToast();
     const user = useContext(UserContext);
     const navigate = useNavigate();
-    const [dossierReport, setDossierReport] = useState<DossierReportDTO | null>(null);
+    const [dossierReport, setDossierReport] = useState<ChangeLogDTO | null>(null);
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
 
     useEffect(() => {
@@ -336,7 +337,7 @@ export default function DossierChangeLog() {
                                     </Text>
 
                                     <Text fontSize="md" marginBottom="3">
-                                        <b> Ressource Implications:</b> <br />
+                                        <b> Resource Implications:</b> <br />
                                         {courseCreationRequest.course.resourceImplication ?? "N/A"}
                                     </Text>
 
@@ -420,7 +421,7 @@ export default function DossierChangeLog() {
                                         {courseModificationRequest.course.title}
                                     </Heading>
                                     <Text fontSize="md" marginBottom="3">
-                                        <b> Ressource Implications: </b>
+                                        <b> Resource Implications: </b>
                                         {courseModificationRequest.resourceImplication == ""
                                             ? "N/A"
                                             : courseModificationRequest.resourceImplication}
@@ -472,6 +473,9 @@ export default function DossierChangeLog() {
                             </ListItem>
                         ))}
                     </OrderedList>
+                    <DossierReportCourseGrouping
+                        courseGrouping={dossierReport?.courseGroupingRequests}
+                    ></DossierReportCourseGrouping>
                 </Container>
 
                 <Button
