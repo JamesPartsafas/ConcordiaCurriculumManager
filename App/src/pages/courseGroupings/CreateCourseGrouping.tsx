@@ -87,20 +87,30 @@ export default function CreateCourseGrouping() {
     const courseGroupingWatched = watch("courseGrouping"); // Watches the entire courseGrouping object
     const {
         fields: subGroupFields,
-        append: appendSubGroup,
-        remove: removeSubGroup,
+        append: appendSubGroupRef,
+        remove: removeSubGroupRef,
     } = useFieldArray({
         control,
         name: "courseGrouping.subGroupingReferences",
     });
 
+    const { append: appendSubGroup } = useFieldArray({
+        control,
+        name: "courseGrouping.subGroupings",
+    });
+
     const {
         fields: courseFields,
-        append: appendCourse,
-        remove: removeCourse,
+        append: appendCourseIdentifier,
+        remove: removeCourseIdentifier,
     } = useFieldArray({
         control,
         name: "courseGrouping.courseIdentifiers",
+    });
+
+    const { append: appendCourse } = useFieldArray({
+        control,
+        name: "courseGrouping.courses",
     });
 
     const fieldConfigurations = [
@@ -343,19 +353,21 @@ export default function CreateCourseGrouping() {
     }
 
     function handleCourseSelect(res: CourseDataResponse) {
-        appendCourse({
+        appendCourseIdentifier({
             concordiaCourseId: res.data.courseID,
             subject: res.data.subject,
             catalog: parseInt(res.data.catalog),
         });
+        appendCourse(res.data);
     }
 
     function handleCourseGroupingSelect(res) {
-        appendSubGroup({
+        appendSubGroupRef({
             name: res.name,
             childGroupCommonIdentifier: res.commonIdentifier,
             groupingType: res.groupingType,
         });
+        appendSubGroup(res);
     }
 
     useEffect(() => {
@@ -487,7 +499,7 @@ export default function CreateCourseGrouping() {
                                                 isAttached
                                                 variant="outline"
                                                 ml="10px"
-                                                onClick={() => removeSubGroup(index)}
+                                                onClick={() => removeSubGroupRef(index)}
                                             >
                                                 <IconButton
                                                     rounded="full"
@@ -536,7 +548,7 @@ export default function CreateCourseGrouping() {
                                                 isAttached
                                                 variant="outline"
                                                 ml="10px"
-                                                onClick={() => removeCourse(index)}
+                                                onClick={() => removeCourseIdentifier(index)}
                                             >
                                                 <IconButton
                                                     rounded="full"
