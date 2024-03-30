@@ -66,7 +66,7 @@ const CourseGroupingDiffViewer = ({
             }
         });
         newGrouping.courseIdentifiers.filter((newRef) => {
-            const newCourse = oldGrouping.courses.find((course) => newRef.concordiaCourseId === course.courseID);
+            const newCourse = newGrouping.courses.find((course) => newRef.concordiaCourseId === course.courseID);
             if (newCourse) {
                 newCourseRef = newCourseRef + newCourse.subject + " " + newCourse.catalog.toString();
                 if (newGrouping.courseIdentifiers.indexOf(newRef) < newGrouping.courseIdentifiers.length - 1) {
@@ -93,7 +93,7 @@ const CourseGroupingDiffViewer = ({
             }
         });
         newGrouping.subGroupingReferences.filter((newRef) => {
-            const newSubGrouping = oldGrouping.subGroupings.find(
+            const newSubGrouping = newGrouping.subGroupings.find(
                 (subGrouping) => newRef.childGroupCommonIdentifier === subGrouping.commonIdentifier
             );
             if (newSubGrouping) {
