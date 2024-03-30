@@ -1,15 +1,22 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CourseGroupingDTO, CourseGroupingRequestDTO } from "../../models/courseGrouping";
 import { Box, Heading, ListItem, OrderedList, Stack, Text } from "@chakra-ui/react";
+import { isAdminOrGroupMaster } from "../../services/auth";
+import { UserContext } from "../../App";
+
 import CourseGroupingDiffViewer from "../CourseDifference/CourseGroupingDifference";
+import Button from "../Button";
 
 export default function DossierReportCourseGrouping(props: {
     courseGrouping: CourseGroupingRequestDTO[];
     oldGroupings: CourseGroupingDTO[];
+    onPublishGrouping?: (commonIdentifier) => void;
 }) {
     const [creationRequests, setCreationRequests] = useState<CourseGroupingRequestDTO[]>([]);
     const [modificationRequest, setModificationRequests] = useState<CourseGroupingRequestDTO[]>([]);
     const [deletionRequests, setDeletionRequests] = useState<CourseGroupingRequestDTO[]>([]);
+
+    const user = useContext(UserContext);
 
     const parseCourseGrouping = () => {
         if (!props.courseGrouping) return;
@@ -55,6 +62,10 @@ export default function DossierReportCourseGrouping(props: {
 
     function getOldCourseGrouping(commonIdentifier: string) {
         return props.oldGroupings.find((grouping) => grouping.commonIdentifier === commonIdentifier);
+    }
+
+    function isChangeLog() {
+        return window.location.pathname === "/change-log";
     }
     return (
         <>
@@ -136,10 +147,25 @@ export default function DossierReportCourseGrouping(props: {
                                         <b>Conflicts:</b> <br />
                                         {creationRequest.conflict == "" ? "N/A" : creationRequest.comment}
                                     </Text>
+                                    {isAdminOrGroupMaster(user) && isChangeLog && (
+                                        <Button
+                                            style="primary"
+                                            variant="outline"
+                                            height="40px"
+                                            width="fit-content"
+                                            onClick={() =>
+                                                props.onPublishGrouping(creationRequest.courseGrouping.commonIdentifier)
+                                            }
+                                            className="non-printable-content"
+                                        >
+                                            Publish
+                                        </Button>
+                                    )}
                                 </ListItem>
                             ))}
                         </OrderedList>
                     </Stack>
+
                     <Stack>
                         <Heading fontSize="2xl" mb={4} mt={4}>
                             Course Grouping Modification Requests:
@@ -189,6 +215,22 @@ export default function DossierReportCourseGrouping(props: {
                                         <b>Conflicts:</b> <br />
                                         {modificationRequest.conflict == "" ? "N/A" : modificationRequest.comment}
                                     </Text>
+                                    {isAdminOrGroupMaster(user) && isChangeLog && (
+                                        <Button
+                                            style="primary"
+                                            variant="outline"
+                                            height="40px"
+                                            width="fit-content"
+                                            onClick={() =>
+                                                props.onPublishGrouping(
+                                                    modificationRequest.courseGrouping.commonIdentifier
+                                                )
+                                            }
+                                            className="non-printable-content"
+                                        >
+                                            Publish
+                                        </Button>
+                                    )}
                                 </ListItem>
                             ))}
                         </OrderedList>
@@ -269,6 +311,20 @@ export default function DossierReportCourseGrouping(props: {
                                         <b>Conflicts:</b> <br />
                                         {creationRequest.conflict == "" ? "N/A" : creationRequest.comment}
                                     </Text>
+                                    {isAdminOrGroupMaster(user) && isChangeLog && (
+                                        <Button
+                                            style="primary"
+                                            variant="outline"
+                                            height="40px"
+                                            width="fit-content"
+                                            onClick={() =>
+                                                props.onPublishGrouping(creationRequest.courseGrouping.commonIdentifier)
+                                            }
+                                            className="non-printable-content"
+                                        >
+                                            Publish
+                                        </Button>
+                                    )}
                                 </ListItem>
                             ))}
                         </OrderedList>
