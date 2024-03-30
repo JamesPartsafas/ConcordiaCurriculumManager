@@ -1,10 +1,9 @@
 // ManageableGroups.tsx
 
-import React, { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import {
     Container,
     Box,
-    Button,
     AlertDialog,
     AlertDialogBody,
     AlertDialogFooter,
@@ -14,6 +13,7 @@ import {
     Flex,
     Input,
     useToast,
+    useDisclosure,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { isAdmin } from "../../services/auth";
@@ -21,6 +21,8 @@ import { GetAllGroups, GroupDTO, MultiGroupResponseDTO, DeleteGroup, UpdateGroup
 import { BaseRoutes } from "../../constants";
 import { UserContext } from "../../App";
 import GroupTable from "../../components/GroupTable";
+import Button from "../../components/Button";
+import ManageableGroupsTreeStructure from "../../components/ManageableGroupsTreeStructure";
 
 export default function DisplayManageableGroups() {
     const [myGroups, setMyGroups] = useState<GroupDTO[]>([]);
@@ -32,6 +34,8 @@ export default function DisplayManageableGroups() {
     const user = useContext(UserContext);
     const cancelRef = useRef();
     const toast = useToast();
+
+    const { isOpen: isTreeOpen, onOpen: onTreeOpen, onClose: onTreeClose } = useDisclosure();
 
     useEffect(() => {
         GetAllGroups()
@@ -105,8 +109,24 @@ export default function DisplayManageableGroups() {
         });
     };
 
+    function displayTreeModal() {
+        return <ManageableGroupsTreeStructure isOpen={isTreeOpen} onClose={onTreeClose} ManageableGroups={myGroups} />;
+    }
+
     return (
         <Box overflowX="auto" width="100%" height="100vh" padding="2vw">
+            {displayTreeModal()}
+            <Button
+                style="secondary"
+                width="auto"
+                height="50px"
+                variant="outline"
+                marginTop="16px"
+                onClick={onTreeOpen}
+            >
+                Explore Tree Map
+            </Button>
+
             <Container
                 maxW="5xl"
                 height="80vh"

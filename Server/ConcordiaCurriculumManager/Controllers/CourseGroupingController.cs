@@ -7,6 +7,7 @@ using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
 using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
@@ -25,11 +26,13 @@ public class CourseGroupingController : Controller
 {
     private readonly IMapper _mapper;
     private readonly ICourseGroupingService _courseGroupingService;
+    private readonly IDossierService _dossierService;
 
-    public CourseGroupingController(ICourseGroupingService courseGroupingService, IMapper mapper)
+    public CourseGroupingController(ICourseGroupingService courseGroupingService, IMapper mapper, IDossierService dossierService)
     {
         _courseGroupingService = courseGroupingService;
         _mapper = mapper;
+        _dossierService = dossierService;
     }
 
     [HttpGet(nameof(GetCourseGrouping) + "/{courseGroupingId}")]
@@ -181,5 +184,29 @@ public class CourseGroupingController : Controller
         var editedCourseGroupingDTO = _mapper.Map<CourseGroupingDTO>(editedCourseGrouping);
 
         return Ok(editedCourseGroupingDTO);
+    }
+
+    [HttpGet("SearchGroupingsWithDossier/{dossierId}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Custom search results")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<IActionResult> SearchGroupingsWithDossier([FromRoute] Guid dossierId, [FromQuery] string searchQuery)
+    {
+        var courseGroupings = await _courseGroupingService.GetCourseGroupingsByDossierAndName(dossierId, searchQuery.Trim());
+
+        var courseGroupingDTOs = _mapper.Map<List<CourseGroupingDTO>>(courseGroupings);
+
+        return Ok(courseGroupingDTOs);
+    }
+
+    [HttpGet(nameof(GetCourseGroupingHistory) + "/{commonIdentifier}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course history retrieved")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetCourseGroupingHistory([FromRoute, Required] Guid commonIdentifier)
+    {
+        var courseData = await _courseGroupingService.GetCourseGroupingHistory(commonIdentifier);
+        var courseDataDTOs = _mapper.Map<IEnumerable<CourseGroupingDTO>>(courseData);
+        return Ok(courseDataDTOs);
     }
 }

@@ -50,6 +50,8 @@ public class CCMDbContext : DbContext
 
     public DbSet<DiscussionMessage> DiscussionMessage { get; set; }
 
+    public DbSet<DiscussionMessageVote> DiscussionMessageVote { get; set; }
+
     public DbSet<HttpMetric> HttpMetrics { get; set; }
 
     public DbSet<DossierMetric> DossierMetrics { get; set; }
@@ -223,6 +225,20 @@ public class CCMDbContext : DbContext
             .HasOne(message => message.ParentDiscussionMessage)
             .WithMany()
             .HasForeignKey(message => message.ParentDiscussionMessageId);
+
+        modelBuilder.Entity<DiscussionMessage>()
+            .HasMany(message => message.DiscussionMessageVotes)
+            .WithOne(vote => vote.DiscussionMessage)
+            .HasForeignKey(vote => vote.DiscussionMessageId);
+
+        modelBuilder.Entity<DiscussionMessageVote>()
+            .HasOne(vote => vote.User)
+            .WithMany()
+            .HasForeignKey(vote => vote.UserId);
+
+        modelBuilder.Entity<DiscussionMessageVote>()
+            .HasIndex(vote => new { vote.UserId, vote.DiscussionMessageId })
+            .IsUnique();
     }
 
     private static void ConfigureCourseGroupingRelationships(ModelBuilder modelBuilder)

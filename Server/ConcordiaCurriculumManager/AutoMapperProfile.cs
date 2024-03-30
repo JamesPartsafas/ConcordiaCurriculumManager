@@ -77,5 +77,7 @@ public class AutoMapper : Profile
         CreateMap<List<UserDossierViewedCount>, UserDossierViewedCountWrapperDTO>()
             .ForMember(dest => dest.Result, opt => opt.MapFrom(src => src))
             .ForMember(dest => dest.NextIndex, opt => opt.MapFrom(src => src.Count));
+        CreateMap<DiscussionMessageVote, DiscussionMessageVoteDTO>()
+           .ForMember(dest => dest.DiscussionMessageVoteValue, opt => opt.MapFrom(src => (VoteDossierDiscussionMessageValue)src.DiscussionMessageVoteValue));
     }
 }

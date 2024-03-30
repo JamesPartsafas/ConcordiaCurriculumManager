@@ -1,5 +1,6 @@
 using ConcordiaCurriculumManager.Filters;
 using ConcordiaCurriculumManager.Middleware.Metrics;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using ConcordiaCurriculumManager.Security;
@@ -197,6 +198,7 @@ public class Program
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IInputHasherService, InputHasherService>();
         services.AddSingleton<ICacheService<string>, CacheService<string>>();
+        services.AddSingleton<ICacheService<IEnumerable<DiscussionMessageVote>>, CacheService<IEnumerable<DiscussionMessageVote>>>();
         services.AddSingleton<IEmailService, EmailService>();
 
         services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();

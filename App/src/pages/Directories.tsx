@@ -28,7 +28,7 @@ interface UserSeachDTO {
 }
 
 export default function Directories() {
-    const [users, setUsers] = useState<UserDTO[]>([]);
+    const [users, setUsers] = useState<UserDTO[]>();
 
     const { register, handleSubmit } = useForm<UserSeachDTO>();
 

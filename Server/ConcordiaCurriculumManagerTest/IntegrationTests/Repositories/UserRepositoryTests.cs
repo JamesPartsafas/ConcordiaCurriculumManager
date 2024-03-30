@@ -2,6 +2,8 @@
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using ConcordiaCurriculumManager.Repositories;
 using Microsoft.EntityFrameworkCore;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
 
 namespace ConcordiaCurriculumManagerTest.IntegrationTests.Repositories;
 
@@ -155,5 +157,19 @@ public class UserRepositoryTests
         await dbContext.Users.AddRangeAsync(usersToAdd);
         await dbContext.SaveChangesAsync();
         return usersToAdd;
+    }
+
+    [TestMethod]
+    public async Task GetUserByResetPasswordToken_ValidToken_ReturnsUser()
+    {
+        var user = TestData.GetSampleUser();
+        var token = Guid.NewGuid();
+        user.ResetPasswordToken = token;
+
+        dbContext.Users.Add(user);
+        await dbContext.SaveChangesAsync();
+
+        var result = await userRepository.GetUserByResetPasswordToken(token);
+        Assert.IsNotNull(result);
     }
 }

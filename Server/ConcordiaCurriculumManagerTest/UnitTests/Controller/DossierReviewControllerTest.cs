@@ -83,7 +83,8 @@ public class DossierReviewControllerTest
             DossierDiscussionId = dossierId,
             Message = dossierMessageDTO.Message,
             GroupId = dossierMessageDTO.GroupId,
-            AuthorId = Guid.NewGuid()
+            AuthorId = Guid.NewGuid(),
+            IsDeleted = false
         };
 
         mapper.Setup(m => m.Map<DiscussionMessage>(dossierMessageDTO)).Returns(discussionMessage);

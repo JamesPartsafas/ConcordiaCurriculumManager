@@ -5,11 +5,7 @@ using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
-using NetTopologySuite.Utilities;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
-using System.Linq;
 
 namespace ConcordiaCurriculumManager.Services;
 public interface IDossierService
@@ -41,19 +37,22 @@ public class DossierService : IDossierService
     private readonly ICourseRepository _courseRepository;
     private readonly ICourseGroupingRepository _courseGroupingRepository;
     private readonly ICourseGroupingService _courseGroupingService;
+    private readonly ICacheService<IEnumerable<DiscussionMessageVote>> _cacheService;
 
     public DossierService(
         ILogger<DossierService> logger,
         IDossierRepository dossierRepository,
         ICourseRepository courseRepository,
         ICourseGroupingRepository courseGroupingRepository,
-        ICourseGroupingService courseGroupingService)
+        ICourseGroupingService courseGroupingService,
+        ICacheService<IEnumerable<DiscussionMessageVote>> cacheService)
     {
         _logger = logger;
         _dossierRepository = dossierRepository;
         _courseRepository = courseRepository;
         _courseGroupingRepository = courseGroupingRepository;
         _courseGroupingService = courseGroupingService;
+        _cacheService = cacheService;
     }
 
     public async Task<List<Dossier>> GetDossiersByID(Guid ID)
@@ -123,7 +122,43 @@ public class DossierService : IDossierService
         _logger.LogInformation($"Deleted {typeof(Dossier)} {dossier.Id}");
     }
 
-    public async Task<Dossier?> GetDossierDetailsById(Guid id) => await _dossierRepository.GetDossierByDossierId(id);
+    public async Task<Dossier?> GetDossierDetailsById(Guid id)
+    {
+        if (!_cacheService.Exists(id.ToString()))
+        {
+            return await GetDossierDetailsAndPersistInCache(id);
+        }
+
+        var dossier = await _dossierRepository.GetDossierByDossierIdWithoutVote(id);
+        if (dossier is null)
+        {
+            return dossier;
+        }
+
+        var votesFromCache = _cacheService.Get(id.ToString());
+        if (votesFromCache is null)
+        {
+            _logger.LogWarning("A cache value has changed or expired while obtaining an entry");
+            return await GetDossierDetailsAndPersistInCache(id);
+        }
+
+        var messages = dossier.Discussion.Messages.ToList();
+        foreach (var vote in votesFromCache)
+        {
+            var message = dossier.Discussion.Messages.FirstOrDefault(m => m.Id == vote.DiscussionMessageId);
+            var hasVote = message?.DiscussionMessageVotes.Any(existingVote => existingVote.Id.Equals(vote.Id));
+
+            if (message is not null && hasVote == false)
+            {
+                var messageVotes = message.DiscussionMessageVotes.ToList();
+                messageVotes.Add(vote);
+                message.DiscussionMessageVotes = messageVotes;
+                _dossierRepository.ReattachDiscussionMessage(message);
+            }
+        }
+
+        return dossier;
+    }
 
     public async Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id) => await _dossierRepository.GetDossierByDossierId(id)
         ?? throw new NotFoundException("The dossier does not exist.");
@@ -295,7 +330,7 @@ public class DossierService : IDossierService
 
         foreach (var cg in courseGroupings)
         {
-            if (cg.CourseGroupingRequest is not null) 
+            if (cg.CourseGroupingRequest is not null)
             {
                 var request = cg.CourseGroupingRequest;
                 cg.CourseGroupingRequest = null;
@@ -451,5 +486,30 @@ public class DossierService : IDossierService
 
             throw new BadRequestException($"The course {request.Course!.Title} cannot be deleted while its parent grouping {parentGrouping.Name} still references it");
         }
+    }
+
+    private async Task<Dossier?> GetDossierDetailsAndPersistInCache(Guid id)
+    {
+        var dossier = await _dossierRepository.GetDossierByDossierId(id);
+        var votes = dossier?.Discussion.Messages.SelectMany(message => message.DiscussionMessageVotes).Select(vote => new DiscussionMessageVote
+        {
+            Id = vote.Id,
+            UserId = vote.UserId,
+            CreatedDate = vote.CreatedDate,
+            ModifiedDate = vote.ModifiedDate,
+            DiscussionMessageId = vote.DiscussionMessageId,
+            DiscussionMessageVoteValue = vote.DiscussionMessageVoteValue,
+        });
+
+        if (votes is not null)
+        {
+            _cacheService.GetOrCreate(id.ToString(), () =>
+            {
+                var expiryDate = TimeSpan.FromMinutes(5);
+                return (cacheEntry: votes, expiryDate, neverRemove: false);
+            });
+        }
+
+        return dossier;
     }
 }

@@ -22,6 +22,8 @@ public interface IDossierReviewService
     public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message);
     public Task AddDossierDiscussionReview(Guid dossierId, DiscussionMessage message, Guid userId);
     public Task EditDossierDiscussionReview(Guid dossierId, EditDossierDiscussionMessageDTO message);
+    public Task VoteDossierDiscussionMessage(Guid dossierId, VoteDossierDiscussionMessageDTO voteDTO);
+    public Task DeleteDossierDiscussionReview(Guid dossierId, Guid messageId);
 }
 
 public class DossierReviewService : IDossierReviewService
@@ -36,6 +38,7 @@ public class DossierReviewService : IDossierReviewService
     private readonly IEmailService _emailService;
     private readonly ICourseRepository _courseRepository;
     private readonly ICourseGroupingService _courseGroupingService;
+    private readonly ICacheService<IEnumerable<DiscussionMessageVote>> _cacheService;
 
     public DossierReviewService(
         ILogger<DossierReviewService> logger,
@@ -47,7 +50,8 @@ public class DossierReviewService : IDossierReviewService
         IUserAuthenticationService userAuthenticationService,
         IEmailService emailService,
         ICourseRepository courseRepository,
-        ICourseGroupingService courseGroupingService)
+        ICourseGroupingService courseGroupingService,
+        ICacheService<IEnumerable<DiscussionMessageVote>> cacheService)
     {
         _logger = logger;
         _dossierService = dossierService;
@@ -59,6 +63,7 @@ public class DossierReviewService : IDossierReviewService
         _emailService = emailService;
         _courseRepository = courseRepository;
         _courseGroupingService = courseGroupingService;
+        _cacheService = cacheService;
     }
 
     public async Task SubmitDossierForReview(DossierSubmissionDTO dto)
@@ -75,7 +80,7 @@ public class DossierReviewService : IDossierReviewService
 
         if (isDossierSaved && areStagesSaved)
         {
-            _ = SendEmailToCurrentApprovingGroup(dossier, "Pending Dossier Review", EmailTemplates.GetDossierPendingReviewTemplate);
+            SendEmailToCurrentApprovingGroupInBackground(dossier, "Pending Dossier Review", EmailTemplates.GetDossierPendingReviewTemplate);
             _logger.LogInformation($"Dossier {dossier.Id} submitted for review to group {approvalStages.First().Id}");
         }
         else
@@ -286,6 +291,20 @@ public class DossierReviewService : IDossierReviewService
             _logger.LogError($"Encountered error attempting to edit a discussion message to dossier {dossierId}");
     }
 
+    public async Task DeleteDossierDiscussionReview(Guid dossierId, Guid messageId)
+    {
+        var userId = _userAuthenticationService.GetCurrentUserClaim(Claims.Id);
+        var dossier = await GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(dossierId);
+
+        dossier.Discussion.DeleteMessage(messageId, Guid.Parse(userId));
+
+        var isDossierSaved = await _dossierRepository.UpdateDossier(dossier);
+        if (isDossierSaved)
+            _logger.LogInformation($"Discussion message was successfully deleted from dossier {dossier.Id}");
+        else
+            _logger.LogError($"Encountered error attempting to delete a discussion message from dossier {dossier.Id}");
+    }
+
     public async Task<Dossier> GetDossierWithApprovalStagesOrThrow(Guid dossierId) => await _dossierReviewRepository.GetDossierWithApprovalStages(dossierId)
         ?? throw new NotFoundException("The dossier does not exist.");
 
@@ -439,6 +458,68 @@ public class DossierReviewService : IDossierReviewService
             }
         }
     }
+
+    public async Task VoteDossierDiscussionMessage(Guid dossierId, VoteDossierDiscussionMessageDTO voteDTO)
+    {
+        var messageId = voteDTO.DiscussionMessageId;
+        var userId = _userAuthenticationService.GetCurrentUserClaim(Claims.Id);
+        var dossier = await GetDossierWithApprovalStagesAndRequestsAndDiscussionOrThrow(dossierId);
+
+        if (!Guid.TryParse(userId, out var parsedUserId))
+        {
+            throw new BadRequestException("User Id is not valid");
+        }
+
+        if (dossier.State.Equals(DossierStateEnum.Created))
+        {
+            throw new BadRequestException("The dossier is not published yet.");
+        }
+
+        var result = true;
+        var vote = await _dossierReviewRepository.GetVoteByUserAndMessageId(parsedUserId, messageId);
+
+        if (vote is not null && !voteDTO.Value.Equals(vote.DiscussionMessageVoteValue))
+        {
+            result = await _dossierReviewRepository.DeleteVote(parsedUserId, messageId);
+
+            if (result && !voteDTO.Value.Equals(VoteDossierDiscussionMessageValue.NoVote))
+            {
+                var parsedVote = new DiscussionMessageVote()
+                {
+                    DiscussionMessageId = messageId,
+                    UserId = parsedUserId,
+                    DiscussionMessageVoteValue = voteDTO.Value.Equals(VoteDossierDiscussionMessageValue.Upvote) ?
+                        DiscussionMessageVoteValue.Upvote : DiscussionMessageVoteValue.Downvote
+                };
+
+                result = await _dossierReviewRepository.InsertVote(parsedVote);
+            }
+        }
+        else if (vote is null && !voteDTO.Value.Equals(VoteDossierDiscussionMessageValue.NoVote))
+        {
+            var parsedVote = new DiscussionMessageVote()
+            {
+                DiscussionMessageId = messageId,
+                UserId = parsedUserId,
+                DiscussionMessageVoteValue = voteDTO.Value.Equals(VoteDossierDiscussionMessageValue.Upvote) ?
+                    DiscussionMessageVoteValue.Upvote : DiscussionMessageVoteValue.Downvote
+            };
+
+            result = await _dossierReviewRepository.InsertVote(parsedVote);
+        }
+
+        if (!result)
+        {
+            throw new BadRequestException("Failed to register the vote. The discussion message might not exist");
+        }
+        else
+        {
+            _cacheService.Delete(dossierId.ToString());
+        }
+    }
+
+    private void SendEmailToCurrentApprovingGroupInBackground(Dossier dossier, string subject, Func<string, Guid, string> EmailTemplateFunc) =>
+        Task.Run(async () => await SendEmailToCurrentApprovingGroup(dossier, subject, EmailTemplateFunc));
 
     private async Task SendEmailToCurrentApprovingGroup(Dossier dossier, string subject, Func<string, Guid, string> EmailTemplateFunc)
     {

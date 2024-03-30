@@ -280,4 +280,8 @@ const NAV_ITEMS: Array<NavItem> = [
         label: "Browse",
         href: "/browserList",
     },
+    {
+        label: "Directories",
+        href: "/directories",
+    },
 ];

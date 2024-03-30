@@ -3,7 +3,7 @@ import Button from "../components/Button";
 import { Box, Heading, IconButton, useDisclosure } from "@chakra-ui/react";
 import SearchCourseGrouping from "../components/CourseGrouping/SearchCourseGrouping";
 import { GetCourseGrouping } from "../services/courseGrouping";
-import CourseGroupingComponent from "../components/CourseGroupingComponent";
+import CourseGroupingComponent from "../components/CourseGrouping/CourseGroupingComponent";
 import { CheckIcon } from "@chakra-ui/icons";
 
 export default function CoursesLeft() {

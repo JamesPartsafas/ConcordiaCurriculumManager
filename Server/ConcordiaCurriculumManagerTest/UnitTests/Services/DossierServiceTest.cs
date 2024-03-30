@@ -3,6 +3,7 @@ using ConcordiaCurriculumManager.Filters.Exceptions;
 using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Models.Curriculum.CourseGroupings;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
+using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Services;
@@ -21,6 +22,7 @@ public class DossierServiceTest
     private Mock<ICourseRepository> courseRepository = null!;
     private Mock<ICourseGroupingRepository> courseGroupingRepository = null!;
     private Mock<ICourseGroupingService> courseGroupingService = null!;
+    private Mock<ICacheService<IEnumerable<DiscussionMessageVote>>> cacheService = null!;
     private DossierService dossierService = null!;
 
     [TestInitialize]
@@ -31,8 +33,14 @@ public class DossierServiceTest
         courseRepository = new Mock<ICourseRepository>();
         courseGroupingRepository = new Mock<ICourseGroupingRepository>();
         courseGroupingService = new Mock<ICourseGroupingService>();
+        cacheService = new Mock<ICacheService<IEnumerable<DiscussionMessageVote>>>();
 
-        dossierService = new DossierService(logger.Object, dossierRepository.Object, courseRepository.Object, courseGroupingRepository.Object, courseGroupingService.Object);
+        dossierService = new DossierService(logger.Object,
+                                            dossierRepository.Object,
+                                            courseRepository.Object,
+                                            courseGroupingRepository.Object,
+                                            courseGroupingService.Object,
+                                            cacheService.Object);
     }
 
     [TestMethod]

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConcordiaCurriculumManagerTest.UnitTests.Models;
+namespace ConcordiaCurriculumManagerTest.UnitTests.Models.Dossiers;
 
 [TestClass]
 public class DossierTest

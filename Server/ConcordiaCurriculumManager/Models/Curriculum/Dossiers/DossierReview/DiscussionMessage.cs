@@ -1,4 +1,5 @@
-﻿using ConcordiaCurriculumManager.Models.Users;
+﻿using ConcordiaCurriculumManager.Filters.Exceptions;
+using ConcordiaCurriculumManager.Models.Users;
 
 namespace ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
 
@@ -21,4 +22,19 @@ public class DiscussionMessage : BaseModel
     public Guid? ParentDiscussionMessageId { get; set; }
 
     public DiscussionMessage? ParentDiscussionMessage { get; set; }
+
+    public int VoteCount { get; set; } = 0;
+    
+    public IEnumerable<DiscussionMessageVote> DiscussionMessageVotes { get; set; } = new HashSet<DiscussionMessageVote>();
+    
+    public required bool IsDeleted { get; set; } = false;
+
+    public void MarkAsDeleted(Guid userId)
+    {
+        if (!userId.Equals(AuthorId))
+            throw new BadRequestException("You must be the user who posted the message to delete it");
+
+        IsDeleted = true;
+        ModifiedDate = DateTime.UtcNow;
+    }
 }

@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using ConcordiaCurriculumManager.DTO.Courses;
-using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.InputDTOs;
 using ConcordiaCurriculumManager.DTO.Dossiers.CourseRequests.OutputDTOs;
-using ConcordiaCurriculumManager.Models.Curriculum;
-using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Security;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManager.Swagger;
@@ -269,5 +266,16 @@ public class CourseController : Controller
         var editedCourseDTO = _mapper.Map<CourseDataDTO>(editedCourse);
 
         return Ok(editedCourseDTO);
+    }
+
+    [HttpGet(nameof(GetCourseHistory) + "/{subject}" + "/{catalog}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Course history retrieved")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "User is not authorized")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    public async Task<ActionResult> GetCourseHistory([FromRoute, Required] string subject, string catalog)
+    {
+        var courseData = await _courseService.GetCourseHistory(subject, catalog);
+        var courseDataDTOs = _mapper.Map<IEnumerable<CourseDataDTO>>(courseData);
+        return Ok(courseDataDTOs);
     }
 }

@@ -1,5 +1,5 @@
 import { Box, Checkbox, Heading, ListItem, UnorderedList, Text } from "@chakra-ui/react";
-import { CourseGroupingDTO } from "../models/courseGrouping";
+import { CourseGroupingDTO } from "../../models/courseGrouping";
 import { useEffect, useState } from "react";
 
 interface CourseGroupingComponentProps {

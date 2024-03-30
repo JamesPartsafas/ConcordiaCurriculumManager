@@ -12,11 +12,13 @@ namespace ConcordiaCurriculumManager.Repositories;
 
 public interface IDossierRepository
 {
+    public void ReattachDiscussionMessage(DiscussionMessage message);
     public Task<bool> SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest);
     public Task<bool> SaveCourseModificationRequest(CourseModificationRequest courseModificationRequest);
     public Task<bool> SaveCourseDeletionRequest(CourseDeletionRequest courseDeletionRequest);
     public Task<List<Dossier>> GetDossiersByID(Guid userId);
     public Task<Dossier?> GetDossierByDossierId(Guid dossierId);
+    public Task<Dossier?> GetDossierByDossierIdWithoutVote(Guid dossierId);
     public Task<bool> SaveDossier(Dossier dossier);
     public Task<bool> UpdateDossier(Dossier dossier);
     public Task<bool> DeleteDossier(Dossier dossier);
@@ -48,6 +50,16 @@ public class DossierRepository : IDossierRepository
         _dbContext = dbContext;
     }
 
+    public void ReattachDiscussionMessage(DiscussionMessage message)
+    {
+        if (_dbContext.Entry(message).State != EntityState.Detached)
+        {
+            _dbContext.Entry(message).State = EntityState.Detached;
+        }
+
+        _dbContext.Attach(message);
+    }
+
     public async Task<bool> SaveCourseCreationRequest(CourseCreationRequest courseCreationRequest)
     {
         await _dbContext.CourseCreationRequests.AddAsync(courseCreationRequest);
@@ -77,6 +89,31 @@ public class DossierRepository : IDossierRepository
     }
 
     public async Task<Dossier?> GetDossierByDossierId(Guid dossierId) => await _dbContext.Dossiers
+        .Where(d => d.Id == dossierId)
+        .Include(d => d.CourseCreationRequests)
+        .ThenInclude(c => c.NewCourse)
+        .Include(d => d.CourseDeletionRequests)
+        .ThenInclude(c => c.Course)
+        .Include(d => d.CourseModificationRequests)
+        .ThenInclude(c => c.Course)
+        .Include(d => d.CourseGroupingRequests)
+        .ThenInclude(c => c.CourseGrouping)
+        .ThenInclude(c => c!.CourseIdentifiers)
+        .Include(d => d.CourseGroupingRequests)
+        .ThenInclude(c => c.CourseGrouping)
+        .ThenInclude(c => c!.SubGroupings)
+        .Include(d => d.ApprovalStages)
+        .ThenInclude(a => a.Group == null ? null : a.Group.Members)
+        .Include(d => d.ApprovalStages)
+        .ThenInclude(a => a.Group == null ? null : a.Group.GroupMasters)
+        .Include(d => d.ApprovalHistories)
+        .ThenInclude(a => a.Group)
+        .Include(dossier => dossier.Discussion)
+        .ThenInclude(discussion => discussion.Messages)
+        .ThenInclude(discussionMessage => discussionMessage.DiscussionMessageVotes)
+        .FirstOrDefaultAsync();
+
+    public async Task<Dossier?> GetDossierByDossierIdWithoutVote(Guid dossierId) => await _dbContext.Dossiers
         .Where(d => d.Id == dossierId)
         .Include(d => d.CourseCreationRequests)
         .ThenInclude(c => c.NewCourse)
@@ -282,7 +319,7 @@ public class DossierRepository : IDossierRepository
 
         query = query.Where(course => !course.Published);
         query2 = query2.Where(courseGrouping => !courseGrouping.Published);
-
+        
         query = query.Include(course => course.CourseCourseComponents)
             .Include(course => course.CourseCreationRequest)
             .Include(course => course.CourseModificationRequest)

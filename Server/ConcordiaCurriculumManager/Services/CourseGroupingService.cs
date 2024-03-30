@@ -29,6 +29,8 @@ public interface ICourseGroupingService
     public Task<bool> DeleteSubgrouping(CourseGroupingReference reference);
     public Task<CourseGrouping> PublishCourseGrouping(Guid commonIdentifier);
     public Task<IDictionary<Guid, int>> GetGroupingVersions(Dossier dossier);
+    public Task<List<CourseGrouping?>> GetCourseGroupingsByDossierAndName(Guid dossierId, string searchQuery);
+    public Task<IEnumerable<CourseGrouping>> GetCourseGroupingHistory(Guid commonIdentifier);
 }
 
 public class CourseGroupingService : ICourseGroupingService
@@ -102,6 +104,8 @@ public class CourseGroupingService : ICourseGroupingService
             }
             grouping.SubGroupings.Add(subGrouping);
         }
+
+        grouping.SubGroupings = grouping.SubGroupings.GroupBy(x => x.CommonIdentifier).Select(x => x.First()).ToList();
     }
 
     private async Task<IList<Course>> GetCoursesFromIdentifiers(ICollection<CourseIdentifier> identifiers)
@@ -255,6 +259,9 @@ public class CourseGroupingService : ICourseGroupingService
     public async Task<bool> DeleteSubgrouping(CourseGroupingReference reference) =>
         await _courseGroupingRepository.DeleteSubgrouping(reference);
 
+    public async Task<IEnumerable<CourseGrouping>> GetCourseGroupingHistory(Guid commonIdentifier) =>
+        await _courseGroupingRepository.GetCourseGroupingHistory(commonIdentifier);
+
     public async Task<CourseGrouping> PublishCourseGrouping(Guid commonIdentifier)
     {
         var newCourseGrouping = await _courseGroupingRepository.GetCourseGroupingByCommonIdentifierAnyState(commonIdentifier) ?? throw new NotFoundException($"The course grouping with common ID {commonIdentifier} was not found.");
@@ -307,4 +314,35 @@ public class CourseGroupingService : ICourseGroupingService
 
     private async Task<Dossier> GetDossierDetailsByIdOrThrow(Guid id) => await _dossierRepository.GetDossierByDossierId(id)
         ?? throw new NotFoundException("The dossier does not exist.");
+
+    public async Task<List<CourseGrouping?>> GetCourseGroupingsByDossierAndName(Guid dossierId, string searchQuery)
+    {
+        var dossier = await _dossierRepository.GetDossierByDossierId(dossierId);
+        if (dossier == null)
+        {
+            throw new NotFoundException($"Dossier with ID {dossierId} not found.");
+        }
+
+        var groupingsByName = await _courseGroupingRepository.GetCourseGroupingsLikeName(searchQuery);
+
+        var creationGroupingsInDossier = dossier.CourseGroupingRequests
+            .Where(req => req.RequestType == RequestType.CreationRequest && req.CourseGrouping != null && req.CourseGrouping.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+            .Select(req => req.CourseGrouping)
+            .ToList();
+
+        var combinedGroupings = groupingsByName.Concat(creationGroupingsInDossier)
+            .DistinctBy(g =>  g!.Id)
+            .ToList();
+
+        var deletionGroupingCommonIdentifiers = dossier.CourseGroupingRequests
+            .Where(req => req.RequestType == RequestType.DeletionRequest && req.CourseGrouping != null)
+            .Select(req => req.CourseGrouping!.CommonIdentifier)
+            .ToList();
+
+        var filteredGroupings = combinedGroupings
+            .Where(g => g != null && !deletionGroupingCommonIdentifiers.Contains(g.CommonIdentifier))
+            .ToList();
+
+        return filteredGroupings;
+    }
 }

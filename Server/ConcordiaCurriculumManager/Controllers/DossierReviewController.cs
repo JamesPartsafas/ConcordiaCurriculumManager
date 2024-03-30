@@ -106,4 +106,25 @@ public class DossierReviewController : Controller
         return NoContent();
     }
 
+    [HttpDelete(nameof(DeleteReviewMessage) + "/{dossierId}" + "/{messageId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Review message successfully deleted")]
+    public async Task<ActionResult> DeleteReviewMessage([FromRoute, Required] Guid dossierId, [FromRoute, Required] Guid messageId)
+    {
+        await _dossierReviewService.DeleteDossierDiscussionReview(dossierId, messageId);
+        return NoContent();
+    }
+    
+    [HttpPost(nameof(VoteReviewMessage) + "/{dossierId}")]
+    [Authorize(Policies.IsOwnerOfDossier)]
+    [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Invalid input")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Unexpected error")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Vote successfully registered")]
+    public async Task<ActionResult> VoteReviewMessage([FromRoute, Required] Guid dossierId, [FromBody, Required] VoteDossierDiscussionMessageDTO voteDossierDiscussionMessageDTO)
+    {
+        await _dossierReviewService.VoteDossierDiscussionMessage(dossierId, voteDossierDiscussionMessageDTO);
+        return NoContent();
+    }
 }

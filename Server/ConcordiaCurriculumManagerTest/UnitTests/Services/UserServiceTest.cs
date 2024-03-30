@@ -3,6 +3,7 @@ using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories;
 using ConcordiaCurriculumManager.Services;
 using ConcordiaCurriculumManagerTest.UnitTests.UtilityFunctions;
+using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 using Moq;
 
 namespace ConcordiaCurriculumManagerTest.UnitTests.Services;
@@ -12,6 +13,7 @@ public class UserServiceTest
 {
     private Mock<IUserRepository> userRepositoryMock = null!;
     private Mock<IEmailService> emailServiceMock = null!;
+    private Mock<IInputHasherService> inputHasher = null!;
     private UserService userService = null!;
 
     [TestInitialize]
@@ -19,7 +21,8 @@ public class UserServiceTest
     {
         userRepositoryMock = new Mock<IUserRepository>();
         emailServiceMock = new Mock<IEmailService>();
-        userService = new UserService(userRepositoryMock.Object, emailServiceMock.Object);
+        inputHasher = new Mock<IInputHasherService>();
+        userService = new UserService(userRepositoryMock.Object, emailServiceMock.Object, inputHasher.Object);
     }
 
     [TestMethod]
@@ -46,9 +49,33 @@ public class UserServiceTest
     [ExpectedException(typeof(NotFoundException))]
     public async Task SendResetPasswordEmail_ThrowsNotFoundException()
     {
-        var reset = TestData.GetSamplePasswordResetDTO();
+        var reset = TestData.GetSampleEmailPasswordResetDTO();
         userRepositoryMock.Setup(repo => repo.GetUserByEmail(It.IsAny<string>())).Throws(new NotFoundException());
 
         await userService.SendResetPasswordEmail(reset);
+    }
+
+    [TestMethod]
+    public async Task ResetPassword_Succeeds()
+    {
+        var newPassword = TestData.GetSamplePasswordResetDTO();
+        var token = Guid.NewGuid();
+        var user = TestData.GetSampleUser();
+        userRepositoryMock.Setup(repo => repo.GetUserByResetPasswordToken(token)).ReturnsAsync(user);
+        userRepositoryMock.Setup(repo => repo.UpdateUser(user)).ReturnsAsync(true);
+
+        var result = await userService.ResetPassword(newPassword, token);
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(NotFoundException))]
+    public async Task ResetPassword_ThrowsNotFoundException()
+    {
+        var newPassword = TestData.GetSamplePasswordResetDTO();
+        var token = Guid.NewGuid();
+        userRepositoryMock.Setup(repo => repo.GetUserByResetPasswordToken(It.IsAny<Guid>())).Throws(new NotFoundException());
+
+        await userService.ResetPassword(newPassword, token);
     }
 }

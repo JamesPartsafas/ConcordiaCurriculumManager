@@ -1,5 +1,6 @@
 ﻿using ConcordiaCurriculumManager.Models.Curriculum.Dossiers;
 using ConcordiaCurriculumManager.Models.Curriculum.Dossiers.DossierReview;
+using ConcordiaCurriculumManager.Models.Users;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +14,10 @@ public interface IDossierReviewRepository
     Task<Dossier?> GetDossierWithApprovalStagesAndRequests(Guid dossierId);
     Task<Dossier?> GetDossierWithApprovalStagesAndRequestsAndDiscussion(Guid dossierId);
     Task<DiscussionMessage?> GetDiscussionMessageWithId(Guid dicussionMessageId);
-    public Task<bool> UpdateDiscussionMessageReview(DiscussionMessage dossier);
-
+    Task<bool> UpdateDiscussionMessageReview(DiscussionMessage dossier);
+    Task<DiscussionMessageVote?> GetVoteByUserAndMessageId(Guid userId, Guid messageId);
+    Task<bool> InsertVote(DiscussionMessageVote vote);
+    Task<bool> DeleteVote(Guid userId, Guid messageId);
 }
 
 public class DossierReviewRepository : IDossierReviewRepository
@@ -102,6 +105,69 @@ public class DossierReviewRepository : IDossierReviewRepository
     {
         _dbContext.DiscussionMessage.Update(discussionMessage);
         var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<DiscussionMessageVote?> GetVoteByUserAndMessageId(Guid userId, Guid messageId)
+    {
+        return await _dbContext.DiscussionMessageVote
+            .Where(vote => vote.UserId.Equals(userId) && vote.DiscussionMessageId.Equals(messageId))
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> InsertVote(DiscussionMessageVote vote)
+    {
+        using var transaction = _dbContext.Database.BeginTransaction();
+
+        var existingVote = await GetVoteByUserAndMessageId(vote.UserId, vote.DiscussionMessageId);
+        if (existingVote is not null)
+        {
+            await transaction.RollbackAsync();
+            return true;
+        }
+
+        _dbContext.DiscussionMessageVote.Add(vote);
+        var message = await _dbContext.DiscussionMessage
+                .Where(message => message.Id.Equals(vote.DiscussionMessageId))
+                .FirstOrDefaultAsync();
+
+        if (message is null)
+        {
+            await transaction.RollbackAsync();
+            return false;
+        }
+
+        message.VoteCount += vote.DiscussionMessageVoteValue == DiscussionMessageVoteValue.Upvote ? 1 : -1;
+        var result = await _dbContext.SaveChangesAsync();
+        await transaction.CommitAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteVote(Guid userId, Guid messageId)
+    {
+        using var transaction = _dbContext.Database.BeginTransaction();
+
+        var vote = await GetVoteByUserAndMessageId(userId, messageId);
+        if (vote is null)
+        {
+            await transaction.RollbackAsync();
+            return true;
+        }
+
+        var message = await _dbContext.DiscussionMessage
+                .Where(message => message.Id.Equals(vote.DiscussionMessageId))
+                .FirstOrDefaultAsync();
+
+        if (message is null)
+        {
+            await transaction.RollbackAsync();
+            return false;
+        }
+
+        _dbContext.DiscussionMessageVote.Remove(vote);
+        message.VoteCount -= vote.DiscussionMessageVoteValue == DiscussionMessageVoteValue.Upvote ? 1 : -1;
+        var result = await _dbContext.SaveChangesAsync();
+        await transaction.CommitAsync();
         return result > 0;
     }
 }

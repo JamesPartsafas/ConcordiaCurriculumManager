@@ -23,6 +23,7 @@ public class DossierReviewServiceTest
     private Mock<IDossierReviewRepository> dossierReviewRepository = null!;
     private Mock<ICourseRepository> courseRepository = null!;
     private Mock<ICourseGroupingService> courseGroupingService = null!;
+    private Mock<ICacheService<IEnumerable<DiscussionMessageVote>>> cacheService = null!;
 
     private DossierReviewService dossierReviewService = null!;
 
@@ -39,6 +40,7 @@ public class DossierReviewServiceTest
         emailService = new Mock<IEmailService>();
         courseRepository = new Mock<ICourseRepository>();
         courseGroupingService = new Mock<ICourseGroupingService>();
+        cacheService = new Mock<ICacheService<IEnumerable<DiscussionMessageVote>>>();
 
         dossierReviewService = new DossierReviewService(
             logger.Object,
@@ -50,7 +52,8 @@ public class DossierReviewServiceTest
             userService.Object,
             emailService.Object,
             courseRepository.Object,
-            courseGroupingService.Object
+            courseGroupingService.Object,
+            cacheService.Object
         );
     }
 
@@ -435,6 +438,22 @@ public class DossierReviewServiceTest
         await dossierReviewService.EditDossierDiscussionReview(dossier.Id, newDiscussionMessage);
 
         Assert.AreEqual(newDiscussionMessage.NewMessage, discussionMessage.Message);
+    }
+
+    [TestMethod]
+    public async Task DeleteDossierDiscussionReview_ValidInput_DeletesMessageAndSaves()
+    {
+        var dossier = TestData.GetSampleDossierWithDiscussion();
+        var discussionMessage = TestData.GetSampleDiscussionMessage();
+        dossier.Discussion.Messages = new List<DiscussionMessage> { discussionMessage };
+
+        userService.Setup(x => x.GetCurrentUserClaim(It.IsAny<string>())).Returns(discussionMessage.AuthorId.ToString());
+        dossierRepository.Setup(dr => dr.GetDossierByDossierId(dossier.Id)).ReturnsAsync(dossier);
+        dossierRepository.Setup(dr => dr.UpdateDossier(dossier)).ReturnsAsync(true);
+
+        await dossierReviewService.DeleteDossierDiscussionReview(dossier.Id, discussionMessage.Id);
+
+        Assert.AreEqual(true, discussionMessage.IsDeleted);
     }
 
     [TestMethod]

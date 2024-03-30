@@ -337,6 +337,7 @@ export default function CreateCourseGrouping() {
                 onClose={onSearchCourseGroupingClose}
                 onSelectCourseGrouping={handleCourseGroupingSelect}
                 isEdit={false}
+                dossierId={dossierId}
             />
         );
     }

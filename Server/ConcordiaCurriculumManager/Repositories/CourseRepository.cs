@@ -1,5 +1,4 @@
-﻿using ConcordiaCurriculumManager.Filters.Exceptions;
-using ConcordiaCurriculumManager.Models.Curriculum;
+﻿using ConcordiaCurriculumManager.Models.Curriculum;
 using ConcordiaCurriculumManager.Repositories.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +23,7 @@ public interface ICourseRepository
     Task<bool> UpdateCourseReferences(Course oldCourse, Course newCourse, List<(string Subject, string Catalog)> newCourseReferencing);
     Task<bool> InvalidateAllCourseReferences(Guid id);
     Task<bool> AddCourseReferences(Course newCourse, List<(string Subject, string Catalog)> newCourseReferenced);
+    Task<IEnumerable<Course>> GetCourseHistory(string subject, string catalog);
 }
 
 public class CourseRepository : ICourseRepository
@@ -128,6 +128,22 @@ public class CourseRepository : ICourseRepository
             && course.Published)
         .Include(course => course.CourseCourseComponents)
         .FirstOrDefaultAsync();
+
+    public async Task<IEnumerable<Course>> GetCourseHistory(string subject, string catalog)
+    {
+        var query = from course in _dbContext.Courses
+                    where course.Subject == subject
+                          && course.Catalog == catalog
+                          && (course.CourseState == CourseStateEnum.Accepted || course.CourseState == CourseStateEnum.Deleted)
+                    let latestPublishedVersion = _dbContext.Courses
+                                                   .Where(c => c.Subject == subject && c.Catalog == catalog && c.Published)
+                                                   .Max(c => c.Version)
+                    where course.Version <= latestPublishedVersion
+                    orderby course.Version descending
+                    select course;
+
+        return await query.ToListAsync();
+    }
 
     public async Task<Course?> GetCourseInProposalBySubjectAndCatalog(string subject, string catalog) => await _dbContext.Courses
     .Where(course =>
