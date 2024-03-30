@@ -10,6 +10,10 @@ export interface EmailPasswordResetDTO {
     email: string;
 }
 
+export interface PasswordResetDTO {
+    password: string;
+}
+
 export function getAllUsers(): Promise<AllUsersResponseDTO> {
     return axios.get("/Users/GetAllUsersAsync");
 }
@@ -32,4 +36,8 @@ export function searchUsersByEmail(email: string): Promise<AllUsersResponseDTO> 
 
 export function SendResetPasswordEmail(email: EmailPasswordResetDTO): Promise<unknown> {
     return axios.post("/Users/SendResetPasswordEmail", email);
+}
+
+export function ResetPassword(password: PasswordResetDTO, token: string): Promise<unknown> {
+    return axios.put("/Users/ResetPassword?token=" + token, password);
 }
