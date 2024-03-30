@@ -109,6 +109,7 @@ export interface DossierReportDTO {
     oldCourses: Course[];
     state: number;
     title: string | null;
+    oldGroupings: CourseGroupingDTO[];
 }
 
 export interface ChangeLogDTO {
