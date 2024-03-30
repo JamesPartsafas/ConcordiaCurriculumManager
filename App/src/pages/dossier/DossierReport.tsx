@@ -465,6 +465,7 @@ export default function DossierReport() {
                 </Center>
                 <DossierReportCourseGrouping
                     courseGrouping={dossierReport?.courseGroupingRequests}
+                    oldGroupings={dossierReport?.oldGroupings}
                 ></DossierReportCourseGrouping>
             </Container>
 
