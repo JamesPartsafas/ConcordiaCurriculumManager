@@ -66,19 +66,26 @@ export function App() {
     // Check for the token in localStorage.
     function initializeUser() {
         const token = localStorage.getItem("token");
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; //set the token globally
+        const sessionToken = sessionStorage.getItem("accessToken");
 
         if (token != null) {
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set the token globally
+
             const user: User = decodeTokenToUser(token);
-            // if token expired logout, and clear token
+
+            // Check if the token is expired
             if (user.expiresAtTimestamp * 1000 < Date.now()) {
+                // Token is expired, log the user out and clear token
                 localStorage.removeItem("token");
                 navigate(BaseRoutes.Login);
                 setIsLoggedIn(false);
                 setIsAdminorGroupMaster(false);
+                return null;
             }
 
             return user;
+        } else if (sessionToken != null) {
+            axios.defaults.headers.common["Authorization"] = `Bearer ${sessionToken}`; // Set the session token globally
         }
     }
 
