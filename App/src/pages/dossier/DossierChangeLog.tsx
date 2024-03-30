@@ -4,7 +4,11 @@ import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ChangeLogDTO } from "../../models/dossier";
-import { changeLogPublishCourse, getChangesAcrossAllDossiers } from "../../services/dossier";
+import {
+    changeLogPublishCourse,
+    changeLogPublishCourseGrouping,
+    getChangesAcrossAllDossiers,
+} from "../../services/dossier";
 import { AllCourseSettings, componentMappings } from "../../models/course";
 import { getAllCourseSettings } from "../../services/course";
 import CourseDiffViewer from "../../components/CourseDifference/CourseDiffViewer";
@@ -47,6 +51,23 @@ export default function DossierChangeLog() {
         changeLogPublishCourse(subject, catalog)
             .then(() => {
                 showToast(toast, "Success!", "Course has been published.", "success");
+                getChangesAcrossAllDossiers()
+                    .then((response) => {
+                        setDossierReport(response.data);
+                    })
+                    .catch((error) => {
+                        showToast(toast, "Error!", error.message, "error");
+                    });
+            })
+            .catch((error) => {
+                showToast(toast, "Error!", error.response.data, "error");
+            });
+    };
+
+    const publishCourseGrouping = (commonIdentifier: string) => {
+        changeLogPublishCourseGrouping(commonIdentifier)
+            .then(() => {
+                showToast(toast, "Success!", "Course Grouping has been published.", "success");
                 getChangesAcrossAllDossiers()
                     .then((response) => {
                         setDossierReport(response.data);
@@ -475,6 +496,8 @@ export default function DossierChangeLog() {
                     </OrderedList>
                     <DossierReportCourseGrouping
                         courseGrouping={dossierReport?.courseGroupingRequests}
+                        oldGroupings={dossierReport?.oldCourseGroupings}
+                        onPublishGrouping={publishCourseGrouping}
                     ></DossierReportCourseGrouping>
                 </Container>
 
