@@ -56,3 +56,7 @@ export function getChangesAcrossAllDossiers(): Promise<ChangeLogResponse> {
 export function changeLogPublishCourse(subject: string, catalog: string): Promise<void> {
     return axios.put(`/Course/PublishCourse/${subject}/${catalog}`);
 }
+
+export function changeLogPublishCourseGrouping(commonIdentifier: string): Promise<void> {
+    return axios.put(`/CourseGrouping/PublishCourseGrouping/${commonIdentifier}`);
+}
