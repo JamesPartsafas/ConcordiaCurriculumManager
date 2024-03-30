@@ -1,6 +1,6 @@
 import { GroupDTO } from "../services/group";
 import { Course, CourseCreationRequest, CourseDeletionRequest, CourseModificationRequest } from "./course";
-import { CourseGroupingRequestDTO } from "./courseGrouping";
+import { CourseGroupingDTO, CourseGroupingRequestDTO } from "./courseGrouping";
 import { UserDTO } from "./user";
 
 export interface DossierDTO {
@@ -109,6 +109,7 @@ export interface DossierReportDTO {
     oldCourses: Course[];
     state: number;
     title: string | null;
+    oldGroupings: CourseGroupingDTO;
 }
 
 export interface DossierReportResponse {
