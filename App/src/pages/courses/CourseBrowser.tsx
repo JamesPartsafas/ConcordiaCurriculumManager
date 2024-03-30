@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Select from "../components/Select";
+import Select from "../../components/Select";
 import { Box, Container, FormLabel, Heading, Stack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@chakra-ui/react";
-import { AllCourseSettings } from "../models/course";
-import { getAllCourseSettings } from "../services/course";
-import Button from "../components/Button";
+import { AllCourseSettings } from "../../models/course";
+import { getAllCourseSettings } from "../../services/course";
+import Button from "../../components/Button";
 interface SubjectItem {
     value: string;
 }

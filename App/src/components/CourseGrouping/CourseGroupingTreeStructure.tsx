@@ -50,8 +50,6 @@ const CourseGroupingTreeStructure = ({ isOpen, onClose, courseGrouping }) => {
                             collapsible={true}
                             translate={{ x: window.innerWidth / 2, y: window.innerHeight / 5 }}
                             nodeSize={{ x: 200, y: 200 }}
-                            zoom={1}
-                            scaleExtent={{ min: 1, max: 3 }}
                             separation={{ siblings: 1.5, nonSiblings: 1.5 }}
                             renderCustomNodeElement={renderNode}
                         />
