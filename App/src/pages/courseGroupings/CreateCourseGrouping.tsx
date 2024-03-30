@@ -381,6 +381,7 @@ export default function CreateCourseGrouping() {
 
     function deleteRequestAlert() {
         if (selectedCourse !== null) {
+            console.log(courseFields);
             return (
                 <DeleteAlert
                     isOpen={isDeleteAlertOpen}
@@ -388,13 +389,17 @@ export default function CreateCourseGrouping() {
                     loading={loading}
                     headerTitle="Delete Course"
                     title={
-                        courseIdentifiers.find(
-                            (c) => c.concordiaCourseId === courseFields?.at(selectedCourse)?.concordiaCourseId
-                        )?.subject +
+                        (courseFields?.at(selectedCourse)?.subject ||
+                            courseIdentifiers.find(
+                                (c) => c.concordiaCourseId === courseFields?.at(selectedCourse)?.concordiaCourseId
+                            )?.subject) +
                         " " +
-                        courseIdentifiers.find(
-                            (c) => c.concordiaCourseId === courseFields?.at(selectedCourse)?.concordiaCourseId
-                        )?.catalog
+                        (courseFields?.at(selectedCourse)?.catalog?.toString() ||
+                            courseIdentifiers
+                                .find(
+                                    (c) => c.concordiaCourseId === courseFields?.at(selectedCourse)?.concordiaCourseId
+                                )
+                                ?.catalog?.toString())
                     }
                     item={selectedCourse}
                     onDelete={handleRemoveCourse}
@@ -408,6 +413,7 @@ export default function CreateCourseGrouping() {
                     loading={loading}
                     headerTitle="Delete sub grouping"
                     title={
+                        subGroupFields?.at(selectedSubGroup)?.name ||
                         courseGrouping?.subGroupings.find(
                             (c) =>
                                 c.commonIdentifier === subGroupFields?.at(selectedSubGroup)?.childGroupCommonIdentifier
