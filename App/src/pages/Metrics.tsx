@@ -128,7 +128,7 @@ export default function Metrics() {
                     </Thead>
                     <Tbody>
                         {httpEndpointCount.map((endpoint) => (
-                            <Tr>
+                            <Tr key={endpoint.fullPath}>
                                 <Td whiteSpace="nowrap" padding="16px" textAlign="center">
                                     {endpoint.endpoint}
                                 </Td>
@@ -190,7 +190,7 @@ export default function Metrics() {
                     </Thead>
                     <Tbody>
                         {httpStatusCount.map((status) => (
-                            <Tr>
+                            <Tr key={status.httpStatus}>
                                 <Td whiteSpace="nowrap" padding="16px" textAlign="center">
                                     {status.httpStatus}
                                 </Td>
@@ -250,7 +250,7 @@ export default function Metrics() {
                     </Thead>
                     <Tbody>
                         {dossierViewCount.map((dossier) => (
-                            <Tr>
+                            <Tr key={dossier.dossier.id}>
                                 <Td whiteSpace="nowrap" padding="16px" textAlign="center">
                                     {dossier.dossier.title}
                                 </Td>
@@ -310,7 +310,7 @@ export default function Metrics() {
                     </Thead>
                     <Tbody>
                         {userDossierViewedCount.map((user) => (
-                            <Tr>
+                            <Tr key={user.user.id}>
                                 <Td whiteSpace="nowrap" padding="16px" textAlign="center">
                                     {user.user.email}
                                 </Td>

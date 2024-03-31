@@ -4,75 +4,63 @@ import { DossierDTO } from "../models/dossier";
 import { UserDTO } from "../models/user";
 
 //types
-export interface DossierViewCountDTO
-{
+export interface DossierViewCountDTO {
     guid: string;
     dossier: DossierDTO;
-    count: number; 
+    count: number;
 }
 
-export interface DossierViewResponseDTO
-{
+export interface DossierViewResponseDTO {
     result: DossierViewCountDTO[];
     nextIndex: number;
 }
 
-export interface HttpEndpointCountDTO
-{
+export interface HttpEndpointCountDTO {
     controller: string;
     endpoint: string;
     fullPath: string;
     count: number;
 }
 
-export interface HttpEndpointResponseDTO
-{
+export interface HttpEndpointResponseDTO {
     result: HttpEndpointCountDTO[];
     nextIndex: number;
 }
 
-export interface HttpStatusCountDTO{
+export interface HttpStatusCountDTO {
     count: number;
     httpStatus: number;
 }
 
-export interface HttpStatusResponseDTO
-{
+export interface HttpStatusResponseDTO {
     result: HttpStatusCountDTO[];
     nextIndex: number;
 }
 
-export interface UserDossierViewedCountDTO
-{
+export interface UserDossierViewedCountDTO {
     guid: string;
     user: UserDTO;
-    count: number; 
+    count: number;
 }
 
-export interface UserDossierViewedResponseDTO
-{
+export interface UserDossierViewedResponseDTO {
     result: UserDossierViewedCountDTO[];
-    nextIndex: number
+    nextIndex: number;
 }
 
 //api calls
- export function GetTopHttpStatusCodes(fromIndex: number)//: Promise<HttpStatusResponseDTO>
-{
-    return axios.get("/Metrics/GetTopHttpStatusCodes?fromIndex="+fromIndex +"&startDate=");
+export function GetTopHttpStatusCodes(fromIndex: number) {
+    return axios.get("/Metrics/GetTopHttpStatusCodes?fromIndex=" + fromIndex + "&startDate=");
 }
 
-export function GetTopHitHttpEndpoints(fromIndex: number)/*: Promise<HttpEndpointResponseDTO>*/
-{
-    console.log(fromIndex)
-    return axios.get("/Metrics/GetTopHitHttpEndpoints?fromIndex="+fromIndex);
+export function GetTopHitHttpEndpoints(fromIndex: number) {
+    return axios.get("/Metrics/GetTopHitHttpEndpoints?fromIndex=" + fromIndex);
 }
 
-export function GetTopViewedDossiers(fromIndex: number)//: Promise<DossierViewResponseDTO>
-{
-    return axios.get("/Metrics/GetTopViewedDossier?fromIndex="+fromIndex);
+export function GetTopViewedDossiers(fromIndex: number) {
+    return axios.get("/Metrics/GetTopViewedDossier?fromIndex=" + fromIndex);
 }
 
-export function GetTopDossierViewingUser(fromIndex: number)//: Promise<UserDossierViewedResponseDTO>
-{
-    return axios.get("/Metrics/GetTopDossierViewingUser?fromIndex="+fromIndex);
+export function GetTopDossierViewingUser(fromIndex: number) {
+    return axios.get("/Metrics/GetTopDossierViewingUser?fromIndex=" + fromIndex);
 }
