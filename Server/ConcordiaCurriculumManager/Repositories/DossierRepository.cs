@@ -314,7 +314,7 @@ public class DossierRepository : IDossierRepository
             );
 
         var query2 = _dbContext.CourseGroupings.FromSqlInterpolated(
-                $@"SELECT DISTINCT ON (""Id"") cg.* FROM ""CourseGroupings"" cg WHERE ""Version"" IS NOT NULL ORDER BY ""Id"", ""Version"" DESC"
+                $@"SELECT DISTINCT ON (""CommonIdentifier"") cg.* FROM ""CourseGroupings"" cg WHERE ""Version"" IS NOT NULL ORDER BY ""CommonIdentifier"", ""Version"" DESC"
             );
 
         query = query.Where(course => !course.Published);
