@@ -1,0 +1,587 @@
+
+"Data": [
+    {
+        "Id": "9ae62b14-978f-4a95-bb0e-db8102e62e50",
+        "CommonIdentifier": "de8ee780-5a70-4753-855b-8ca45047fa0b",
+        "Name": "BEng in Electrical Engineering",
+        "RequiredCredits": "120",
+        "IsTopLevel": true,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [
+			{
+                "Id": "43f82105-7a94-4288-8f34-6c152039f40d",
+                "ChildGroupCommonIdentifier": "65ca4400-a4e2-4530-b5da-246c4a95ab2d",
+                "GroupingType": 0
+            },
+            {
+                "Id": "7185a8b5-aaca-4f67-861b-d9d31f963b13",
+                "ChildGroupCommonIdentifier": "02e48b1d-14de-4ab1-934c-209ae27805ef",
+                "GroupingType": 0
+            },
+            {
+                "Id": "c6d64506-daf3-4c33-acd3-fdb3eeb0e077",
+                "ChildGroupCommonIdentifier": "f17e71f8-b35d-4546-9bef-2d5b8e8e3c21",
+                "GroupingType": 0
+            }
+        ],
+        "CourseGroupingCourseIdentifier": []
+    },
+    {
+        "Id": "30170960-f220-40e6-92a1-f31b4929a010",
+        "CommonIdentifier": "02e48b1d-14de-4ab1-934c-209ae27805ef",
+        "Name": "Electrical Engineering Core",
+        "RequiredCredits": "72.5",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "d672f323-0be9-414e-9b0b-cfcf104e487d"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "064e56ad-930c-4369-9152-56f5101376e1"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "559c2d94-55d9-40a9-bb69-9c3dffe61f57"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "8799456a-4a61-4fc8-83f5-9d80bb1eb358"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "6752ddde-c183-4aea-9816-6b5f04da15f6"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "39367a01-aa9e-4e36-bd37-f01fe4244e88"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "a1b6a9d7-811a-49fd-a912-554b90d006f4"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "d882c80d-c501-438e-9e35-b7ae85cffc66"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "1d718b5b-78c1-45a6-825c-3cc588d3e638"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "e2a2bd4f-96b3-48f6-b551-e1f3e49c9bc4"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "3f81174d-4323-4f6a-857e-a188b0fe1dfa"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "c7dd57b1-6b96-4fa3-9ecd-9e66309f975f"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "72a1132e-27d7-4fa0-a8e5-697cbf877166"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "df5b2cdb-7b7d-4466-81bc-6e8cd34cb9f6"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "b0a5d85d-4448-465d-b8fc-b6bd9e91d9ec"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "b021d874-9240-4bac-975a-b2a76bd80ab7"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "b19756ea-b7ee-46db-8825-661b6677330a"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "09205c9a-2113-43e3-9f4c-d79f9a9ebd8f"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "f8b04f46-9c36-4aa8-a02d-779d464a6dcd"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "f23aedce-608c-4f7e-9356-0833aa8c4084"
+            },
+            {
+                "CourseGroupingId": "30170960-f220-40e6-92a1-f31b4929a010",
+                "CourseIdentifiersId": "f6fa0a9c-e220-41b1-bd6c-18e53104fe47"
+            }
+        ]
+    },
+    {
+        "Id": "90dfcd34-1a5d-490b-b60c-1b9912775b98",
+        "CommonIdentifier": "f17e71f8-b35d-4546-9bef-2d5b8e8e3c21",
+        "Name": "Electrical Engineering Electives",
+        "RequiredCredits": "17",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [
+			{
+                "Id": "9f4eef9f-88ad-47fb-b8b6-ef3889b21377",
+                "ChildGroupCommonIdentifier": "42db69fd-0423-4dae-8402-c7c5537ab859",
+                "GroupingType": 0
+            },
+            {
+                "Id": "42721b83-050c-4f7e-bf1e-7405053d2b9e",
+                "ChildGroupCommonIdentifier": "19159741-0f48-415b-ac49-eaaa4ab9a5c7",
+                "GroupingType": 0
+            },
+            {
+                "Id": "6a6a4f46-09ee-4569-a653-e392b2149340",
+                "ChildGroupCommonIdentifier": "0336b35b-e495-4abf-b82b-cfe8ce85564f",
+                "GroupingType": 0
+            },
+            {
+                "Id": "76c6e0d7-d658-48d9-a46f-cd0d46a2e00a",
+                "ChildGroupCommonIdentifier": "a36a8616-f6d7-4417-80bd-98c37a3e8885",
+                "GroupingType": 0
+            },
+            {
+                "Id": "315c0c5f-a7ce-4a2f-b78a-b6664fbd2621",
+                "ChildGroupCommonIdentifier": "483a9ef2-c91b-4c46-8078-25b524cfe817",
+                "GroupingType": 0
+            },
+            {
+                "Id": "28a0d6ac-5115-44c1-867e-6b6224b8c508",
+                "ChildGroupCommonIdentifier": "0cc9a954-5435-4aaa-b513-530e95181564",
+                "GroupingType": 0
+            },
+            {
+                "Id": "80050f9c-1af3-43de-96d6-f49144d9325e",
+                "ChildGroupCommonIdentifier": "32881b2a-cb10-49fa-9770-5e0129c9d032",
+                "GroupingType": 0
+            },
+            {
+                "Id": "5950b034-bc29-4d0a-b0f2-b58c6ebfd1d7",
+                "ChildGroupCommonIdentifier": "52f1be73-d862-4874-834c-4f4684f4bb1b",
+                "GroupingType": 0
+            }
+		],
+        "CourseGroupingCourseIdentifier": []
+    },
+    {
+        "Id": "c494a2ff-136f-4a16-955d-991025ea70bb",
+        "CommonIdentifier": "42db69fd-0423-4dae-8402-c7c5537ab859",
+        "Name": "Telecommunication Networks and Signal Processing Electives: Electrical Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "c494a2ff-136f-4a16-955d-991025ea70bb",
+                "CourseIdentifiersId": "ca50a25d-12ac-438d-b052-2a522aa57f30"
+            },
+            {
+                "CourseGroupingId": "c494a2ff-136f-4a16-955d-991025ea70bb",
+                "CourseIdentifiersId": "630ba345-768d-41fe-9ded-5fd44c19219e"
+            },
+            {
+                "CourseGroupingId": "c494a2ff-136f-4a16-955d-991025ea70bb",
+                "CourseIdentifiersId": "6372d4b3-c77f-4081-9385-e0ee9871152e"
+            },
+            {
+                "CourseGroupingId": "c494a2ff-136f-4a16-955d-991025ea70bb",
+                "CourseIdentifiersId": "3a72c1de-00c9-471c-a35b-c5c080b7a7df"
+            },
+            {
+                "CourseGroupingId": "c494a2ff-136f-4a16-955d-991025ea70bb",
+                "CourseIdentifiersId": "0cd1c718-13f2-4cac-af5f-216d7af4c506"
+            },
+            {
+                "CourseGroupingId": "c494a2ff-136f-4a16-955d-991025ea70bb",
+                "CourseIdentifiersId": "42aeff23-38a9-4a2d-9dbc-deccb42f2686"
+            },
+            {
+                "CourseGroupingId": "c494a2ff-136f-4a16-955d-991025ea70bb",
+                "CourseIdentifiersId": "779c13d2-2970-4730-9744-261c5b8905a5"
+            },
+            {
+                "CourseGroupingId": "c494a2ff-136f-4a16-955d-991025ea70bb",
+                "CourseIdentifiersId": "48f84136-02cd-4616-8679-fe7a1b6d44bf"
+            },
+            {
+                "CourseGroupingId": "c494a2ff-136f-4a16-955d-991025ea70bb",
+                "CourseIdentifiersId": "ec5bfbb3-782b-450b-9986-6744c4482e28"
+            }
+        ]
+    },
+    {
+        "Id": "073fbfdf-8680-4417-b01b-c6d0f5792ab7",
+        "CommonIdentifier": "19159741-0f48-415b-ac49-eaaa4ab9a5c7",
+        "Name": "Microdevices, Electronics and VLSI Electives: Electrical Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "073fbfdf-8680-4417-b01b-c6d0f5792ab7",
+                "CourseIdentifiersId": "e8735ee7-ec49-4115-ab09-1fdaed4f57a9"
+            },
+            {
+                "CourseGroupingId": "073fbfdf-8680-4417-b01b-c6d0f5792ab7",
+                "CourseIdentifiersId": "ab08ef62-8610-457f-8ecc-4f672f5eba27"
+            },
+            {
+                "CourseGroupingId": "073fbfdf-8680-4417-b01b-c6d0f5792ab7",
+                "CourseIdentifiersId": "766dc9c1-4f42-4125-a421-346434a006e1"
+            },
+            {
+                "CourseGroupingId": "073fbfdf-8680-4417-b01b-c6d0f5792ab7",
+                "CourseIdentifiersId": "d245463d-79ab-4760-896e-d9d9bf5b48fe"
+            },
+            {
+                "CourseGroupingId": "073fbfdf-8680-4417-b01b-c6d0f5792ab7",
+                "CourseIdentifiersId": "2a7e26c9-98fb-4fec-a10c-d2d8c3468466"
+            },
+            {
+                "CourseGroupingId": "073fbfdf-8680-4417-b01b-c6d0f5792ab7",
+                "CourseIdentifiersId": "0e2a4816-ce8e-45d0-a116-35d6dd39c0ce"
+            },
+            {
+                "CourseGroupingId": "073fbfdf-8680-4417-b01b-c6d0f5792ab7",
+                "CourseIdentifiersId": "61bef8a1-13b5-4a5d-957c-06ddfb6d92a5"
+            },
+            {
+                "CourseGroupingId": "073fbfdf-8680-4417-b01b-c6d0f5792ab7",
+                "CourseIdentifiersId": "1eafcd6a-b227-41bf-9d2f-d6e2be0d3f4b"
+            },
+            {
+                "CourseGroupingId": "073fbfdf-8680-4417-b01b-c6d0f5792ab7",
+                "CourseIdentifiersId": "aea8cf1a-405b-419d-8e91-0a2e75d4ec5b"
+            },
+            {
+                "CourseGroupingId": "073fbfdf-8680-4417-b01b-c6d0f5792ab7",
+                "CourseIdentifiersId": "ac5dd716-8b6a-4bfc-86b6-35d7c02a0fa1"
+            }
+        ]
+    },
+    {
+        "Id": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+        "CommonIdentifier": "0336b35b-e495-4abf-b82b-cfe8ce85564f",
+        "Name": "Power and Renewable Energy Systems Electives: Electrical Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "979c6b75-b46d-4b9e-a4ac-f054beb564a4"
+            },
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "3975622e-b09b-44e8-aac5-c0bb2976205e"
+            },
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "c2836a96-2853-41aa-86ef-91306905eb13"
+            },
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "cd7b7eef-1091-4e8c-9f9b-2a5ea69f0670"
+            },
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "d4d0b5e7-6fbc-4594-bfa6-aba4cc0f77bd"
+            },
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "df76c810-c9a9-4128-97c4-34e502e6ff8d"
+            },
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "387c8cea-b918-49ad-8e91-7285e477c416"
+            },
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "2e7738e5-9a74-4f5e-bbe2-1ba84ec41e0c"
+            },
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "d978609c-1ecb-4b75-837a-727837175cd2"
+            },
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "463d165a-58f2-4f17-bac8-b33ff1f3709b"
+            },
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "0f27ce0f-57bf-4f2f-8283-117c4ffb177f"
+            },
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "17e6659e-5175-4389-938b-fd87d4a18c4c"
+            },
+            {
+                "CourseGroupingId": "4ba50c0a-936d-4e36-9e82-03f405214efd",
+                "CourseIdentifiersId": "596288f8-639a-469e-9fa2-02aa7fc9bad0"
+            }
+        ]
+    },
+    {
+        "Id": "95359e8f-bf0a-4602-977f-0cad7ec24d2a",
+        "CommonIdentifier": "a36a8616-f6d7-4417-80bd-98c37a3e8885",
+        "Name": "Controls, Robotics and Avionics Electives: Electrical Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "95359e8f-bf0a-4602-977f-0cad7ec24d2a",
+                "CourseIdentifiersId": "70a39f15-b601-45fa-b8aa-2eec6812d44f"
+            },
+            {
+                "CourseGroupingId": "95359e8f-bf0a-4602-977f-0cad7ec24d2a",
+                "CourseIdentifiersId": "f5fc6cb3-beee-4307-b3ca-32a810116133"
+            },
+            {
+                "CourseGroupingId": "95359e8f-bf0a-4602-977f-0cad7ec24d2a",
+                "CourseIdentifiersId": "845c788d-1b95-4f42-9650-73e03da587a8"
+            },
+            {
+                "CourseGroupingId": "95359e8f-bf0a-4602-977f-0cad7ec24d2a",
+                "CourseIdentifiersId": "ed3c1e02-896f-4f42-b021-8626f9ba6350"
+            },
+            {
+                "CourseGroupingId": "95359e8f-bf0a-4602-977f-0cad7ec24d2a",
+                "CourseIdentifiersId": "db5e412d-e364-497e-aa44-86ccd97f622c"
+            },
+            {
+                "CourseGroupingId": "95359e8f-bf0a-4602-977f-0cad7ec24d2a",
+                "CourseIdentifiersId": "32cf88ae-6634-4790-9c27-6554c454a51d"
+            },
+            {
+                "CourseGroupingId": "95359e8f-bf0a-4602-977f-0cad7ec24d2a",
+                "CourseIdentifiersId": "b233c1c0-deb2-4254-9665-1778522e4f74"
+            },
+            {
+                "CourseGroupingId": "95359e8f-bf0a-4602-977f-0cad7ec24d2a",
+                "CourseIdentifiersId": "44323ae0-4d08-4114-9d9e-8464e5b792e7"
+            },
+            {
+                "CourseGroupingId": "95359e8f-bf0a-4602-977f-0cad7ec24d2a",
+                "CourseIdentifiersId": "aa0e9acf-d9ac-43c5-aa4b-c9452177d6a8"
+            },
+            {
+                "CourseGroupingId": "95359e8f-bf0a-4602-977f-0cad7ec24d2a",
+                "CourseIdentifiersId": "4d3ec0f3-c089-433d-b9ca-03588e76b329"
+            }
+        ]
+    },
+    {
+        "Id": "23800dc1-f495-4331-a62c-74f00abd62ff",
+        "CommonIdentifier": "483a9ef2-c91b-4c46-8078-25b524cfe817",
+        "Name": "Waves and Electromagnetics Electives: Electrical Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "23800dc1-f495-4331-a62c-74f00abd62ff",
+                "CourseIdentifiersId": "1dc0002d-0e1d-4b55-8f29-e48b1653250f"
+            },
+            {
+                "CourseGroupingId": "23800dc1-f495-4331-a62c-74f00abd62ff",
+                "CourseIdentifiersId": "b219357e-f114-4c9a-845c-7ad9aa6f277e"
+            },
+            {
+                "CourseGroupingId": "23800dc1-f495-4331-a62c-74f00abd62ff",
+                "CourseIdentifiersId": "bab64165-dfa2-407c-a5e0-41a23d547134"
+            },
+            {
+                "CourseGroupingId": "23800dc1-f495-4331-a62c-74f00abd62ff",
+                "CourseIdentifiersId": "cd8b221a-f019-459f-b0cd-b24a1c94e90b"
+            }
+        ]
+    },
+    {
+        "Id": "9a276cbb-c049-404e-a9b1-3e0cfa0c2db8",
+        "CommonIdentifier": "0cc9a954-5435-4aaa-b513-530e95181564",
+        "Name": "Computer Systems Electives: Electrical Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "9a276cbb-c049-404e-a9b1-3e0cfa0c2db8",
+                "CourseIdentifiersId": "1c52872f-89b8-4700-8f0e-785b6b14dc37"
+            },
+            {
+                "CourseGroupingId": "9a276cbb-c049-404e-a9b1-3e0cfa0c2db8",
+                "CourseIdentifiersId": "1df29602-ffb4-4a82-98a4-db2cb10d838f"
+            },
+            {
+                "CourseGroupingId": "9a276cbb-c049-404e-a9b1-3e0cfa0c2db8",
+                "CourseIdentifiersId": "74141479-3707-4f6a-9b11-7df30f95caf7"
+            },
+            {
+                "CourseGroupingId": "9a276cbb-c049-404e-a9b1-3e0cfa0c2db8",
+                "CourseIdentifiersId": "4424a19a-a652-42a1-9deb-720f4f6a6516"
+            },
+            {
+                "CourseGroupingId": "9a276cbb-c049-404e-a9b1-3e0cfa0c2db8",
+                "CourseIdentifiersId": "51952803-321c-4e7f-97de-047c0a620ad6"
+            },
+            {
+                "CourseGroupingId": "9a276cbb-c049-404e-a9b1-3e0cfa0c2db8",
+                "CourseIdentifiersId": "8342ee2f-e51d-417a-8f2b-a4485ed1ed13"
+            },
+            {
+                "CourseGroupingId": "9a276cbb-c049-404e-a9b1-3e0cfa0c2db8",
+                "CourseIdentifiersId": "f0cd8e96-98c8-4dcb-be3e-06fcef06a7dc"
+            },
+            {
+                "CourseGroupingId": "9a276cbb-c049-404e-a9b1-3e0cfa0c2db8",
+                "CourseIdentifiersId": "ca495315-4c1f-41e1-96cc-7f5a7e32f416"
+            },
+            {
+                "CourseGroupingId": "9a276cbb-c049-404e-a9b1-3e0cfa0c2db8",
+                "CourseIdentifiersId": "b7c7c95d-6c3e-4f97-9c9f-00aa82ffca9d"
+            }
+        ]
+    },
+    {
+        "Id": "663b8fe8-37fb-4992-a404-2056c5f70e73",
+        "CommonIdentifier": "32881b2a-cb10-49fa-9770-5e0129c9d032",
+        "Name": "Biological and Biomedical Engineering Electives: Electrical Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "663b8fe8-37fb-4992-a404-2056c5f70e73",
+                "CourseIdentifiersId": "83988f4f-18fc-453a-9a71-9fbbff553a65"
+            },
+            {
+                "CourseGroupingId": "663b8fe8-37fb-4992-a404-2056c5f70e73",
+                "CourseIdentifiersId": "7a4db4bf-0c56-4f75-b36f-5dafb4cc2d31"
+            },
+            {
+                "CourseGroupingId": "663b8fe8-37fb-4992-a404-2056c5f70e73",
+                "CourseIdentifiersId": "2c3ddab2-f3b7-4a67-b78b-70ff6258adda"
+            },
+            {
+                "CourseGroupingId": "663b8fe8-37fb-4992-a404-2056c5f70e73",
+                "CourseIdentifiersId": "4013ccb7-d71b-42e1-bd6b-2569175a6f8d"
+            },
+            {
+                "CourseGroupingId": "663b8fe8-37fb-4992-a404-2056c5f70e73",
+                "CourseIdentifiersId": "1d527270-219e-4ceb-96cd-d5a21a869194"
+            }
+        ]
+    },
+    {
+        "Id": "2db4fa0e-dc53-445a-8c67-a7f4ad1a706c",
+        "CommonIdentifier": "52f1be73-d862-4874-834c-4f4684f4bb1b",
+        "Name": "Other Electives: Electrical Engineering",
+        "RequiredCredits": "N/A",
+        "IsTopLevel": false,
+        "School": 0,
+        "Description": "",
+        "Notes": "",
+        "State": 0,
+        "Version": 1,
+        "Published": true,
+        "CourseGroupingReferences": [],
+        "CourseGroupingCourseIdentifier": [
+            {
+                "CourseGroupingId": "2db4fa0e-dc53-445a-8c67-a7f4ad1a706c",
+                "CourseIdentifiersId": "fe4bbe40-ebfb-400d-b977-07da9034ef0d"
+            },
+            {
+                "CourseGroupingId": "2db4fa0e-dc53-445a-8c67-a7f4ad1a706c",
+                "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+            }
+        ]
+    },
+	{
+		"Id": "a2d3f04f-1c14-41fb-8663-086854d0c78c",
+		"CommonIdentifier": "65ca4400-a4e2-4530-b5da-246c4a95ab2d",
+		"Name": "Engineering Core for Electrical Engineering",
+		"RequiredCredits": "30.5",
+		"IsTopLevel": false,
+		"School": 0,
+		"Description": "",
+		"Notes": "",
+		"State": 0,
+		"Version": 1,
+		"Published": true,
+		"CourseGroupingReferences": [
+			{
+				"Id": "99f763e2-6eb0-4f97-9d49-eb2d6966dbe7",
+				"ChildGroupCommonIdentifier": "86072b4b-c98e-458b-8f8e-230eca367fe3",
+				"GroupingType": 0
+			}
+		],
+		"CourseGroupingCourseIdentifier": []
+	}
+]

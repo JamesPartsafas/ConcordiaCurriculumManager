@@ -1,0 +1,659 @@
+{
+    "Data": [
+        {
+            "Id": "3d8d5b76-409b-447e-89d0-b81716cffcc1",
+            "CommonIdentifier": "24d278e5-6058-4a34-9674-3115abde23b3",
+            "Name": "BEng in Aerospace Engineering",
+            "RequiredCredits": "120",
+            "IsTopLevel": true,
+            "School": 0,
+            "Description": "",
+            "Notes": "",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+				{
+					"Id": "7a4b827f-b39c-4418-94b2-48d7b7361bbc",
+					"ChildGroupCommonIdentifier": "a8b5c633-cac3-4d2b-882d-114e95f88cc2",
+					"GroupingType": 0
+				},
+                {
+                    "Id": "ad9dc9d5-d4cc-41b8-829d-993cd26ce889",
+                    "ChildGroupCommonIdentifier": "6512e4e1-697b-48ca-9cf7-65b954ef1e67",
+                    "GroupingType": 0
+                },
+                {
+                    "Id": "58a3af06-2bae-4f38-b530-b637ae940b2f",
+                    "ChildGroupCommonIdentifier": "ca1dd238-cbe2-4ed3-91c9-234212efd4e0",
+                    "GroupingType": 0
+                },
+                {
+                    "Id": "f09c0e21-a1a4-485e-9133-a3cd6d644aad",
+                    "ChildGroupCommonIdentifier": "863f748e-45e3-4220-9940-3fa8da5597a5",
+                    "GroupingType": 0
+                },
+                {
+                    "Id": "e3b045ae-0fc6-4f56-ad6c-a93f709a08ed",
+                    "ChildGroupCommonIdentifier": "52671279-f3a8-4933-9d26-cdbb89fb794f",
+                    "GroupingType": 0
+                },
+                {
+                    "Id": "bffb0c7a-4cd9-4cbc-a207-50efc9316191",
+                    "ChildGroupCommonIdentifier": "80ad4c64-6d18-47ed-9740-cb31020907b4",
+                    "GroupingType": 0
+                }
+            ],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "91638c1e-3495-4636-bf35-d11c3a1dadc2",
+            "CommonIdentifier": "6512e4e1-697b-48ca-9cf7-65b954ef1e67",
+            "Name": "Aerospace Engineering Core",
+            "RequiredCredits": "38.25",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "",
+            "Notes": "",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [],
+            "CourseGroupingCourseIdentifier": [
+                {
+                    "CourseGroupingId": "91638c1e-3495-4636-bf35-d11c3a1dadc2",
+                    "CourseIdentifiersId": "c5a9a898-0444-4d4d-add3-cf52877ec884"
+                },
+                {
+                    "CourseGroupingId": "91638c1e-3495-4636-bf35-d11c3a1dadc2",
+                    "CourseIdentifiersId": "d14afae6-f4eb-4aca-9ff8-b701326c5237"
+                },
+                {
+                    "CourseGroupingId": "91638c1e-3495-4636-bf35-d11c3a1dadc2",
+                    "CourseIdentifiersId": "0c660b2d-28b4-47d0-b6c8-caa84316ab82"
+                },
+                {
+                    "CourseGroupingId": "91638c1e-3495-4636-bf35-d11c3a1dadc2",
+                    "CourseIdentifiersId": "2c7dc005-c168-4469-b410-231bf4271896"
+                },
+                {
+                    "CourseGroupingId": "91638c1e-3495-4636-bf35-d11c3a1dadc2",
+                    "CourseIdentifiersId": "70a39f15-b601-45fa-b8aa-2eec6812d44f"
+                },
+                {
+                    "CourseGroupingId": "91638c1e-3495-4636-bf35-d11c3a1dadc2",
+                    "CourseIdentifiersId": "bf4106dd-29fc-4e5c-be8f-1b7a18f7dd41"
+                },
+                {
+                    "CourseGroupingId": "91638c1e-3495-4636-bf35-d11c3a1dadc2",
+                    "CourseIdentifiersId": "5c0527b8-f196-4cfb-8843-1aaa31f45612"
+                },
+                {
+                    "CourseGroupingId": "91638c1e-3495-4636-bf35-d11c3a1dadc2",
+                    "CourseIdentifiersId": "8ede4229-c0f0-4ece-a434-dee645c4a23a"
+                },
+                {
+                    "CourseGroupingId": "91638c1e-3495-4636-bf35-d11c3a1dadc2",
+                    "CourseIdentifiersId": "e55367dc-0e99-41e2-b86e-659d15110bbd"
+                },
+                {
+                    "CourseGroupingId": "91638c1e-3495-4636-bf35-d11c3a1dadc2",
+                    "CourseIdentifiersId": "e6ceeb10-6905-415b-aa91-82f9dcdbc39a"
+                },
+                {
+                    "CourseGroupingId": "91638c1e-3495-4636-bf35-d11c3a1dadc2",
+                    "CourseIdentifiersId": "98c35971-6cbd-45b1-a107-d3bcead4b381"
+                }
+            ]
+        },
+        {
+            "Id": "b815a73c-21cc-4941-9e74-a3e6877f4dde",
+            "CommonIdentifier": "ca1dd238-cbe2-4ed3-91c9-234212efd4e0",
+            "Name": "Aerospace Engineering Option Requirements",
+            "RequiredCredits": "54.75",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "",
+            "Notes": "",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "69935998-b55e-47e9-b1d9-2a990d660f2f",
+            "CommonIdentifier": "863f748e-45e3-4220-9940-3fa8da5597a5",
+            "Name": "Option A — Aerodynamics and Propulsion",
+            "RequiredCredits": "54.75",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "",
+            "Notes": "",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+				{
+                    "Id": "f22253df-97de-4f8c-9a14-9f0d1dd8d7e9",
+                    "ChildGroupCommonIdentifier": "a807b25d-8deb-4237-9e9c-5227228d9e98",
+                    "GroupingType": 0
+                },
+                {
+                    "Id": "4012c21d-07a5-4d3f-914d-b28e68e1b7bb",
+                    "ChildGroupCommonIdentifier": "0278e123-12a2-463a-a20b-cbb4fa629a05",
+                    "GroupingType": 0
+                }
+			],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "622da374-a0d3-42bd-8627-e64776ae57d4",
+            "CommonIdentifier": "a807b25d-8deb-4237-9e9c-5227228d9e98",
+            "Name": "Option A – Aerodynamics and Propulsion Core",
+            "RequiredCredits": "50.25",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "",
+            "Notes": "",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [],
+            "CourseGroupingCourseIdentifier": [
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "620bc67d-c9f8-4fd7-9634-61c0c3f150fa"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "82c19458-6389-466e-a8cb-2245108e7b09"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "537a194b-dad3-46f3-b062-557917eeb9cc"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "20ea375e-d7be-4583-9b1d-1d3f8223320b"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "38f20944-20b7-46fe-9993-a3ed0807174c"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "24e7d586-df10-440f-af15-c5c377a238b9"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "a981618e-7f4d-4646-bcd5-161b329ef7fc"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "66489cf9-460f-4f00-b3e6-187c6ac5c73d"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "026f0ade-921a-4a2c-9e26-7f49c85a12b5"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "9a9e3251-6be3-475f-84c5-e2a781f509b9"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "1800a2f4-a0d3-4421-b3b8-0a8ff9060231"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "eb9fa7ae-b3f2-4ce7-8d53-8b3936611e6d"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "91a526d8-eade-49b0-b773-e9833a8a6698"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "0f41fb92-9094-49ae-97f2-9923913fa0fd"
+                },
+                {
+                    "CourseGroupingId": "622da374-a0d3-42bd-8627-e64776ae57d4",
+                    "CourseIdentifiersId": "b7b65490-826f-4dcf-a3d8-caeffd0e4edb"
+                }
+            ]
+        },
+        {
+            "Id": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+            "CommonIdentifier": "0278e123-12a2-463a-a20b-cbb4fa629a05",
+            "Name": "Option A – Aerodynamics and Propulsion Electives",
+            "RequiredCredits": "4.5",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "",
+            "Notes": "",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [],
+            "CourseGroupingCourseIdentifier": [
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "9c120fd7-11f0-4cd7-a9d9-6b5d27583f98"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "8215160a-09e3-4328-93c7-91b6e32b3611"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "86fb3540-286f-4e77-a25d-859db77f7570"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "f5fc6cb3-beee-4307-b3ca-32a810116133"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "845c788d-1b95-4f42-9650-73e03da587a8"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "d8df08ff-8d95-4f93-a19d-24d9b760211e"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "d6bf513c-c12a-4533-81f1-fec7c3e13331"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "96ac755b-6fa3-4c3e-ace4-ed280476708a"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "99c2692b-9daa-43da-91a0-95680460a6d7"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "c9703f8b-aa9c-46b5-84d3-9dbc42a0a6f4"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "c89dff7a-023f-40e8-8059-448b8fc913d2"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "c2e60d62-ff94-4bc9-b610-31a9f2ace889"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "c8d37a1d-ddf2-4b55-be0a-aec9eb988272"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "77ef5c89-4ea6-4641-a46f-4e66e366d129"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "cef44dd5-8565-4571-9f23-10c23beec0b7"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "ee9e586c-8f12-4fcb-afd0-5ce64abba983"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "f3946732-fbab-44b3-81a4-8f4fdc38349e"
+                },
+                {
+                    "CourseGroupingId": "79b76314-2b39-43d2-91ed-0d1ce3ef7e39",
+                    "CourseIdentifiersId": "a4c0d483-ba91-413a-9bd8-c4e31d1620b6"
+                }
+            ]
+        },
+        {
+            "Id": "88a73e90-de08-4741-b263-cbf8268be9c4",
+            "CommonIdentifier": "52671279-f3a8-4933-9d26-cdbb89fb794f",
+            "Name": "Option B – Aerospace Structures and Materials",
+            "RequiredCredits": "54.75",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "",
+            "Notes": "",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+				{
+                    "Id": "81562458-a2c9-4e25-9254-cbd6e27b1dbe",
+                    "ChildGroupCommonIdentifier": "65fcc231-545c-4126-8702-348b835b32fc",
+                    "GroupingType": 0
+                }
+			],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+            "CommonIdentifier": "65fcc231-545c-4126-8702-348b835b32fc",
+            "Name": "Option B – Aerospace Structures and Materials Core",
+            "RequiredCredits": "54.75",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "",
+            "Notes": "",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [],
+            "CourseGroupingCourseIdentifier": [
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "9c120fd7-11f0-4cd7-a9d9-6b5d27583f98"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "24e7d586-df10-440f-af15-c5c377a238b9"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "d6bf513c-c12a-4533-81f1-fec7c3e13331"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "42be8a0a-f489-47d6-9474-85cc0b22d6c9"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "a981618e-7f4d-4646-bcd5-161b329ef7fc"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "66489cf9-460f-4f00-b3e6-187c6ac5c73d"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "9a9e3251-6be3-475f-84c5-e2a781f509b9"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "c2e60d62-ff94-4bc9-b610-31a9f2ace889"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "c8d37a1d-ddf2-4b55-be0a-aec9eb988272"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "0d6f92c2-22bd-42b7-ba49-d263a3604847"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "f3946732-fbab-44b3-81a4-8f4fdc38349e"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "91a526d8-eade-49b0-b773-e9833a8a6698"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "0f41fb92-9094-49ae-97f2-9923913fa0fd"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "b7b65490-826f-4dcf-a3d8-caeffd0e4edb"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "e650f8da-fa8f-4146-b545-f14b8d1b1110"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "512c3424-7e35-4d39-a0f5-4d7fa934d7f7"
+                },
+                {
+                    "CourseGroupingId": "29a7e602-4ed5-442d-88a1-256f9ff1a463",
+                    "CourseIdentifiersId": "50614887-7096-4dc4-9e94-503f55d7f0d9"
+                }
+            ]
+        },
+        {
+            "Id": "b9005f17-6b3d-4c0e-b5e8-3e6b469bbaa2",
+            "CommonIdentifier": "80ad4c64-6d18-47ed-9740-cb31020907b4",
+            "Name": "Option C — Avionics and Aerospace Systems",
+            "RequiredCredits": "54.75",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "",
+            "Notes": "",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [
+				{
+                    "Id": "efe9209c-c43f-488c-a404-93e8477f8b5c",
+                    "ChildGroupCommonIdentifier": "d4b7b6c6-d828-4a9a-b05f-2b238da20f44",
+                    "GroupingType": 0
+                },
+                {
+                    "Id": "47541f7f-0e64-43bd-a2ea-73f6c50e7b0a",
+                    "ChildGroupCommonIdentifier": "d45e6928-3b47-4c8d-8a5f-c9c2f6bfe46e",
+                    "GroupingType": 0
+                }
+			],
+            "CourseGroupingCourseIdentifier": []
+        },
+        {
+            "Id": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+            "CommonIdentifier": "d4b7b6c6-d828-4a9a-b05f-2b238da20f44",
+            "Name": "Option C — Avionics and Aerospace Systems Core",
+            "RequiredCredits": "46.5",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "",
+            "Notes": "",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [],
+            "CourseGroupingCourseIdentifier": [
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "845c788d-1b95-4f42-9650-73e03da587a8"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "ed3c1e02-896f-4f42-b021-8626f9ba6350"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "d672f323-0be9-414e-9b0b-cfcf104e487d"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "064e56ad-930c-4369-9152-56f5101376e1"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "559c2d94-55d9-40a9-bb69-9c3dffe61f57"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "8799456a-4a61-4fc8-83f5-9d80bb1eb358"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "6752ddde-c183-4aea-9816-6b5f04da15f6"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "a1b6a9d7-811a-49fd-a912-554b90d006f4"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "d882c80d-c501-438e-9e35-b7ae85cffc66"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "929efd61-3504-4e19-810f-c8c5a19a4ca3"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "df5b2cdb-7b7d-4466-81bc-6e8cd34cb9f6"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "b233c1c0-deb2-4254-9665-1778522e4f74"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "aa0e9acf-d9ac-43c5-aa4b-c9452177d6a8"
+                },
+                {
+                    "CourseGroupingId": "5e548d74-b966-4c1e-afb8-a2dee076d6ee",
+                    "CourseIdentifiersId": "b7c7c95d-6c3e-4f97-9c9f-00aa82ffca9d"
+                }
+            ]
+        },
+        {
+            "Id": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+            "CommonIdentifier": "d45e6928-3b47-4c8d-8a5f-c9c2f6bfe46e",
+            "Name": "Option C — Avionics and Aerospace Systems Electives",
+            "RequiredCredits": "8.25",
+            "IsTopLevel": false,
+            "School": 0,
+            "Description": "",
+            "Notes": "",
+            "State": 0,
+            "Version": 1,
+            "Published": true,
+            "CourseGroupingReferences": [],
+            "CourseGroupingCourseIdentifier": [
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "8215160a-09e3-4328-93c7-91b6e32b3611"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "86fb3540-286f-4e77-a25d-859db77f7570"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "f5fc6cb3-beee-4307-b3ca-32a810116133"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "39367a01-aa9e-4e36-bd37-f01fe4244e88"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "1df29602-ffb4-4a82-98a4-db2cb10d838f"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "74141479-3707-4f6a-9b11-7df30f95caf7"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "4424a19a-a652-42a1-9deb-720f4f6a6516"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "70a1759a-1b7a-4214-9c89-008a9ca23fc6"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "51952803-321c-4e7f-97de-047c0a620ad6"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "8342ee2f-e51d-417a-8f2b-a4485ed1ed13"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "48473bd4-f70c-46d0-a6e4-07403a5165d6"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "1d718b5b-78c1-45a6-825c-3cc588d3e638"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "e2a2bd4f-96b3-48f6-b551-e1f3e49c9bc4"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "72a1132e-27d7-4fa0-a8e5-697cbf877166"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "b0a5d85d-4448-465d-b8fc-b6bd9e91d9ec"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "b19756ea-b7ee-46db-8825-661b6677330a"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "cd7b7eef-1091-4e8c-9f9b-2a5ea69f0670"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "6372d4b3-c77f-4081-9385-e0ee9871152e"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "cd8b221a-f019-459f-b0cd-b24a1c94e90b"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "0cd1c718-13f2-4cac-af5f-216d7af4c506"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "44323ae0-4d08-4114-9d9e-8464e5b792e7"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "fe4bbe40-ebfb-400d-b977-07da9034ef0d"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "b9074685-fd72-4a22-8f66-56ca067e41e6"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "886dc3ab-e575-445b-9776-ab7d6490bd42"
+                },
+                {
+                    "CourseGroupingId": "cf5d7a5a-f60d-4a6e-89f6-c9baee796cbd",
+                    "CourseIdentifiersId": "4b59539d-20bf-4e62-9bed-4712fcc9b550"
+                }
+            ]
+        },
+		{
+			"Id": "c2df9d72-384d-42a5-a65b-2ca632b37b8a",
+			"CommonIdentifier": "a8b5c633-cac3-4d2b-882d-114e95f88cc2",
+			"Name": "Engineering Core for Aerospace Engineering",
+			"RequiredCredits": "27.00",
+			"IsTopLevel": false,
+			"School": 0,
+			"Description": "",
+			"Notes": "",
+			"State": 0,
+			"Version": 1,
+			"Published": true,
+			"CourseGroupingReferences": [
+				{
+					"Id": "c7fd656e-97ef-4ec4-9c3c-60ed991a4835",
+					"ChildGroupCommonIdentifier": "86072b4b-c98e-458b-8f8e-230eca367fe3",
+					"GroupingType": 0
+				}
+			],
+			"CourseGroupingCourseIdentifier": []
+		}
+    ]
+}

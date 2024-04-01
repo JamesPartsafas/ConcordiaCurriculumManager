@@ -32,6 +32,7 @@ export default function Register({ setUser }: LoginProps) {
     const [showError, setShowError] = useState(false);
     const { toggleLoading } = useLoading(); // Use the useLoading hook
     const toast = useToast(); // Use the useToast hook
+    const [rememberMe, setRememberMe] = useState(true); // Default to true
 
     const handleLoadingButtonClick = () => {
         toggleLoading();
@@ -50,10 +51,18 @@ export default function Register({ setUser }: LoginProps) {
             .then(
                 (res: AuthenticationResponse) => {
                     if (res.data.accessToken != null) {
-                        showToast(toast, "Success!", "You have successfully logged in.", "success");
+                        showToast(toast, "Success!", "You have successfully registered and logged in.", "success");
                         const user: User = decodeTokenToUser(res.data.accessToken);
                         setUser(user);
                         navigate("/");
+                        if (rememberMe) {
+                            localStorage.setItem("accessToken", res.data.accessToken); // Save to local storage
+                            localStorage.setItem("token", res.data.accessToken);
+                        } else {
+                            // Clear the token from session storage if "Remember me" is not checked
+                            sessionStorage.setItem("accessToken", res.data.accessToken);
+                            localStorage.removeItem("accessToken");
+                        }
                     }
                 },
                 (rej) => {
@@ -131,8 +140,9 @@ export default function Register({ setUser }: LoginProps) {
                                     </FormControl>
                                 </Stack>
                                 <HStack justify="space-between">
-                                    <Checkbox defaultChecked>Remember me</Checkbox>
-
+                                    <Checkbox defaultChecked onChange={(e) => setRememberMe(e.target.checked)}>
+                                        Remember me
+                                    </Checkbox>
                                     <Button variant="text" size="sm" onClick={() => navigate(BaseRoutes.Login)}>
                                         Back to sign in
                                     </Button>
