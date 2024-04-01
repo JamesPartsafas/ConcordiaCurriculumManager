@@ -52,6 +52,7 @@ import EmailResetPassword from "./pages/EmailResetPassword";
 import Directories from "./pages/Directories";
 import CourseBySubject from "./pages/courses/CourseBySubjectBrowser";
 import CoursesFromSubject from "./pages/CoursesFromSubject";
+import ResetPassword from "./pages/ResetPassword";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -107,6 +108,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.ResetPasswordEmail}
                         element={isLoggedIn == false ? <EmailResetPassword /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.ResetPassword}
+                        element={isLoggedIn == false ? <ResetPassword /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
                         path={BaseRoutes.CourseBrowser}

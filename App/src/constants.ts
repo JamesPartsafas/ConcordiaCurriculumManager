@@ -3,6 +3,7 @@ export enum BaseRoutes {
     Login = "/login",
     Register = "/register",
     ResetPasswordEmail = "/resetPasswordEmail",
+    ResetPassword = "/resetPassword",
     Dossiers = "/dossiers",
     NotFound = "*",
     ComponentsList = "/components-list",
