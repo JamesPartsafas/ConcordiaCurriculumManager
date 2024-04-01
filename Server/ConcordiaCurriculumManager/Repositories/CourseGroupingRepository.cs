@@ -116,11 +116,11 @@ public class CourseGroupingRepository : ICourseGroupingRepository
     {
         var result =  await _dbContext.CourseGroupings
         .Where(cg => cg.Name.Trim().ToLower().Contains(name.Trim().ToLower()) && cg.Version != null)
-        .Take(10)
         .Include(cg => cg.SubGroupingReferences)
         .Include(cg => cg.CourseIdentifiers)
         .GroupBy(cg => cg.CommonIdentifier)
         .Select(group => group.OrderByDescending(cg => cg.Version).First())
+        .Take(10)
         .ToListAsync();
 
         return result.Where(cg => cg.State.Equals(CourseGroupingStateEnum.Accepted)).ToList();
