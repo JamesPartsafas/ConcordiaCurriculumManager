@@ -43,6 +43,7 @@ import { AllCourseSettings, CourseDataResponse } from "../../models/course";
 import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
 import CourseGroupingDiffViewer from "../../components/CourseDifference/CourseGroupingDifference";
 import Button from "../../components/Button";
+import DeleteAlert from "../../shared/DeleteAlert";
 
 export default function CreateCourseGrouping() {
     const location = useLocation();
@@ -58,6 +59,9 @@ export default function CreateCourseGrouping() {
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
     const [courseIdentifiers, setCourseIdentifiers] = useState<CourseIdentifierDTO[]>([]);
 
+    const [selectedCourse, setSelectedCourse] = useState<number>(null);
+    const [selectedSubGroup, setSelectedSubGroup] = useState<number>(null);
+
     const {
         isOpen: isCourseSelectionOpen,
         onOpen: onCourseSelectionOpen,
@@ -69,6 +73,8 @@ export default function CreateCourseGrouping() {
         onOpen: onSearchCourseGroupingOpen,
         onClose: onSearchCourseGroupingClose,
     } = useDisclosure();
+
+    const { isOpen: isDeleteAlertOpen, onOpen: onDeleteAlertOpen, onClose: onDeleteAlertClose } = useDisclosure();
 
     const {
         control,
@@ -370,6 +376,70 @@ export default function CreateCourseGrouping() {
         appendSubGroup(res);
     }
 
+    function handleRemoveCourse(index) {
+        removeCourseIdentifier(index);
+        setSelectedCourse(null);
+        onDeleteAlertClose();
+    }
+
+    function handleRemoveSubGroup(index) {
+        removeSubGroupRef(index);
+        setSelectedSubGroup(null);
+        onDeleteAlertClose();
+    }
+
+    function handleDeleteAlertClose() {
+        setSelectedCourse(null);
+        setSelectedSubGroup(null);
+        onDeleteAlertClose();
+    }
+
+    function deleteRequestAlert() {
+        if (selectedCourse !== null) {
+            console.log(courseFields);
+            return (
+                <DeleteAlert
+                    isOpen={isDeleteAlertOpen}
+                    onClose={handleDeleteAlertClose}
+                    loading={loading}
+                    headerTitle="Delete Course"
+                    title={
+                        (courseFields?.at(selectedCourse)?.subject ||
+                            courseIdentifiers.find(
+                                (c) => c.concordiaCourseId === courseFields?.at(selectedCourse)?.concordiaCourseId
+                            )?.subject) +
+                        " " +
+                        (courseFields?.at(selectedCourse)?.catalog?.toString() ||
+                            courseIdentifiers
+                                .find(
+                                    (c) => c.concordiaCourseId === courseFields?.at(selectedCourse)?.concordiaCourseId
+                                )
+                                ?.catalog?.toString())
+                    }
+                    item={selectedCourse}
+                    onDelete={handleRemoveCourse}
+                />
+            );
+        } else if (selectedSubGroup !== null) {
+            return (
+                <DeleteAlert
+                    isOpen={isDeleteAlertOpen}
+                    onClose={handleDeleteAlertClose}
+                    loading={loading}
+                    headerTitle="Delete sub grouping"
+                    title={
+                        subGroupFields?.at(selectedSubGroup)?.name ||
+                        courseGrouping?.subGroupings.find(
+                            (c) =>
+                                c.commonIdentifier === subGroupFields?.at(selectedSubGroup)?.childGroupCommonIdentifier
+                        )?.name
+                    }
+                    item={selectedSubGroup}
+                    onDelete={handleRemoveSubGroup}
+                />
+            );
+        }
+    }
     useEffect(() => {
         setNewCourseGrouping(() => ({
             ...courseGroupingWatched,
@@ -380,6 +450,7 @@ export default function CreateCourseGrouping() {
         <>
             {displaySelectCourseModal()}
             {displaySearchCourseGroupModal()}
+            {deleteRequestAlert()}
             {courseGrouping && (
                 <CourseGroupingDiffViewer
                     oldGrouping={courseGrouping}
@@ -488,7 +559,10 @@ export default function CreateCourseGrouping() {
                                                 isAttached
                                                 variant="outline"
                                                 ml="10px"
-                                                onClick={() => removeSubGroupRef(index)}
+                                                onClick={() => {
+                                                    setSelectedSubGroup(index);
+                                                    onDeleteAlertOpen();
+                                                }}
                                             >
                                                 <IconButton
                                                     rounded="full"
@@ -537,7 +611,10 @@ export default function CreateCourseGrouping() {
                                                 isAttached
                                                 variant="outline"
                                                 ml="10px"
-                                                onClick={() => removeCourseIdentifier(index)}
+                                                onClick={() => {
+                                                    setSelectedCourse(index);
+                                                    onDeleteAlertOpen();
+                                                }}
                                             >
                                                 <IconButton
                                                     rounded="full"
