@@ -31,7 +31,9 @@ export default function DossierReportCourseGrouping(props: {
         });
     };
     useEffect(() => {
-        console.log(props.courseGrouping);
+        setCreationRequests([]);
+        setModificationRequests([]);
+        setDeletionRequests([]);
         if (creationRequests.length == 0) parseCourseGrouping();
     }, [props.courseGrouping]);
 
