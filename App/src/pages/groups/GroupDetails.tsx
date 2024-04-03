@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { GetGroupByID, GroupDTO } from "../../services/group";
 import { Box, Heading, Text, Card } from "@chakra-ui/react";
-import { BaseRoutes } from "../../constants";
 import Button from "../../components/Button";
 import { useNavigate } from "react-router-dom";
 
@@ -106,9 +105,9 @@ function GroupDetails() {
                     width="240px"
                     height="40px"
                     margin="auto"
-                    onClick={() => navigate(BaseRoutes.allGroups)}
+                    onClick={() => navigate(-1)}
                 >
-                    Go back to all Groups
+                    Go back
                 </Button>
             </Card>
         </Box>

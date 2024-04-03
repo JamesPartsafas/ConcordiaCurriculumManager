@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import {
+    ChangeLogResponse,
     DossierDTO,
     DossierDTOResponse,
     DossierDetailsResponse,
@@ -48,10 +49,14 @@ export function searchDossiers(title: string, state: DossierStateEnum, guid: str
     return axios.get("/Dossier/SearchDossiers?title=" + title + "&state=" + state + "&groupId=" + guid);
 }
 
-export function getChangesAcrossAllDossiers(): Promise<DossierReportResponse> {
+export function getChangesAcrossAllDossiers(): Promise<ChangeLogResponse> {
     return axios.get(`/Dossier/GetChangesAcrossAllDossiers`);
 }
 
 export function changeLogPublishCourse(subject: string, catalog: string): Promise<void> {
     return axios.put(`/Course/PublishCourse/${subject}/${catalog}`);
+}
+
+export function changeLogPublishCourseGrouping(commonIdentifier: string): Promise<void> {
+    return axios.put(`/CourseGrouping/PublishCourseGrouping/${commonIdentifier}`);
 }

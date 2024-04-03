@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { AddGroupMaster, GetGroupByID, GroupDTO, GroupResponseDTO } from "../../services/group";
 import { useLocation } from "react-router-dom";
-import { BaseRoutes } from "../../constants";
 import { UserDTO, UserRoleCodes } from "../../models/user";
 
 export default function AddingMasterToGroup() {
@@ -97,14 +96,7 @@ export default function AddingMasterToGroup() {
 
     return (
         <>
-            <Button
-                style="primary"
-                variant="outline"
-                height="40px"
-                ml={"10%"}
-                mt={5}
-                onClick={() => navigate(BaseRoutes.ManageableGroup)}
-            >
+            <Button style="primary" variant="outline" height="40px" ml={"10%"} mt={5} onClick={() => navigate(-1)}>
                 Back
             </Button>
             <Container maxW="lg" py={{ base: "12", md: "15" }} px={{ base: "0", sm: "8" }}>

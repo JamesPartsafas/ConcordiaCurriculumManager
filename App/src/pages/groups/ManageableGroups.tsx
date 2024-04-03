@@ -15,7 +15,7 @@ import {
     useToast,
     useDisclosure,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { isAdmin } from "../../services/auth";
 import { GetAllGroups, GroupDTO, MultiGroupResponseDTO, DeleteGroup, UpdateGroup } from "../../services/group";
 import { BaseRoutes } from "../../constants";
@@ -34,6 +34,7 @@ export default function DisplayManageableGroups() {
     const user = useContext(UserContext);
     const cancelRef = useRef();
     const toast = useToast();
+    const navigate = useNavigate();
 
     const { isOpen: isTreeOpen, onOpen: onTreeOpen, onClose: onTreeClose } = useDisclosure();
 
@@ -175,11 +176,15 @@ export default function DisplayManageableGroups() {
                     )}
 
                     <Flex justify="center" mt={4}>
-                        <Link to={BaseRoutes.Home}>
-                            <Button color="white" backgroundColor={"#932439"} variant="solid" height="40px">
-                                Back to Home Page
-                            </Button>
-                        </Link>
+                        <Button
+                            color="white"
+                            backgroundColor={"#932439"}
+                            variant="solid"
+                            height="40px"
+                            onClick={() => navigate(-1)}
+                        >
+                            Back
+                        </Button>
                     </Flex>
 
                     <AlertDialog

@@ -4,7 +4,6 @@ import { Container, Stack, Heading, Box, HStack, Text, OrderedList, ListItem } f
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { GetGroupByID, GroupDTO, GroupResponseDTO, RemoveGroupMaster } from "../../services/group";
-import { BaseRoutes } from "../../constants";
 import { UserDTO } from "../../models/user";
 import { useToast } from "@chakra-ui/react";
 
@@ -105,14 +104,7 @@ export default function RemovingMasterFromGroup() {
 
     return (
         <>
-            <Button
-                style="primary"
-                variant="outline"
-                ml={"10%"}
-                mt={5}
-                height="40px"
-                onClick={() => navigate(BaseRoutes.ManageableGroup)}
-            >
+            <Button style="primary" variant="outline" ml={"10%"} mt={5} height="40px" onClick={() => navigate(-1)}>
                 Back
             </Button>
             <Container maxW="lg" py={{ base: "12", md: "24" }} px={{ base: "0", sm: "8" }}>

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { getAllCourseSettings } from "../services/course";
-import { AllCourseSettings } from "../models/course";
+import { getAllCourseSettings } from "../../services/course";
+import { AllCourseSettings } from "../../models/course";
 import { useNavigate } from "react-router-dom";
 import { Box, Container, FormLabel, Heading, Stack } from "@chakra-ui/react";
-import Button from "../components/Button";
-import Select from "../components/Select";
+import Button from "../../components/Button";
+import Select from "../../components/Select";
 interface SubjectItem {
     value: string;
 }

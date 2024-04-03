@@ -25,7 +25,9 @@ export default function BrowserList() {
                     Browser List
                 </Text>
                 <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
-                    <Text fontWeight="bold">Course Browser: </Text>
+                    <Text fontWeight="bold" width={250}>
+                        Course Browser:{" "}
+                    </Text>
                     <Button
                         style="primary"
                         variant="solid"
@@ -38,7 +40,9 @@ export default function BrowserList() {
                     </Button>
                 </Stack>
                 <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
-                    <Text fontWeight="bold">Course by Subject Browser: </Text>
+                    <Text fontWeight="bold" width={250}>
+                        Course by Subject Browser:{" "}
+                    </Text>
                     <Button
                         style="primary"
                         variant="solid"
@@ -51,7 +55,9 @@ export default function BrowserList() {
                     </Button>
                 </Stack>
                 <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
-                    <Text fontWeight="bold">Dossier Browser: </Text>
+                    <Text fontWeight="bold" width={250}>
+                        Dossier Browser:{" "}
+                    </Text>
                     <Button
                         style="primary"
                         variant="solid"
@@ -64,7 +70,9 @@ export default function BrowserList() {
                     </Button>
                 </Stack>
                 <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
-                    <Text fontWeight="bold">Curriculum by School Browser: </Text>
+                    <Text fontWeight="bold" width={250}>
+                        Curriculum by School Browser:{" "}
+                    </Text>
                     <Button
                         style="primary"
                         variant="solid"
@@ -77,7 +85,9 @@ export default function BrowserList() {
                     </Button>
                 </Stack>
                 <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
-                    <Text fontWeight="bold">Curriculum by Name Browser: </Text>
+                    <Text fontWeight="bold" width={250}>
+                        Curriculum by Name Browser:{" "}
+                    </Text>
                     <Button
                         style="primary"
                         variant="solid"
@@ -90,7 +100,9 @@ export default function BrowserList() {
                     </Button>
                 </Stack>
                 <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
-                    <Text fontWeight="bold">Group Browser: </Text>
+                    <Text fontWeight="bold" width={250}>
+                        Group Browser:{" "}
+                    </Text>
                     <Button
                         style="primary"
                         variant="solid"

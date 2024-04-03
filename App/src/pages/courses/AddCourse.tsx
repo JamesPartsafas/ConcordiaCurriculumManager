@@ -29,7 +29,7 @@ import {
     editCourseModificationRequest,
     getAllCourseSettings,
     modifyCourse,
-} from "../services/course";
+} from "../../services/course";
 import {
     AllCourseSettings,
     Course,
@@ -39,13 +39,13 @@ import {
     EditCourseCreationRequestDTO,
     EditCourseModificationRequestDTO,
     componentMappings,
-} from "../models/course";
-import AutocompleteInput from "../components/Select";
-import { showToast } from "./../utils/toastUtils"; // Import the utility function
-import Button from "../components/Button";
-import { BaseRoutes } from "../constants";
-import CoursePreview from "../components/CoursePreview";
-import CourseDiffViewer from "../components/CourseDifference/CourseDiffViewer";
+} from "../../models/course";
+import AutocompleteInput from "../../components/Select";
+import { showToast } from "../../utils/toastUtils"; // Import the utility function
+import Button from "../../components/Button";
+import { BaseRoutes } from "../../constants";
+import CoursePreview from "../../components/CoursePreview";
+import CourseDiffViewer from "../../components/CourseDifference/CourseDiffViewer";
 
 export default function AddCourse() {
     const toast = useToast();

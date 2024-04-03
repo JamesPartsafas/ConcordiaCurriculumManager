@@ -6,6 +6,12 @@ export enum SchoolEnum {
     FineArts = 2,
     JMSB = 3,
 }
+export const SchoolEnumArray = [
+    { value: SchoolEnum.GinaCody, label: "Gina Cody" },
+    { value: SchoolEnum.ArtsAndScience, label: "Arts and Science" },
+    { value: SchoolEnum.FineArts, label: "Fine Arts" },
+    { value: SchoolEnum.JMSB, label: "JMSB" },
+];
 
 export enum CourseGroupingStateEnum {
     Accepted = 0,

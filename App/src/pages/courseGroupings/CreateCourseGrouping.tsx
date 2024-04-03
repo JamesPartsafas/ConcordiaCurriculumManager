@@ -41,7 +41,9 @@ import SelectCourseModal from "../dossier/SelectCourseModal";
 import { getAllCourseSettings } from "../../services/course";
 import { AllCourseSettings, CourseDataResponse } from "../../models/course";
 import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
+import CourseGroupingDiffViewer from "../../components/CourseDifference/CourseGroupingDifference";
 import Button from "../../components/Button";
+import DeleteAlert from "../../shared/DeleteAlert";
 
 export default function CreateCourseGrouping() {
     const location = useLocation();
@@ -52,9 +54,13 @@ export default function CreateCourseGrouping() {
     const state: { CourseGroupingRequest: CourseGroupingRequestDTO; api: string } = location.state;
 
     const [courseGrouping, setCourseGrouping] = useState<CourseGroupingDTO>();
+    const [newCourseGrouing, setNewCourseGrouping] = useState<CourseGroupingDTO>();
     const [loading, setLoading] = useState<boolean>(false);
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
     const [courseIdentifiers, setCourseIdentifiers] = useState<CourseIdentifierDTO[]>([]);
+
+    const [selectedCourse, setSelectedCourse] = useState<number>(null);
+    const [selectedSubGroup, setSelectedSubGroup] = useState<number>(null);
 
     const {
         isOpen: isCourseSelectionOpen,
@@ -68,9 +74,12 @@ export default function CreateCourseGrouping() {
         onClose: onSearchCourseGroupingClose,
     } = useDisclosure();
 
+    const { isOpen: isDeleteAlertOpen, onOpen: onDeleteAlertOpen, onClose: onDeleteAlertClose } = useDisclosure();
+
     const {
         control,
         handleSubmit,
+        watch,
         formState: { errors, isDirty },
         reset,
     } = useForm<CourseGroupingRequestDTO>({
@@ -81,23 +90,33 @@ export default function CreateCourseGrouping() {
             ...state?.CourseGroupingRequest,
         },
     });
-
+    const courseGroupingWatched = watch("courseGrouping"); // Watches the entire courseGrouping object
     const {
         fields: subGroupFields,
-        append: appendSubGroup,
-        remove: removeSubGroup,
+        append: appendSubGroupRef,
+        remove: removeSubGroupRef,
     } = useFieldArray({
         control,
         name: "courseGrouping.subGroupingReferences",
     });
 
+    const { append: appendSubGroup } = useFieldArray({
+        control,
+        name: "courseGrouping.subGroupings",
+    });
+
     const {
         fields: courseFields,
-        append: appendCourse,
-        remove: removeCourse,
+        append: appendCourseIdentifier,
+        remove: removeCourseIdentifier,
     } = useFieldArray({
         control,
         name: "courseGrouping.courseIdentifiers",
+    });
+
+    const { append: appendCourse } = useFieldArray({
+        control,
+        name: "courseGrouping.courses",
     });
 
     const fieldConfigurations = [
@@ -340,25 +359,104 @@ export default function CreateCourseGrouping() {
     }
 
     function handleCourseSelect(res: CourseDataResponse) {
-        appendCourse({
+        appendCourseIdentifier({
             concordiaCourseId: res.data.courseID,
             subject: res.data.subject,
             catalog: parseInt(res.data.catalog),
         });
+        appendCourse(res.data);
     }
 
     function handleCourseGroupingSelect(res) {
-        appendSubGroup({
+        appendSubGroupRef({
             name: res.name,
             childGroupCommonIdentifier: res.commonIdentifier,
             groupingType: res.groupingType,
         });
+        appendSubGroup(res);
     }
+
+    function handleRemoveCourse(index) {
+        removeCourseIdentifier(index);
+        setSelectedCourse(null);
+        onDeleteAlertClose();
+    }
+
+    function handleRemoveSubGroup(index) {
+        removeSubGroupRef(index);
+        setSelectedSubGroup(null);
+        onDeleteAlertClose();
+    }
+
+    function handleDeleteAlertClose() {
+        setSelectedCourse(null);
+        setSelectedSubGroup(null);
+        onDeleteAlertClose();
+    }
+
+    function deleteRequestAlert() {
+        if (selectedCourse !== null) {
+            console.log(courseFields);
+            return (
+                <DeleteAlert
+                    isOpen={isDeleteAlertOpen}
+                    onClose={handleDeleteAlertClose}
+                    loading={loading}
+                    headerTitle="Delete Course"
+                    title={
+                        (courseFields?.at(selectedCourse)?.subject ||
+                            courseIdentifiers.find(
+                                (c) => c.concordiaCourseId === courseFields?.at(selectedCourse)?.concordiaCourseId
+                            )?.subject) +
+                        " " +
+                        (courseFields?.at(selectedCourse)?.catalog?.toString() ||
+                            courseIdentifiers
+                                .find(
+                                    (c) => c.concordiaCourseId === courseFields?.at(selectedCourse)?.concordiaCourseId
+                                )
+                                ?.catalog?.toString())
+                    }
+                    item={selectedCourse}
+                    onDelete={handleRemoveCourse}
+                />
+            );
+        } else if (selectedSubGroup !== null) {
+            return (
+                <DeleteAlert
+                    isOpen={isDeleteAlertOpen}
+                    onClose={handleDeleteAlertClose}
+                    loading={loading}
+                    headerTitle="Delete sub grouping"
+                    title={
+                        subGroupFields?.at(selectedSubGroup)?.name ||
+                        courseGrouping?.subGroupings.find(
+                            (c) =>
+                                c.commonIdentifier === subGroupFields?.at(selectedSubGroup)?.childGroupCommonIdentifier
+                        )?.name
+                    }
+                    item={selectedSubGroup}
+                    onDelete={handleRemoveSubGroup}
+                />
+            );
+        }
+    }
+    useEffect(() => {
+        setNewCourseGrouping(() => ({
+            ...courseGroupingWatched,
+        }));
+    }, [JSON.stringify(courseGroupingWatched)]);
 
     return (
         <>
             {displaySelectCourseModal()}
             {displaySearchCourseGroupModal()}
+            {deleteRequestAlert()}
+            {courseGrouping && (
+                <CourseGroupingDiffViewer
+                    oldGrouping={courseGrouping}
+                    newGrouping={newCourseGrouing}
+                ></CourseGroupingDiffViewer>
+            )}
 
             <Stack m={4}>
                 <Button
@@ -461,7 +559,10 @@ export default function CreateCourseGrouping() {
                                                 isAttached
                                                 variant="outline"
                                                 ml="10px"
-                                                onClick={() => removeSubGroup(index)}
+                                                onClick={() => {
+                                                    setSelectedSubGroup(index);
+                                                    onDeleteAlertOpen();
+                                                }}
                                             >
                                                 <IconButton
                                                     rounded="full"
@@ -510,7 +611,10 @@ export default function CreateCourseGrouping() {
                                                 isAttached
                                                 variant="outline"
                                                 ml="10px"
-                                                onClick={() => removeCourse(index)}
+                                                onClick={() => {
+                                                    setSelectedCourse(index);
+                                                    onDeleteAlertOpen();
+                                                }}
                                             >
                                                 <IconButton
                                                     rounded="full"

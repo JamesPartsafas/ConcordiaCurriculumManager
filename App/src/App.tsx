@@ -2,7 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-route
 
 // 1. import `ChakraProvider` component
 import { ChakraProvider } from "@chakra-ui/react";
-import CourseBrowser from "./pages/CourseBrowser";
+import CourseBrowser from "./pages/courses/CourseBrowser";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -10,7 +10,7 @@ import { User } from "./models/user";
 import { createContext, useState } from "react";
 import Register from "./pages/Register";
 import { decodeTokenToUser, isAdmin, isAdminOrGroupMaster } from "./services/auth";
-import AddCourse from "./pages/AddCourse";
+import AddCourse from "./pages/courses/AddCourse";
 import theme from "../theme"; // Import your custom theme
 import ComponentsList from "./pages/ComponentsList";
 import { LoadingProvider } from "./utils/loadingContext"; // Import the provider
@@ -20,14 +20,14 @@ import Dossiers from "./pages/dossier/Dossiers";
 import DisplayManageableGroups from "./pages/groups/ManageableGroups";
 import AddingUserToGroup from "./pages/groups/addUserToGroup";
 import RemovingUserFromGroup from "./pages/groups/RemoveUserFromGroup";
-import DeleteCourse from "./pages/DeleteCourse";
+import DeleteCourse from "./pages/courses/DeleteCourse";
 import DossierDetails from "./pages/dossier/DossierDetails";
 import AddingMasterToGroup from "./pages/groups/AddGroupMaster";
 import RemovingMasterFromGroup from "./pages/groups/RemoveGroupMaster";
 import DossiersToReview from "./pages/dossier/DossierToReview";
 import CreateGroup from "./pages/groups/CreateGroup";
-import DeleteCourseEdit from "./pages/DeleteCourseEdit";
-import CourseDetails from "./pages/CourseDetails";
+import DeleteCourseEdit from "./pages/courses/DeleteCourseEdit";
+import CourseDetails from "./pages/courses/CourseDetails";
 import Header from "./shared/Header";
 import DossierReview from "./pages/dossier/DossierReview";
 import DossierReport from "./pages/dossier/DossierReport";
@@ -50,9 +50,10 @@ import CoursesLeft from "./pages/CoursesLeft";
 import UserBrowser from "./pages/UserBrowser";
 import EmailResetPassword from "./pages/EmailResetPassword";
 import Directories from "./pages/Directories";
-import CourseBySubject from "./pages/CourseBySubjectBrowser";
+import CourseBySubject from "./pages/courses/CourseBySubjectBrowser";
 import CoursesFromSubject from "./pages/CoursesFromSubject";
 import Metrics from "./pages/Metrics";
+import ResetPassword from "./pages/ResetPassword";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -67,19 +68,26 @@ export function App() {
     // Check for the token in localStorage.
     function initializeUser() {
         const token = localStorage.getItem("token");
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; //set the token globally
+        const sessionToken = sessionStorage.getItem("accessToken");
 
         if (token != null) {
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set the token globally
+
             const user: User = decodeTokenToUser(token);
-            // if token expired logout, and clear token
+
+            // Check if the token is expired
             if (user.expiresAtTimestamp * 1000 < Date.now()) {
+                // Token is expired, log the user out and clear token
                 localStorage.removeItem("token");
                 navigate(BaseRoutes.Login);
                 setIsLoggedIn(false);
                 setIsAdminorGroupMaster(false);
+                return null;
             }
 
             return user;
+        } else if (sessionToken != null) {
+            axios.defaults.headers.common["Authorization"] = `Bearer ${sessionToken}`; // Set the session token globally
         }
     }
 
@@ -101,6 +109,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.ResetPasswordEmail}
                         element={isLoggedIn == false ? <EmailResetPassword /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.ResetPassword}
+                        element={isLoggedIn == false ? <ResetPassword /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
                         path={BaseRoutes.CourseBrowser}
