@@ -13,9 +13,8 @@ import {
     UserDossierViewedCountDTO,
     UserDossierViewedResponseDTO,
 } from "../services/metrics";
-import { Box, Flex, Spacer, Table, Tbody, Td, Text, Tfoot, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Flex, Table, Tbody, Td, Text, Tfoot, Th, Thead, Tr } from "@chakra-ui/react";
 import { Button as ChakraButton } from "@chakra-ui/react";
-import Button from "../components/Button";
 
 export default function Metrics() {
     const [httpEndpointCount, setHttpEndpointCount] = useState<HttpEndpointCountDTO[]>([]);
