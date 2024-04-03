@@ -55,4 +55,5 @@ export enum BaseRoutes {
     profile = "/profile",
     editProfileInfo = "/editProfileInfo",
     userBrowser = "/userBrowser",
+    metrics = "/metrics",
 }
