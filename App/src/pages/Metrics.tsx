@@ -215,7 +215,8 @@ export default function Metrics() {
                                 <Flex>
                                     <ChakraButton
                                         variant="outline"
-                                        margin={"1px"}
+                                        mr={4}
+                                        p={4}
                                         onClick={() => getMoreHttpEndpoints(endpointIndex)}
                                         isDisabled={endpointIndex < httpEndpointCount.length}
                                     >
