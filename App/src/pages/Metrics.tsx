@@ -13,8 +13,9 @@ import {
     UserDossierViewedCountDTO,
     UserDossierViewedResponseDTO,
 } from "../services/metrics";
-import { Box, Flex, Table, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Flex, Spacer, Table, Tbody, Td, Text, Tfoot, Th, Thead, Tr } from "@chakra-ui/react";
 import { Button as ChakraButton } from "@chakra-ui/react";
+import Button from "../components/Button";
 
 export default function Metrics() {
     const [httpEndpointCount, setHttpEndpointCount] = useState<HttpEndpointCountDTO[]>([]);
@@ -43,12 +44,46 @@ export default function Metrics() {
             });
     }
 
+    function getMoreHttpEndpoints(index: number) {
+        GetTopHitHttpEndpoints(index)
+            .then((res) => res.data)
+            .then(
+                (res: HttpEndpointResponseDTO) => {
+                    setHttpEndpointCount([...httpEndpointCount, ...res.result]);
+                    setEndpointIndex(res.nextIndex);
+                },
+                (rej) => {
+                    console.log(rej);
+                }
+            )
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
     function getDossierViews(index: number) {
         GetTopViewedDossiers(index)
             .then((res) => res.data)
             .then(
                 (res: DossierViewResponseDTO) => {
                     setDossierViewCount(res.result);
+                    setDossierViewIndex(res.nextIndex);
+                },
+                (rej) => {
+                    console.log(rej);
+                }
+            )
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    function getMoreDossierViews(index: number) {
+        GetTopViewedDossiers(index)
+            .then((res) => res.data)
+            .then(
+                (res: DossierViewResponseDTO) => {
+                    setDossierViewCount([...dossierViewCount, ...res.result]);
                     setDossierViewIndex(res.nextIndex);
                 },
                 (rej) => {
@@ -77,12 +112,46 @@ export default function Metrics() {
             });
     }
 
+    function getMoreHttpStatuses(index: number) {
+        GetTopHttpStatusCodes(index)
+            .then((res) => res.data)
+            .then(
+                (res: HttpStatusResponseDTO) => {
+                    setHttpStatusCount([...httpStatusCount, ...res.result]);
+                    setStatusIndex(res.nextIndex);
+                },
+                (rej) => {
+                    console.log(rej);
+                }
+            )
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
     function getUserViewedDossiers(index: number) {
         GetTopDossierViewingUser(index)
             .then((res) => res.data)
             .then(
                 (res: UserDossierViewedResponseDTO) => {
                     setUserDossierViewedCount(res.result);
+                    setUserDossierIndex(res.nextIndex);
+                },
+                (rej) => {
+                    console.log(rej);
+                }
+            )
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    function getMoreUserViewedDossiers(index: number) {
+        GetTopDossierViewingUser(index)
+            .then((res) => res.data)
+            .then(
+                (res: UserDossierViewedResponseDTO) => {
+                    setUserDossierViewedCount([...userDossierViewedCount, ...res.result]);
                     setUserDossierIndex(res.nextIndex);
                 },
                 (rej) => {
@@ -141,37 +210,22 @@ export default function Metrics() {
                             </Tr>
                         ))}
                     </Tbody>
-                    <Tbody>
+                    <Tfoot>
                         <Tr>
                             <Td height={20}>
                                 <Flex>
                                     <ChakraButton
-                                        mr={4}
-                                        p={4}
                                         variant="outline"
-                                        alignSelf="flex-end"
-                                        onClick={() => getHttpEndpoints(endpointIndex)}
+                                        margin={"1px"}
+                                        onClick={() => getMoreHttpEndpoints(endpointIndex)}
                                         isDisabled={endpointIndex < httpEndpointCount.length}
                                     >
-                                        Next
-                                    </ChakraButton>
-                                    <ChakraButton
-                                        p={4}
-                                        variant="outline"
-                                        alignSelf="flex-end"
-                                        onClick={() =>
-                                            endpointIndex - 10 > 0
-                                                ? getHttpEndpoints(endpointIndex - 10)
-                                                : getHttpEndpoints(0)
-                                        }
-                                        isDisabled={endpointIndex - 10 <= 0}
-                                    >
-                                        Prev
+                                        More
                                     </ChakraButton>
                                 </Flex>
                             </Td>
                         </Tr>
-                    </Tbody>
+                    </Tfoot>
                 </Table>
                 <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                     Http Status Count
@@ -201,7 +255,7 @@ export default function Metrics() {
                             </Tr>
                         ))}
                     </Tbody>
-                    <Tbody>
+                    <Tfoot>
                         <Tr>
                             <Td height={20}>
                                 <Flex>
@@ -209,27 +263,15 @@ export default function Metrics() {
                                         mr={4}
                                         p={4}
                                         variant="outline"
-                                        onClick={() => getHttpStatuses(statusIndex)}
+                                        onClick={() => getMoreHttpStatuses(statusIndex)}
                                         isDisabled={statusIndex < httpStatusCount.length}
                                     >
-                                        Next
-                                    </ChakraButton>
-                                    <ChakraButton
-                                        p={4}
-                                        variant="outline"
-                                        onClick={() =>
-                                            statusIndex - 10 > 0
-                                                ? getHttpStatuses(statusIndex - 10)
-                                                : getHttpStatuses(0)
-                                        }
-                                        isDisabled={statusIndex - 10 <= 0}
-                                    >
-                                        Prev
+                                        More
                                     </ChakraButton>
                                 </Flex>
                             </Td>
                         </Tr>
-                    </Tbody>
+                    </Tfoot>
                 </Table>
                 <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                     Dossier Views
@@ -263,7 +305,7 @@ export default function Metrics() {
                             </Tr>
                         ))}
                     </Tbody>
-                    <Tbody>
+                    <Tfoot>
                         <Tr>
                             <Td height={20}>
                                 <Flex>
@@ -271,27 +313,15 @@ export default function Metrics() {
                                         mr={4}
                                         p={4}
                                         variant="outline"
-                                        onClick={() => getDossierViews(dossierViewIndex)}
+                                        onClick={() => getMoreDossierViews(dossierViewIndex)}
                                         isDisabled={dossierViewIndex < dossierViewCount.length}
                                     >
-                                        Next
-                                    </ChakraButton>
-                                    <ChakraButton
-                                        p={4}
-                                        variant="outline"
-                                        onClick={() =>
-                                            dossierViewIndex - 10 > 0
-                                                ? getDossierViews(dossierViewIndex - 10)
-                                                : getDossierViews(0)
-                                        }
-                                        isDisabled={dossierViewIndex - 10 <= 0}
-                                    >
-                                        Prev
+                                        More
                                     </ChakraButton>
                                 </Flex>
                             </Td>
                         </Tr>
-                    </Tbody>
+                    </Tfoot>
                 </Table>
                 <Text textAlign="center" fontSize="3xl" fontWeight="bold" marginTop="7%" marginBottom="5">
                     Users with Viewed Dossiers
@@ -321,7 +351,7 @@ export default function Metrics() {
                             </Tr>
                         ))}
                     </Tbody>
-                    <Tbody>
+                    <Tfoot>
                         <Tr>
                             <Td height={20}>
                                 <Flex>
@@ -329,27 +359,15 @@ export default function Metrics() {
                                         mr={4}
                                         p={4}
                                         variant="outline"
-                                        onClick={() => getUserViewedDossiers(userDossierIndex)}
+                                        onClick={() => getMoreUserViewedDossiers(userDossierIndex)}
                                         isDisabled={userDossierIndex < userDossierViewedCount.length}
                                     >
-                                        Next
-                                    </ChakraButton>
-                                    <ChakraButton
-                                        p={4}
-                                        variant="outline"
-                                        onClick={() =>
-                                            userDossierIndex - 10 > 0
-                                                ? getHttpEndpoints(userDossierIndex - 10)
-                                                : getHttpEndpoints(0)
-                                        }
-                                        isDisabled={userDossierIndex - 10 <= 0}
-                                    >
-                                        Prev
+                                        More
                                     </ChakraButton>
                                 </Flex>
                             </Td>
                         </Tr>
-                    </Tbody>
+                    </Tfoot>
                 </Table>
             </Box>
         </div>
