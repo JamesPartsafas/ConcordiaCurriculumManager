@@ -278,6 +278,12 @@ public class DossierService : IDossierService
         foreach (var cg in courseGroupings)
         {
             await _courseGroupingService.QueryRelatedCourseGroupingData(cg, false);
+            
+            if (cg.CourseGroupingRequest == null)
+            {
+                _logger.LogError($"Course grouping with ID {cg.Id} could not query its course grouping request");
+                continue;
+            }
 
             if (cg.CourseGroupingRequest == null)
             {
