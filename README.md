@@ -24,3 +24,7 @@ To set up the backend project, refer to [the following document](https://github.
 Once the backend project is set up and running, close the server from within Visual Studio. Within psql, run the command `\dt` to verify that the tables for the project have been created by the migration that was run when setting up the backend project. Once that is verified, it is time to seed the base data for the project, such as courses, curriculums, and test users. Refer to [this document](https://github.com/JamesPartsafas/ConcordiaCurriculumManager/tree/main/Seeder) for further instructions. Once the seeder is run, verify within psql that the data is indeed present. To scrape web pages to seed more course groupings, refer to [this document](https://github.com/JamesPartsafas/ConcordiaCurriculumManager/tree/main/Scraper).
 
 Finally, now that everything has been set up, start up the server and start up the frontend app. Navigate to `http://localhost:4173`, click on the Register button, and create a new account. You should be redirected to the home page. If you are on the home page, then the setup for your local development environment is complete. If not, please troubleshoot using the previous steps as needed.
+
+## Equity and Diversity Statement
+
+This project condemns all forms of discrimination on the basis of race, sex, gender, sexuality, age, disability, religion, or any other protected status. This project was developed and is to be used by people of diverse origins and expressions.
