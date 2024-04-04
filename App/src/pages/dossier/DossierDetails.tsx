@@ -50,7 +50,7 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import EditApprovalStagesModal from "./EditApprovalStagesModal";
 import { UserContext } from "../../App";
 import { UserRoles } from "../../models/user";
-import { CourseGroupingRequestDTO, CourseGroupingStateEnum } from "../../models/courseGrouping";
+import { CourseGroupingRequestDTO } from "../../models/courseGrouping";
 import { DeleteCourseGroupingRequest } from "../../services/courseGrouping";
 import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
 
@@ -869,9 +869,7 @@ export default function DossierDetails() {
                         justifyContent={"center"}
                     >
                         {dossierDetails?.courseGroupingRequests
-                            ?.filter(
-                                (cgr) => cgr.courseGrouping.state == CourseGroupingStateEnum.NewCourseGroupingProposal
-                            )
+                            ?.filter((cgr) => cgr.requestType == 0)
                             .map((courseGroupingCreationRequest) => (
                                 <Card key={courseGroupingCreationRequest.id} boxShadow={"xl"}>
                                     <CardBody>
@@ -1002,10 +1000,7 @@ export default function DossierDetails() {
                         justifyContent={"center"}
                     >
                         {dossierDetails?.courseGroupingRequests
-                            ?.filter(
-                                (cgr) =>
-                                    cgr.courseGrouping.state == CourseGroupingStateEnum.CourseGroupingChangeProposal
-                            )
+                            ?.filter((cgr) => cgr.requestType == 1)
                             .map((courseGroupingModificationRequest) => (
                                 <Card key={courseGroupingModificationRequest.id} boxShadow={"xl"}>
                                     <CardBody>
@@ -1139,7 +1134,7 @@ export default function DossierDetails() {
                         justifyContent={"center"}
                     >
                         {dossierDetails?.courseGroupingRequests
-                            ?.filter((cgr) => cgr.courseGrouping.state == 3)
+                            ?.filter((cgr) => cgr.requestType == 2)
                             .map((courseGroupingRequest) => (
                                 <Card key={courseGroupingRequest.id} boxShadow={"xl"}>
                                     <CardBody>
