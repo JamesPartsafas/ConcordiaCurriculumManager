@@ -652,7 +652,7 @@ export default function DossierReview() {
                                     {dossierDetails?.courseCreationRequests?.map((courseCreationRequest) => (
                                         <Text key={courseCreationRequest.id} as="u">
                                             <Link
-                                                to={`/CourseDetails?subject=${courseCreationRequest.newCourse?.subject}&catalog=${courseCreationRequest.newCourse?.catalog}`}
+                                                to={`/CourseDetails?id=${courseCreationRequest.newCourse?.id}`}
                                             >
                                                 {courseCreationRequest.newCourse?.subject}{" "}
                                                 {courseCreationRequest.newCourse?.catalog}
@@ -667,7 +667,7 @@ export default function DossierReview() {
                                     {dossierDetails?.courseModificationRequests?.map((courseModificationRequest) => (
                                         <Text key={courseModificationRequest.id} as="u">
                                             <Link
-                                                to={`/CourseDetails?subject=${courseModificationRequest.course?.subject}&catalog=${courseModificationRequest.course?.catalog}`}
+                                                to={`/CourseDetails?id=${courseModificationRequest.course?.id}`}
                                             >
                                                 {courseModificationRequest.course?.subject}{" "}
                                                 {courseModificationRequest.course?.catalog}
@@ -682,7 +682,7 @@ export default function DossierReview() {
                                     {dossierDetails?.courseDeletionRequests?.map((courseDeletionRequest) => (
                                         <Text key={courseDeletionRequest.id} as="u">
                                             <Link
-                                                to={`/CourseDetails?subject=${courseDeletionRequest.course?.subject}&catalog=${courseDeletionRequest.course?.catalog}`}
+                                                to={`/CourseDetails?id=${courseDeletionRequest.course?.id}`}
                                             >
                                                 {courseDeletionRequest.course?.subject}{" "}
                                                 {courseDeletionRequest.course?.catalog}

@@ -16,10 +16,11 @@ export default function CourseDetails() {
     const [courseData, setCourseData] = useState<Course>(null);
     const subject: string = query.get("subject");
     const catalogNumber: number = Number(query.get("catalog"));
+    const id: string = query.get("id");
     const navigate = useNavigate();
 
     //const toast = useToast();
-
+    //TODO : needs if statement 
     useEffect(() => {
         getCourseData(subject, catalogNumber)
             .then((res) => {
