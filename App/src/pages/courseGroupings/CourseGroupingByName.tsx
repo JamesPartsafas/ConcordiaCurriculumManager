@@ -92,13 +92,13 @@ export default function CourseGroupingByName() {
                                     <Th
                                         overflow="hidden"
                                         textOverflow="ellipsis"
-                                        minW={"250px"}
-                                        maxW={"250px"}
+                                        minW={"450px"}
+                                        maxW={"450px"}
                                         style={{ whiteSpace: "normal" }}
                                     >
                                         Name
                                     </Th>
-                                    <Th overflow="hidden" textOverflow="ellipsis" minW={"450px"} maxW={"450px"}>
+                                    <Th overflow="hidden" textOverflow="ellipsis" minW={"250px"} maxW={"250px"}>
                                         Credits Required
                                     </Th>
                                     <Th overflow="hidden" textOverflow="ellipsis" minW={"120px"} maxW={"120px"}>
@@ -110,15 +110,15 @@ export default function CourseGroupingByName() {
                             <Tbody>
                                 {courseGroupings.slice(0, courseGroupings.length).map((grouping) => (
                                     <Tr key={grouping.id} display={"flex"}>
-                                        <Td minW={"250px"} maxW={"250px"}>
+                                        <Td overflow="hidden" textOverflow="ellipsis" minW={"450px"} maxW={"450px"}>
                                             {grouping.name}
                                         </Td>
-                                        <Td minW={"455px"} maxW={"455px"}>
-                                            <Text overflow="hidden" textOverflow="ellipsis" maxW={"500px"}>
+                                        <Td minW={"255px"} maxW={"255px"}>
+                                            <Text overflow="hidden" textOverflow="ellipsis" maxW={"250px"}>
                                                 {grouping.requiredCredits}
                                             </Text>
                                         </Td>
-                                        <Td minW={"130px"} maxW={"130px"}>
+                                        <Td overflow="hidden" textOverflow="ellipsis" minW={"130px"} maxW={"130px"}>
                                             {grouping.school}
                                         </Td>
 

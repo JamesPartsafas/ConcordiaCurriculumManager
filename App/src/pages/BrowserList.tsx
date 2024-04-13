@@ -129,6 +129,21 @@ export default function BrowserList() {
                         </Button>
                     </Stack>
                 )}
+                {isAdmin(user) && (
+                    <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
+                        <Text fontWeight="bold">For Admins Only: Site Metrics: </Text>
+                        <Button
+                            style="secondary"
+                            variant="solid"
+                            width="240px"
+                            height="40px"
+                            margin="0px"
+                            onClick={() => navigate(BaseRoutes.metrics)}
+                        >
+                            View Metrics
+                        </Button>
+                    </Stack>
+                )}
             </Container>
         </div>
     );

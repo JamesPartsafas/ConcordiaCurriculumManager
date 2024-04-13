@@ -53,6 +53,8 @@ import Directories from "./pages/Directories";
 import CourseBySubject from "./pages/courses/CourseBySubjectBrowser";
 import CoursesFromSubject from "./pages/CoursesFromSubject";
 import CourseHistory from "./pages/courses/CourseHistory";
+import Metrics from "./pages/Metrics";
+import ResetPassword from "./pages/ResetPassword";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -108,6 +110,10 @@ export function App() {
                     <Route
                         path={BaseRoutes.ResetPasswordEmail}
                         element={isLoggedIn == false ? <EmailResetPassword /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.ResetPassword}
+                        element={isLoggedIn == false ? <ResetPassword /> : <Navigate to={BaseRoutes.Login} />}
                     />
                     <Route
                         path={BaseRoutes.CourseBrowser}
@@ -318,6 +324,11 @@ export function App() {
                     <Route
                         path={BaseRoutes.userBrowser}
                         element={isAdmin(user) == true ? <UserBrowser /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+
+                    <Route
+                        path={BaseRoutes.metrics}
+                        element={isAdmin(user) == true ? <Metrics /> : <Navigate to={BaseRoutes.Login} />}
                     />
                 </Routes>
             </UserContext.Provider>

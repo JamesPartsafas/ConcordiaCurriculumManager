@@ -278,6 +278,18 @@ public class DossierService : IDossierService
         foreach (var cg in courseGroupings)
         {
             await _courseGroupingService.QueryRelatedCourseGroupingData(cg, false);
+            
+            if (cg.CourseGroupingRequest == null)
+            {
+                _logger.LogError($"Course grouping with ID {cg.Id} could not query its course grouping request");
+                continue;
+            }
+
+            if (cg.CourseGroupingRequest == null)
+            {
+                _logger.LogError($"Course grouping with ID {cg.Id} could not query its course grouping request");
+                continue;
+            }
 
             if (!cg.CourseGroupingRequest!.IsModificationRequest()) continue;
 
@@ -285,7 +297,7 @@ public class DossierService : IDossierService
             Guid commonId = cg.CommonIdentifier;
             try
             {
-                grouping = await _courseGroupingService.GetCourseGroupingByCommonIdentifier(commonId, false);
+                grouping = await _courseGroupingRepository.GetPublishedVersion(commonId) ?? throw new NotFoundException();
             }
             catch (NotFoundException e)
             {
@@ -306,7 +318,6 @@ public class DossierService : IDossierService
             if (course.CourseCreationRequest is not null)
             {
                 var request = course.CourseCreationRequest;
-                course.CourseCreationRequest = null;
                 request.NewCourse = course;
                 courseCreationRequests.Add(request);
             }
@@ -314,7 +325,6 @@ public class DossierService : IDossierService
             if (course.CourseModificationRequest is not null)
             {
                 var request = course.CourseModificationRequest;
-                course.CourseModificationRequest = null;
                 request.Course = course;
                 courseModificationRequests.Add(request);
             }
@@ -322,7 +332,6 @@ public class DossierService : IDossierService
             if (course.CourseDeletionRequest is not null)
             {
                 var request = course.CourseDeletionRequest;
-                course.CourseDeletionRequest = null;
                 request.Course = course;
                 courseDeletionRequests.Add(request);
             }
@@ -333,7 +342,6 @@ public class DossierService : IDossierService
             if (cg.CourseGroupingRequest is not null)
             {
                 var request = cg.CourseGroupingRequest;
-                cg.CourseGroupingRequest = null;
                 request.CourseGrouping = cg;
                 courseGroupingRequests.Add(request);
             }

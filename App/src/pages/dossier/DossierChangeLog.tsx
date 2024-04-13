@@ -3,8 +3,12 @@ import Button from "../../components/Button";
 import { BaseRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { DossierReportDTO } from "../../models/dossier";
-import { changeLogPublishCourse, getChangesAcrossAllDossiers } from "../../services/dossier";
+import { ChangeLogDTO } from "../../models/dossier";
+import {
+    changeLogPublishCourse,
+    changeLogPublishCourseGrouping,
+    getChangesAcrossAllDossiers,
+} from "../../services/dossier";
 import { AllCourseSettings, componentMappings } from "../../models/course";
 import { getAllCourseSettings } from "../../services/course";
 import CourseDiffViewer from "../../components/CourseDifference/CourseDiffViewer";
@@ -15,12 +19,13 @@ import { showToast } from "../../utils/toastUtils";
 import { useContext } from "react";
 import { isAdminOrGroupMaster } from "../../services/auth";
 import { UserContext } from "../../App";
+import DossierReportCourseGrouping from "../../components/Dossiers/DossierReportCourseGrouping";
 
 export default function DossierChangeLog() {
     const toast = useToast();
     const user = useContext(UserContext);
     const navigate = useNavigate();
-    const [dossierReport, setDossierReport] = useState<DossierReportDTO | null>(null);
+    const [dossierReport, setDossierReport] = useState<ChangeLogDTO | null>(null);
     const [allCourseSettings, setAllCourseSettings] = useState<AllCourseSettings>(null);
 
     useEffect(() => {
@@ -46,6 +51,23 @@ export default function DossierChangeLog() {
         changeLogPublishCourse(subject, catalog)
             .then(() => {
                 showToast(toast, "Success!", "Course has been published.", "success");
+                getChangesAcrossAllDossiers()
+                    .then((response) => {
+                        setDossierReport(response.data);
+                    })
+                    .catch((error) => {
+                        showToast(toast, "Error!", error.message, "error");
+                    });
+            })
+            .catch((error) => {
+                showToast(toast, "Error!", error.response.data, "error");
+            });
+    };
+
+    const publishCourseGrouping = (commonIdentifier: string) => {
+        changeLogPublishCourseGrouping(commonIdentifier)
+            .then(() => {
+                showToast(toast, "Success!", "Course Grouping has been published.", "success");
                 getChangesAcrossAllDossiers()
                     .then((response) => {
                         setDossierReport(response.data);
@@ -336,7 +358,7 @@ export default function DossierChangeLog() {
                                     </Text>
 
                                     <Text fontSize="md" marginBottom="3">
-                                        <b> Ressource Implications:</b> <br />
+                                        <b> Resource Implications:</b> <br />
                                         {courseCreationRequest.course.resourceImplication ?? "N/A"}
                                     </Text>
 
@@ -420,7 +442,7 @@ export default function DossierChangeLog() {
                                         {courseModificationRequest.course.title}
                                     </Heading>
                                     <Text fontSize="md" marginBottom="3">
-                                        <b> Ressource Implications: </b>
+                                        <b> Resource Implications: </b>
                                         {courseModificationRequest.resourceImplication == ""
                                             ? "N/A"
                                             : courseModificationRequest.resourceImplication}
@@ -472,6 +494,11 @@ export default function DossierChangeLog() {
                             </ListItem>
                         ))}
                     </OrderedList>
+                    <DossierReportCourseGrouping
+                        courseGrouping={dossierReport?.courseGroupingRequests}
+                        oldGroupings={dossierReport?.oldCourseGroupings}
+                        onPublishGrouping={publishCourseGrouping}
+                    ></DossierReportCourseGrouping>
                 </Container>
 
                 <Button

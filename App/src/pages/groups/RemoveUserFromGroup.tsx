@@ -4,7 +4,6 @@ import { Container, Stack, Heading, Box, HStack, Text, OrderedList, ListItem, us
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { GetGroupByID, GroupDTO, GroupResponseDTO, RemoveUserFromGroup } from "../../services/group";
-import { BaseRoutes } from "../../constants";
 import { UserDTO } from "../../models/user";
 
 export default function RemovingUserFromGroup() {
@@ -107,14 +106,7 @@ export default function RemovingUserFromGroup() {
 
     return (
         <>
-            <Button
-                style="primary"
-                variant="outline"
-                height="40px"
-                ml={"10%"}
-                mt={5}
-                onClick={() => navigate(BaseRoutes.ManageableGroup)}
-            >
+            <Button style="primary" variant="outline" height="40px" ml={"10%"} mt={5} onClick={() => navigate(-1)}>
                 Back
             </Button>
             <Container maxW="lg" py={{ base: "12", md: "15" }} px={{ base: "0", sm: "8" }}>
