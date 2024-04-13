@@ -20,6 +20,7 @@ export enum BaseRoutes {
     CourseDetails = "/CourseDetails",
     CourseBySubject = "/coursebysubjectbrowser",
     CoursesFromSubject = "/CoursesFromSubject",
+    CourseHistory = "/course-history",
 
     // Course Grouping related routes
     DeleteCourseGrouping = "/delete-course-grouping/:dossierId",
