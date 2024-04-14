@@ -75,6 +75,10 @@ const CourseGroupingDiffViewer = ({
             }
         });
         results["Courses"] = detectChanges(oldCourseRef, newCourseRef);
+        results["Published"] = detectChanges(
+            oldGrouping.published ? "Yes" : "No",
+            newGrouping.published ? "Yes" : "No"
+        );
         setDiffResults(results);
     }, [oldGrouping, newGrouping]);
 
