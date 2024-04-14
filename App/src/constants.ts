@@ -31,7 +31,7 @@ export enum BaseRoutes {
     CourseGrouping = "/CourseGrouping/:courseGroupingId",
     CreateCourseGrouping = "/add/CourseGrouping/:dossierId",
     EditCourseGrouping = "/edit/CourseGrouping/:dossierId/:courseGroupingId",
-
+    CourseGroupingHistory = "/course-grouping-history",
     // Groups related routes
     ManageableGroup = "/manageablegroup",
     Groups = "/groups",
