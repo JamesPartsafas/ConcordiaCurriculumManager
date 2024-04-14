@@ -12,22 +12,22 @@ import {
     Stack,
     Text,
     useDisclosure,
-    Button,
 } from "@chakra-ui/react";
 import CourseGroupingPreview from "../../components/CourseGrouping/CourseGroupingPreview";
 import { CourseGroupingDTO } from "../../models/courseGrouping";
 import CourseGroupingDiffViewer from "../../components/CourseDifference/CourseGroupingDifference";
 import SearchCourseGrouping from "../../components/CourseGrouping/SearchCourseGrouping";
+import Button from "../../components/Button";
+import { useNavigate } from "react-router-dom";
+import { BaseRoutes } from "../../constants";
+
 export default function CourseGroupingHistory() {
     const [courseGroupingHistory, setCourseGroupingHistory] = useState<CourseGroupingDTO[]>(null);
     const [oldVersion, setOldVersion] = useState<CourseGroupingDTO>(null);
     const [newVersion, setNewVersion] = useState<CourseGroupingDTO>(null);
     const [courseGroupingId, setCourseGroupingId] = useState<string>("4a8a12cd-1555-4d69-931b-40bae1951c18");
-    // const {
-    //     isOpen: isCourseSelectionOpen,
-    //     onOpen: onCourseSelectionOpen,
-    //     onClose: onCourseSelectionClose,
-    // } = useDisclosure();
+
+    const navigate = useNavigate();
 
     const {
         isOpen: isSearchCourseGroupingOpen,
@@ -35,7 +35,6 @@ export default function CourseGroupingHistory() {
         onClose: onSearchCourseGroupingClose,
     } = useDisclosure();
     useEffect(() => {
-        // get the course grouping id from the path
         fetchCourseGroupingHistory(courseGroupingId);
     }, []);
 
@@ -70,12 +69,30 @@ export default function CourseGroupingHistory() {
             {displaySearchCourseGroupModal()}
             {courseGroupingHistory && (
                 <>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        height="40px"
+                        width="fit-content"
+                        m="6"
+                        onClick={() => navigate(BaseRoutes.Home)}
+                    >
+                        Return to Home
+                    </Button>
                     <Center m={6}>
                         <Heading color={"brandRed"}>Course Grouping History</Heading>
                     </Center>
                     <Center mb="6">
                         <Text mr="2">Select the course grouping: </Text>
-                        <Button onClick={onSearchCourseGroupingOpen}>Select</Button>
+                        <Button
+                            style="primary"
+                            variant="solid"
+                            height="40px"
+                            width="fit-content"
+                            onClick={onSearchCourseGroupingOpen}
+                        >
+                            Select
+                        </Button>
                     </Center>
                     <Center>
                         <Tabs variant="soft-rounded" colorScheme="gray">

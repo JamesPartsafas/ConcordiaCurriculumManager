@@ -11,13 +11,16 @@ import {
     Stack,
     Text,
     useDisclosure,
-    Button,
 } from "@chakra-ui/react";
+
 import { AllCourseSettings, Course, CourseDataResponse } from "../../models/course";
 import { getAllCourseSettings, getCourseHistory } from "../../services/course";
 import SelectCourseModal from "../dossier/SelectCourseModal";
 import CourseDiffViewer from "../../components/CourseDifference/CourseDiffViewer";
 import CoursePreviewCard from "../../components/CoursePreviewCard";
+import { useNavigate } from "react-router-dom";
+import { BaseRoutes } from "../../constants";
+import Button from "../../components/Button";
 export default function CourseHistory() {
     const [courseHistory, setCourseHistory] = useState<Course[]>(null);
     const [oldVersion, setOldVersion] = useState<Course>(null);
@@ -26,6 +29,8 @@ export default function CourseHistory() {
     const [courseCatalog, setCourseCatalog] = useState<number>(335);
 
     const [courseSettings, setCourseSettings] = useState<AllCourseSettings>(null);
+
+    const navigate = useNavigate();
 
     const {
         isOpen: isCourseSelectionOpen,
@@ -77,12 +82,30 @@ export default function CourseHistory() {
             {displaySelectCourseModal()}
             {courseHistory && (
                 <>
+                    <Button
+                        style="primary"
+                        variant="outline"
+                        height="40px"
+                        width="fit-content"
+                        m="6"
+                        onClick={() => navigate(BaseRoutes.Home)}
+                    >
+                        Return to Home
+                    </Button>
                     <Center m={6}>
                         <Heading color={"brandRed"}>Course History</Heading>
                     </Center>
                     <Center mb="6">
                         <Text mr="2">Select the course: </Text>
-                        <Button onClick={onCourseSelectionOpen}>Select</Button>
+                        <Button
+                            style="primary"
+                            variant="solid"
+                            height="40px"
+                            width="fit-content"
+                            onClick={onCourseSelectionOpen}
+                        >
+                            Select
+                        </Button>
                     </Center>
                     <Center>
                         <Tabs variant="soft-rounded" colorScheme="gray">
