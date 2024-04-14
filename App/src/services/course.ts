@@ -102,6 +102,6 @@ export function getCoursesDataFromSubject(subject: string): Promise<MultiCourseD
     return axios.get(`/Course/BySubject/${subject}`);
 }
 
-export function getCourseHistory(subject: string, catalog: number): Promise<unknown> {
+export function getCourseHistory(subject: string, catalog: number): Promise<MultiCourseDataResponse> {
     return axios.get(`/Course/getCourseHistory/${subject}/${catalog}`);
 }
