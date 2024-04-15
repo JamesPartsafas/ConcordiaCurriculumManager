@@ -101,3 +101,7 @@ export function editCourseModificationRequest(dossierId: string, course: Course)
 export function getCoursesDataFromSubject(subject: string): Promise<MultiCourseDataResponse> {
     return axios.get(`/Course/BySubject/${subject}`);
 }
+
+export function getCourseHistory(subject: string, catalog: number): Promise<MultiCourseDataResponse> {
+    return axios.get(`/Course/getCourseHistory/${subject}/${catalog}`);
+}

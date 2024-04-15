@@ -114,3 +114,7 @@ export function EditCourseGroupingDeletion(
 export function DeleteCourseGroupingRequest(dossierId: string, requestId: string): Promise<unknown> {
     return axios.delete(`${CourseGroupingAPIEndpoints.DeleteCourseGroupingRequest}/${dossierId}/${requestId}`);
 }
+
+export function getCourseGroupingHistory(commonIdentifier: string): Promise<GetMultiCourseGroupingResponse> {
+    return axios.get(`/CourseGrouping/GetCourseGroupingHistory/${commonIdentifier}`);
+}

@@ -52,8 +52,10 @@ import EmailResetPassword from "./pages/EmailResetPassword";
 import Directories from "./pages/Directories";
 import CourseBySubject from "./pages/courses/CourseBySubjectBrowser";
 import CoursesFromSubject from "./pages/CoursesFromSubject";
+import CourseHistory from "./pages/courses/CourseHistory";
 import Metrics from "./pages/Metrics";
 import ResetPassword from "./pages/ResetPassword";
+import CourseGroupingHistory from "./pages/courseGroupings/CourseGroupingHistory";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -297,6 +299,18 @@ export function App() {
                         element={isLoggedIn == true ? <CoursesLeft /> : <Navigate to={BaseRoutes.Login} />}
                     />
 
+                    <Route
+                        path={BaseRoutes.Directories}
+                        element={isLoggedIn == true ? <Directories /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.CourseHistory}
+                        element={isLoggedIn == true ? <CourseHistory /> : <Navigate to={BaseRoutes.Login} />}
+                    />
+                    <Route
+                        path={BaseRoutes.CourseGroupingHistory}
+                        element={isLoggedIn == true ? <CourseGroupingHistory /> : <Navigate to={BaseRoutes.Login} />}
+                    />
                     <Route
                         path={BaseRoutes.Directories}
                         element={isLoggedIn == true ? <Directories /> : <Navigate to={BaseRoutes.Login} />}

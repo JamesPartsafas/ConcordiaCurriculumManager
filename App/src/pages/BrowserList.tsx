@@ -114,6 +114,36 @@ export default function BrowserList() {
                         View Groups
                     </Button>
                 </Stack>
+                <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
+                    <Text fontWeight="bold" width={250}>
+                        Course Grouping History:{" "}
+                    </Text>
+                    <Button
+                        style="primary"
+                        variant="solid"
+                        width="240px"
+                        height="40px"
+                        margin="0px"
+                        onClick={() => navigate(BaseRoutes.CourseGroupingHistory)}
+                    >
+                        View Course Grouping History
+                    </Button>
+                </Stack>
+                <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
+                    <Text fontWeight="bold" width={250}>
+                        Course History:{" "}
+                    </Text>
+                    <Button
+                        style="primary"
+                        variant="solid"
+                        width="240px"
+                        height="40px"
+                        margin="0px"
+                        onClick={() => navigate(BaseRoutes.CourseHistory)}
+                    >
+                        View Course History
+                    </Button>
+                </Stack>
                 {isAdmin(user) && (
                     <Stack spacing={6} direction={"row"} marginTop="7%" marginBottom="5">
                         <Text fontWeight="bold">For Admins Only: User Browser: </Text>
