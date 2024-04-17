@@ -57,9 +57,9 @@ export default function Footer(props: FooterProps) {
                 position="fixed"
                 bottom={0}
                 width="100%"
-                bg={useColorModeValue("white", "gray.800")}
-                color={useColorModeValue("gray.600", "white")}
-                minH={"10px"}
+                bg={useColorModeValue("gray.900", "gray.800")}
+                color={useColorModeValue("gray.500", "white")}
+                minH={"20px"}
                 py={{ base: 2 }}
                 px={{ base: 4 }}
                 borderTop={1}
@@ -73,17 +73,18 @@ export default function Footer(props: FooterProps) {
                         <Text
                             textAlign={useBreakpointValue({ base: "center", md: "left" })}
                             fontFamily={"heading"}
-                            color={useColorModeValue("gray.800", "white")}
-                        >
-                            Useful links :  
+                            color={useColorModeValue("gray.500", "white")}
+                            fontWeight={"bold"}
+                        ><p> Territorial acknowledgement</p>
                         </Text>
-                        <Flex direction="column">
-                            <Link>Link 1</Link>
-                            <Link>Link 2</Link>
-                        </Flex>
+                        <Flex direction="column" textDecoration="underline" >
+                        <Box ml={10}>
+                            <Link color = "white"  to={"https://www.concordia.ca/indigenous/resources/territorial-acknowledgement.html"} >Concordia University is located on unceded Indigenous lands. The Kanien’kehá:ka Nation is recognized as the custodians of Tiohtià:ke/Montréal. </Link>
+                            </Box>
+                            </Flex>
                     </Flex>
                 </footer>
-                <Text>Copyright © 2024 JamesPart</Text>
+                <Text color ="white"> MIT license | Copyright © 2023 James Partsafas</Text>
             </Flex>
         </Box>
     );
