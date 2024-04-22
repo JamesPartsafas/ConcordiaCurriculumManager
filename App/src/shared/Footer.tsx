@@ -2,27 +2,27 @@ import {
     Box,
     Flex,
     Text,
-    IconButton,
-    Stack,
-    Collapse,
-    Icon,
-    Popover,
-    PopoverTrigger,
-    PopoverContent,
+    // IconButton,
+    // Stack,
+    // Collapse,
+    // Icon,
+    // Popover,
+    // PopoverTrigger,
+    // PopoverContent,
     useColorModeValue,
     useBreakpointValue,
-    useDisclosure,
-    useToast,
-    Image,
+    // useDisclosure,
+    // useToast,
+    // Image,
 } from "@chakra-ui/react";
-import Button from "../components/Button";
-import logo from "../assets/logo.png";
-import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../services/auth";
-import { BaseRoutes } from "../constants";
+// import Button from "../components/Button";
+// import logo from "../assets/logo.png";
+// import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
+// import { useNavigate } from "react-router-dom";
+// import { logout } from "../services/auth";
+// import { BaseRoutes } from "../constants";
 import { User } from "../models/user";
-import { showToast } from "../utils/toastUtils";
+// import { showToast } from "../utils/toastUtils";
 import { Link } from "react-router-dom";
 
 export interface FooterProps {
@@ -32,31 +32,33 @@ export interface FooterProps {
 }
 
 export default function Footer(props: FooterProps) {
-    const { isOpen, onToggle } = useDisclosure();
-    const navigate = useNavigate();
-    const toast = useToast(); // Use the useToast hook
+    // const { isOpen, onToggle } = useDisclosure();
+    // const navigate = useNavigate();
+    // const toast = useToast(); // Use the useToast hook
 
-    function logOut() {
-        logout().then(
-            () => {
-                props.setUser(null);
-                props.setIsLoggedIn(false);
-                props.setIsAdminOrGroupMaster(false);
-                navigate(BaseRoutes.Login);
-                showToast(toast, "Success!", "You have successfully logged out.", "success");
-            },
-            (rej) => {
-                showToast(toast, "Error!", rej.message, "error");
-            }
-        );
-    }
+    //function logOut() {
+    //     logout().then(
+    //         () => {
+    //             props.setUser(null);
+    //             props.setIsLoggedIn(false);
+    //             props.setIsAdminOrGroupMaster(false);
+    //             navigate(BaseRoutes.Login);
+    //             showToast(toast, "Success!", "You have successfully logged out.", "success");
+    //         },
+    //         (rej) => {
+    //             showToast(toast, "Error!", rej.message, "error");
+    //         }
+    //     );
+    // }
 
     return (
-        <Box className="non-printable-content">
+        <Box className="non-printable-content" display="flex" flexDirection="column" minHeight="100vh">
+            <Box flex="1"></Box>
             <Flex
-                position="fixed"
-                bottom={0}
-                width="100%"
+                // bgPosition="bottom"
+                // //bottom={0}
+                // minHeight="100vh" // trying to make sure the footer remains where it belongs.
+                // width="100%"
                 bg={useColorModeValue("gray.900", "gray.800")}
                 color={useColorModeValue("gray.500", "white")}
                 minH={"20px"}
