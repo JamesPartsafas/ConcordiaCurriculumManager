@@ -29,6 +29,7 @@ import CreateGroup from "./pages/groups/CreateGroup";
 import DeleteCourseEdit from "./pages/courses/DeleteCourseEdit";
 import CourseDetails from "./pages/courses/CourseDetails";
 import Header from "./shared/Header";
+import Footer from "./shared/Footer";
 import DossierReview from "./pages/dossier/DossierReview";
 import DossierReport from "./pages/dossier/DossierReport";
 import NoData from "./pages/NoData";
@@ -322,6 +323,7 @@ export function App() {
                         element={isAdmin(user) == true ? <Metrics /> : <Navigate to={BaseRoutes.Login} />}
                     />
                 </Routes>
+                {isLoggedIn && <Footer />}
             </UserContext.Provider>
         </>
     );
