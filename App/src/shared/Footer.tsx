@@ -11,32 +11,32 @@ import {
     // PopoverContent,
     useColorModeValue,
     useBreakpointValue,
-    // useDisclosure,
-    // useToast,
-    // Image,
+    //useDisclosure,
+    //useToast,
+    //Image,
 } from "@chakra-ui/react";
 // import Button from "../components/Button";
 // import logo from "../assets/logo.png";
 // import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 // import { useNavigate } from "react-router-dom";
-// import { logout } from "../services/auth";
+//import { logout } from "../services/auth";
 // import { BaseRoutes } from "../constants";
-import { User } from "../models/user";
+//import { User } from "../models/user";
 // import { showToast } from "../utils/toastUtils";
 import { Link } from "react-router-dom";
 
-export interface FooterProps {
-    setUser: (user: User | null) => void;
-    setIsLoggedIn: (isLoggedIn: boolean) => void;
-    setIsAdminOrGroupMaster: (isAdminOrGroupMaster: boolean) => void;
-}
+// export interface FooterProps {
+//     setUser: (user: User | null) => void;
+//     setIsLoggedIn: (isLoggedIn: boolean) => void;
+//     setIsAdminOrGroupMaster: (isAdminOrGroupMaster: boolean) => void;
+// }
 
-export default function Footer(props: FooterProps) {
-    // const { isOpen, onToggle } = useDisclosure();
-    // const navigate = useNavigate();
-    // const toast = useToast(); // Use the useToast hook
+export default function Footer() {
+    //const { isOpen, onToggle } = useDisclosure();
+    //const navigate = useNavigate();
+    //const toast = useToast(); // Use the useToast hook
 
-    //function logOut() {
+    // function logOut() {
     //     logout().then(
     //         () => {
     //             props.setUser(null);
@@ -52,7 +52,7 @@ export default function Footer(props: FooterProps) {
     // }
 
     return (
-        <Box className="non-printable-content" display="flex" flexDirection="column" minHeight="100vh">
+        <Box className="non-printable-content" display="flex" flexDirection="column" minHeight="80vh">
             <Box flex="1"></Box>
             <Flex
                 // bgPosition="bottom"
@@ -62,7 +62,7 @@ export default function Footer(props: FooterProps) {
                 bg={useColorModeValue("gray.900", "gray.800")}
                 color={useColorModeValue("gray.500", "white")}
                 minH={"20px"}
-                py={{ base: 2 }}
+                py={{ base: 4 }}
                 px={{ base: 4 }}
                 borderTop={1}
                 borderStyle={"solid"}
@@ -77,16 +77,25 @@ export default function Footer(props: FooterProps) {
                             fontFamily={"heading"}
                             color={useColorModeValue("gray.500", "white")}
                             fontWeight={"bold"}
-                        ><p> Territorial acknowledgement</p>
+                        >
+                            <p> Capstone Alpha Version</p>
                         </Text>
-                        <Flex direction="column" textDecoration="underline" >
-                        <Box ml={10}>
-                            <Link color = "white"  to={"https://www.concordia.ca/indigenous/resources/territorial-acknowledgement.html"} >Concordia University is located on unceded Indigenous lands. The Kanien’kehá:ka Nation is recognized as the custodians of Tiohtià:ke/Montréal. </Link>
+                        <Flex direction="column" textDecoration="underline">
+                            <Box ml={10}>
+                                <Link
+                                    color="white"
+                                    to={
+                                        "https://www.concordia.ca/ginacody/electrical-computer-eng/students/capstone.html"
+                                    }
+                                >
+                                    This project is part of SOEN 490 Capstone for software engineering students. This
+                                    link provides additional resources about its requirements and purpose.
+                                </Link>
                             </Box>
-                            </Flex>
+                        </Flex>
                     </Flex>
                 </footer>
-                <Text color ="white"> MIT license | Copyright © 2023 James Partsafas</Text>
+                <Text color="white"> Concordia Curriculum Manager 2023</Text>
             </Flex>
         </Box>
     );
